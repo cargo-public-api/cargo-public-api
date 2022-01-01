@@ -1,6 +1,34 @@
 use std::collections::HashSet;
 
-static EXPECTED_PUBLIC_SYNTAX_V4_6_0_ITEMS: [&str; 341] = [
+#[test]
+fn syntect_v4_6_0() {
+    assert_public_items(
+        include_str!("./rustdoc_json/syntect-v4.6.0-by-rust-nightly-2021-11-15.json"),
+        EXPECTED_PUBLIC_ITEMS_IN_SYNTECT_V4_6_0,
+    );
+}
+
+fn assert_public_items(rustdoc_json_str: &str, expected_public_items: &[&str]) {
+    let actual = public_items::from_rustdoc_json_str(rustdoc_json_str).unwrap();
+
+    let expected = string_hash_set_from_str_array(expected_public_items);
+
+    assert_eq!(actual, expected);
+}
+
+fn string_hash_set_from_str_array(str_array: &[&str]) -> HashSet<String> {
+    str_array.iter().map(|s| String::from(*s)).collect()
+}
+
+/// This list is sourced by browsing around
+/// <https://docs.rs/syntect/4.6.0/syntect/all.html>. If an item is in the below
+/// list, it can be found by browsing the above URL. Note that I have added an
+/// explicit "syntect::" prefix on all items in the interest of clarity. Also
+/// note that the JSON contains some extra items from
+/// <https://github.com/bitflags/bitflags/commit/a74e4577d5> that are not
+/// present in <https://docs.rs/syntect/4.6.0/syntect/all.html> due to different
+/// `bitflags` versions used.
+static EXPECTED_PUBLIC_ITEMS_IN_SYNTECT_V4_6_0: &[&str] = &[
     "syntect::dumps::dump_binary",
     "syntect::dumps::dump_to_file",
     "syntect::dumps::dump_to_writer",
@@ -28,25 +56,25 @@ static EXPECTED_PUBLIC_SYNTAX_V4_6_0_ITEMS: [&str; 341] = [
     "syntect::highlighting::FontStyle::all",
     "syntect::highlighting::FontStyle::bits",
     "syntect::highlighting::FontStyle::BOLD",
-    "syntect::highlighting::FontStyle::complement", // TODO: Why not listed in docs.rs? Seems to be part of public API
+    "syntect::highlighting::FontStyle::complement",
     "syntect::highlighting::FontStyle::contains",
-    "syntect::highlighting::FontStyle::difference", // TODO: Why not listed in docs.rs?
+    "syntect::highlighting::FontStyle::difference",
     "syntect::highlighting::FontStyle::empty",
     "syntect::highlighting::FontStyle::from_bits_truncate",
     "syntect::highlighting::FontStyle::from_bits_unchecked",
     "syntect::highlighting::FontStyle::from_bits",
     "syntect::highlighting::FontStyle::insert",
-    "syntect::highlighting::FontStyle::intersection", // TODO: Why not listed in docs.rs?
+    "syntect::highlighting::FontStyle::intersection",
     "syntect::highlighting::FontStyle::intersects",
     "syntect::highlighting::FontStyle::is_all",
     "syntect::highlighting::FontStyle::is_empty",
     "syntect::highlighting::FontStyle::ITALIC",
     "syntect::highlighting::FontStyle::remove",
     "syntect::highlighting::FontStyle::set",
-    "syntect::highlighting::FontStyle::symmetric_difference", // TODO: Why not listed in docs.rs?
+    "syntect::highlighting::FontStyle::symmetric_difference",
     "syntect::highlighting::FontStyle::toggle",
     "syntect::highlighting::FontStyle::UNDERLINE",
-    "syntect::highlighting::FontStyle::union", // TODO: Why not listed in docs.rs?
+    "syntect::highlighting::FontStyle::union",
     "syntect::highlighting::FontStyle",
     "syntect::highlighting::Highlighter::get_default",
     "syntect::highlighting::Highlighter::new",
@@ -301,7 +329,7 @@ static EXPECTED_PUBLIC_SYNTAX_V4_6_0_ITEMS: [&str; 341] = [
     "syntect::parsing::syntax_definition::SyntaxDefinition::variables",
     "syntect::parsing::syntax_definition::SyntaxDefinition",
     "syntect::parsing::syntax_definition",
-    "syntect::parsing::SyntaxDefinition", // This is a re-export
+    "syntect::parsing::SyntaxDefinition", // Note that this is a re-export
     "syntect::parsing::SyntaxReference::file_extensions",
     "syntect::parsing::SyntaxReference::first_line_match",
     "syntect::parsing::SyntaxReference::hidden",
@@ -343,27 +371,3 @@ static EXPECTED_PUBLIC_SYNTAX_V4_6_0_ITEMS: [&str; 341] = [
     "syntect::util",
     "syntect",
 ];
-
-#[test]
-fn syntect_v4_6_0() {
-    let public_items = public_items::from_rustdoc_json_str(include_str!(
-        "./rustdoc_json/syntect-v4.6.0-by-rust-nightly-2021-11-15.json"
-    ))
-    .unwrap();
-
-    // This list is sourced by browsing around https://docs.rs/syntect/4.6.0/syntect/all.html.
-    // If an item is in the below list, it can be found by browsing the above URL.
-    // Note that I have added an explicit "syntect::" prefix on all items in the interest of clarity.
-    let expected_public_items: HashSet<String> = EXPECTED_PUBLIC_SYNTAX_V4_6_0_ITEMS
-        .into_iter()
-        .map(std::borrow::ToOwned::to_owned)
-        .collect();
-
-    // Items that are listed as public, but that are not expected to be public
-    let surplus_items: HashSet<_> = public_items.difference(&expected_public_items).collect();
-    assert_eq!(surplus_items, HashSet::new());
-
-    // Items that are not listed as public, but that we expect to be public
-    let missing_items: HashSet<_> = expected_public_items.difference(&public_items).collect();
-    assert_eq!(missing_items, HashSet::new());
-}

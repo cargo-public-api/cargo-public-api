@@ -1,8 +1,8 @@
-use rustdoc_types::{Crate, Id, Item, ItemEnum, Type, Visibility};
-
 use std::collections::{HashMap, HashSet};
 
-pub type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
+use rustdoc_types::{Crate, Id, Item, ItemEnum, Type, Visibility};
+
+use crate::Result;
 
 const ROOT_CRATE_ID: u32 = 0;
 

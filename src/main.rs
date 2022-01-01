@@ -1,31 +1,30 @@
-use std::{collections::HashSet, path::Path};
+use std::io::Write;
+use std::path::Path;
 
-use std::io::prelude::*;
-
-use public_items::Result;
+type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
 fn main() -> Result<()> {
     match std::env::args_os().nth(1) {
-        Some(path) => print_public_api_items(Path::new(&path)),
-        _ => print_usage(),
-    }
-}
-
-fn print_public_api_items(path: &Path) -> Result<()> {
-    let public_items = from_rustdoc_json_path(path)?;
-
-    for public_item in public_items {
-        println!("{}", public_item);
+        Some(path) => print_public_api_items(Path::new(&path))?,
+        _ => print_usage()?,
     }
 
     Ok(())
 }
 
-fn from_rustdoc_json_path(path: &Path) -> Result<HashSet<String>> {
-    public_items::from_rustdoc_json_str(&std::fs::read_to_string(path)?)
+fn print_public_api_items(path: &Path) -> Result<()> {
+    let rustdoc_json = &std::fs::read_to_string(path)?;
+
+    let mut public_items = Vec::from_iter(public_items::from_rustdoc_json_str(rustdoc_json)?);
+    public_items.sort();
+    for public_item in public_items {
+        writeln!(std::io::stdout(), "{}", public_item)?;
+    }
+
+    Ok(())
 }
 
-fn print_usage() -> Result<()> {
+fn print_usage() -> std::io::Result<()> {
     writeln!(
         std::io::stdout(),
         "Usage:
@@ -41,5 +40,4 @@ which you can find in
   ./target/doc/${{{{CRATE}}}}.json
 "
     )
-    .map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, format!("{}", e)).into())
 }

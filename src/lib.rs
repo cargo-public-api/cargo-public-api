@@ -1,4 +1,5 @@
-mod public_items_impl;
+mod internal;
 
-pub use public_items_impl::from_rustdoc_json_str;
-pub use public_items_impl::Result;
+pub use internal::Result;
+
+pub use internal::from_rustdoc_json_str;

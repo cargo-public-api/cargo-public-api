@@ -2,6 +2,11 @@
 name = "public_items"
 version = "0.0.1"
 edition = "2021"
+description = "List public items (public API) of library crates. Enables diffing public API between releases."
+documentation = "https://docs.rs/public_items"
+license = "MIT"
+homepage = "https://github.com/Enselic/public_items"
+repository = "https://github.com/Enselic/public_items"
 
 [dependencies]
 serde = { version = "1.0", features = [ "derive" ] }

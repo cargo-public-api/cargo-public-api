@@ -11,7 +11,7 @@ const ROOT_CRATE_ID: u32 = 0;
 ///
 /// Use
 /// ```bash
-/// RUSTDOCFLAGS='-Z unstable-options --output-format json' cargo +nightly doc --no-deps
+/// RUSTDOCFLAGS='-Z unstable-options --output-format json' cargo +nightly doc --lib --no-deps
 /// ```
 /// to generate rustdoc JSON.
 ///

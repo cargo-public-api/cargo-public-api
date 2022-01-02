@@ -48,7 +48,7 @@ fn print_usage() -> std::io::Result<()> {
 
 where RUSTDOC_JSON_FILE is the path to the output of
 
-  RUSTDOCFLAGS='-Z unstable-options --output-format json' cargo +nightly doc --no-deps
+  RUSTDOCFLAGS='-Z unstable-options --output-format json' cargo +nightly doc --lib --no-deps
 
 which you can find in
 

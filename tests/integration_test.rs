@@ -23,7 +23,7 @@ fn string_hash_set_from_str_array(str_array: &[&str]) -> HashSet<String> {
 /// This list is sourced by browsing around
 /// <https://docs.rs/syntect/4.6.0/syntect/all.html>. If an item is in the below
 /// list, it can be found by browsing the above URL. Note that I have added an
-/// explicit "syntect::" prefix on all items in the interest of clarity. Also
+/// explicit `syntect::` prefix on all items in the interest of clarity. Also
 /// note that the JSON contains some extra items from
 /// <https://github.com/bitflags/bitflags/commit/a74e4577d5> that are not
 /// present in <https://docs.rs/syntect/4.6.0/syntect/all.html> due to different

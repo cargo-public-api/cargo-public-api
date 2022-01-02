@@ -20,5 +20,4 @@ Maintainers of Rust libraries that want to keep track of changes to their public
 # Limitations
 
 Currently:
-* Only items from the crate itself are considered (so e.g. `fn clone()` will not be included in the output list, because the `Clone` trait is defined outside of the crate.)
 * The type of items are not shown. So a struct field and and struct method is listed as `Struct::field` and `Struct::method`. And tuple structs will just be represented with `Struct::0`, `Struct::1`, etc. Since Rust does not support method overloading, this is not that big of an issue in practice.

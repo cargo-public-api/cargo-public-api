@@ -9,4 +9,5 @@ repository = "https://github.com/Enselic/cargo-public-items"
 version = "0.0.1"
 
 [dependencies]
-public_items = "0.0.3"
+public_items = "0.0.4"
+cargo_toml = "0.10.3"

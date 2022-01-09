@@ -1,6 +1,10 @@
 # cargo-public-items
 
-Convenient `cargo` wrapper around the [public_items](https://crates.io/crates/public_items) crate.
+List public items (the public API) of a Rust library crate by analyzing the rustdoc JSON of the crate.
+
+Automatically builds the rustdoc JSON for you, which requires a nightly Rust toolchain to be installed.
+
+This utility is a convenient `cargo` wrapper around the [public_items](https://crates.io/crates/public_items) crate.
 
 ## Installation
 
@@ -10,15 +14,20 @@ cargo install cargo-public-items
 
 ## Usage
 
+To print all items that make up the public API of your Rust library crate, simply do this:
+
 ```
-% cd your-rust-library-crate
+% cd your-rust-library
 % cargo public-items
-your_rust_library_crate
-your_rust_library_crate::Struct
-your_rust_library_crate::Struct::member1
-your_rust_library_crate::Struct::member2
+your_rust_library
+your_rust_library::some_function
+your_rust_library::SomeStruct
+your_rust_library::SomeStruct::some_struct_member
+your_rust_library::SomeStruct::another_struct_member
 ```
 
-## Limitations
+Tip: If you pipe the output of different versions of your library to different files, you can use `diff` to diff the public API of your Rust library across versions.
 
-Not yet implemented.
+# Target audience
+
+Maintainers of Rust libraries that want to keep track of changes to their public API.

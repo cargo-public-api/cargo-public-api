@@ -1,9 +1,12 @@
 [package]
-name = "cargo-public-items"
-version = "0.0.1"
+description = "List public items (public API) of library crates. Enables diffing public API between releases."
+documentation = "https://docs.rs/cargo-public-items"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+homepage = "https://github.com/Enselic/cargo-public-items"
+license = "MIT"
+name = "cargo-public-items"
+repository = "https://github.com/Enselic/cargo-public-items"
+version = "0.0.1"
 
 [dependencies]
 public_items = "0.0.3"

@@ -12,7 +12,7 @@ cargo install public_items
 RUSTDOCFLAGS='-Z unstable-options --output-format json' cargo +nightly doc --lib --no-deps
 
 # List all items in the public API of the Rust library using the tool
-public-items ./target/doc/your_library.json
+public_items ./target/doc/your_library.json
 ```
 
 # Example
@@ -20,7 +20,7 @@ public-items ./target/doc/your_library.json
 Using the tool on its own library:
 ```bash
 % RUSTDOCFLAGS='-Z unstable-options --output-format json' cargo +nightly doc --lib --no-deps
-% public-items ./target/doc/public_items.json
+% public_items ./target/doc/public_items.json
 public_items
 public_items::Error
 public_items::Error::SerdeJsonError

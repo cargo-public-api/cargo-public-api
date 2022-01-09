@@ -26,11 +26,7 @@ pub fn from_rustdoc_json_str(rustdoc_json_str: &str) -> Result<HashSet<String>> 
 
     Ok(helper
         .public_items_in_root_crate()
-        .map(|item| {
-            let mut name_buffer = String::new();
-            helper.item_name_with_parents(item, &mut name_buffer);
-            name_buffer
-        })
+        .map(|item| helper.full_item_name(item))
         .collect())
 }
 
@@ -73,15 +69,20 @@ impl<'a> RustdocJsonHelper<'a> {
             .filter(|item| item.crate_id == ROOT_CRATE_ID)
     }
 
-    /// Take an item and its name. Prefix with its container name followed by ::
-    /// recursively.
-    fn item_name_with_parents(&self, item: &Item, s: &mut String) {
-        if let Some(container) = self.container_for_item(item) {
-            self.item_name_with_parents(container, s);
-            s.push_str(&format!("::{}", get_effective_name(item)));
-        } else {
-            s.push_str(get_effective_name(item));
+    /// Returns the name of an item, including the path from the crate root.
+    fn full_item_name(&self, item: &Item) -> String {
+        let mut s = String::new();
+        let mut current_item = item;
+        loop {
+            current_item = if let Some(container) = self.container_for_item(current_item) {
+                s = format!("::{}", get_effective_name(current_item)) + &s;
+                container
+            } else {
+                s = get_effective_name(current_item).to_owned() + &s;
+                break;
+            }
         }
+        s
     }
 
     fn container_for_item(&self, item: &Item) -> Option<&Item> {

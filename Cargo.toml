@@ -1,0 +1,9 @@
+[package]
+name = "cargo-public-items"
+version = "0.0.1"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+public_items = "0.0.3"

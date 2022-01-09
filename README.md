@@ -1,8 +1,14 @@
+# `cargo` wrapper for this library
+
+You probably want the `cargo` wrapper to this library. See https://github.com/Enselic/cargo-public-items.
+
 # public_items
 
 List public items (the public API) of a Rust library crate by analyzing the rustdoc JSON of the crate.
 
 # Usage
+
+Again, you probably want to use the convenient [`cargo public-items`](https://crates.io/crates/cargo-public-items) wrapper. But if you don't want to use the `cargo` wrapper, you do as follows:
 
 ```bash
 # Install the tool that comes with this package

@@ -15,8 +15,13 @@ cargo install cargo-public-items
 To print all items that make up the public API of your Rust library crate, simply do this:
 
 ```
-% cd your-rust-library
-% cargo public-items
+cd your-rust-library
+cargo public-items
+```
+
+and the public API will be printed with one line per item:
+
+```
 your_rust_library
 your_rust_library::some_function
 your_rust_library::SomeStruct

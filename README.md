@@ -4,8 +4,6 @@ List public items (the public API) of a Rust library crate by analyzing the rust
 
 Automatically builds the rustdoc JSON for you, which requires a nightly Rust toolchain to be installed.
 
-This utility is a convenient `cargo` wrapper around the [public_items](https://crates.io/crates/public_items) crate.
-
 ## Installation
 
 ```
@@ -31,3 +29,7 @@ Tip: If you pipe the output of different versions of your library to different f
 # Target audience
 
 Maintainers of Rust libraries that want to keep track of changes to their public API.
+
+# Implementation details
+
+This utility is a convenient `cargo` wrapper around the [public_items](https://crates.io/crates/public_items) crate (https://github.com/Enselic/public_items).

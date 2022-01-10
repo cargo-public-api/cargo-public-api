@@ -30,3 +30,16 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - run: cargo test
+
+  test-invocation-variants:
+    name: scripts/test-invocation-variants.sh
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions-rs/toolchain@v1
+      with:
+        toolchain: nightly
+        default: true
+        profile: minimal
+        components: rustfmt
+    - run: scripts/test-invocation-variants.sh

@@ -13,7 +13,13 @@ fn assert_public_items(rustdoc_json_str: &str, expected_public_items: &[&str]) {
 
     let expected = string_hash_set_from_str_array(expected_public_items);
 
-    assert_eq!(actual, expected);
+    // The actual elements should not have any elements missing compared to expected
+    let missing = expected.difference(&actual).collect::<HashSet<_>>();
+    assert_eq!(missing, HashSet::new());
+
+    // The actual elements should not contain too many elements compared to expected
+    let surplus = actual.difference(&expected).collect::<HashSet<_>>();
+    assert_eq!(surplus, HashSet::new());
 }
 
 fn string_hash_set_from_str_array(str_array: &[&str]) -> HashSet<String> {

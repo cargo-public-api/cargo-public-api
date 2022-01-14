@@ -1,6 +1,6 @@
 use std::collections::{HashMap, HashSet};
 
-use rustdoc_types::{Crate, Id, Impl, Item, ItemEnum, Type, Visibility};
+use rustdoc_types::{Crate, Id, Impl, Item, ItemEnum, Type};
 
 use crate::Result;
 
@@ -68,38 +68,7 @@ impl<'a> RustdocJsonHelper<'a> {
         self.rustdoc_json
             .index
             .values()
-            .filter(|item| item.crate_id == ROOT_CRATE_ID && self.item_effectively_public(item))
-    }
-
-    /// Some items, notably enum variants in public enums, and associated
-    /// functions in public traits, are public even though they have default
-    /// visibility. This helper takes care of such cases.
-    fn item_effectively_public(&self, item: &Item) -> bool {
-        if let Some(container) = self.item_id_to_container.get(&item.id) {
-            match &container.inner {
-                // The item is implemented an associated method in a trait.
-                // Since we know about the trait, it must be a public trait. So
-                // the associated fn must also be effectively public.
-                ItemEnum::Impl(Impl {
-                    trait_: Some(Type::ResolvedPath { .. }),
-                    ..
-                })
-
-                // The item is contained in an enum, so it is an enum variant.
-                // If the enum itself is public, then so are its variants. Since
-                // the enum would not be in the rustdoc JSON if it was not
-                // public, we know this variant is public.
-                | ItemEnum::Enum(_) => true,
-
-                // The item is contained neither in an enum nor a trait. Such
-                // items are only public if they actually are declared public.
-                _ => item.visibility == Visibility::Public,
-            }
-        } else {
-            // The item is not contained in some other item. So it is only
-            // public if declared public.
-            item.visibility == Visibility::Public
-        }
+            .filter(|item| item.crate_id == ROOT_CRATE_ID)
     }
 
     /// Take an item and its name. Prefix with its container name followed by ::
@@ -139,6 +108,7 @@ fn contained_items_in_item(item: &Item) -> Option<&Vec<Id>> {
         ItemEnum::Enum(e) => Some(&e.variants),
         ItemEnum::Trait(t) => Some(&t.items),
         ItemEnum::Impl(i) => Some(&i.items),
+        ItemEnum::Variant(rustdoc_types::Variant::Struct(ids)) => Some(ids),
         _ => None,
     }
 }

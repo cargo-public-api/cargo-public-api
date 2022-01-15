@@ -13,7 +13,13 @@ fn assert_public_items(rustdoc_json_str: &str, expected_public_items: &[&str]) {
 
     let expected = string_hash_set_from_str_array(expected_public_items);
 
-    assert_eq!(actual, expected);
+    // The actual elements should not have any elements missing compared to expected
+    let missing = expected.difference(&actual).collect::<HashSet<_>>();
+    assert_eq!(missing, HashSet::new());
+
+    // The actual elements should not contain too many elements compared to expected
+    let surplus = actual.difference(&expected).collect::<HashSet<_>>();
+    assert_eq!(surplus, HashSet::new());
 }
 
 fn string_hash_set_from_str_array(str_array: &[&str]) -> HashSet<String> {
@@ -29,6 +35,8 @@ fn string_hash_set_from_str_array(str_array: &[&str]) -> HashSet<String> {
 /// present in <https://docs.rs/syntect/4.6.0/syntect/all.html> due to different
 /// `bitflags` versions used.
 static EXPECTED_PUBLIC_ITEMS_IN_SYNTECT_V4_6_0: &[&str] = &[
+    "0",
+    "1",
     "syntect::dumps::dump_binary",
     "syntect::dumps::dump_to_file",
     "syntect::dumps::dump_to_writer",
@@ -308,6 +316,7 @@ static EXPECTED_PUBLIC_ITEMS_IN_SYNTECT_V4_6_0: &[&str] = &[
     "syntect::html::ClassStyle::fmt",
     "syntect::html::ClassStyle::ne",
     "syntect::html::ClassStyle::Spaced",
+    "syntect::html::ClassStyle::SpacedPrefixed::prefix",
     "syntect::html::ClassStyle::SpacedPrefixed",
     "syntect::html::ClassStyle",
     "syntect::html::css_for_theme_with_class_style",
@@ -489,11 +498,15 @@ static EXPECTED_PUBLIC_ITEMS_IN_SYNTECT_V4_6_0: &[&str] = &[
     "syntect::parsing::syntax_definition::ContextId::new",
     "syntect::parsing::syntax_definition::ContextId::serialize",
     "syntect::parsing::syntax_definition::ContextId",
+    "syntect::parsing::syntax_definition::ContextReference::ByScope::scope",
+    "syntect::parsing::syntax_definition::ContextReference::ByScope::sub_context",
     "syntect::parsing::syntax_definition::ContextReference::ByScope",
     "syntect::parsing::syntax_definition::ContextReference::clone",
     "syntect::parsing::syntax_definition::ContextReference::deserialize",
     "syntect::parsing::syntax_definition::ContextReference::Direct",
     "syntect::parsing::syntax_definition::ContextReference::eq",
+    "syntect::parsing::syntax_definition::ContextReference::File::name",
+    "syntect::parsing::syntax_definition::ContextReference::File::sub_context",
     "syntect::parsing::syntax_definition::ContextReference::File",
     "syntect::parsing::syntax_definition::ContextReference::fmt",
     "syntect::parsing::syntax_definition::ContextReference::id",

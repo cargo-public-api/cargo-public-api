@@ -37,26 +37,14 @@ struct RustdocJsonHelper<'a> {
     /// Maps an item ID to the container that contains it. Note that the
     /// container itself also is an item. E.g. an enum variant is contained in
     /// an enum item.
-    item_id_to_container: HashMap<&'a Id, &'a Item>,
+    container_for_item: HashMap<&'a Id, &'a Item>,
 }
 
 impl<'a> RustdocJsonHelper<'a> {
     fn new(rustdoc_json: &'a Crate) -> RustdocJsonHelper<'a> {
-        // Map up what items are contained in what items. We can't limit this to
-        // just our crate (the root crate) since some traits (e.g. Clone) are
-        // defined outside of the root crate.
-        let mut item_id_to_container: HashMap<&Id, &Item> = HashMap::new();
-        for item in rustdoc_json.index.values() {
-            if let Some(contained_item_ids) = item_utils::contained_items_in_item(item) {
-                for contained_item_id in contained_item_ids {
-                    item_id_to_container.insert(contained_item_id, item);
-                }
-            }
-        }
-
         Self {
             rustdoc_json,
-            item_id_to_container,
+            container_for_item: item_utils::build_container_for_item_map(rustdoc_json),
         }
     }
 
@@ -87,7 +75,7 @@ impl<'a> RustdocJsonHelper<'a> {
 
     fn container_for_item(&self, item: &Item) -> Option<&Item> {
         let effective_item_id = get_effective_id(item);
-        self.item_id_to_container.get(effective_item_id).copied()
+        self.container_for_item.get(effective_item_id).copied()
     }
 }
 

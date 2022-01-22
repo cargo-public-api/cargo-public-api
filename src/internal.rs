@@ -20,20 +20,20 @@ mod item_utils;
 ///
 /// E.g. if the JSON is invalid.
 pub fn from_rustdoc_json_str(rustdoc_json_str: &str) -> Result<HashSet<String>> {
-    let rustdoc_json: Crate = serde_json::from_str(rustdoc_json_str)?;
+    let crate_: Crate = serde_json::from_str(rustdoc_json_str)?;
 
-    let helper = RustdocJsonHelper::new(&rustdoc_json);
+    let helper = RustdocJsonHelper::new(&crate_);
 
-    Ok(helper
-        .public_items_in_root_crate()
+    Ok(crate_
+        .index
+        .values()
+        .filter(|item| item.crate_id == 0 /* ROOT_CRATE_ID */)
         .map(|item| helper.full_item_name(item))
         .collect())
 }
 
 /// Internal helper to keep track of state while analyzing the JSON
 struct RustdocJsonHelper<'a> {
-    rustdoc_json: &'a Crate,
-
     /// Maps an item ID to the container that contains it. Note that the
     /// container itself also is an item. E.g. an enum variant is contained in
     /// an enum item.
@@ -43,18 +43,8 @@ struct RustdocJsonHelper<'a> {
 impl<'a> RustdocJsonHelper<'a> {
     fn new(rustdoc_json: &'a Crate) -> RustdocJsonHelper<'a> {
         Self {
-            rustdoc_json,
             container_for_item: item_utils::build_container_for_item_map(rustdoc_json),
         }
-    }
-
-    fn public_items_in_root_crate(&self) -> impl Iterator<Item = &Item> {
-        const ROOT_CRATE_ID: u32 = 0;
-
-        self.rustdoc_json
-            .index
-            .values()
-            .filter(|item| item.crate_id == ROOT_CRATE_ID)
     }
 
     /// Returns the name of an item, including the path from the crate root.

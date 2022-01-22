@@ -28,9 +28,9 @@ fn handle_first_arg(first_arg: &OsStr) -> Result<()> {
 }
 
 fn print_public_api_items(path: &Path) -> Result<()> {
-    let rustdoc_json = &std::fs::read_to_string(path)?;
+    let json = &std::fs::read_to_string(path)?;
 
-    let mut public_items = Vec::from_iter(public_items::from_rustdoc_json_str(rustdoc_json)?);
+    let mut public_items = Vec::from_iter(public_items::public_items_from_rustdoc_json_str(json)?);
     public_items.sort();
     for public_item in public_items {
         writeln!(std::io::stdout(), "{}", public_item)?;
@@ -42,7 +42,11 @@ fn print_public_api_items(path: &Path) -> Result<()> {
 fn print_usage() -> std::io::Result<()> {
     writeln!(
         std::io::stdout(),
-        "Usage:
+        r"
+NOTE: See https://github.com/Enselic/cargo-public-items for a convenient cargo
+wrapper around this library that does everything automatically.
+
+The particular program you just tried to run is used like this:
 
    public_items RUSTDOC_JSON_FILE
 
@@ -52,7 +56,7 @@ where RUSTDOC_JSON_FILE is the path to the output of
 
 which you can find in
 
-  ./target/doc/${{{{CRATE}}}}.json
+  ./target/doc/${{CRATE}}.json
 "
     )
 }

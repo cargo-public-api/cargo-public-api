@@ -1,62 +1,36 @@
-use std::{
-    collections::{HashMap, HashSet},
-    fmt::Display,
-};
+use std::collections::HashMap;
 
+use crate::PublicItem;
 use rustdoc_types::{Crate, Id, Impl, Item, ItemEnum, Type};
-
-use crate::Result;
 
 mod item_utils;
 
-/// Takes rustdoc JSON and returns a `HashSet` of `String`s where each `String`
-/// is a public item of the crate, i.e. part of the crate's public API.
-///
-/// Use
-/// ```bash
-/// RUSTDOCFLAGS='-Z unstable-options --output-format json' cargo +nightly doc --lib --no-deps
-/// ```
-/// to generate rustdoc JSON. The rustdoc JSON format is documented here:
-/// <https://rust-lang.github.io/rfcs/2963-rustdoc-json.html>.
-///
-/// # Errors
-///
-/// E.g. if the JSON is invalid.
-pub fn from_rustdoc_json_str(rustdoc_json_str: &str) -> Result<HashSet<String>> {
-    let crate_: Crate = serde_json::from_str(rustdoc_json_str)?;
-
-    let mut item_displayer = DisplayedItem::new(&crate_);
-
-    Ok(crate_
-        .index
-        .values()
-        .filter(|item| item.crate_id == 0 /* ROOT_CRATE_ID */)
-        .map(|item| format!("{}", item_displayer.with(item)))
-        .collect())
-}
-
 /// Internal helper to keep track of state while analyzing the JSON
-struct DisplayedItem<'a> {
+#[allow(clippy::module_name_repetitions)]
+pub struct PublicItemBuilder<'a> {
     /// Maps an item ID to the container that contains it. Note that the
     /// container itself also is an item. E.g. an enum variant is contained in
     /// an enum item.
     container_for_item: HashMap<&'a Id, &'a Item>,
-
-    /// The current item to display.
-    item: Option<&'a Item>,
 }
 
-impl<'a> DisplayedItem<'a> {
-    fn new(crate_: &'a Crate) -> DisplayedItem<'a> {
+impl<'a> PublicItemBuilder<'a> {
+    pub fn new(crate_: &'a Crate) -> PublicItemBuilder<'a> {
         Self {
             container_for_item: item_utils::build_container_for_item_map(crate_),
-            item: None,
         }
     }
 
-    fn with(&mut self, item: &'a Item) -> &Self {
-        self.item = Some(item);
-        self
+    pub fn build_from_item(&self, item: &Item) -> PublicItem {
+        let path = self
+            .path_for_item(item)
+            .iter()
+            .map(|i| get_effective_name(i))
+            .collect::<Vec<_>>();
+
+        PublicItem {
+            path: path.join("::"),
+        }
     }
 
     fn container_for_item(&self, item: &Item) -> Option<&Item> {
@@ -75,20 +49,6 @@ impl<'a> DisplayedItem<'a> {
         }
 
         path
-    }
-}
-
-impl Display for DisplayedItem<'_> {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let item = self.item.expect("an item is set");
-
-        let path = self
-            .path_for_item(item)
-            .iter()
-            .map(|i| get_effective_name(i))
-            .collect::<Vec<_>>();
-
-        write!(f, "{}", path.join("::"))
     }
 }
 

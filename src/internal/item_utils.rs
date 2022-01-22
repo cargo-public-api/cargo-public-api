@@ -1,8 +1,27 @@
-use rustdoc_types::{Id, Item, ItemEnum};
+use std::collections::HashMap;
+
+use rustdoc_types::{Crate, Id, Item, ItemEnum};
+
+/// Map up what items are contained in what items. We can't limit this to
+/// just our crate (the root crate) since some traits (e.g. Clone) are
+/// defined outside of the root crate.
+pub fn build_container_for_item_map(crate_: &Crate) -> HashMap<&Id, &Item> {
+    let mut container_for_item = HashMap::new();
+
+    for container in crate_.index.values() {
+        if let Some(items) = items_in_container(container) {
+            for item in items {
+                container_for_item.insert(item, container);
+            }
+        }
+    }
+
+    container_for_item
+}
 
 /// Some items contain other items, which is relevant for analysis. Keep track
 /// of such relationships.
-pub fn contained_items_in_item(item: &Item) -> Option<&Vec<Id>> {
+fn items_in_container(item: &Item) -> Option<&Vec<Id>> {
     match &item.inner {
         ItemEnum::Module(m) => Some(&m.items),
         ItemEnum::Union(u) => Some(&u.fields),

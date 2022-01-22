@@ -1,4 +1,7 @@
-use std::collections::{HashMap, HashSet};
+use std::{
+    collections::{HashMap, HashSet},
+    fmt::Display,
+};
 
 use rustdoc_types::{Crate, Id, Impl, Item, ItemEnum, Type};
 
@@ -20,74 +23,72 @@ mod item_utils;
 ///
 /// E.g. if the JSON is invalid.
 pub fn from_rustdoc_json_str(rustdoc_json_str: &str) -> Result<HashSet<String>> {
-    let rustdoc_json: Crate = serde_json::from_str(rustdoc_json_str)?;
+    let crate_: Crate = serde_json::from_str(rustdoc_json_str)?;
 
-    let helper = RustdocJsonHelper::new(&rustdoc_json);
+    let mut item_displayer = DisplayedItem::new(&crate_);
 
-    Ok(helper
-        .public_items_in_root_crate()
-        .map(|item| helper.full_item_name(item))
+    Ok(crate_
+        .index
+        .values()
+        .filter(|item| item.crate_id == 0 /* ROOT_CRATE_ID */)
+        .map(|item| format!("{}", item_displayer.with(item)))
         .collect())
 }
 
 /// Internal helper to keep track of state while analyzing the JSON
-struct RustdocJsonHelper<'a> {
-    rustdoc_json: &'a Crate,
-
+struct DisplayedItem<'a> {
     /// Maps an item ID to the container that contains it. Note that the
     /// container itself also is an item. E.g. an enum variant is contained in
     /// an enum item.
-    item_id_to_container: HashMap<&'a Id, &'a Item>,
+    container_for_item: HashMap<&'a Id, &'a Item>,
+
+    /// The current item to display.
+    item: Option<&'a Item>,
 }
 
-impl<'a> RustdocJsonHelper<'a> {
-    fn new(rustdoc_json: &'a Crate) -> RustdocJsonHelper<'a> {
-        // Map up what items are contained in what items. We can't limit this to
-        // just our crate (the root crate) since some traits (e.g. Clone) are
-        // defined outside of the root crate.
-        let mut item_id_to_container: HashMap<&Id, &Item> = HashMap::new();
-        for item in rustdoc_json.index.values() {
-            if let Some(contained_item_ids) = item_utils::contained_items_in_item(item) {
-                for contained_item_id in contained_item_ids {
-                    item_id_to_container.insert(contained_item_id, item);
-                }
-            }
-        }
-
+impl<'a> DisplayedItem<'a> {
+    fn new(crate_: &'a Crate) -> DisplayedItem<'a> {
         Self {
-            rustdoc_json,
-            item_id_to_container,
+            container_for_item: item_utils::build_container_for_item_map(crate_),
+            item: None,
         }
     }
 
-    fn public_items_in_root_crate(&self) -> impl Iterator<Item = &Item> {
-        const ROOT_CRATE_ID: u32 = 0;
-
-        self.rustdoc_json
-            .index
-            .values()
-            .filter(|item| item.crate_id == ROOT_CRATE_ID)
-    }
-
-    /// Returns the name of an item, including the path from the crate root.
-    fn full_item_name(&self, item: &Item) -> String {
-        let mut s = String::new();
-        let mut current_item = item;
-        loop {
-            current_item = if let Some(container) = self.container_for_item(current_item) {
-                s = format!("::{}", get_effective_name(current_item)) + &s;
-                container
-            } else {
-                s = get_effective_name(current_item).to_owned() + &s;
-                break;
-            }
-        }
-        s
+    fn with(&mut self, item: &'a Item) -> &Self {
+        self.item = Some(item);
+        self
     }
 
     fn container_for_item(&self, item: &Item) -> Option<&Item> {
         let effective_item_id = get_effective_id(item);
-        self.item_id_to_container.get(effective_item_id).copied()
+        self.container_for_item.get(effective_item_id).copied()
+    }
+
+    fn path_for_item(&'a self, item: &'a Item) -> Vec<&'a Item> {
+        let mut path = vec![];
+        path.insert(0, item);
+
+        let mut current_item = item;
+        while let Some(container) = self.container_for_item(current_item) {
+            path.insert(0, container);
+            current_item = container;
+        }
+
+        path
+    }
+}
+
+impl Display for DisplayedItem<'_> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let item = self.item.expect("an item is set");
+
+        let path = self
+            .path_for_item(item)
+            .iter()
+            .map(|i| get_effective_name(i))
+            .collect::<Vec<_>>();
+
+        write!(f, "{}", path.join("::"))
     }
 }
 

@@ -1,4 +1,7 @@
-use std::collections::{HashMap, HashSet};
+use std::{
+    collections::{HashMap, HashSet},
+    fmt::Display,
+};
 
 use rustdoc_types::{Crate, Id, Impl, Item, ItemEnum, Type};
 
@@ -22,50 +25,70 @@ mod item_utils;
 pub fn from_rustdoc_json_str(rustdoc_json_str: &str) -> Result<HashSet<String>> {
     let crate_: Crate = serde_json::from_str(rustdoc_json_str)?;
 
-    let helper = RustdocJsonHelper::new(&crate_);
+    let mut item_displayer = DisplayedItem::new(&crate_);
 
     Ok(crate_
         .index
         .values()
         .filter(|item| item.crate_id == 0 /* ROOT_CRATE_ID */)
-        .map(|item| helper.full_item_name(item))
+        .map(|item| format!("{}", item_displayer.with(item)))
         .collect())
 }
 
 /// Internal helper to keep track of state while analyzing the JSON
-struct RustdocJsonHelper<'a> {
+struct DisplayedItem<'a> {
     /// Maps an item ID to the container that contains it. Note that the
     /// container itself also is an item. E.g. an enum variant is contained in
     /// an enum item.
     container_for_item: HashMap<&'a Id, &'a Item>,
+
+    /// The current item to display.
+    item: Option<&'a Item>,
 }
 
-impl<'a> RustdocJsonHelper<'a> {
-    fn new(rustdoc_json: &'a Crate) -> RustdocJsonHelper<'a> {
+impl<'a> DisplayedItem<'a> {
+    fn new(crate_: &'a Crate) -> DisplayedItem<'a> {
         Self {
-            container_for_item: item_utils::build_container_for_item_map(rustdoc_json),
+            container_for_item: item_utils::build_container_for_item_map(crate_),
+            item: None,
         }
     }
 
-    /// Returns the name of an item, including the path from the crate root.
-    fn full_item_name(&self, item: &Item) -> String {
-        let mut s = String::new();
-        let mut current_item = item;
-        loop {
-            current_item = if let Some(container) = self.container_for_item(current_item) {
-                s = format!("::{}", get_effective_name(current_item)) + &s;
-                container
-            } else {
-                s = get_effective_name(current_item).to_owned() + &s;
-                break;
-            }
-        }
-        s
+    fn with(&mut self, item: &'a Item) -> &Self {
+        self.item = Some(item);
+        self
     }
 
     fn container_for_item(&self, item: &Item) -> Option<&Item> {
         let effective_item_id = get_effective_id(item);
         self.container_for_item.get(effective_item_id).copied()
+    }
+
+    fn path_for_item(&'a self, item: &'a Item) -> Vec<&'a Item> {
+        let mut path = vec![];
+        path.insert(0, item);
+
+        let mut current_item = item;
+        while let Some(container) = self.container_for_item(current_item) {
+            path.insert(0, container);
+            current_item = container;
+        }
+
+        path
+    }
+}
+
+impl Display for DisplayedItem<'_> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let item = self.item.expect("an item is set");
+
+        let path = self
+            .path_for_item(item)
+            .iter()
+            .map(|i| get_effective_name(i))
+            .collect::<Vec<_>>();
+
+        write!(f, "{}", path.join("::"))
     }
 }
 

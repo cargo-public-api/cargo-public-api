@@ -4,6 +4,8 @@ use rustdoc_types::{Crate, Id, Impl, Item, ItemEnum, Type};
 
 use crate::Result;
 
+mod item_utils;
+
 /// Takes rustdoc JSON and returns a `HashSet` of `String`s where each `String`
 /// is a public item of the crate, i.e. part of the crate's public API.
 ///
@@ -49,7 +51,7 @@ impl<'a> RustdocJsonHelper<'a> {
         // defined outside of the root crate.
         let mut item_id_to_container: HashMap<&Id, &Item> = HashMap::new();
         for item in rustdoc_json.index.values() {
-            if let Some(contained_item_ids) = contained_items_in_item(item) {
+            if let Some(contained_item_ids) = item_utils::contained_items_in_item(item) {
                 for contained_item_id in contained_item_ids {
                     item_id_to_container.insert(contained_item_id, item);
                 }
@@ -95,21 +97,6 @@ fn get_effective_id(item: &Item) -> &Id {
             ..
         }) => id,
         _ => &item.id,
-    }
-}
-
-/// Some items contain other items, which is relevant for analysis. Keep track
-/// of such relationships.
-fn contained_items_in_item(item: &Item) -> Option<&Vec<Id>> {
-    match &item.inner {
-        ItemEnum::Module(m) => Some(&m.items),
-        ItemEnum::Union(u) => Some(&u.fields),
-        ItemEnum::Struct(s) => Some(&s.fields),
-        ItemEnum::Enum(e) => Some(&e.variants),
-        ItemEnum::Trait(t) => Some(&t.items),
-        ItemEnum::Impl(i) => Some(&i.items),
-        ItemEnum::Variant(rustdoc_types::Variant::Struct(ids)) => Some(ids),
-        _ => None,
     }
 }
 

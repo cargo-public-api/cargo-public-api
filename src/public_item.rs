@@ -1,6 +1,6 @@
 use std::{collections::HashSet, fmt::Display};
 
-use rustdoc_types::Crate;
+use rustdoc_types::{Crate, Item, ItemEnum};
 
 use crate::Result;
 use builder::PublicItemBuilder;
@@ -45,9 +45,21 @@ pub fn public_items_from_rustdoc_json_str(rustdoc_json_str: &str) -> Result<Hash
     Ok(crate_
         .index
         .values()
-        .filter(|item| item.crate_id == 0 /* ROOT_CRATE_ID */)
+        .filter(|item| item_is_relevant(item))
         .map(|item| builder.build_from_item(item))
         .collect())
+}
+
+/// Check if an item is relevant to include in the output.
+///
+/// * Only the items in the root crate (the "current" crate) are relevant.
+///
+/// * The items of implementations themselves are excluded. It is sufficient to
+///   report item _associated_ with implementations.
+fn item_is_relevant(item: &Item) -> bool {
+    let is_part_of_root_crate = item.crate_id == 0 /* ROOT_CRATE_ID */;
+    let is_impl = matches!(item.inner, ItemEnum::Impl(_));
+    is_part_of_root_crate && !is_impl
 }
 
 impl Display for PublicItem {

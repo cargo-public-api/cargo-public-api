@@ -76,377 +76,377 @@ pub enum variant syntect::parsing::syntax_definition::MatchOperation::Push
 pub enum variant syntect::parsing::syntax_definition::MatchOperation::Set
 pub enum variant syntect::parsing::syntax_definition::Pattern::Include
 pub enum variant syntect::parsing::syntax_definition::Pattern::Match
-pub fn syntect::LoadingError::cause
-pub fn syntect::LoadingError::fmt
-pub fn syntect::LoadingError::fmt
-pub fn syntect::LoadingError::from
-pub fn syntect::LoadingError::from
-pub fn syntect::LoadingError::from
-pub fn syntect::LoadingError::from
-pub fn syntect::dumps::dump_binary
-pub fn syntect::dumps::dump_to_file
-pub fn syntect::dumps::dump_to_writer
-pub fn syntect::dumps::from_binary
-pub fn syntect::dumps::from_dump_file
-pub fn syntect::dumps::from_reader
-pub fn syntect::easy::HighlightFile::new
-pub fn syntect::easy::HighlightLines::highlight
-pub fn syntect::easy::HighlightLines::new
-pub fn syntect::easy::ScopeRegionIterator::fmt
-pub fn syntect::easy::ScopeRegionIterator::new
-pub fn syntect::easy::ScopeRegionIterator::next
-pub fn syntect::highlighting::Color::clone
-pub fn syntect::highlighting::Color::deserialize
-pub fn syntect::highlighting::Color::eq
-pub fn syntect::highlighting::Color::fmt
-pub fn syntect::highlighting::Color::from_str
-pub fn syntect::highlighting::Color::hash
-pub fn syntect::highlighting::Color::ne
-pub fn syntect::highlighting::Color::serialize
-pub fn syntect::highlighting::FontStyle::all
-pub fn syntect::highlighting::FontStyle::bitand
-pub fn syntect::highlighting::FontStyle::bitand_assign
-pub fn syntect::highlighting::FontStyle::bitor
-pub fn syntect::highlighting::FontStyle::bitor_assign
-pub fn syntect::highlighting::FontStyle::bits
-pub fn syntect::highlighting::FontStyle::bitxor
-pub fn syntect::highlighting::FontStyle::bitxor_assign
-pub fn syntect::highlighting::FontStyle::clone
-pub fn syntect::highlighting::FontStyle::cmp
-pub fn syntect::highlighting::FontStyle::complement
-pub fn syntect::highlighting::FontStyle::contains
-pub fn syntect::highlighting::FontStyle::default
-pub fn syntect::highlighting::FontStyle::deserialize
-pub fn syntect::highlighting::FontStyle::difference
-pub fn syntect::highlighting::FontStyle::empty
-pub fn syntect::highlighting::FontStyle::eq
-pub fn syntect::highlighting::FontStyle::extend
-pub fn syntect::highlighting::FontStyle::fmt
-pub fn syntect::highlighting::FontStyle::fmt
-pub fn syntect::highlighting::FontStyle::fmt
-pub fn syntect::highlighting::FontStyle::fmt
-pub fn syntect::highlighting::FontStyle::fmt
-pub fn syntect::highlighting::FontStyle::from_bits
-pub fn syntect::highlighting::FontStyle::from_bits_truncate
-pub fn syntect::highlighting::FontStyle::from_bits_unchecked
-pub fn syntect::highlighting::FontStyle::from_iter
-pub fn syntect::highlighting::FontStyle::from_str
-pub fn syntect::highlighting::FontStyle::hash
-pub fn syntect::highlighting::FontStyle::insert
-pub fn syntect::highlighting::FontStyle::intersection
-pub fn syntect::highlighting::FontStyle::intersects
-pub fn syntect::highlighting::FontStyle::is_all
-pub fn syntect::highlighting::FontStyle::is_empty
-pub fn syntect::highlighting::FontStyle::ne
-pub fn syntect::highlighting::FontStyle::not
-pub fn syntect::highlighting::FontStyle::partial_cmp
-pub fn syntect::highlighting::FontStyle::remove
-pub fn syntect::highlighting::FontStyle::serialize
-pub fn syntect::highlighting::FontStyle::set
-pub fn syntect::highlighting::FontStyle::sub
-pub fn syntect::highlighting::FontStyle::sub_assign
-pub fn syntect::highlighting::FontStyle::symmetric_difference
-pub fn syntect::highlighting::FontStyle::toggle
-pub fn syntect::highlighting::FontStyle::union
-pub fn syntect::highlighting::HighlightIterator::fmt
-pub fn syntect::highlighting::HighlightIterator::new
-pub fn syntect::highlighting::HighlightIterator::next
-pub fn syntect::highlighting::HighlightState::clone
-pub fn syntect::highlighting::HighlightState::eq
-pub fn syntect::highlighting::HighlightState::fmt
-pub fn syntect::highlighting::HighlightState::ne
-pub fn syntect::highlighting::HighlightState::new
-pub fn syntect::highlighting::Highlighter::fmt
-pub fn syntect::highlighting::Highlighter::get_default
-pub fn syntect::highlighting::Highlighter::new
-pub fn syntect::highlighting::Highlighter::style_for_stack
-pub fn syntect::highlighting::Highlighter::style_mod_for_stack
-pub fn syntect::highlighting::ParseThemeError::fmt
-pub fn syntect::highlighting::ParseThemeError::from
-pub fn syntect::highlighting::RangedHighlightIterator::fmt
-pub fn syntect::highlighting::RangedHighlightIterator::new
-pub fn syntect::highlighting::RangedHighlightIterator::next
-pub fn syntect::highlighting::ScopeSelector::clone
-pub fn syntect::highlighting::ScopeSelector::default
-pub fn syntect::highlighting::ScopeSelector::deserialize
-pub fn syntect::highlighting::ScopeSelector::does_match
-pub fn syntect::highlighting::ScopeSelector::eq
-pub fn syntect::highlighting::ScopeSelector::extract_scopes
-pub fn syntect::highlighting::ScopeSelector::extract_single_scope
-pub fn syntect::highlighting::ScopeSelector::fmt
-pub fn syntect::highlighting::ScopeSelector::from_str
-pub fn syntect::highlighting::ScopeSelector::ne
-pub fn syntect::highlighting::ScopeSelector::serialize
-pub fn syntect::highlighting::ScopeSelectors::clone
-pub fn syntect::highlighting::ScopeSelectors::default
-pub fn syntect::highlighting::ScopeSelectors::deserialize
-pub fn syntect::highlighting::ScopeSelectors::does_match
-pub fn syntect::highlighting::ScopeSelectors::eq
-pub fn syntect::highlighting::ScopeSelectors::fmt
-pub fn syntect::highlighting::ScopeSelectors::from_str
-pub fn syntect::highlighting::ScopeSelectors::ne
-pub fn syntect::highlighting::ScopeSelectors::serialize
-pub fn syntect::highlighting::ScoredStyle::clone
-pub fn syntect::highlighting::ScoredStyle::eq
-pub fn syntect::highlighting::ScoredStyle::fmt
-pub fn syntect::highlighting::ScoredStyle::ne
-pub fn syntect::highlighting::SettingsError::fmt
-pub fn syntect::highlighting::SettingsError::from
-pub fn syntect::highlighting::Style::apply
-pub fn syntect::highlighting::Style::clone
-pub fn syntect::highlighting::Style::default
-pub fn syntect::highlighting::Style::deserialize
-pub fn syntect::highlighting::Style::eq
-pub fn syntect::highlighting::Style::fmt
-pub fn syntect::highlighting::Style::hash
-pub fn syntect::highlighting::Style::ne
-pub fn syntect::highlighting::Style::serialize
-pub fn syntect::highlighting::StyleModifier::apply
-pub fn syntect::highlighting::StyleModifier::clone
-pub fn syntect::highlighting::StyleModifier::default
-pub fn syntect::highlighting::StyleModifier::deserialize
-pub fn syntect::highlighting::StyleModifier::eq
-pub fn syntect::highlighting::StyleModifier::fmt
-pub fn syntect::highlighting::StyleModifier::ne
-pub fn syntect::highlighting::StyleModifier::serialize
-pub fn syntect::highlighting::Theme::clone
-pub fn syntect::highlighting::Theme::default
-pub fn syntect::highlighting::Theme::deserialize
-pub fn syntect::highlighting::Theme::fmt
-pub fn syntect::highlighting::Theme::serialize
-pub fn syntect::highlighting::ThemeItem::clone
-pub fn syntect::highlighting::ThemeItem::default
-pub fn syntect::highlighting::ThemeItem::deserialize
-pub fn syntect::highlighting::ThemeItem::fmt
-pub fn syntect::highlighting::ThemeItem::serialize
-pub fn syntect::highlighting::ThemeSet::add_from_folder
-pub fn syntect::highlighting::ThemeSet::default
-pub fn syntect::highlighting::ThemeSet::deserialize
-pub fn syntect::highlighting::ThemeSet::discover_theme_paths
-pub fn syntect::highlighting::ThemeSet::fmt
-pub fn syntect::highlighting::ThemeSet::get_theme
-pub fn syntect::highlighting::ThemeSet::load_defaults
-pub fn syntect::highlighting::ThemeSet::load_from_folder
-pub fn syntect::highlighting::ThemeSet::load_from_reader
-pub fn syntect::highlighting::ThemeSet::new
-pub fn syntect::highlighting::ThemeSet::serialize
-pub fn syntect::highlighting::ThemeSettings::clone
-pub fn syntect::highlighting::ThemeSettings::default
-pub fn syntect::highlighting::ThemeSettings::deserialize
-pub fn syntect::highlighting::ThemeSettings::fmt
-pub fn syntect::highlighting::ThemeSettings::serialize
-pub fn syntect::highlighting::UnderlineOption::clone
-pub fn syntect::highlighting::UnderlineOption::default
-pub fn syntect::highlighting::UnderlineOption::deserialize
-pub fn syntect::highlighting::UnderlineOption::fmt
-pub fn syntect::highlighting::UnderlineOption::from_str
-pub fn syntect::highlighting::UnderlineOption::serialize
-pub fn syntect::html::ClassStyle::clone
-pub fn syntect::html::ClassStyle::eq
-pub fn syntect::html::ClassStyle::fmt
-pub fn syntect::html::ClassStyle::ne
-pub fn syntect::html::ClassedHTMLGenerator::finalize
-pub fn syntect::html::ClassedHTMLGenerator::new
-pub fn syntect::html::ClassedHTMLGenerator::new_with_class_style
-pub fn syntect::html::ClassedHTMLGenerator::parse_html_for_line
-pub fn syntect::html::ClassedHTMLGenerator::parse_html_for_line_which_includes_newline
-pub fn syntect::html::IncludeBackground::clone
-pub fn syntect::html::IncludeBackground::eq
-pub fn syntect::html::IncludeBackground::fmt
-pub fn syntect::html::IncludeBackground::ne
-pub fn syntect::html::append_highlighted_html_for_styled_line
-pub fn syntect::html::css_for_theme
-pub fn syntect::html::css_for_theme_with_class_style
-pub fn syntect::html::highlighted_html_for_file
-pub fn syntect::html::highlighted_html_for_string
-pub fn syntect::html::line_tokens_to_classed_spans
-pub fn syntect::html::start_highlighted_html_snippet
-pub fn syntect::html::styled_line_to_highlighted_html
-pub fn syntect::html::tokens_to_classed_html
-pub fn syntect::html::tokens_to_classed_spans
-pub fn syntect::parsing::BasicScopeStackOp::clone
-pub fn syntect::parsing::BasicScopeStackOp::eq
-pub fn syntect::parsing::BasicScopeStackOp::fmt
-pub fn syntect::parsing::BasicScopeStackOp::ne
-pub fn syntect::parsing::ClearAmount::clone
-pub fn syntect::parsing::ClearAmount::deserialize
-pub fn syntect::parsing::ClearAmount::eq
-pub fn syntect::parsing::ClearAmount::fmt
-pub fn syntect::parsing::ClearAmount::ne
-pub fn syntect::parsing::ClearAmount::serialize
-pub fn syntect::parsing::MatchPower::clone
-pub fn syntect::parsing::MatchPower::cmp
-pub fn syntect::parsing::MatchPower::eq
-pub fn syntect::parsing::MatchPower::fmt
-pub fn syntect::parsing::MatchPower::ne
-pub fn syntect::parsing::MatchPower::partial_cmp
-pub fn syntect::parsing::ParseScopeError::fmt
-pub fn syntect::parsing::ParseState::clone
-pub fn syntect::parsing::ParseState::eq
-pub fn syntect::parsing::ParseState::fmt
-pub fn syntect::parsing::ParseState::ne
-pub fn syntect::parsing::ParseState::new
-pub fn syntect::parsing::ParseState::parse_line
-pub fn syntect::parsing::ParseSyntaxError::cause
-pub fn syntect::parsing::ParseSyntaxError::fmt
-pub fn syntect::parsing::ParseSyntaxError::fmt
-pub fn syntect::parsing::Regex::clone
-pub fn syntect::parsing::Regex::deserialize
-pub fn syntect::parsing::Regex::eq
-pub fn syntect::parsing::Regex::fmt
-pub fn syntect::parsing::Regex::is_match
-pub fn syntect::parsing::Regex::new
-pub fn syntect::parsing::Regex::regex_str
-pub fn syntect::parsing::Regex::search
-pub fn syntect::parsing::Regex::serialize
-pub fn syntect::parsing::Regex::try_compile
-pub fn syntect::parsing::Region::clone
-pub fn syntect::parsing::Region::eq
-pub fn syntect::parsing::Region::fmt
-pub fn syntect::parsing::Region::ne
-pub fn syntect::parsing::Region::new
-pub fn syntect::parsing::Region::pos
-pub fn syntect::parsing::SCOPE_REPO::deref
-pub fn syntect::parsing::Scope::atom_at
-pub fn syntect::parsing::Scope::build_string
-pub fn syntect::parsing::Scope::clone
-pub fn syntect::parsing::Scope::cmp
-pub fn syntect::parsing::Scope::default
-pub fn syntect::parsing::Scope::deserialize
-pub fn syntect::parsing::Scope::eq
-pub fn syntect::parsing::Scope::fmt
-pub fn syntect::parsing::Scope::fmt
-pub fn syntect::parsing::Scope::from_str
-pub fn syntect::parsing::Scope::hash
-pub fn syntect::parsing::Scope::is_empty
-pub fn syntect::parsing::Scope::is_prefix_of
-pub fn syntect::parsing::Scope::len
-pub fn syntect::parsing::Scope::ne
-pub fn syntect::parsing::Scope::new
-pub fn syntect::parsing::Scope::partial_cmp
-pub fn syntect::parsing::Scope::serialize
-pub fn syntect::parsing::ScopeRepository::atom_str
-pub fn syntect::parsing::ScopeRepository::build
-pub fn syntect::parsing::ScopeRepository::fmt
-pub fn syntect::parsing::ScopeRepository::to_string
-pub fn syntect::parsing::ScopeStack::apply
-pub fn syntect::parsing::ScopeStack::apply_with_hook
-pub fn syntect::parsing::ScopeStack::as_slice
-pub fn syntect::parsing::ScopeStack::bottom_n
-pub fn syntect::parsing::ScopeStack::clone
-pub fn syntect::parsing::ScopeStack::debug_print
-pub fn syntect::parsing::ScopeStack::default
-pub fn syntect::parsing::ScopeStack::deserialize
-pub fn syntect::parsing::ScopeStack::does_match
-pub fn syntect::parsing::ScopeStack::eq
-pub fn syntect::parsing::ScopeStack::fmt
-pub fn syntect::parsing::ScopeStack::fmt
-pub fn syntect::parsing::ScopeStack::from_str
-pub fn syntect::parsing::ScopeStack::from_vec
-pub fn syntect::parsing::ScopeStack::is_empty
-pub fn syntect::parsing::ScopeStack::len
-pub fn syntect::parsing::ScopeStack::ne
-pub fn syntect::parsing::ScopeStack::new
-pub fn syntect::parsing::ScopeStack::pop
-pub fn syntect::parsing::ScopeStack::push
-pub fn syntect::parsing::ScopeStack::serialize
-pub fn syntect::parsing::ScopeStackOp::clone
-pub fn syntect::parsing::ScopeStackOp::eq
-pub fn syntect::parsing::ScopeStackOp::fmt
-pub fn syntect::parsing::ScopeStackOp::ne
-pub fn syntect::parsing::SyntaxReference::clone
-pub fn syntect::parsing::SyntaxReference::deserialize
-pub fn syntect::parsing::SyntaxReference::fmt
-pub fn syntect::parsing::SyntaxReference::serialize
-pub fn syntect::parsing::SyntaxSet::clone
-pub fn syntect::parsing::SyntaxSet::default
-pub fn syntect::parsing::SyntaxSet::deserialize
-pub fn syntect::parsing::SyntaxSet::find_syntax_by_extension
-pub fn syntect::parsing::SyntaxSet::find_syntax_by_first_line
-pub fn syntect::parsing::SyntaxSet::find_syntax_by_name
-pub fn syntect::parsing::SyntaxSet::find_syntax_by_path
-pub fn syntect::parsing::SyntaxSet::find_syntax_by_scope
-pub fn syntect::parsing::SyntaxSet::find_syntax_by_token
-pub fn syntect::parsing::SyntaxSet::find_syntax_for_file
-pub fn syntect::parsing::SyntaxSet::find_syntax_plain_text
-pub fn syntect::parsing::SyntaxSet::find_unlinked_contexts
-pub fn syntect::parsing::SyntaxSet::fmt
-pub fn syntect::parsing::SyntaxSet::into_builder
-pub fn syntect::parsing::SyntaxSet::load_defaults_newlines
-pub fn syntect::parsing::SyntaxSet::load_defaults_nonewlines
-pub fn syntect::parsing::SyntaxSet::load_from_folder
-pub fn syntect::parsing::SyntaxSet::new
-pub fn syntect::parsing::SyntaxSet::serialize
-pub fn syntect::parsing::SyntaxSet::syntaxes
-pub fn syntect::parsing::SyntaxSetBuilder::add
-pub fn syntect::parsing::SyntaxSetBuilder::add_from_folder
-pub fn syntect::parsing::SyntaxSetBuilder::add_plain_text_syntax
-pub fn syntect::parsing::SyntaxSetBuilder::build
-pub fn syntect::parsing::SyntaxSetBuilder::clone
-pub fn syntect::parsing::SyntaxSetBuilder::default
-pub fn syntect::parsing::SyntaxSetBuilder::new
-pub fn syntect::parsing::SyntaxSetBuilder::syntaxes
-pub fn syntect::parsing::syntax_definition::Context::clone
-pub fn syntect::parsing::syntax_definition::Context::deserialize
-pub fn syntect::parsing::syntax_definition::Context::eq
-pub fn syntect::parsing::syntax_definition::Context::fmt
-pub fn syntect::parsing::syntax_definition::Context::match_at
-pub fn syntect::parsing::syntax_definition::Context::ne
-pub fn syntect::parsing::syntax_definition::Context::new
-pub fn syntect::parsing::syntax_definition::Context::serialize
-pub fn syntect::parsing::syntax_definition::ContextId::clone
-pub fn syntect::parsing::syntax_definition::ContextId::deserialize
-pub fn syntect::parsing::syntax_definition::ContextId::eq
-pub fn syntect::parsing::syntax_definition::ContextId::fmt
-pub fn syntect::parsing::syntax_definition::ContextId::ne
-pub fn syntect::parsing::syntax_definition::ContextId::new
-pub fn syntect::parsing::syntax_definition::ContextId::serialize
-pub fn syntect::parsing::syntax_definition::ContextReference::clone
-pub fn syntect::parsing::syntax_definition::ContextReference::deserialize
-pub fn syntect::parsing::syntax_definition::ContextReference::eq
-pub fn syntect::parsing::syntax_definition::ContextReference::fmt
-pub fn syntect::parsing::syntax_definition::ContextReference::id
-pub fn syntect::parsing::syntax_definition::ContextReference::ne
-pub fn syntect::parsing::syntax_definition::ContextReference::resolve
-pub fn syntect::parsing::syntax_definition::ContextReference::serialize
-pub fn syntect::parsing::syntax_definition::MatchIter::fmt
-pub fn syntect::parsing::syntax_definition::MatchIter::next
-pub fn syntect::parsing::syntax_definition::MatchOperation::clone
-pub fn syntect::parsing::syntax_definition::MatchOperation::deserialize
-pub fn syntect::parsing::syntax_definition::MatchOperation::eq
-pub fn syntect::parsing::syntax_definition::MatchOperation::fmt
-pub fn syntect::parsing::syntax_definition::MatchOperation::ne
-pub fn syntect::parsing::syntax_definition::MatchOperation::serialize
-pub fn syntect::parsing::syntax_definition::MatchPattern::clone
-pub fn syntect::parsing::syntax_definition::MatchPattern::deserialize
-pub fn syntect::parsing::syntax_definition::MatchPattern::eq
-pub fn syntect::parsing::syntax_definition::MatchPattern::fmt
-pub fn syntect::parsing::syntax_definition::MatchPattern::ne
-pub fn syntect::parsing::syntax_definition::MatchPattern::new
-pub fn syntect::parsing::syntax_definition::MatchPattern::regex
-pub fn syntect::parsing::syntax_definition::MatchPattern::regex_with_refs
-pub fn syntect::parsing::syntax_definition::MatchPattern::serialize
-pub fn syntect::parsing::syntax_definition::Pattern::clone
-pub fn syntect::parsing::syntax_definition::Pattern::deserialize
-pub fn syntect::parsing::syntax_definition::Pattern::eq
-pub fn syntect::parsing::syntax_definition::Pattern::fmt
-pub fn syntect::parsing::syntax_definition::Pattern::ne
-pub fn syntect::parsing::syntax_definition::Pattern::serialize
-pub fn syntect::parsing::syntax_definition::SyntaxDefinition::clone
-pub fn syntect::parsing::syntax_definition::SyntaxDefinition::deserialize
-pub fn syntect::parsing::syntax_definition::SyntaxDefinition::eq
-pub fn syntect::parsing::syntax_definition::SyntaxDefinition::fmt
-pub fn syntect::parsing::syntax_definition::SyntaxDefinition::load_from_str
-pub fn syntect::parsing::syntax_definition::SyntaxDefinition::ne
-pub fn syntect::parsing::syntax_definition::SyntaxDefinition::serialize
-pub fn syntect::parsing::syntax_definition::context_iter
-pub fn syntect::util::LinesWithEndings::from
-pub fn syntect::util::LinesWithEndings::next
-pub fn syntect::util::as_24_bit_terminal_escaped
-pub fn syntect::util::as_latex_escaped
-pub fn syntect::util::debug_print_ops
-pub fn syntect::util::modify_range
-pub fn syntect::util::split_at
+pub fn syntect::LoadingError::cause(self)
+pub fn syntect::LoadingError::fmt(self, f)
+pub fn syntect::LoadingError::fmt(self, f)
+pub fn syntect::LoadingError::from(error)
+pub fn syntect::LoadingError::from(error)
+pub fn syntect::LoadingError::from(error)
+pub fn syntect::LoadingError::from(error)
+pub fn syntect::dumps::dump_binary(o)
+pub fn syntect::dumps::dump_to_file(o, path)
+pub fn syntect::dumps::dump_to_writer(to_dump, output)
+pub fn syntect::dumps::from_binary(v)
+pub fn syntect::dumps::from_dump_file(path)
+pub fn syntect::dumps::from_reader(input)
+pub fn syntect::easy::HighlightFile::new(path_obj, ss, theme)
+pub fn syntect::easy::HighlightLines::highlight(self, line, syntax_set)
+pub fn syntect::easy::HighlightLines::new(syntax, theme)
+pub fn syntect::easy::ScopeRegionIterator::fmt(self, f)
+pub fn syntect::easy::ScopeRegionIterator::new(ops, line)
+pub fn syntect::easy::ScopeRegionIterator::next(self)
+pub fn syntect::highlighting::Color::clone(self)
+pub fn syntect::highlighting::Color::deserialize(__deserializer)
+pub fn syntect::highlighting::Color::eq(self, other)
+pub fn syntect::highlighting::Color::fmt(self, f)
+pub fn syntect::highlighting::Color::from_str(s)
+pub fn syntect::highlighting::Color::hash(self, state)
+pub fn syntect::highlighting::Color::ne(self, other)
+pub fn syntect::highlighting::Color::serialize(self, __serializer)
+pub fn syntect::highlighting::FontStyle::all()
+pub fn syntect::highlighting::FontStyle::bitand(self, other)
+pub fn syntect::highlighting::FontStyle::bitand_assign(self, other)
+pub fn syntect::highlighting::FontStyle::bitor(self, other)
+pub fn syntect::highlighting::FontStyle::bitor_assign(self, other)
+pub fn syntect::highlighting::FontStyle::bits(self)
+pub fn syntect::highlighting::FontStyle::bitxor(self, other)
+pub fn syntect::highlighting::FontStyle::bitxor_assign(self, other)
+pub fn syntect::highlighting::FontStyle::clone(self)
+pub fn syntect::highlighting::FontStyle::cmp(self, other)
+pub fn syntect::highlighting::FontStyle::complement(self)
+pub fn syntect::highlighting::FontStyle::contains(self, other)
+pub fn syntect::highlighting::FontStyle::default()
+pub fn syntect::highlighting::FontStyle::deserialize(__deserializer)
+pub fn syntect::highlighting::FontStyle::difference(self, other)
+pub fn syntect::highlighting::FontStyle::empty()
+pub fn syntect::highlighting::FontStyle::eq(self, other)
+pub fn syntect::highlighting::FontStyle::extend(self, iterator)
+pub fn syntect::highlighting::FontStyle::fmt(self, f)
+pub fn syntect::highlighting::FontStyle::fmt(self, f)
+pub fn syntect::highlighting::FontStyle::fmt(self, f)
+pub fn syntect::highlighting::FontStyle::fmt(self, f)
+pub fn syntect::highlighting::FontStyle::fmt(self, f)
+pub fn syntect::highlighting::FontStyle::from_bits(bits)
+pub fn syntect::highlighting::FontStyle::from_bits_truncate(bits)
+pub fn syntect::highlighting::FontStyle::from_bits_unchecked(bits)
+pub fn syntect::highlighting::FontStyle::from_iter(iterator)
+pub fn syntect::highlighting::FontStyle::from_str(s)
+pub fn syntect::highlighting::FontStyle::hash(self, state)
+pub fn syntect::highlighting::FontStyle::insert(self, other)
+pub fn syntect::highlighting::FontStyle::intersection(self, other)
+pub fn syntect::highlighting::FontStyle::intersects(self, other)
+pub fn syntect::highlighting::FontStyle::is_all(self)
+pub fn syntect::highlighting::FontStyle::is_empty(self)
+pub fn syntect::highlighting::FontStyle::ne(self, other)
+pub fn syntect::highlighting::FontStyle::not(self)
+pub fn syntect::highlighting::FontStyle::partial_cmp(self, other)
+pub fn syntect::highlighting::FontStyle::remove(self, other)
+pub fn syntect::highlighting::FontStyle::serialize(self, __serializer)
+pub fn syntect::highlighting::FontStyle::set(self, other, value)
+pub fn syntect::highlighting::FontStyle::sub(self, other)
+pub fn syntect::highlighting::FontStyle::sub_assign(self, other)
+pub fn syntect::highlighting::FontStyle::symmetric_difference(self, other)
+pub fn syntect::highlighting::FontStyle::toggle(self, other)
+pub fn syntect::highlighting::FontStyle::union(self, other)
+pub fn syntect::highlighting::HighlightIterator::fmt(self, f)
+pub fn syntect::highlighting::HighlightIterator::new(state, changes, text, highlighter)
+pub fn syntect::highlighting::HighlightIterator::next(self)
+pub fn syntect::highlighting::HighlightState::clone(self)
+pub fn syntect::highlighting::HighlightState::eq(self, other)
+pub fn syntect::highlighting::HighlightState::fmt(self, f)
+pub fn syntect::highlighting::HighlightState::ne(self, other)
+pub fn syntect::highlighting::HighlightState::new(highlighter, initial_stack)
+pub fn syntect::highlighting::Highlighter::fmt(self, f)
+pub fn syntect::highlighting::Highlighter::get_default(self)
+pub fn syntect::highlighting::Highlighter::new(theme)
+pub fn syntect::highlighting::Highlighter::style_for_stack(self, stack)
+pub fn syntect::highlighting::Highlighter::style_mod_for_stack(self, path)
+pub fn syntect::highlighting::ParseThemeError::fmt(self, f)
+pub fn syntect::highlighting::ParseThemeError::from(error)
+pub fn syntect::highlighting::RangedHighlightIterator::fmt(self, f)
+pub fn syntect::highlighting::RangedHighlightIterator::new(state, changes, text, highlighter)
+pub fn syntect::highlighting::RangedHighlightIterator::next(self)
+pub fn syntect::highlighting::ScopeSelector::clone(self)
+pub fn syntect::highlighting::ScopeSelector::default()
+pub fn syntect::highlighting::ScopeSelector::deserialize(__deserializer)
+pub fn syntect::highlighting::ScopeSelector::does_match(self, stack)
+pub fn syntect::highlighting::ScopeSelector::eq(self, other)
+pub fn syntect::highlighting::ScopeSelector::extract_scopes(self)
+pub fn syntect::highlighting::ScopeSelector::extract_single_scope(self)
+pub fn syntect::highlighting::ScopeSelector::fmt(self, f)
+pub fn syntect::highlighting::ScopeSelector::from_str(s)
+pub fn syntect::highlighting::ScopeSelector::ne(self, other)
+pub fn syntect::highlighting::ScopeSelector::serialize(self, __serializer)
+pub fn syntect::highlighting::ScopeSelectors::clone(self)
+pub fn syntect::highlighting::ScopeSelectors::default()
+pub fn syntect::highlighting::ScopeSelectors::deserialize(__deserializer)
+pub fn syntect::highlighting::ScopeSelectors::does_match(self, stack)
+pub fn syntect::highlighting::ScopeSelectors::eq(self, other)
+pub fn syntect::highlighting::ScopeSelectors::fmt(self, f)
+pub fn syntect::highlighting::ScopeSelectors::from_str(s)
+pub fn syntect::highlighting::ScopeSelectors::ne(self, other)
+pub fn syntect::highlighting::ScopeSelectors::serialize(self, __serializer)
+pub fn syntect::highlighting::ScoredStyle::clone(self)
+pub fn syntect::highlighting::ScoredStyle::eq(self, other)
+pub fn syntect::highlighting::ScoredStyle::fmt(self, f)
+pub fn syntect::highlighting::ScoredStyle::ne(self, other)
+pub fn syntect::highlighting::SettingsError::fmt(self, f)
+pub fn syntect::highlighting::SettingsError::from(error)
+pub fn syntect::highlighting::Style::apply(self, modifier)
+pub fn syntect::highlighting::Style::clone(self)
+pub fn syntect::highlighting::Style::default()
+pub fn syntect::highlighting::Style::deserialize(__deserializer)
+pub fn syntect::highlighting::Style::eq(self, other)
+pub fn syntect::highlighting::Style::fmt(self, f)
+pub fn syntect::highlighting::Style::hash(self, state)
+pub fn syntect::highlighting::Style::ne(self, other)
+pub fn syntect::highlighting::Style::serialize(self, __serializer)
+pub fn syntect::highlighting::StyleModifier::apply(self, other)
+pub fn syntect::highlighting::StyleModifier::clone(self)
+pub fn syntect::highlighting::StyleModifier::default()
+pub fn syntect::highlighting::StyleModifier::deserialize(__deserializer)
+pub fn syntect::highlighting::StyleModifier::eq(self, other)
+pub fn syntect::highlighting::StyleModifier::fmt(self, f)
+pub fn syntect::highlighting::StyleModifier::ne(self, other)
+pub fn syntect::highlighting::StyleModifier::serialize(self, __serializer)
+pub fn syntect::highlighting::Theme::clone(self)
+pub fn syntect::highlighting::Theme::default()
+pub fn syntect::highlighting::Theme::deserialize(__deserializer)
+pub fn syntect::highlighting::Theme::fmt(self, f)
+pub fn syntect::highlighting::Theme::serialize(self, __serializer)
+pub fn syntect::highlighting::ThemeItem::clone(self)
+pub fn syntect::highlighting::ThemeItem::default()
+pub fn syntect::highlighting::ThemeItem::deserialize(__deserializer)
+pub fn syntect::highlighting::ThemeItem::fmt(self, f)
+pub fn syntect::highlighting::ThemeItem::serialize(self, __serializer)
+pub fn syntect::highlighting::ThemeSet::add_from_folder(self, folder)
+pub fn syntect::highlighting::ThemeSet::default()
+pub fn syntect::highlighting::ThemeSet::deserialize(__deserializer)
+pub fn syntect::highlighting::ThemeSet::discover_theme_paths(folder)
+pub fn syntect::highlighting::ThemeSet::fmt(self, f)
+pub fn syntect::highlighting::ThemeSet::get_theme(path)
+pub fn syntect::highlighting::ThemeSet::load_defaults()
+pub fn syntect::highlighting::ThemeSet::load_from_folder(folder)
+pub fn syntect::highlighting::ThemeSet::load_from_reader(r)
+pub fn syntect::highlighting::ThemeSet::new()
+pub fn syntect::highlighting::ThemeSet::serialize(self, __serializer)
+pub fn syntect::highlighting::ThemeSettings::clone(self)
+pub fn syntect::highlighting::ThemeSettings::default()
+pub fn syntect::highlighting::ThemeSettings::deserialize(__deserializer)
+pub fn syntect::highlighting::ThemeSettings::fmt(self, f)
+pub fn syntect::highlighting::ThemeSettings::serialize(self, __serializer)
+pub fn syntect::highlighting::UnderlineOption::clone(self)
+pub fn syntect::highlighting::UnderlineOption::default()
+pub fn syntect::highlighting::UnderlineOption::deserialize(__deserializer)
+pub fn syntect::highlighting::UnderlineOption::fmt(self, f)
+pub fn syntect::highlighting::UnderlineOption::from_str(s)
+pub fn syntect::highlighting::UnderlineOption::serialize(self, __serializer)
+pub fn syntect::html::ClassStyle::clone(self)
+pub fn syntect::html::ClassStyle::eq(self, other)
+pub fn syntect::html::ClassStyle::fmt(self, f)
+pub fn syntect::html::ClassStyle::ne(self, other)
+pub fn syntect::html::ClassedHTMLGenerator::finalize(self)
+pub fn syntect::html::ClassedHTMLGenerator::new(syntax_reference, syntax_set)
+pub fn syntect::html::ClassedHTMLGenerator::new_with_class_style(syntax_reference, syntax_set, style)
+pub fn syntect::html::ClassedHTMLGenerator::parse_html_for_line(self, line)
+pub fn syntect::html::ClassedHTMLGenerator::parse_html_for_line_which_includes_newline(self, line)
+pub fn syntect::html::IncludeBackground::clone(self)
+pub fn syntect::html::IncludeBackground::eq(self, other)
+pub fn syntect::html::IncludeBackground::fmt(self, f)
+pub fn syntect::html::IncludeBackground::ne(self, other)
+pub fn syntect::html::append_highlighted_html_for_styled_line(v, bg, s)
+pub fn syntect::html::css_for_theme(theme)
+pub fn syntect::html::css_for_theme_with_class_style(theme, style)
+pub fn syntect::html::highlighted_html_for_file(path, ss, theme)
+pub fn syntect::html::highlighted_html_for_string(s, ss, syntax, theme)
+pub fn syntect::html::line_tokens_to_classed_spans(line, ops, style, stack)
+pub fn syntect::html::start_highlighted_html_snippet(t)
+pub fn syntect::html::styled_line_to_highlighted_html(v, bg)
+pub fn syntect::html::tokens_to_classed_html(line, ops, style)
+pub fn syntect::html::tokens_to_classed_spans(line, ops, style)
+pub fn syntect::parsing::BasicScopeStackOp::clone(self)
+pub fn syntect::parsing::BasicScopeStackOp::eq(self, other)
+pub fn syntect::parsing::BasicScopeStackOp::fmt(self, f)
+pub fn syntect::parsing::BasicScopeStackOp::ne(self, other)
+pub fn syntect::parsing::ClearAmount::clone(self)
+pub fn syntect::parsing::ClearAmount::deserialize(__deserializer)
+pub fn syntect::parsing::ClearAmount::eq(self, other)
+pub fn syntect::parsing::ClearAmount::fmt(self, f)
+pub fn syntect::parsing::ClearAmount::ne(self, other)
+pub fn syntect::parsing::ClearAmount::serialize(self, __serializer)
+pub fn syntect::parsing::MatchPower::clone(self)
+pub fn syntect::parsing::MatchPower::cmp(self, other)
+pub fn syntect::parsing::MatchPower::eq(self, other)
+pub fn syntect::parsing::MatchPower::fmt(self, f)
+pub fn syntect::parsing::MatchPower::ne(self, other)
+pub fn syntect::parsing::MatchPower::partial_cmp(self, other)
+pub fn syntect::parsing::ParseScopeError::fmt(self, f)
+pub fn syntect::parsing::ParseState::clone(self)
+pub fn syntect::parsing::ParseState::eq(self, other)
+pub fn syntect::parsing::ParseState::fmt(self, f)
+pub fn syntect::parsing::ParseState::ne(self, other)
+pub fn syntect::parsing::ParseState::new(syntax)
+pub fn syntect::parsing::ParseState::parse_line(self, line, syntax_set)
+pub fn syntect::parsing::ParseSyntaxError::cause(self)
+pub fn syntect::parsing::ParseSyntaxError::fmt(self, f)
+pub fn syntect::parsing::ParseSyntaxError::fmt(self, f)
+pub fn syntect::parsing::Regex::clone(self)
+pub fn syntect::parsing::Regex::deserialize(deserializer)
+pub fn syntect::parsing::Regex::eq(self, other)
+pub fn syntect::parsing::Regex::fmt(self, f)
+pub fn syntect::parsing::Regex::is_match(self, text)
+pub fn syntect::parsing::Regex::new(regex_str)
+pub fn syntect::parsing::Regex::regex_str(self)
+pub fn syntect::parsing::Regex::search(self, text, begin, end, region)
+pub fn syntect::parsing::Regex::serialize(self, serializer)
+pub fn syntect::parsing::Regex::try_compile(regex_str)
+pub fn syntect::parsing::Region::clone(self)
+pub fn syntect::parsing::Region::eq(self, other)
+pub fn syntect::parsing::Region::fmt(self, f)
+pub fn syntect::parsing::Region::ne(self, other)
+pub fn syntect::parsing::Region::new()
+pub fn syntect::parsing::Region::pos(self, index)
+pub fn syntect::parsing::SCOPE_REPO::deref(self)
+pub fn syntect::parsing::Scope::atom_at(self, index)
+pub fn syntect::parsing::Scope::build_string(self)
+pub fn syntect::parsing::Scope::clone(self)
+pub fn syntect::parsing::Scope::cmp(self, other)
+pub fn syntect::parsing::Scope::default()
+pub fn syntect::parsing::Scope::deserialize(deserializer)
+pub fn syntect::parsing::Scope::eq(self, other)
+pub fn syntect::parsing::Scope::fmt(self, f)
+pub fn syntect::parsing::Scope::fmt(self, f)
+pub fn syntect::parsing::Scope::from_str(s)
+pub fn syntect::parsing::Scope::hash(self, state)
+pub fn syntect::parsing::Scope::is_empty(self)
+pub fn syntect::parsing::Scope::is_prefix_of(self, s)
+pub fn syntect::parsing::Scope::len(self)
+pub fn syntect::parsing::Scope::ne(self, other)
+pub fn syntect::parsing::Scope::new(s)
+pub fn syntect::parsing::Scope::partial_cmp(self, other)
+pub fn syntect::parsing::Scope::serialize(self, serializer)
+pub fn syntect::parsing::ScopeRepository::atom_str(self, atom_number)
+pub fn syntect::parsing::ScopeRepository::build(self, s)
+pub fn syntect::parsing::ScopeRepository::fmt(self, f)
+pub fn syntect::parsing::ScopeRepository::to_string(self, scope)
+pub fn syntect::parsing::ScopeStack::apply(self, op)
+pub fn syntect::parsing::ScopeStack::apply_with_hook(self, op, hook)
+pub fn syntect::parsing::ScopeStack::as_slice(self)
+pub fn syntect::parsing::ScopeStack::bottom_n(self, n)
+pub fn syntect::parsing::ScopeStack::clone(self)
+pub fn syntect::parsing::ScopeStack::debug_print(self, repo)
+pub fn syntect::parsing::ScopeStack::default()
+pub fn syntect::parsing::ScopeStack::deserialize(__deserializer)
+pub fn syntect::parsing::ScopeStack::does_match(self, stack)
+pub fn syntect::parsing::ScopeStack::eq(self, other)
+pub fn syntect::parsing::ScopeStack::fmt(self, f)
+pub fn syntect::parsing::ScopeStack::fmt(self, f)
+pub fn syntect::parsing::ScopeStack::from_str(s)
+pub fn syntect::parsing::ScopeStack::from_vec(v)
+pub fn syntect::parsing::ScopeStack::is_empty(self)
+pub fn syntect::parsing::ScopeStack::len(self)
+pub fn syntect::parsing::ScopeStack::ne(self, other)
+pub fn syntect::parsing::ScopeStack::new()
+pub fn syntect::parsing::ScopeStack::pop(self)
+pub fn syntect::parsing::ScopeStack::push(self, s)
+pub fn syntect::parsing::ScopeStack::serialize(self, __serializer)
+pub fn syntect::parsing::ScopeStackOp::clone(self)
+pub fn syntect::parsing::ScopeStackOp::eq(self, other)
+pub fn syntect::parsing::ScopeStackOp::fmt(self, f)
+pub fn syntect::parsing::ScopeStackOp::ne(self, other)
+pub fn syntect::parsing::SyntaxReference::clone(self)
+pub fn syntect::parsing::SyntaxReference::deserialize(__deserializer)
+pub fn syntect::parsing::SyntaxReference::fmt(self, f)
+pub fn syntect::parsing::SyntaxReference::serialize(self, __serializer)
+pub fn syntect::parsing::SyntaxSet::clone(self)
+pub fn syntect::parsing::SyntaxSet::default()
+pub fn syntect::parsing::SyntaxSet::deserialize(__deserializer)
+pub fn syntect::parsing::SyntaxSet::find_syntax_by_extension(self, extension)
+pub fn syntect::parsing::SyntaxSet::find_syntax_by_first_line(self, s)
+pub fn syntect::parsing::SyntaxSet::find_syntax_by_name(self, name)
+pub fn syntect::parsing::SyntaxSet::find_syntax_by_path(self, path)
+pub fn syntect::parsing::SyntaxSet::find_syntax_by_scope(self, scope)
+pub fn syntect::parsing::SyntaxSet::find_syntax_by_token(self, s)
+pub fn syntect::parsing::SyntaxSet::find_syntax_for_file(self, path_obj)
+pub fn syntect::parsing::SyntaxSet::find_syntax_plain_text(self)
+pub fn syntect::parsing::SyntaxSet::find_unlinked_contexts(self)
+pub fn syntect::parsing::SyntaxSet::fmt(self, f)
+pub fn syntect::parsing::SyntaxSet::into_builder(self)
+pub fn syntect::parsing::SyntaxSet::load_defaults_newlines()
+pub fn syntect::parsing::SyntaxSet::load_defaults_nonewlines()
+pub fn syntect::parsing::SyntaxSet::load_from_folder(folder)
+pub fn syntect::parsing::SyntaxSet::new()
+pub fn syntect::parsing::SyntaxSet::serialize(self, __serializer)
+pub fn syntect::parsing::SyntaxSet::syntaxes(self)
+pub fn syntect::parsing::SyntaxSetBuilder::add(self, syntax)
+pub fn syntect::parsing::SyntaxSetBuilder::add_from_folder(self, folder, lines_include_newline)
+pub fn syntect::parsing::SyntaxSetBuilder::add_plain_text_syntax(self)
+pub fn syntect::parsing::SyntaxSetBuilder::build(self)
+pub fn syntect::parsing::SyntaxSetBuilder::clone(self)
+pub fn syntect::parsing::SyntaxSetBuilder::default()
+pub fn syntect::parsing::SyntaxSetBuilder::new()
+pub fn syntect::parsing::SyntaxSetBuilder::syntaxes(self)
+pub fn syntect::parsing::syntax_definition::Context::clone(self)
+pub fn syntect::parsing::syntax_definition::Context::deserialize(__deserializer)
+pub fn syntect::parsing::syntax_definition::Context::eq(self, other)
+pub fn syntect::parsing::syntax_definition::Context::fmt(self, f)
+pub fn syntect::parsing::syntax_definition::Context::match_at(self, index)
+pub fn syntect::parsing::syntax_definition::Context::ne(self, other)
+pub fn syntect::parsing::syntax_definition::Context::new(meta_include_prototype)
+pub fn syntect::parsing::syntax_definition::Context::serialize(self, __serializer)
+pub fn syntect::parsing::syntax_definition::ContextId::clone(self)
+pub fn syntect::parsing::syntax_definition::ContextId::deserialize(__deserializer)
+pub fn syntect::parsing::syntax_definition::ContextId::eq(self, other)
+pub fn syntect::parsing::syntax_definition::ContextId::fmt(self, f)
+pub fn syntect::parsing::syntax_definition::ContextId::ne(self, other)
+pub fn syntect::parsing::syntax_definition::ContextId::new(index)
+pub fn syntect::parsing::syntax_definition::ContextId::serialize(self, __serializer)
+pub fn syntect::parsing::syntax_definition::ContextReference::clone(self)
+pub fn syntect::parsing::syntax_definition::ContextReference::deserialize(__deserializer)
+pub fn syntect::parsing::syntax_definition::ContextReference::eq(self, other)
+pub fn syntect::parsing::syntax_definition::ContextReference::fmt(self, f)
+pub fn syntect::parsing::syntax_definition::ContextReference::id(self)
+pub fn syntect::parsing::syntax_definition::ContextReference::ne(self, other)
+pub fn syntect::parsing::syntax_definition::ContextReference::resolve(self, syntax_set)
+pub fn syntect::parsing::syntax_definition::ContextReference::serialize(self, __serializer)
+pub fn syntect::parsing::syntax_definition::MatchIter::fmt(self, f)
+pub fn syntect::parsing::syntax_definition::MatchIter::next(self)
+pub fn syntect::parsing::syntax_definition::MatchOperation::clone(self)
+pub fn syntect::parsing::syntax_definition::MatchOperation::deserialize(__deserializer)
+pub fn syntect::parsing::syntax_definition::MatchOperation::eq(self, other)
+pub fn syntect::parsing::syntax_definition::MatchOperation::fmt(self, f)
+pub fn syntect::parsing::syntax_definition::MatchOperation::ne(self, other)
+pub fn syntect::parsing::syntax_definition::MatchOperation::serialize(self, __serializer)
+pub fn syntect::parsing::syntax_definition::MatchPattern::clone(self)
+pub fn syntect::parsing::syntax_definition::MatchPattern::deserialize(__deserializer)
+pub fn syntect::parsing::syntax_definition::MatchPattern::eq(self, other)
+pub fn syntect::parsing::syntax_definition::MatchPattern::fmt(self, f)
+pub fn syntect::parsing::syntax_definition::MatchPattern::ne(self, other)
+pub fn syntect::parsing::syntax_definition::MatchPattern::new(has_captures, regex_str, scope, captures, operation, with_prototype)
+pub fn syntect::parsing::syntax_definition::MatchPattern::regex(self)
+pub fn syntect::parsing::syntax_definition::MatchPattern::regex_with_refs(self, region, text)
+pub fn syntect::parsing::syntax_definition::MatchPattern::serialize(self, __serializer)
+pub fn syntect::parsing::syntax_definition::Pattern::clone(self)
+pub fn syntect::parsing::syntax_definition::Pattern::deserialize(__deserializer)
+pub fn syntect::parsing::syntax_definition::Pattern::eq(self, other)
+pub fn syntect::parsing::syntax_definition::Pattern::fmt(self, f)
+pub fn syntect::parsing::syntax_definition::Pattern::ne(self, other)
+pub fn syntect::parsing::syntax_definition::Pattern::serialize(self, __serializer)
+pub fn syntect::parsing::syntax_definition::SyntaxDefinition::clone(self)
+pub fn syntect::parsing::syntax_definition::SyntaxDefinition::deserialize(__deserializer)
+pub fn syntect::parsing::syntax_definition::SyntaxDefinition::eq(self, other)
+pub fn syntect::parsing::syntax_definition::SyntaxDefinition::fmt(self, f)
+pub fn syntect::parsing::syntax_definition::SyntaxDefinition::load_from_str(s, lines_include_newline, fallback_name)
+pub fn syntect::parsing::syntax_definition::SyntaxDefinition::ne(self, other)
+pub fn syntect::parsing::syntax_definition::SyntaxDefinition::serialize(self, __serializer)
+pub fn syntect::parsing::syntax_definition::context_iter(syntax_set, context)
+pub fn syntect::util::LinesWithEndings::from(input)
+pub fn syntect::util::LinesWithEndings::next(self)
+pub fn syntect::util::as_24_bit_terminal_escaped(v, bg)
+pub fn syntect::util::as_latex_escaped(v)
+pub fn syntect::util::debug_print_ops(line, ops)
+pub fn syntect::util::modify_range(v, r, modifier)
+pub fn syntect::util::split_at(v, split_i)
 pub mod syntect
 pub mod syntect::dumps
 pub mod syntect::easy

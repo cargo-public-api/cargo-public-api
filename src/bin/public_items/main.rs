@@ -2,8 +2,6 @@ use std::ffi::OsStr;
 use std::io::Write;
 use std::path::Path;
 
-mod cargo_utils;
-
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
 fn main() -> Result<()> {
@@ -18,8 +16,6 @@ fn main() -> Result<()> {
 fn handle_first_arg(first_arg: &OsStr) -> Result<()> {
     if first_arg == "--help" || first_arg == "-h" {
         print_usage()?;
-    } else if first_arg == "--update" {
-        cargo_utils::generate_rustdoc_json_for_current_project()?;
     } else {
         print_public_api_items(Path::new(&first_arg))?;
     }

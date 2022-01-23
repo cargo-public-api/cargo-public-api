@@ -78,6 +78,10 @@ pub enum variant syntect::parsing::syntax_definition::Pattern::Include
 pub enum variant syntect::parsing::syntax_definition::Pattern::Match
 pub fn syntect::LoadingError::cause
 pub fn syntect::LoadingError::fmt
+pub fn syntect::LoadingError::fmt
+pub fn syntect::LoadingError::from
+pub fn syntect::LoadingError::from
+pub fn syntect::LoadingError::from
 pub fn syntect::LoadingError::from
 pub fn syntect::dumps::dump_binary
 pub fn syntect::dumps::dump_to_file
@@ -117,6 +121,10 @@ pub fn syntect::highlighting::FontStyle::difference
 pub fn syntect::highlighting::FontStyle::empty
 pub fn syntect::highlighting::FontStyle::eq
 pub fn syntect::highlighting::FontStyle::extend
+pub fn syntect::highlighting::FontStyle::fmt
+pub fn syntect::highlighting::FontStyle::fmt
+pub fn syntect::highlighting::FontStyle::fmt
+pub fn syntect::highlighting::FontStyle::fmt
 pub fn syntect::highlighting::FontStyle::fmt
 pub fn syntect::highlighting::FontStyle::from_bits
 pub fn syntect::highlighting::FontStyle::from_bits_truncate
@@ -281,6 +289,7 @@ pub fn syntect::parsing::ParseState::new
 pub fn syntect::parsing::ParseState::parse_line
 pub fn syntect::parsing::ParseSyntaxError::cause
 pub fn syntect::parsing::ParseSyntaxError::fmt
+pub fn syntect::parsing::ParseSyntaxError::fmt
 pub fn syntect::parsing::Regex::clone
 pub fn syntect::parsing::Regex::deserialize
 pub fn syntect::parsing::Regex::eq
@@ -306,6 +315,7 @@ pub fn syntect::parsing::Scope::default
 pub fn syntect::parsing::Scope::deserialize
 pub fn syntect::parsing::Scope::eq
 pub fn syntect::parsing::Scope::fmt
+pub fn syntect::parsing::Scope::fmt
 pub fn syntect::parsing::Scope::from_str
 pub fn syntect::parsing::Scope::hash
 pub fn syntect::parsing::Scope::is_empty
@@ -329,6 +339,7 @@ pub fn syntect::parsing::ScopeStack::default
 pub fn syntect::parsing::ScopeStack::deserialize
 pub fn syntect::parsing::ScopeStack::does_match
 pub fn syntect::parsing::ScopeStack::eq
+pub fn syntect::parsing::ScopeStack::fmt
 pub fn syntect::parsing::ScopeStack::fmt
 pub fn syntect::parsing::ScopeStack::from_str
 pub fn syntect::parsing::ScopeStack::from_vec
@@ -445,6 +456,33 @@ pub mod syntect::parsing
 pub mod syntect::parsing::syntax_definition
 pub mod syntect::util
 pub struct field 0
+pub struct field 0
+pub struct field 0
+pub struct field 0
+pub struct field 0
+pub struct field 0
+pub struct field 0
+pub struct field 0
+pub struct field 0
+pub struct field 0
+pub struct field 0
+pub struct field 0
+pub struct field 0
+pub struct field 0
+pub struct field 0
+pub struct field 0
+pub struct field 0
+pub struct field 0
+pub struct field 0
+pub struct field 0
+pub struct field 0
+pub struct field 0
+pub struct field 0
+pub struct field 0
+pub struct field 0
+pub struct field 0
+pub struct field 0
+pub struct field 1
 pub struct field 1
 pub struct field syntect::easy::HighlightFile::highlight_lines
 pub struct field syntect::easy::HighlightFile::reader
@@ -576,6 +614,10 @@ pub struct syntect::util::LinesWithEndings
 pub type syntect::easy::ScopeRegionIterator::Item
 pub type syntect::highlighting::Color::Err
 pub type syntect::highlighting::FontStyle::Err
+pub type syntect::highlighting::FontStyle::Output
+pub type syntect::highlighting::FontStyle::Output
+pub type syntect::highlighting::FontStyle::Output
+pub type syntect::highlighting::FontStyle::Output
 pub type syntect::highlighting::FontStyle::Output
 pub type syntect::highlighting::HighlightIterator::Item
 pub type syntect::highlighting::RangedHighlightIterator::Item

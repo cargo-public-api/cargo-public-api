@@ -6,7 +6,7 @@ homepage = "https://github.com/Enselic/public_items"
 license = "MIT"
 name = "public_items"
 repository = "https://github.com/Enselic/public_items"
-version = "0.0.4"
+version = "0.0.5"
 
 [dependencies]
 rustdoc-types = "0.5.0"

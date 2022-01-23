@@ -65,7 +65,7 @@ dependencies = [
 
 [[package]]
 name = "public_items"
-version = "0.0.4"
+version = "0.0.5"
 dependencies = [
  "pretty_assertions",
  "rustdoc-types",

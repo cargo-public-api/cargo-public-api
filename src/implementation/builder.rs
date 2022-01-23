@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use rustdoc_types::{Crate, Id, Impl, Item, ItemEnum, Type};
+use rustdoc_types::{Crate, FnDecl, Id, Impl, Item, ItemEnum, Type};
 
 mod item_utils;
 
@@ -50,8 +50,25 @@ impl<'a> PublicItemBuilder<'a> {
         format!("pub {} ", item_utils::type_string_for_item(item))
     }
 
-    fn suffix_for_item(_item: &Item) -> String {
-        String::default()
+    fn suffix_for_item(item: &Item) -> String {
+        match &item.inner {
+            ItemEnum::Function(f) => Self::fn_decl_to_string(&f.decl),
+            ItemEnum::Method(m) => Self::fn_decl_to_string(&m.decl),
+            ItemEnum::Macro(_) | ItemEnum::ProcMacro(_) => String::from("!"),
+            _ => String::default(),
+        }
+    }
+
+    fn fn_decl_to_string(fn_decl: &FnDecl) -> String {
+        format!(
+            "({})",
+            fn_decl
+                .inputs
+                .iter()
+                .map(|i| i.0.clone())
+                .collect::<Vec<_>>()
+                .join(", ")
+        )
     }
 
     fn path_for_item(&'a self, item: &'a Item) -> Vec<&'a Item> {

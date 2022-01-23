@@ -1,6 +1,5 @@
 use std::collections::HashMap;
 
-use crate::PublicItem;
 use rustdoc_types::{Crate, Id, Impl, Item, ItemEnum, Type};
 
 mod item_utils;
@@ -21,17 +20,19 @@ impl<'a> PublicItemBuilder<'a> {
         }
     }
 
-    pub fn build_from_item(&self, item: &Item) -> PublicItem {
+    pub fn build_from_item(&self, item: &Item) -> String {
         let path = self
             .path_for_item(item)
             .iter()
             .map(|i| get_effective_name(i))
             .collect::<Vec<_>>();
 
-        PublicItem {
-            prefix: Self::prefix_for_item(item),
-            path: path.join("::"),
-        }
+        format!(
+            "{}{}{}",
+            Self::prefix_for_item(item),
+            path.join("::"),
+            Self::suffix_for_item(item)
+        )
     }
 
     fn container_for_item(&self, item: &Item) -> Option<&Item> {
@@ -41,6 +42,10 @@ impl<'a> PublicItemBuilder<'a> {
 
     fn prefix_for_item(item: &Item) -> String {
         format!("pub {} ", item_utils::type_string_for_item(item))
+    }
+
+    fn suffix_for_item(_item: &Item) -> String {
+        String::default()
     }
 
     fn path_for_item(&'a self, item: &'a Item) -> Vec<&'a Item> {

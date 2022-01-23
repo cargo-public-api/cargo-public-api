@@ -29,6 +29,7 @@ impl<'a> PublicItemBuilder<'a> {
             .collect::<Vec<_>>();
 
         PublicItem {
+            prefix: Self::prefix_for_item(item),
             path: path.join("::"),
         }
     }
@@ -36,6 +37,10 @@ impl<'a> PublicItemBuilder<'a> {
     fn container_for_item(&self, item: &Item) -> Option<&Item> {
         let effective_item_id = get_effective_id(item);
         self.container_for_item.get(effective_item_id).copied()
+    }
+
+    fn prefix_for_item(item: &Item) -> String {
+        format!("pub {} ", item_utils::type_string_for_item(item))
     }
 
     fn path_for_item(&'a self, item: &'a Item) -> Vec<&'a Item> {

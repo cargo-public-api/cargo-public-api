@@ -10,7 +10,7 @@ checksum = "84450d0b4a8bd1ba4144ce8ce718fbc5d071358b1e5384bace6536b3d1f2d5b3"
 
 [[package]]
 name = "cargo-public-items"
-version = "0.0.2"
+version = "0.0.5"
 dependencies = [
  "anyhow",
  "cargo_toml",

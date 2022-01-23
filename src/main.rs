@@ -67,11 +67,9 @@ fn print_public_api_items(path: &Path) -> Result<()> {
     let rustdoc_json = &std::fs::read_to_string(path)
         .with_context(|| format!("Failed to read rustdoc JSON at {:?}", path))?;
 
-    let public_items_set = public_items::from_rustdoc_json_str(rustdoc_json)
+    let public_items = public_items::sorted_public_items_from_rustdoc_json_str(rustdoc_json)
         .with_context(|| format!("Failed to parse rustdoc JSON at {:?}", path))?;
 
-    let mut public_items = Vec::from_iter(public_items_set);
-    public_items.sort();
     for public_item in public_items {
         writeln!(std::io::stdout(), "{}", public_item)?;
     }

@@ -14,4 +14,4 @@ cargo_toml = "0.10.3"
 
 [dependencies.public_items]
 # path = "/Users/jobb/src/public_items"
-version = "0.0.4"
+version = "0.0.5"

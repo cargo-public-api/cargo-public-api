@@ -22,11 +22,11 @@ cargo public-items
 and the public API will be printed with one line per item:
 
 ```
-your_rust_library
-your_rust_library::some_function
-your_rust_library::SomeStruct
-your_rust_library::SomeStruct::some_struct_member
-your_rust_library::SomeStruct::another_struct_member
+pub mod your_rust_library
+pub fn your_rust_library::some_function()
+pub struct your_rust_library::SomeStruct
+pub struct field your_rust_library::SomeStruct::some_struct_member
+pub struct field your_rust_library::SomeStruct::another_struct_member
 ```
 
 Tip: If you pipe the output of different versions of your library to different files, you can use `diff` to diff the public API of your Rust library across versions.

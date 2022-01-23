@@ -8,8 +8,8 @@ mod item_utils;
 #[allow(clippy::module_name_repetitions)]
 pub struct PublicItemBuilder<'a> {
     /// Maps an item ID to the container that contains it. Note that the
-    /// container itself also is an item. E.g. an enum variant is contained in
-    /// an enum item.
+    /// container itself also is an item. E.g. an enum variant item is contained
+    /// in an enum item.
     container_for_item: HashMap<&'a Id, &'a Item>,
 }
 
@@ -27,11 +27,17 @@ impl<'a> PublicItemBuilder<'a> {
             .map(|i| get_effective_name(i))
             .collect::<Vec<_>>();
 
+        // Inform users about buggy enum variant tuple struct fields if applicable
+        let mut suffix = Self::suffix_for_item(item);
+        if path.len() == 1 && matches!(item.inner, ItemEnum::StructField(_)) {
+            suffix += " (path missing due to https://github.com/rust-lang/rust/issues/92945)";
+        }
+
         format!(
             "{}{}{}",
             Self::prefix_for_item(item),
             path.join("::"),
-            Self::suffix_for_item(item)
+            suffix,
         )
     }
 

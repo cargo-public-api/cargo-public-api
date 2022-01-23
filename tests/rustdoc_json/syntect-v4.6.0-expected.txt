@@ -455,35 +455,35 @@ pub mod syntect::html
 pub mod syntect::parsing
 pub mod syntect::parsing::syntax_definition
 pub mod syntect::util
-pub struct field 0
-pub struct field 0
-pub struct field 0
-pub struct field 0
-pub struct field 0
-pub struct field 0
-pub struct field 0
-pub struct field 0
-pub struct field 0
-pub struct field 0
-pub struct field 0
-pub struct field 0
-pub struct field 0
-pub struct field 0
-pub struct field 0
-pub struct field 0
-pub struct field 0
-pub struct field 0
-pub struct field 0
-pub struct field 0
-pub struct field 0
-pub struct field 0
-pub struct field 0
-pub struct field 0
-pub struct field 0
-pub struct field 0
-pub struct field 0
-pub struct field 1
-pub struct field 1
+pub struct field 0 (path missing due to https://github.com/rust-lang/rust/issues/92945)
+pub struct field 0 (path missing due to https://github.com/rust-lang/rust/issues/92945)
+pub struct field 0 (path missing due to https://github.com/rust-lang/rust/issues/92945)
+pub struct field 0 (path missing due to https://github.com/rust-lang/rust/issues/92945)
+pub struct field 0 (path missing due to https://github.com/rust-lang/rust/issues/92945)
+pub struct field 0 (path missing due to https://github.com/rust-lang/rust/issues/92945)
+pub struct field 0 (path missing due to https://github.com/rust-lang/rust/issues/92945)
+pub struct field 0 (path missing due to https://github.com/rust-lang/rust/issues/92945)
+pub struct field 0 (path missing due to https://github.com/rust-lang/rust/issues/92945)
+pub struct field 0 (path missing due to https://github.com/rust-lang/rust/issues/92945)
+pub struct field 0 (path missing due to https://github.com/rust-lang/rust/issues/92945)
+pub struct field 0 (path missing due to https://github.com/rust-lang/rust/issues/92945)
+pub struct field 0 (path missing due to https://github.com/rust-lang/rust/issues/92945)
+pub struct field 0 (path missing due to https://github.com/rust-lang/rust/issues/92945)
+pub struct field 0 (path missing due to https://github.com/rust-lang/rust/issues/92945)
+pub struct field 0 (path missing due to https://github.com/rust-lang/rust/issues/92945)
+pub struct field 0 (path missing due to https://github.com/rust-lang/rust/issues/92945)
+pub struct field 0 (path missing due to https://github.com/rust-lang/rust/issues/92945)
+pub struct field 0 (path missing due to https://github.com/rust-lang/rust/issues/92945)
+pub struct field 0 (path missing due to https://github.com/rust-lang/rust/issues/92945)
+pub struct field 0 (path missing due to https://github.com/rust-lang/rust/issues/92945)
+pub struct field 0 (path missing due to https://github.com/rust-lang/rust/issues/92945)
+pub struct field 0 (path missing due to https://github.com/rust-lang/rust/issues/92945)
+pub struct field 0 (path missing due to https://github.com/rust-lang/rust/issues/92945)
+pub struct field 0 (path missing due to https://github.com/rust-lang/rust/issues/92945)
+pub struct field 0 (path missing due to https://github.com/rust-lang/rust/issues/92945)
+pub struct field 0 (path missing due to https://github.com/rust-lang/rust/issues/92945)
+pub struct field 1 (path missing due to https://github.com/rust-lang/rust/issues/92945)
+pub struct field 1 (path missing due to https://github.com/rust-lang/rust/issues/92945)
 pub struct field syntect::easy::HighlightFile::highlight_lines
 pub struct field syntect::easy::HighlightFile::reader
 pub struct field syntect::highlighting::Color::a

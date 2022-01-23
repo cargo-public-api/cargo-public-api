@@ -7,16 +7,18 @@ use builder::PublicItemBuilder;
 
 mod builder;
 
-/// Represents a public item of a crate, i.e. an item part of the public API of
-/// a crate. This is sortable (and it sorts by item path so that e.g. struct
-/// fields comes directly after the corresponding struct) and `Display`able.
-#[derive(Debug, PartialEq, PartialOrd, Eq, Ord, Hash)]
+/// Represents a public item of a crate. In other words: an item part of the
+/// public API of a crate. Note that it implements `Display` and thus can be
+/// printed.
+#[derive(PartialEq, Eq, Hash)]
 pub struct PublicItem {
-    /// The `"path::to::the::item"`. This is a separate field so that sorting
-    /// occurs on `path` and not on the full string representation of the
-    /// `PublicItem` that includes type information. That way e.g. struct fields
-    /// are neatly put next to their structs.
+    /// NOTE: Not visible in the public API of this library
+    /// The `"path::to::the::item"`.
     path: String,
+
+    /// NOTE: Not visible in the public API of this library
+    /// The part to put before the path, e.g. `pub fn `.
+    prefix: String,
 }
 
 /// Takes rustdoc JSON and returns a [`HashSet`] of [`PublicItem`]s where each
@@ -64,6 +66,6 @@ fn item_is_relevant(item: &Item) -> bool {
 
 impl Display for PublicItem {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.path)
+        write!(f, "{}{}", self.prefix, self.path)
     }
 }

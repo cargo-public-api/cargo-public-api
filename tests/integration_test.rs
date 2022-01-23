@@ -18,7 +18,7 @@ fn assert_public_items(rustdoc_json_str: &str, expected: &str) {
 
     let expected = string_hash_set_from_str_array(expected);
 
-    assert_eq!(actual, expected);
+    assert_eq!(expected, actual);
 }
 
 fn string_hash_set_from_str_array(path: &str) -> Vec<String> {

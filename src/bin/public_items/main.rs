@@ -30,7 +30,10 @@ fn handle_first_arg(first_arg: &OsStr) -> Result<()> {
 fn print_public_api_items(path: &Path) -> Result<()> {
     let json = &std::fs::read_to_string(path)?;
 
-    let mut public_items = Vec::from_iter(public_items::public_items_from_rustdoc_json_str(json)?);
+    let mut public_items = public_items::public_items_from_rustdoc_json_str(json)?
+        .into_iter()
+        .map(|i| format!("{}", i))
+        .collect::<Vec<_>>();
     public_items.sort();
     for public_item in public_items {
         writeln!(std::io::stdout(), "{}", public_item)?;

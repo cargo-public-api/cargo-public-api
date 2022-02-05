@@ -3,7 +3,7 @@ use pretty_assertions::assert_eq;
 #[test]
 fn syntect_v4_6_0() {
     assert_public_items(
-        include_str!("./rustdoc_json/syntect-v4.6.0-by-rust-nightly-2021-11-15.json"),
+        include_str!("./rustdoc_json/syntect-v4.6.0_FORMAT_VERSION_10.json"),
         include_str!("./rustdoc_json/syntect-v4.6.0-expected.txt"),
     );
 }

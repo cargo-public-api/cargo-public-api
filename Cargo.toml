@@ -9,10 +9,10 @@ repository = "https://github.com/Enselic/public_items"
 version = "0.0.5"
 
 [dependencies]
-rustdoc-types = "0.5.0"
-serde = {version = "1.0", features = ["derive"]}
-serde_json = "1.0"
-thiserror = "1.0"
+rustdoc-types = "0.6.0"
+serde = { version = "1.0.135", features = ["derive"] }
+serde_json = "1.0.77"
+thiserror = "1.0.29"
 
 [dev-dependencies]
-pretty_assertions = "1.0"
+pretty_assertions = "1.1.0"

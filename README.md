@@ -2,7 +2,7 @@
 
 List public items (the public API) of a Rust library crate by analyzing the rustdoc JSON of the crate.
 
-Automatically builds the rustdoc JSON for you, which requires a nightly Rust toolchain to be installed.
+Automatically builds the rustdoc JSON for you, which requires a nightly Rust toolchain to be installed (see [here](https://github.com/Enselic/public_items#compatibility-matrix)).
 
 ## Installation
 

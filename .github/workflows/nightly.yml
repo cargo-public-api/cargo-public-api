@@ -1,0 +1,26 @@
+name: Try with rustdoc JSON from latest nightly toolchain
+
+# The purpose of this workflow is to detect when a change to
+# https://github.com/rust-lang/rust/tree/master/src/rustdoc-json-types requires
+# that we release a new version of public_items to be compatible with the latest
+# nightly toolchain
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '30 17 * * *'
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  try-with-latest-rustdoc-json:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions-rs/toolchain@v1
+      with:
+        toolchain: nightly
+        profile: minimal
+    - run: RUSTDOCFLAGS='-Z unstable-options --output-format json' cargo +nightly  doc --lib --no-deps
+    - run: cargo run ./target/doc/public_items.json

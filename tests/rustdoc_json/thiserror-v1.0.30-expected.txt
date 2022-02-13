@@ -1,0 +1,2 @@
+pub mod thiserror
+pub proc macro thiserror::Error!

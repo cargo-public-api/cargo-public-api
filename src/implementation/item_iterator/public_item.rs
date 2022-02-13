@@ -1,6 +1,6 @@
 use std::{fmt::Display, rc::Rc};
 
-use rustdoc_types::{FnDecl, Impl, Item, ItemEnum, Type};
+use rustdoc_types::{FnDecl, Item, ItemEnum};
 
 /// This struct represents one public item of a crate. It wraps a single [Item]
 /// but adds additional calculated values to make it easier to work with. Its
@@ -96,18 +96,9 @@ fn fn_decl_to_string(fn_decl: &FnDecl) -> String {
 /// Some items do not use item.name. Handle that.
 fn get_effective_name(item: &Item) -> &str {
     match &item.inner {
-        // An import uses its own name (which can be different from the imported name)
+        // An import uses its own name (which can be different from the name of
+        // the imported item)
         ItemEnum::Import(i) => &i.name,
-
-        // An impl do not have a name. Instead the impl is _for_ something, like
-        // a struct. In that case we want the name of the struct (for example).
-        ItemEnum::Impl(
-            Impl {
-                for_: Type::ResolvedPath { name, .. },
-                ..
-            },
-            ..,
-        ) => name.as_ref(),
 
         _ => item.name.as_deref().unwrap_or("<<no_name>>"),
     }

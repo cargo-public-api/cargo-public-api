@@ -47,10 +47,8 @@ Maintainers of Rust libraries that want to keep track of changes to their public
 
 # Limitations
 
-Currently:
-* https://github.com/rust-lang/rust/issues/92945 causes issues for enum variant tuple struct fields.
-* The full type of items are not included in the output.
-* Items re-exported from other crates are not included in the output.
+See [`[limitation]`](https://github.com/Enselic/public_items/labels/limitation)
+tagged issues.
 
 # Compatibility matrix
 

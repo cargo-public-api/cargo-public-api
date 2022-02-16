@@ -48,7 +48,7 @@ Maintainers of Rust libraries that want to keep track of changes to their public
 # Limitations
 
 See [`[limitation]`](https://github.com/Enselic/public_items/labels/limitation)
-tagged issues.
+labeled issues.
 
 # Compatibility matrix
 

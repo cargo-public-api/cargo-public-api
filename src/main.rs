@@ -57,7 +57,7 @@ fn rustdoc_json_path_for_name(crate_root: &Path, lib_name: &str) -> PathBuf {
     let mut rustdoc_json_path = crate_root.to_owned();
     rustdoc_json_path.push("target");
     rustdoc_json_path.push("doc");
-    rustdoc_json_path.push(lib_name.replace("-", "_"));
+    rustdoc_json_path.push(lib_name.replace('-', "_"));
     rustdoc_json_path.set_extension("json");
     rustdoc_json_path
 }

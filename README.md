@@ -54,5 +54,5 @@ labeled issues.
 
 | public_items  | Understands the rustdoc JSON output of  |
 | ------------- | --------------------------------------- |
-| v0.0.6        | nightly-2022-01-19 —                    |
+| v0.1.x        | nightly-2022-01-19 —                    |
 | v0.0.5        | nightly-2021-10-11 — nightly-2022-01-18 |

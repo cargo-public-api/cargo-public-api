@@ -3,7 +3,6 @@ use std::{collections::HashMap, rc::Rc};
 use rustdoc_types::{Crate, Id, Impl, Item, ItemEnum, Type};
 
 mod public_item;
-
 pub use public_item::PublicItem;
 
 /// Iterates over all items in a crate. Iterating over items has the benefit of

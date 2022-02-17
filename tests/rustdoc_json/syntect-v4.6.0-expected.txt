@@ -1033,166 +1033,166 @@ pub struct syntect::parsing::syntax_definition::MatchIter<'a>
 pub struct syntect::parsing::syntax_definition::MatchPattern
 pub struct syntect::parsing::syntax_definition::SyntaxDefinition
 pub struct syntect::util::LinesWithEndings<'a>
-pub type syntect::LoadingError::Error
-pub type syntect::LoadingError::Error
-pub type syntect::easy::HighlightFile::Error
-pub type syntect::easy::HighlightFile::Error
-pub type syntect::easy::HighlightLines::Error
-pub type syntect::easy::HighlightLines::Error
-pub type syntect::easy::ScopeRegionIterator::Error
-pub type syntect::easy::ScopeRegionIterator::Error
-pub type syntect::easy::ScopeRegionIterator::IntoIter
-pub type syntect::easy::ScopeRegionIterator::Item
-pub type syntect::easy::ScopeRegionIterator::Item
-pub type syntect::highlighting::Color::Err
-pub type syntect::highlighting::Color::Error
-pub type syntect::highlighting::Color::Error
-pub type syntect::highlighting::Color::Owned
-pub type syntect::highlighting::FontStyle::Err
-pub type syntect::highlighting::FontStyle::Error
-pub type syntect::highlighting::FontStyle::Error
-pub type syntect::highlighting::FontStyle::Output
-pub type syntect::highlighting::FontStyle::Output
-pub type syntect::highlighting::FontStyle::Output
-pub type syntect::highlighting::FontStyle::Output
-pub type syntect::highlighting::FontStyle::Output
-pub type syntect::highlighting::FontStyle::Owned
-pub type syntect::highlighting::HighlightIterator::Error
-pub type syntect::highlighting::HighlightIterator::Error
-pub type syntect::highlighting::HighlightIterator::IntoIter
-pub type syntect::highlighting::HighlightIterator::Item
-pub type syntect::highlighting::HighlightIterator::Item
-pub type syntect::highlighting::HighlightState::Error
-pub type syntect::highlighting::HighlightState::Error
-pub type syntect::highlighting::HighlightState::Owned
-pub type syntect::highlighting::Highlighter::Error
-pub type syntect::highlighting::Highlighter::Error
-pub type syntect::highlighting::ParseThemeError::Error
-pub type syntect::highlighting::ParseThemeError::Error
-pub type syntect::highlighting::RangedHighlightIterator::Error
-pub type syntect::highlighting::RangedHighlightIterator::Error
-pub type syntect::highlighting::RangedHighlightIterator::IntoIter
-pub type syntect::highlighting::RangedHighlightIterator::Item
-pub type syntect::highlighting::RangedHighlightIterator::Item
-pub type syntect::highlighting::ScopeSelector::Err
-pub type syntect::highlighting::ScopeSelector::Error
-pub type syntect::highlighting::ScopeSelector::Error
-pub type syntect::highlighting::ScopeSelector::Owned
-pub type syntect::highlighting::ScopeSelectors::Err
-pub type syntect::highlighting::ScopeSelectors::Error
-pub type syntect::highlighting::ScopeSelectors::Error
-pub type syntect::highlighting::ScopeSelectors::Owned
-pub type syntect::highlighting::ScoredStyle::Error
-pub type syntect::highlighting::ScoredStyle::Error
-pub type syntect::highlighting::ScoredStyle::Owned
-pub type syntect::highlighting::SettingsError::Error
-pub type syntect::highlighting::SettingsError::Error
-pub type syntect::highlighting::Style::Error
-pub type syntect::highlighting::Style::Error
-pub type syntect::highlighting::Style::Owned
-pub type syntect::highlighting::StyleModifier::Error
-pub type syntect::highlighting::StyleModifier::Error
-pub type syntect::highlighting::StyleModifier::Owned
-pub type syntect::highlighting::Theme::Error
-pub type syntect::highlighting::Theme::Error
-pub type syntect::highlighting::Theme::Owned
-pub type syntect::highlighting::ThemeItem::Error
-pub type syntect::highlighting::ThemeItem::Error
-pub type syntect::highlighting::ThemeItem::Owned
-pub type syntect::highlighting::ThemeSet::Error
-pub type syntect::highlighting::ThemeSet::Error
-pub type syntect::highlighting::ThemeSettings::Error
-pub type syntect::highlighting::ThemeSettings::Error
-pub type syntect::highlighting::ThemeSettings::Owned
-pub type syntect::highlighting::UnderlineOption::Err
-pub type syntect::highlighting::UnderlineOption::Error
-pub type syntect::highlighting::UnderlineOption::Error
-pub type syntect::highlighting::UnderlineOption::Owned
-pub type syntect::html::ClassStyle::Error
-pub type syntect::html::ClassStyle::Error
-pub type syntect::html::ClassStyle::Owned
-pub type syntect::html::ClassedHTMLGenerator::Error
-pub type syntect::html::ClassedHTMLGenerator::Error
-pub type syntect::html::IncludeBackground::Error
-pub type syntect::html::IncludeBackground::Error
-pub type syntect::html::IncludeBackground::Owned
-pub type syntect::parsing::BasicScopeStackOp::Error
-pub type syntect::parsing::BasicScopeStackOp::Error
-pub type syntect::parsing::BasicScopeStackOp::Owned
-pub type syntect::parsing::ClearAmount::Error
-pub type syntect::parsing::ClearAmount::Error
-pub type syntect::parsing::ClearAmount::Owned
-pub type syntect::parsing::MatchPower::Error
-pub type syntect::parsing::MatchPower::Error
-pub type syntect::parsing::MatchPower::Owned
-pub type syntect::parsing::ParseScopeError::Error
-pub type syntect::parsing::ParseScopeError::Error
-pub type syntect::parsing::ParseState::Error
-pub type syntect::parsing::ParseState::Error
-pub type syntect::parsing::ParseState::Owned
-pub type syntect::parsing::ParseSyntaxError::Error
-pub type syntect::parsing::ParseSyntaxError::Error
-pub type syntect::parsing::Regex::Error
-pub type syntect::parsing::Regex::Error
-pub type syntect::parsing::Regex::Owned
-pub type syntect::parsing::Region::Error
-pub type syntect::parsing::Region::Error
-pub type syntect::parsing::Region::Owned
-pub type syntect::parsing::SCOPE_REPO::Error
-pub type syntect::parsing::SCOPE_REPO::Error
-pub type syntect::parsing::SCOPE_REPO::Target
-pub type syntect::parsing::Scope::Err
-pub type syntect::parsing::Scope::Error
-pub type syntect::parsing::Scope::Error
-pub type syntect::parsing::Scope::Owned
-pub type syntect::parsing::ScopeRepository::Error
-pub type syntect::parsing::ScopeRepository::Error
-pub type syntect::parsing::ScopeStack::Err
-pub type syntect::parsing::ScopeStack::Error
-pub type syntect::parsing::ScopeStack::Error
-pub type syntect::parsing::ScopeStack::Owned
-pub type syntect::parsing::ScopeStackOp::Error
-pub type syntect::parsing::ScopeStackOp::Error
-pub type syntect::parsing::ScopeStackOp::Owned
-pub type syntect::parsing::SyntaxReference::Error
-pub type syntect::parsing::SyntaxReference::Error
-pub type syntect::parsing::SyntaxReference::Owned
-pub type syntect::parsing::SyntaxSet::Error
-pub type syntect::parsing::SyntaxSet::Error
-pub type syntect::parsing::SyntaxSet::Owned
-pub type syntect::parsing::SyntaxSetBuilder::Error
-pub type syntect::parsing::SyntaxSetBuilder::Error
-pub type syntect::parsing::SyntaxSetBuilder::Owned
-pub type syntect::parsing::syntax_definition::CaptureMapping
-pub type syntect::parsing::syntax_definition::Context::Error
-pub type syntect::parsing::syntax_definition::Context::Error
-pub type syntect::parsing::syntax_definition::Context::Owned
-pub type syntect::parsing::syntax_definition::ContextId::Error
-pub type syntect::parsing::syntax_definition::ContextId::Error
-pub type syntect::parsing::syntax_definition::ContextId::Owned
-pub type syntect::parsing::syntax_definition::ContextReference::Error
-pub type syntect::parsing::syntax_definition::ContextReference::Error
-pub type syntect::parsing::syntax_definition::ContextReference::Owned
-pub type syntect::parsing::syntax_definition::MatchIter::Error
-pub type syntect::parsing::syntax_definition::MatchIter::Error
-pub type syntect::parsing::syntax_definition::MatchIter::IntoIter
-pub type syntect::parsing::syntax_definition::MatchIter::Item
-pub type syntect::parsing::syntax_definition::MatchIter::Item
-pub type syntect::parsing::syntax_definition::MatchOperation::Error
-pub type syntect::parsing::syntax_definition::MatchOperation::Error
-pub type syntect::parsing::syntax_definition::MatchOperation::Owned
-pub type syntect::parsing::syntax_definition::MatchPattern::Error
-pub type syntect::parsing::syntax_definition::MatchPattern::Error
-pub type syntect::parsing::syntax_definition::MatchPattern::Owned
-pub type syntect::parsing::syntax_definition::Pattern::Error
-pub type syntect::parsing::syntax_definition::Pattern::Error
-pub type syntect::parsing::syntax_definition::Pattern::Owned
-pub type syntect::parsing::syntax_definition::SyntaxDefinition::Error
-pub type syntect::parsing::syntax_definition::SyntaxDefinition::Error
-pub type syntect::parsing::syntax_definition::SyntaxDefinition::Owned
-pub type syntect::util::LinesWithEndings::Error
-pub type syntect::util::LinesWithEndings::Error
-pub type syntect::util::LinesWithEndings::IntoIter
-pub type syntect::util::LinesWithEndings::Item
-pub type syntect::util::LinesWithEndings::Item
+pub type syntect::LoadingError::Error = <U as TryFrom<T>>::Error
+pub type syntect::LoadingError::Error = Infallible
+pub type syntect::easy::HighlightFile::Error = <U as TryFrom<T>>::Error
+pub type syntect::easy::HighlightFile::Error = Infallible
+pub type syntect::easy::HighlightLines::Error = <U as TryFrom<T>>::Error
+pub type syntect::easy::HighlightLines::Error = Infallible
+pub type syntect::easy::ScopeRegionIterator::Error = <U as TryFrom<T>>::Error
+pub type syntect::easy::ScopeRegionIterator::Error = Infallible
+pub type syntect::easy::ScopeRegionIterator::IntoIter = I
+pub type syntect::easy::ScopeRegionIterator::Item = (&'a str,&'a ScopeStackOp)
+pub type syntect::easy::ScopeRegionIterator::Item = <I as Iterator>::Item
+pub type syntect::highlighting::Color::Err = ParseThemeError
+pub type syntect::highlighting::Color::Error = <U as TryFrom<T>>::Error
+pub type syntect::highlighting::Color::Error = Infallible
+pub type syntect::highlighting::Color::Owned = T
+pub type syntect::highlighting::FontStyle::Err = ParseThemeError
+pub type syntect::highlighting::FontStyle::Error = <U as TryFrom<T>>::Error
+pub type syntect::highlighting::FontStyle::Error = Infallible
+pub type syntect::highlighting::FontStyle::Output = Self
+pub type syntect::highlighting::FontStyle::Output = Self
+pub type syntect::highlighting::FontStyle::Output = Self
+pub type syntect::highlighting::FontStyle::Output = Self
+pub type syntect::highlighting::FontStyle::Output = Self
+pub type syntect::highlighting::FontStyle::Owned = T
+pub type syntect::highlighting::HighlightIterator::Error = <U as TryFrom<T>>::Error
+pub type syntect::highlighting::HighlightIterator::Error = Infallible
+pub type syntect::highlighting::HighlightIterator::IntoIter = I
+pub type syntect::highlighting::HighlightIterator::Item = (Style,&'b str)
+pub type syntect::highlighting::HighlightIterator::Item = <I as Iterator>::Item
+pub type syntect::highlighting::HighlightState::Error = <U as TryFrom<T>>::Error
+pub type syntect::highlighting::HighlightState::Error = Infallible
+pub type syntect::highlighting::HighlightState::Owned = T
+pub type syntect::highlighting::Highlighter::Error = <U as TryFrom<T>>::Error
+pub type syntect::highlighting::Highlighter::Error = Infallible
+pub type syntect::highlighting::ParseThemeError::Error = <U as TryFrom<T>>::Error
+pub type syntect::highlighting::ParseThemeError::Error = Infallible
+pub type syntect::highlighting::RangedHighlightIterator::Error = <U as TryFrom<T>>::Error
+pub type syntect::highlighting::RangedHighlightIterator::Error = Infallible
+pub type syntect::highlighting::RangedHighlightIterator::IntoIter = I
+pub type syntect::highlighting::RangedHighlightIterator::Item = (Style,&'b str,Range<usize>)
+pub type syntect::highlighting::RangedHighlightIterator::Item = <I as Iterator>::Item
+pub type syntect::highlighting::ScopeSelector::Err = ParseScopeError
+pub type syntect::highlighting::ScopeSelector::Error = <U as TryFrom<T>>::Error
+pub type syntect::highlighting::ScopeSelector::Error = Infallible
+pub type syntect::highlighting::ScopeSelector::Owned = T
+pub type syntect::highlighting::ScopeSelectors::Err = ParseScopeError
+pub type syntect::highlighting::ScopeSelectors::Error = <U as TryFrom<T>>::Error
+pub type syntect::highlighting::ScopeSelectors::Error = Infallible
+pub type syntect::highlighting::ScopeSelectors::Owned = T
+pub type syntect::highlighting::ScoredStyle::Error = <U as TryFrom<T>>::Error
+pub type syntect::highlighting::ScoredStyle::Error = Infallible
+pub type syntect::highlighting::ScoredStyle::Owned = T
+pub type syntect::highlighting::SettingsError::Error = <U as TryFrom<T>>::Error
+pub type syntect::highlighting::SettingsError::Error = Infallible
+pub type syntect::highlighting::Style::Error = <U as TryFrom<T>>::Error
+pub type syntect::highlighting::Style::Error = Infallible
+pub type syntect::highlighting::Style::Owned = T
+pub type syntect::highlighting::StyleModifier::Error = <U as TryFrom<T>>::Error
+pub type syntect::highlighting::StyleModifier::Error = Infallible
+pub type syntect::highlighting::StyleModifier::Owned = T
+pub type syntect::highlighting::Theme::Error = <U as TryFrom<T>>::Error
+pub type syntect::highlighting::Theme::Error = Infallible
+pub type syntect::highlighting::Theme::Owned = T
+pub type syntect::highlighting::ThemeItem::Error = <U as TryFrom<T>>::Error
+pub type syntect::highlighting::ThemeItem::Error = Infallible
+pub type syntect::highlighting::ThemeItem::Owned = T
+pub type syntect::highlighting::ThemeSet::Error = <U as TryFrom<T>>::Error
+pub type syntect::highlighting::ThemeSet::Error = Infallible
+pub type syntect::highlighting::ThemeSettings::Error = <U as TryFrom<T>>::Error
+pub type syntect::highlighting::ThemeSettings::Error = Infallible
+pub type syntect::highlighting::ThemeSettings::Owned = T
+pub type syntect::highlighting::UnderlineOption::Err = ParseThemeError
+pub type syntect::highlighting::UnderlineOption::Error = <U as TryFrom<T>>::Error
+pub type syntect::highlighting::UnderlineOption::Error = Infallible
+pub type syntect::highlighting::UnderlineOption::Owned = T
+pub type syntect::html::ClassStyle::Error = <U as TryFrom<T>>::Error
+pub type syntect::html::ClassStyle::Error = Infallible
+pub type syntect::html::ClassStyle::Owned = T
+pub type syntect::html::ClassedHTMLGenerator::Error = <U as TryFrom<T>>::Error
+pub type syntect::html::ClassedHTMLGenerator::Error = Infallible
+pub type syntect::html::IncludeBackground::Error = <U as TryFrom<T>>::Error
+pub type syntect::html::IncludeBackground::Error = Infallible
+pub type syntect::html::IncludeBackground::Owned = T
+pub type syntect::parsing::BasicScopeStackOp::Error = <U as TryFrom<T>>::Error
+pub type syntect::parsing::BasicScopeStackOp::Error = Infallible
+pub type syntect::parsing::BasicScopeStackOp::Owned = T
+pub type syntect::parsing::ClearAmount::Error = <U as TryFrom<T>>::Error
+pub type syntect::parsing::ClearAmount::Error = Infallible
+pub type syntect::parsing::ClearAmount::Owned = T
+pub type syntect::parsing::MatchPower::Error = <U as TryFrom<T>>::Error
+pub type syntect::parsing::MatchPower::Error = Infallible
+pub type syntect::parsing::MatchPower::Owned = T
+pub type syntect::parsing::ParseScopeError::Error = <U as TryFrom<T>>::Error
+pub type syntect::parsing::ParseScopeError::Error = Infallible
+pub type syntect::parsing::ParseState::Error = <U as TryFrom<T>>::Error
+pub type syntect::parsing::ParseState::Error = Infallible
+pub type syntect::parsing::ParseState::Owned = T
+pub type syntect::parsing::ParseSyntaxError::Error = <U as TryFrom<T>>::Error
+pub type syntect::parsing::ParseSyntaxError::Error = Infallible
+pub type syntect::parsing::Regex::Error = <U as TryFrom<T>>::Error
+pub type syntect::parsing::Regex::Error = Infallible
+pub type syntect::parsing::Regex::Owned = T
+pub type syntect::parsing::Region::Error = <U as TryFrom<T>>::Error
+pub type syntect::parsing::Region::Error = Infallible
+pub type syntect::parsing::Region::Owned = T
+pub type syntect::parsing::SCOPE_REPO::Error = <U as TryFrom<T>>::Error
+pub type syntect::parsing::SCOPE_REPO::Error = Infallible
+pub type syntect::parsing::SCOPE_REPO::Target = Mutex<ScopeRepository>
+pub type syntect::parsing::Scope::Err = ParseScopeError
+pub type syntect::parsing::Scope::Error = <U as TryFrom<T>>::Error
+pub type syntect::parsing::Scope::Error = Infallible
+pub type syntect::parsing::Scope::Owned = T
+pub type syntect::parsing::ScopeRepository::Error = <U as TryFrom<T>>::Error
+pub type syntect::parsing::ScopeRepository::Error = Infallible
+pub type syntect::parsing::ScopeStack::Err = ParseScopeError
+pub type syntect::parsing::ScopeStack::Error = <U as TryFrom<T>>::Error
+pub type syntect::parsing::ScopeStack::Error = Infallible
+pub type syntect::parsing::ScopeStack::Owned = T
+pub type syntect::parsing::ScopeStackOp::Error = <U as TryFrom<T>>::Error
+pub type syntect::parsing::ScopeStackOp::Error = Infallible
+pub type syntect::parsing::ScopeStackOp::Owned = T
+pub type syntect::parsing::SyntaxReference::Error = <U as TryFrom<T>>::Error
+pub type syntect::parsing::SyntaxReference::Error = Infallible
+pub type syntect::parsing::SyntaxReference::Owned = T
+pub type syntect::parsing::SyntaxSet::Error = <U as TryFrom<T>>::Error
+pub type syntect::parsing::SyntaxSet::Error = Infallible
+pub type syntect::parsing::SyntaxSet::Owned = T
+pub type syntect::parsing::SyntaxSetBuilder::Error = <U as TryFrom<T>>::Error
+pub type syntect::parsing::SyntaxSetBuilder::Error = Infallible
+pub type syntect::parsing::SyntaxSetBuilder::Owned = T
+pub type syntect::parsing::syntax_definition::CaptureMapping = Vec<(usize,Vec<Scope>)>
+pub type syntect::parsing::syntax_definition::Context::Error = <U as TryFrom<T>>::Error
+pub type syntect::parsing::syntax_definition::Context::Error = Infallible
+pub type syntect::parsing::syntax_definition::Context::Owned = T
+pub type syntect::parsing::syntax_definition::ContextId::Error = <U as TryFrom<T>>::Error
+pub type syntect::parsing::syntax_definition::ContextId::Error = Infallible
+pub type syntect::parsing::syntax_definition::ContextId::Owned = T
+pub type syntect::parsing::syntax_definition::ContextReference::Error = <U as TryFrom<T>>::Error
+pub type syntect::parsing::syntax_definition::ContextReference::Error = Infallible
+pub type syntect::parsing::syntax_definition::ContextReference::Owned = T
+pub type syntect::parsing::syntax_definition::MatchIter::Error = <U as TryFrom<T>>::Error
+pub type syntect::parsing::syntax_definition::MatchIter::Error = Infallible
+pub type syntect::parsing::syntax_definition::MatchIter::IntoIter = I
+pub type syntect::parsing::syntax_definition::MatchIter::Item = (&'a Context,usize)
+pub type syntect::parsing::syntax_definition::MatchIter::Item = <I as Iterator>::Item
+pub type syntect::parsing::syntax_definition::MatchOperation::Error = <U as TryFrom<T>>::Error
+pub type syntect::parsing::syntax_definition::MatchOperation::Error = Infallible
+pub type syntect::parsing::syntax_definition::MatchOperation::Owned = T
+pub type syntect::parsing::syntax_definition::MatchPattern::Error = <U as TryFrom<T>>::Error
+pub type syntect::parsing::syntax_definition::MatchPattern::Error = Infallible
+pub type syntect::parsing::syntax_definition::MatchPattern::Owned = T
+pub type syntect::parsing::syntax_definition::Pattern::Error = <U as TryFrom<T>>::Error
+pub type syntect::parsing::syntax_definition::Pattern::Error = Infallible
+pub type syntect::parsing::syntax_definition::Pattern::Owned = T
+pub type syntect::parsing::syntax_definition::SyntaxDefinition::Error = <U as TryFrom<T>>::Error
+pub type syntect::parsing::syntax_definition::SyntaxDefinition::Error = Infallible
+pub type syntect::parsing::syntax_definition::SyntaxDefinition::Owned = T
+pub type syntect::util::LinesWithEndings::Error = <U as TryFrom<T>>::Error
+pub type syntect::util::LinesWithEndings::Error = Infallible
+pub type syntect::util::LinesWithEndings::IntoIter = I
+pub type syntect::util::LinesWithEndings::Item = &'a str
+pub type syntect::util::LinesWithEndings::Item = <I as Iterator>::Item
 pub use syntect::parsing::SyntaxDefinition

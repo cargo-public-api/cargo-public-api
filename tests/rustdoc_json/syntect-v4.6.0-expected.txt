@@ -906,6 +906,42 @@ pub mod syntect::html
 pub mod syntect::parsing
 pub mod syntect::parsing::syntax_definition
 pub mod syntect::util
+pub struct syntect::easy::HighlightFile<'a>
+pub struct syntect::easy::HighlightLines<'a>
+pub struct syntect::easy::ScopeRegionIterator<'a>
+pub struct syntect::highlighting::Color
+pub struct syntect::highlighting::FontStyle
+pub struct syntect::highlighting::HighlightIterator<'a, 'b>
+pub struct syntect::highlighting::HighlightState
+pub struct syntect::highlighting::Highlighter<'a>
+pub struct syntect::highlighting::RangedHighlightIterator<'a, 'b>
+pub struct syntect::highlighting::ScopeSelector
+pub struct syntect::highlighting::ScopeSelectors
+pub struct syntect::highlighting::ScoredStyle
+pub struct syntect::highlighting::Style
+pub struct syntect::highlighting::StyleModifier
+pub struct syntect::highlighting::Theme
+pub struct syntect::highlighting::ThemeItem
+pub struct syntect::highlighting::ThemeSet
+pub struct syntect::highlighting::ThemeSettings
+pub struct syntect::html::ClassedHTMLGenerator<'a>
+pub struct syntect::parsing::MatchPower
+pub struct syntect::parsing::ParseState
+pub struct syntect::parsing::Regex
+pub struct syntect::parsing::Region
+pub struct syntect::parsing::SCOPE_REPO
+pub struct syntect::parsing::Scope
+pub struct syntect::parsing::ScopeRepository
+pub struct syntect::parsing::ScopeStack
+pub struct syntect::parsing::SyntaxReference
+pub struct syntect::parsing::SyntaxSet
+pub struct syntect::parsing::SyntaxSetBuilder
+pub struct syntect::parsing::syntax_definition::Context
+pub struct syntect::parsing::syntax_definition::ContextId
+pub struct syntect::parsing::syntax_definition::MatchIter<'a>
+pub struct syntect::parsing::syntax_definition::MatchPattern
+pub struct syntect::parsing::syntax_definition::SyntaxDefinition
+pub struct syntect::util::LinesWithEndings<'a>
 pub struct field syntect::easy::HighlightFile::highlight_lines: HighlightLines<'a>
 pub struct field syntect::easy::HighlightFile::reader: BufReader<File>
 pub struct field syntect::highlighting::Color::a: u8
@@ -997,42 +1033,6 @@ pub struct field syntect::parsing::syntax_definition::SyntaxDefinition::hidden: 
 pub struct field syntect::parsing::syntax_definition::SyntaxDefinition::name: String
 pub struct field syntect::parsing::syntax_definition::SyntaxDefinition::scope: Scope
 pub struct field syntect::parsing::syntax_definition::SyntaxDefinition::variables: HashMap<String, String>
-pub struct syntect::easy::HighlightFile<'a>
-pub struct syntect::easy::HighlightLines<'a>
-pub struct syntect::easy::ScopeRegionIterator<'a>
-pub struct syntect::highlighting::Color
-pub struct syntect::highlighting::FontStyle
-pub struct syntect::highlighting::HighlightIterator<'a, 'b>
-pub struct syntect::highlighting::HighlightState
-pub struct syntect::highlighting::Highlighter<'a>
-pub struct syntect::highlighting::RangedHighlightIterator<'a, 'b>
-pub struct syntect::highlighting::ScopeSelector
-pub struct syntect::highlighting::ScopeSelectors
-pub struct syntect::highlighting::ScoredStyle
-pub struct syntect::highlighting::Style
-pub struct syntect::highlighting::StyleModifier
-pub struct syntect::highlighting::Theme
-pub struct syntect::highlighting::ThemeItem
-pub struct syntect::highlighting::ThemeSet
-pub struct syntect::highlighting::ThemeSettings
-pub struct syntect::html::ClassedHTMLGenerator<'a>
-pub struct syntect::parsing::MatchPower
-pub struct syntect::parsing::ParseState
-pub struct syntect::parsing::Regex
-pub struct syntect::parsing::Region
-pub struct syntect::parsing::SCOPE_REPO
-pub struct syntect::parsing::Scope
-pub struct syntect::parsing::ScopeRepository
-pub struct syntect::parsing::ScopeStack
-pub struct syntect::parsing::SyntaxReference
-pub struct syntect::parsing::SyntaxSet
-pub struct syntect::parsing::SyntaxSetBuilder
-pub struct syntect::parsing::syntax_definition::Context
-pub struct syntect::parsing::syntax_definition::ContextId
-pub struct syntect::parsing::syntax_definition::MatchIter<'a>
-pub struct syntect::parsing::syntax_definition::MatchPattern
-pub struct syntect::parsing::syntax_definition::SyntaxDefinition
-pub struct syntect::util::LinesWithEndings<'a>
 pub type syntect::LoadingError::Error = <U as TryFrom<T>>::Error
 pub type syntect::LoadingError::Error = Infallible
 pub type syntect::easy::HighlightFile::Error = <U as TryFrom<T>>::Error

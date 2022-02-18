@@ -17,7 +17,12 @@ fn thiserror_v1_0_30() {
 }
 
 fn assert_public_items(rustdoc_json_str: &str, expected_output: &str) {
-    let actual = public_items::sorted_public_items_from_rustdoc_json_str(rustdoc_json_str).unwrap();
+    let actual: Vec<String> =
+        public_items::sorted_public_items_from_rustdoc_json_str(rustdoc_json_str)
+            .unwrap()
+            .into_iter()
+            .map(|x| format!("{}", x))
+            .collect();
 
     let expected = expected_output_to_string_vec(expected_output);
 

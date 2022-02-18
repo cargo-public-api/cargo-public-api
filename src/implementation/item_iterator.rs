@@ -2,8 +2,8 @@ use std::{collections::HashMap, rc::Rc};
 
 use rustdoc_types::{Crate, Id, Impl, Item, ItemEnum, Type};
 
-mod public_item;
-pub use public_item::PublicItem;
+mod intermediate_public_item;
+pub use intermediate_public_item::IntermediatePublicItem;
 
 /// Iterates over all items in a crate. Iterating over items has the benefit of
 /// behaving properly when:
@@ -19,7 +19,7 @@ pub struct ItemIterator<'a> {
     crate_: &'a Crate,
 
     /// What items left to visit (and possibly add more items from)
-    items_left: Vec<Rc<PublicItem<'a>>>,
+    items_left: Vec<Rc<IntermediatePublicItem<'a>>>,
 
     /// Normally, a reference in the rustdoc JSON exists. If
     /// [Self::crate_.index] is missing an id (e.g. if it is for a dependency
@@ -62,7 +62,11 @@ impl<'a> ItemIterator<'a> {
         s
     }
 
-    fn try_add_item_to_visit(&mut self, id: &'a Id, parent: Option<Rc<PublicItem<'a>>>) {
+    fn try_add_item_to_visit(
+        &mut self,
+        id: &'a Id,
+        parent: Option<Rc<IntermediatePublicItem<'a>>>,
+    ) {
         match self.crate_.index.get(id) {
             // We handle `impl`s specially, so we don't want to process `impl`
             // items directly. See other comments for more info
@@ -71,7 +75,9 @@ impl<'a> ItemIterator<'a> {
                 ..
             }) => (),
 
-            Some(item) => self.items_left.push(Rc::new(PublicItem::new(item, parent))),
+            Some(item) => self
+                .items_left
+                .push(Rc::new(IntermediatePublicItem::new(item, parent))),
 
             None => self.missing_ids.push(id),
         }
@@ -79,7 +85,7 @@ impl<'a> ItemIterator<'a> {
 }
 
 impl<'a> Iterator for ItemIterator<'a> {
-    type Item = Rc<PublicItem<'a>>;
+    type Item = Rc<IntermediatePublicItem<'a>>;
 
     fn next(&mut self) -> Option<Self::Item> {
         let mut result = None;

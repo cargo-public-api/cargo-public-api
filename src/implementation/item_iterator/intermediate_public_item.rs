@@ -10,31 +10,29 @@ use rustdoc_types::{
 
 use std::fmt::Result;
 
-/// This struct represents one public item of a crate. It wraps a single [Item]
-/// but adds additional calculated values to make it easier to work with. Its
-/// implementation of [Display] corresponds to one line of the output you see
-/// from the `public_items` tool.
-///
-/// This is currently an implementation detail of this crate, but long term it
-/// is expected that it will form part of the public API of this crate, but with
-/// a much more condensed and strict API surface of course.
+/// This struct represents one public item of a crate, but in intermediate form.
+/// It wraps a single [Item] but adds additional calculated values to make it
+/// easier to work with. Later, one [`Self`] will be converted to exactly one
+/// [`crate::PublicItem`].
 #[derive(Debug, Clone)]
-pub struct PublicItem<'a> {
+pub struct IntermediatePublicItem<'a> {
     /// The item we are effectively wrapping.
     pub item: &'a Item,
 
     /// The parent item. If [Self::item] is e.g. an enum variant, then the
     /// parent is an enum. We follow the chain of parents to be able to know the
     /// correct path to an item in the output.
-    parent: Option<Rc<PublicItem<'a>>>,
+    parent: Option<Rc<IntermediatePublicItem<'a>>>,
 }
 
-impl<'a> PublicItem<'a> {
-    pub fn new(item: &'a Item, parent: Option<Rc<PublicItem<'a>>>) -> Self {
+impl<'a> IntermediatePublicItem<'a> {
+    #[must_use]
+    pub fn new(item: &'a Item, parent: Option<Rc<IntermediatePublicItem<'a>>>) -> Self {
         Self { item, parent }
     }
 
-    fn path(&'a self) -> Vec<Rc<PublicItem<'a>>> {
+    #[must_use]
+    pub fn path(&'a self) -> Vec<Rc<IntermediatePublicItem<'a>>> {
         let mut path = vec![];
 
         let rc_self = Rc::new(self.clone());
@@ -50,8 +48,14 @@ impl<'a> PublicItem<'a> {
         path
     }
 
-    fn prefix_for_item(&'a self) -> String {
+    #[must_use]
+    pub fn prefix(&'a self) -> String {
         format!("pub {} ", self.type_string_for_item())
+    }
+
+    #[must_use]
+    pub fn suffix(&self) -> String {
+        format!("{}", ItemSuffix(self))
     }
 
     fn type_string_for_item(&self) -> &str {
@@ -80,7 +84,8 @@ impl<'a> PublicItem<'a> {
     }
 
     /// Some items do not use item.name. Handle that.
-    fn get_effective_name(&'a self) -> String {
+    #[must_use]
+    pub fn get_effective_name(&'a self) -> String {
         match &self.item.inner {
             // An import uses its own name (which can be different from the name of
             // the imported item)
@@ -92,27 +97,9 @@ impl<'a> PublicItem<'a> {
     }
 }
 
-impl<'a> Display for PublicItem<'a> {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        let path = self
-            .path()
-            .iter()
-            .map(|i| i.get_effective_name())
-            .collect::<Vec<String>>();
-
-        write!(
-            f,
-            "{}{}{}",
-            self.prefix_for_item(),
-            path.join("::"),
-            ItemSuffix(self),
-        )
-    }
-}
-
 /// Decides what should be shown at the end of each item, i.e. item-specific
 /// type information.
-struct ItemSuffix<'a>(&'a PublicItem<'a>);
+struct ItemSuffix<'a>(&'a IntermediatePublicItem<'a>);
 impl Display for ItemSuffix<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         match &self.0.item.inner {

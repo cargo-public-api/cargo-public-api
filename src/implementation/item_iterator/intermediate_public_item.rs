@@ -108,7 +108,7 @@ impl Display for ItemSuffix<'_> {
             ItemEnum::Struct(s) => write!(f, "{}", D(&s.generics)),
             ItemEnum::Enum(e) => write!(f, "{}", D(&e.generics)),
             ItemEnum::Trait(t) => write!(f, "{}", D(&t.generics)),
-            ItemEnum::Typedef(t) => write!(f, " = {}{}", D(&t.type_), D(&t.generics)),
+            ItemEnum::Typedef(t) => write!(f, "{} = {}", D(&t.generics), D(&t.type_)),
             ItemEnum::Constant(c) => write!(f, ": {}", D(&c.type_)),
             ItemEnum::StructField(type_) => write!(f, ": {}", D(type_)),
             ItemEnum::Function(n) => write!(

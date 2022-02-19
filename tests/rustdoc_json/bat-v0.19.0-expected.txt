@@ -1,0 +1,471 @@
+pub enum bat::MappingTarget<'a>
+pub enum bat::PagingMode
+pub enum bat::WrappingMode
+pub enum bat::config::VisibleLines
+pub enum bat::error::Error
+pub enum bat::line_range::RangeCheckResult
+pub enum bat::style::StyleComponent
+pub enum variant bat::MappingTarget::MapExtensionToUnknown
+pub enum variant bat::MappingTarget::MapTo(&'a str)
+pub enum variant bat::MappingTarget::MapToUnknown
+pub enum variant bat::PagingMode::Always
+pub enum variant bat::PagingMode::Never
+pub enum variant bat::PagingMode::QuitIfOneScreen
+pub enum variant bat::WrappingMode::Character
+pub enum variant bat::WrappingMode::NoWrapping(bool)
+pub enum variant bat::config::VisibleLines::DiffContext(usize)
+pub enum variant bat::config::VisibleLines::Ranges(LineRanges)
+pub enum variant bat::error::Error::GlobParsingError(::globset::Error)
+pub enum variant bat::error::Error::InvalidPagerValueBat
+pub enum variant bat::error::Error::Io(::std::io::Error)
+pub enum variant bat::error::Error::Msg(String)
+pub enum variant bat::error::Error::ParseIntError(::std::num::ParseIntError)
+pub enum variant bat::error::Error::SerdeYamlError(::serde_yaml::Error)
+pub enum variant bat::error::Error::SyntectError(::syntect::LoadingError)
+pub enum variant bat::error::Error::UndetectedSyntax(String)
+pub enum variant bat::error::Error::UnknownStyle(String)
+pub enum variant bat::error::Error::UnknownSyntax(String)
+pub enum variant bat::line_range::RangeCheckResult::AfterLastRange
+pub enum variant bat::line_range::RangeCheckResult::BeforeOrBetweenRanges
+pub enum variant bat::line_range::RangeCheckResult::InRange
+pub enum variant bat::style::StyleComponent::Auto
+pub enum variant bat::style::StyleComponent::Changes
+pub enum variant bat::style::StyleComponent::Full
+pub enum variant bat::style::StyleComponent::Grid
+pub enum variant bat::style::StyleComponent::Header
+pub enum variant bat::style::StyleComponent::LineNumbers
+pub enum variant bat::style::StyleComponent::Plain
+pub enum variant bat::style::StyleComponent::Rule
+pub enum variant bat::style::StyleComponent::Snip
+pub fn bat::Input::borrow(&self) -> &T
+pub fn bat::Input::borrow_mut(&mut self) -> &mut T
+pub fn bat::Input::from(input: input::Input<'a>) -> Self
+pub fn bat::Input::from(t: T) -> T
+pub fn bat::Input::from_bytes(bytes: &'a [u8]) -> Self
+pub fn bat::Input::from_file<impl AsRef<Path>: AsRef<Path>>(path: impl AsRef<Path>) -> Self
+pub fn bat::Input::from_reader<R: Read, 'a>(reader: R) -> Self
+pub fn bat::Input::from_stdin() -> Self
+pub fn bat::Input::into(self) -> U
+pub fn bat::Input::kind<impl Into<String>: Into<String>>(self, kind: impl Into<String>) -> Self
+pub fn bat::Input::name<impl AsRef<Path>: AsRef<Path>>(self, name: impl AsRef<Path>) -> Self
+pub fn bat::Input::title<impl Into<String>: Into<String>>(self, title: impl Into<String>) -> Self
+pub fn bat::Input::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
+pub fn bat::Input::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
+pub fn bat::Input::type_id(&self) -> TypeId
+pub fn bat::MappingTarget::borrow(&self) -> &T
+pub fn bat::MappingTarget::borrow_mut(&mut self) -> &mut T
+pub fn bat::MappingTarget::clone(&self) -> MappingTarget<'a>
+pub fn bat::MappingTarget::clone_into(&self, target: &mut T) -> ()
+pub fn bat::MappingTarget::eq(&self, other: &MappingTarget<'a>) -> bool
+pub fn bat::MappingTarget::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
+pub fn bat::MappingTarget::from(t: T) -> T
+pub fn bat::MappingTarget::into(self) -> U
+pub fn bat::MappingTarget::ne(&self, other: &MappingTarget<'a>) -> bool
+pub fn bat::MappingTarget::to_owned(&self) -> T
+pub fn bat::MappingTarget::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
+pub fn bat::MappingTarget::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
+pub fn bat::MappingTarget::type_id(&self) -> TypeId
+pub fn bat::PagingMode::borrow(&self) -> &T
+pub fn bat::PagingMode::borrow_mut(&mut self) -> &mut T
+pub fn bat::PagingMode::clone(&self) -> PagingMode
+pub fn bat::PagingMode::clone_into(&self, target: &mut T) -> ()
+pub fn bat::PagingMode::default() -> Self
+pub fn bat::PagingMode::eq(&self, other: &PagingMode) -> bool
+pub fn bat::PagingMode::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
+pub fn bat::PagingMode::from(t: T) -> T
+pub fn bat::PagingMode::into(self) -> U
+pub fn bat::PagingMode::to_owned(&self) -> T
+pub fn bat::PagingMode::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
+pub fn bat::PagingMode::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
+pub fn bat::PagingMode::type_id(&self) -> TypeId
+pub fn bat::PrettyPrinter::borrow(&self) -> &T
+pub fn bat::PrettyPrinter::borrow_mut(&mut self) -> &mut T
+pub fn bat::PrettyPrinter::colored_output(&mut self, yes: bool) -> &mut Self
+pub fn bat::PrettyPrinter::default() -> Self
+pub fn bat::PrettyPrinter::from(t: T) -> T
+pub fn bat::PrettyPrinter::grid(&mut self, yes: bool) -> &mut Self
+pub fn bat::PrettyPrinter::header(&mut self, yes: bool) -> &mut Self
+pub fn bat::PrettyPrinter::highlight(&mut self, line: usize) -> &mut Self
+pub fn bat::PrettyPrinter::highlight_range(&mut self, from: usize, to: usize) -> &mut Self
+pub fn bat::PrettyPrinter::input(&mut self, input: Input<'a>) -> &mut Self
+pub fn bat::PrettyPrinter::input_file<impl AsRef<Path>: AsRef<Path>>(&mut self, path: impl AsRef<Path>) -> &mut Self
+pub fn bat::PrettyPrinter::input_files<I, P>(&mut self, paths: I) -> &mut Self where I: IntoIterator<Item = P>, P: AsRef<Path>
+pub fn bat::PrettyPrinter::input_from_bytes(&mut self, content: &'a [u8]) -> &mut Self
+pub fn bat::PrettyPrinter::input_from_reader<R: Read, 'a>(&mut self, reader: R) -> &mut Self
+pub fn bat::PrettyPrinter::input_stdin(&mut self) -> &mut Self
+pub fn bat::PrettyPrinter::inputs<impl IntoIterator<Item = Input<'a>>: IntoIterator<Item = Input<'a>>>(&mut self, inputs: impl IntoIterator<Item = Input<'a>>) -> &mut Self
+pub fn bat::PrettyPrinter::into(self) -> U
+pub fn bat::PrettyPrinter::language(&mut self, language: &'a str) -> &mut Self
+pub fn bat::PrettyPrinter::line_numbers(&mut self, yes: bool) -> &mut Self
+pub fn bat::PrettyPrinter::line_ranges(&mut self, ranges: LineRanges) -> &mut Self
+pub fn bat::PrettyPrinter::new() -> Self
+pub fn bat::PrettyPrinter::pager(&mut self, cmd: &'a str) -> &mut Self
+pub fn bat::PrettyPrinter::paging_mode(&mut self, mode: PagingMode) -> &mut Self
+pub fn bat::PrettyPrinter::print(&mut self) -> Result<bool>
+pub fn bat::PrettyPrinter::rule(&mut self, yes: bool) -> &mut Self
+pub fn bat::PrettyPrinter::snip(&mut self, yes: bool) -> &mut Self
+pub fn bat::PrettyPrinter::syntax_mapping(&mut self, mapping: SyntaxMapping<'a>) -> &mut Self
+pub fn bat::PrettyPrinter::syntaxes(&self) -> impl Iterator<Item = &SyntaxReference>
+pub fn bat::PrettyPrinter::tab_width(&mut self, tab_width: Option<usize>) -> &mut Self
+pub fn bat::PrettyPrinter::term_width(&mut self, width: usize) -> &mut Self
+pub fn bat::PrettyPrinter::theme<impl AsRef<str>: AsRef<str>>(&mut self, theme: impl AsRef<str>) -> &mut Self
+pub fn bat::PrettyPrinter::themes(&self) -> impl Iterator<Item = &str>
+pub fn bat::PrettyPrinter::true_color(&mut self, yes: bool) -> &mut Self
+pub fn bat::PrettyPrinter::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
+pub fn bat::PrettyPrinter::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
+pub fn bat::PrettyPrinter::type_id(&self) -> TypeId
+pub fn bat::PrettyPrinter::use_italics(&mut self, yes: bool) -> &mut Self
+pub fn bat::PrettyPrinter::vcs_modification_markers(&mut self, yes: bool) -> &mut Self
+pub fn bat::PrettyPrinter::wrapping_mode(&mut self, mode: WrappingMode) -> &mut Self
+pub fn bat::SyntaxMapping::borrow(&self) -> &T
+pub fn bat::SyntaxMapping::borrow_mut(&mut self) -> &mut T
+pub fn bat::SyntaxMapping::builtin() -> SyntaxMapping<'a>
+pub fn bat::SyntaxMapping::clone(&self) -> SyntaxMapping<'a>
+pub fn bat::SyntaxMapping::clone_into(&self, target: &mut T) -> ()
+pub fn bat::SyntaxMapping::default() -> SyntaxMapping<'a>
+pub fn bat::SyntaxMapping::empty() -> SyntaxMapping<'a>
+pub fn bat::SyntaxMapping::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
+pub fn bat::SyntaxMapping::from(t: T) -> T
+pub fn bat::SyntaxMapping::insert(&mut self, from: &str, to: MappingTarget<'a>) -> Result<()>
+pub fn bat::SyntaxMapping::insert_ignored_suffix(&mut self, suffix: &'a str)
+pub fn bat::SyntaxMapping::into(self) -> U
+pub fn bat::SyntaxMapping::mappings(&self) -> &[(GlobMatcher,MappingTarget<'a>)]
+pub fn bat::SyntaxMapping::to_owned(&self) -> T
+pub fn bat::SyntaxMapping::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
+pub fn bat::SyntaxMapping::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
+pub fn bat::SyntaxMapping::type_id(&self) -> TypeId
+pub fn bat::WrappingMode::borrow(&self) -> &T
+pub fn bat::WrappingMode::borrow_mut(&mut self) -> &mut T
+pub fn bat::WrappingMode::clone(&self) -> WrappingMode
+pub fn bat::WrappingMode::clone_into(&self, target: &mut T) -> ()
+pub fn bat::WrappingMode::default() -> Self
+pub fn bat::WrappingMode::eq(&self, other: &WrappingMode) -> bool
+pub fn bat::WrappingMode::equivalent(&self, key: &K) -> bool
+pub fn bat::WrappingMode::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
+pub fn bat::WrappingMode::from(t: T) -> T
+pub fn bat::WrappingMode::into(self) -> U
+pub fn bat::WrappingMode::ne(&self, other: &WrappingMode) -> bool
+pub fn bat::WrappingMode::to_owned(&self) -> T
+pub fn bat::WrappingMode::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
+pub fn bat::WrappingMode::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
+pub fn bat::WrappingMode::type_id(&self) -> TypeId
+pub fn bat::assets::HighlightingAssets::borrow(&self) -> &T
+pub fn bat::assets::HighlightingAssets::borrow_mut(&mut self) -> &mut T
+pub fn bat::assets::HighlightingAssets::default_theme() -> &'static str
+pub fn bat::assets::HighlightingAssets::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
+pub fn bat::assets::HighlightingAssets::from(t: T) -> T
+pub fn bat::assets::HighlightingAssets::from_binary() -> Self
+pub fn bat::assets::HighlightingAssets::from_cache(cache_path: &Path) -> Result<Self>
+pub fn bat::assets::HighlightingAssets::get_syntax_for_path<impl AsRef<Path>: AsRef<Path>>(&self, path: impl AsRef<Path>, mapping: &SyntaxMapping<'_>) -> Result<SyntaxReferenceInSet<'_>>
+pub fn bat::assets::HighlightingAssets::get_syntaxes(&self) -> Result<&[SyntaxReference]>
+pub fn bat::assets::HighlightingAssets::into(self) -> U
+pub fn bat::assets::HighlightingAssets::set_fallback_theme(&mut self, theme: &'static str)
+pub fn bat::assets::HighlightingAssets::syntax_for_file_name<impl AsRef<Path>: AsRef<Path>>(&self, file_name: impl AsRef<Path>, mapping: &SyntaxMapping<'_>) -> Option<&SyntaxReference>
+pub fn bat::assets::HighlightingAssets::syntaxes(&self) -> &[SyntaxReference]
+pub fn bat::assets::HighlightingAssets::themes(&self) -> impl Iterator<Item = &str>
+pub fn bat::assets::HighlightingAssets::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
+pub fn bat::assets::HighlightingAssets::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
+pub fn bat::assets::HighlightingAssets::type_id(&self) -> TypeId
+pub fn bat::assets::SyntaxReferenceInSet::borrow(&self) -> &T
+pub fn bat::assets::SyntaxReferenceInSet::borrow_mut(&mut self) -> &mut T
+pub fn bat::assets::SyntaxReferenceInSet::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
+pub fn bat::assets::SyntaxReferenceInSet::from(t: T) -> T
+pub fn bat::assets::SyntaxReferenceInSet::into(self) -> U
+pub fn bat::assets::SyntaxReferenceInSet::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
+pub fn bat::assets::SyntaxReferenceInSet::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
+pub fn bat::assets::SyntaxReferenceInSet::type_id(&self) -> TypeId
+pub fn bat::assets::build(source_dir: &Path, include_integrated_assets: bool, include_acknowledgements: bool, target_dir: &Path, current_version: &str) -> Result<()>
+pub fn bat::assets::get_acknowledgements() -> String
+pub fn bat::assets_metadata::AssetsMetadata::borrow(&self) -> &T
+pub fn bat::assets_metadata::AssetsMetadata::borrow_mut(&mut self) -> &mut T
+pub fn bat::assets_metadata::AssetsMetadata::default() -> AssetsMetadata
+pub fn bat::assets_metadata::AssetsMetadata::deserialize<__D>(__deserializer: __D) -> _serde::__private::Result<Self, <__D as >::Error> where __D: _serde::Deserializer<'de>
+pub fn bat::assets_metadata::AssetsMetadata::eq(&self, other: &AssetsMetadata) -> bool
+pub fn bat::assets_metadata::AssetsMetadata::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
+pub fn bat::assets_metadata::AssetsMetadata::from(t: T) -> T
+pub fn bat::assets_metadata::AssetsMetadata::into(self) -> U
+pub fn bat::assets_metadata::AssetsMetadata::is_compatible_with(&self, current_version: &str) -> bool
+pub fn bat::assets_metadata::AssetsMetadata::load_from_folder(path: &Path) -> Result<Option<Self>>
+pub fn bat::assets_metadata::AssetsMetadata::ne(&self, other: &AssetsMetadata) -> bool
+pub fn bat::assets_metadata::AssetsMetadata::serialize<__S>(&self, __serializer: __S) -> _serde::__private::Result<<__S as >::Ok, <__S as >::Error> where __S: _serde::Serializer
+pub fn bat::assets_metadata::AssetsMetadata::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
+pub fn bat::assets_metadata::AssetsMetadata::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
+pub fn bat::assets_metadata::AssetsMetadata::type_id(&self) -> TypeId
+pub fn bat::config::Config::borrow(&self) -> &T
+pub fn bat::config::Config::borrow_mut(&mut self) -> &mut T
+pub fn bat::config::Config::clone(&self) -> Config<'a>
+pub fn bat::config::Config::clone_into(&self, target: &mut T) -> ()
+pub fn bat::config::Config::default() -> Config<'a>
+pub fn bat::config::Config::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
+pub fn bat::config::Config::from(t: T) -> T
+pub fn bat::config::Config::into(self) -> U
+pub fn bat::config::Config::to_owned(&self) -> T
+pub fn bat::config::Config::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
+pub fn bat::config::Config::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
+pub fn bat::config::Config::type_id(&self) -> TypeId
+pub fn bat::config::VisibleLines::borrow(&self) -> &T
+pub fn bat::config::VisibleLines::borrow_mut(&mut self) -> &mut T
+pub fn bat::config::VisibleLines::clone(&self) -> VisibleLines
+pub fn bat::config::VisibleLines::clone_into(&self, target: &mut T) -> ()
+pub fn bat::config::VisibleLines::default() -> Self
+pub fn bat::config::VisibleLines::diff_mode(&self) -> bool
+pub fn bat::config::VisibleLines::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
+pub fn bat::config::VisibleLines::from(t: T) -> T
+pub fn bat::config::VisibleLines::into(self) -> U
+pub fn bat::config::VisibleLines::to_owned(&self) -> T
+pub fn bat::config::VisibleLines::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
+pub fn bat::config::VisibleLines::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
+pub fn bat::config::VisibleLines::type_id(&self) -> TypeId
+pub fn bat::config::get_pager_executable(config_pager: Option<&str>) -> Option<String>
+pub fn bat::controller::Controller::borrow(&self) -> &T
+pub fn bat::controller::Controller::borrow_mut(&mut self) -> &mut T
+pub fn bat::controller::Controller::from(t: T) -> T
+pub fn bat::controller::Controller::into(self) -> U
+pub fn bat::controller::Controller::new<'a>(config: &'a Config<'_>, assets: &'a HighlightingAssets) -> Controller<'a>
+pub fn bat::controller::Controller::run(&self, inputs: Vec<Input<'_>>) -> Result<bool>
+pub fn bat::controller::Controller::run_with_error_handler<impl Fn(&Error, &mut dyn Write): FnFn<&Error, &mut Write>>(&self, inputs: Vec<Input<'_>>, handle_error: impl FnFn<&Error, &mut Write>) -> Result<bool>
+pub fn bat::controller::Controller::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
+pub fn bat::controller::Controller::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
+pub fn bat::controller::Controller::type_id(&self) -> TypeId
+pub fn bat::error::Error::borrow(&self) -> &T
+pub fn bat::error::Error::borrow_mut(&mut self) -> &mut T
+pub fn bat::error::Error::fmt(&self, __formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
+pub fn bat::error::Error::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
+pub fn bat::error::Error::from(s: &'static str) -> Self
+pub fn bat::error::Error::from(s: String) -> Self
+pub fn bat::error::Error::from(source: ::globset::Error) -> Self
+pub fn bat::error::Error::from(source: ::serde_yaml::Error) -> Self
+pub fn bat::error::Error::from(source: ::std::io::Error) -> Self
+pub fn bat::error::Error::from(source: ::std::num::ParseIntError) -> Self
+pub fn bat::error::Error::from(source: ::syntect::LoadingError) -> Self
+pub fn bat::error::Error::from(t: T) -> T
+pub fn bat::error::Error::into(self) -> U
+pub fn bat::error::Error::source(&self) -> std::option::Option<&std::error::Error + 'static>
+pub fn bat::error::Error::to_string(&self) -> String
+pub fn bat::error::Error::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
+pub fn bat::error::Error::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
+pub fn bat::error::Error::type_id(&self) -> TypeId
+pub fn bat::error::default_error_handler(error: &Error, output: &mut Write)
+pub fn bat::input::Input::borrow(&self) -> &T
+pub fn bat::input::Input::borrow_mut(&mut self) -> &mut T
+pub fn bat::input::Input::description(&self) -> &InputDescription
+pub fn bat::input::Input::description_mut(&mut self) -> &mut InputDescription
+pub fn bat::input::Input::from(_: Input<'a>) -> Self
+pub fn bat::input::Input::from(t: T) -> T
+pub fn bat::input::Input::from_reader(reader: Box<Read + 'a>) -> Self
+pub fn bat::input::Input::into(self) -> U
+pub fn bat::input::Input::is_stdin(&self) -> bool
+pub fn bat::input::Input::ordinary_file<impl AsRef<Path>: AsRef<Path>>(path: impl AsRef<Path>) -> Self
+pub fn bat::input::Input::stdin() -> Self
+pub fn bat::input::Input::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
+pub fn bat::input::Input::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
+pub fn bat::input::Input::type_id(&self) -> TypeId
+pub fn bat::input::Input::with_name<impl AsRef<Path>: AsRef<Path>>(self, provided_name: Option<impl AsRef<Path>>) -> Self
+pub fn bat::input::InputDescription::borrow(&self) -> &T
+pub fn bat::input::InputDescription::borrow_mut(&mut self) -> &mut T
+pub fn bat::input::InputDescription::clone(&self) -> InputDescription
+pub fn bat::input::InputDescription::clone_into(&self, target: &mut T) -> ()
+pub fn bat::input::InputDescription::from(t: T) -> T
+pub fn bat::input::InputDescription::into(self) -> U
+pub fn bat::input::InputDescription::kind(&self) -> Option<&String>
+pub fn bat::input::InputDescription::new<impl Into<String>: Into<String>>(name: impl Into<String>) -> Self
+pub fn bat::input::InputDescription::set_kind(&mut self, kind: Option<String>)
+pub fn bat::input::InputDescription::set_summary(&mut self, summary: Option<String>)
+pub fn bat::input::InputDescription::set_title(&mut self, title: Option<String>)
+pub fn bat::input::InputDescription::summary(&self) -> String
+pub fn bat::input::InputDescription::title(&self) -> &String
+pub fn bat::input::InputDescription::to_owned(&self) -> T
+pub fn bat::input::InputDescription::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
+pub fn bat::input::InputDescription::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
+pub fn bat::input::InputDescription::type_id(&self) -> TypeId
+pub fn bat::line_range::HighlightedLineRanges::borrow(&self) -> &T
+pub fn bat::line_range::HighlightedLineRanges::borrow_mut(&mut self) -> &mut T
+pub fn bat::line_range::HighlightedLineRanges::clone(&self) -> HighlightedLineRanges
+pub fn bat::line_range::HighlightedLineRanges::clone_into(&self, target: &mut T) -> ()
+pub fn bat::line_range::HighlightedLineRanges::default() -> Self
+pub fn bat::line_range::HighlightedLineRanges::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
+pub fn bat::line_range::HighlightedLineRanges::from(t: T) -> T
+pub fn bat::line_range::HighlightedLineRanges::into(self) -> U
+pub fn bat::line_range::HighlightedLineRanges::to_owned(&self) -> T
+pub fn bat::line_range::HighlightedLineRanges::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
+pub fn bat::line_range::HighlightedLineRanges::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
+pub fn bat::line_range::HighlightedLineRanges::type_id(&self) -> TypeId
+pub fn bat::line_range::LineRange::borrow(&self) -> &T
+pub fn bat::line_range::LineRange::borrow_mut(&mut self) -> &mut T
+pub fn bat::line_range::LineRange::clone(&self) -> LineRange
+pub fn bat::line_range::LineRange::clone_into(&self, target: &mut T) -> ()
+pub fn bat::line_range::LineRange::default() -> LineRange
+pub fn bat::line_range::LineRange::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
+pub fn bat::line_range::LineRange::from(range_raw: &str) -> Result<LineRange>
+pub fn bat::line_range::LineRange::from(t: T) -> T
+pub fn bat::line_range::LineRange::into(self) -> U
+pub fn bat::line_range::LineRange::new(from: usize, to: usize) -> Self
+pub fn bat::line_range::LineRange::to_owned(&self) -> T
+pub fn bat::line_range::LineRange::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
+pub fn bat::line_range::LineRange::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
+pub fn bat::line_range::LineRange::type_id(&self) -> TypeId
+pub fn bat::line_range::LineRanges::all() -> LineRanges
+pub fn bat::line_range::LineRanges::borrow(&self) -> &T
+pub fn bat::line_range::LineRanges::borrow_mut(&mut self) -> &mut T
+pub fn bat::line_range::LineRanges::clone(&self) -> LineRanges
+pub fn bat::line_range::LineRanges::clone_into(&self, target: &mut T) -> ()
+pub fn bat::line_range::LineRanges::default() -> Self
+pub fn bat::line_range::LineRanges::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
+pub fn bat::line_range::LineRanges::from(ranges: Vec<LineRange>) -> LineRanges
+pub fn bat::line_range::LineRanges::from(t: T) -> T
+pub fn bat::line_range::LineRanges::into(self) -> U
+pub fn bat::line_range::LineRanges::none() -> LineRanges
+pub fn bat::line_range::LineRanges::to_owned(&self) -> T
+pub fn bat::line_range::LineRanges::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
+pub fn bat::line_range::LineRanges::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
+pub fn bat::line_range::LineRanges::type_id(&self) -> TypeId
+pub fn bat::line_range::RangeCheckResult::borrow(&self) -> &T
+pub fn bat::line_range::RangeCheckResult::borrow_mut(&mut self) -> &mut T
+pub fn bat::line_range::RangeCheckResult::clone(&self) -> RangeCheckResult
+pub fn bat::line_range::RangeCheckResult::clone_into(&self, target: &mut T) -> ()
+pub fn bat::line_range::RangeCheckResult::eq(&self, other: &RangeCheckResult) -> bool
+pub fn bat::line_range::RangeCheckResult::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
+pub fn bat::line_range::RangeCheckResult::from(t: T) -> T
+pub fn bat::line_range::RangeCheckResult::into(self) -> U
+pub fn bat::line_range::RangeCheckResult::to_owned(&self) -> T
+pub fn bat::line_range::RangeCheckResult::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
+pub fn bat::line_range::RangeCheckResult::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
+pub fn bat::line_range::RangeCheckResult::type_id(&self) -> TypeId
+pub fn bat::style::StyleComponent::borrow(&self) -> &T
+pub fn bat::style::StyleComponent::borrow_mut(&mut self) -> &mut T
+pub fn bat::style::StyleComponent::clone(&self) -> StyleComponent
+pub fn bat::style::StyleComponent::clone_into(&self, target: &mut T) -> ()
+pub fn bat::style::StyleComponent::components(self, interactive_terminal: bool) -> &'static [StyleComponent]
+pub fn bat::style::StyleComponent::eq(&self, other: &StyleComponent) -> bool
+pub fn bat::style::StyleComponent::equivalent(&self, key: &K) -> bool
+pub fn bat::style::StyleComponent::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
+pub fn bat::style::StyleComponent::from(t: T) -> T
+pub fn bat::style::StyleComponent::from_str(s: &str) -> Result<Self>
+pub fn bat::style::StyleComponent::hash<__H: $crate::hash::Hasher>(&self, state: &mut __H) -> ()
+pub fn bat::style::StyleComponent::into(self) -> U
+pub fn bat::style::StyleComponent::to_owned(&self) -> T
+pub fn bat::style::StyleComponent::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
+pub fn bat::style::StyleComponent::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
+pub fn bat::style::StyleComponent::type_id(&self) -> TypeId
+pub fn bat::style::StyleComponents::borrow(&self) -> &T
+pub fn bat::style::StyleComponents::borrow_mut(&mut self) -> &mut T
+pub fn bat::style::StyleComponents::changes(&self) -> bool
+pub fn bat::style::StyleComponents::clone(&self) -> StyleComponents
+pub fn bat::style::StyleComponents::clone_into(&self, target: &mut T) -> ()
+pub fn bat::style::StyleComponents::default() -> StyleComponents
+pub fn bat::style::StyleComponents::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
+pub fn bat::style::StyleComponents::from(t: T) -> T
+pub fn bat::style::StyleComponents::grid(&self) -> bool
+pub fn bat::style::StyleComponents::header(&self) -> bool
+pub fn bat::style::StyleComponents::into(self) -> U
+pub fn bat::style::StyleComponents::new(components: &[StyleComponent]) -> StyleComponents
+pub fn bat::style::StyleComponents::numbers(&self) -> bool
+pub fn bat::style::StyleComponents::plain(&self) -> bool
+pub fn bat::style::StyleComponents::rule(&self) -> bool
+pub fn bat::style::StyleComponents::snip(&self) -> bool
+pub fn bat::style::StyleComponents::to_owned(&self) -> T
+pub fn bat::style::StyleComponents::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
+pub fn bat::style::StyleComponents::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
+pub fn bat::style::StyleComponents::type_id(&self) -> TypeId
+pub macro bat::bat_warning!
+pub mod bat
+pub mod bat::assets
+pub mod bat::assets_metadata
+pub mod bat::config
+pub mod bat::controller
+pub mod bat::error
+pub mod bat::input
+pub mod bat::line_range
+pub mod bat::style
+pub struct bat::Input<'a>
+pub struct bat::PrettyPrinter<'a>
+pub struct bat::SyntaxMapping<'a>
+pub struct bat::assets::HighlightingAssets
+pub struct bat::assets::SyntaxReferenceInSet<'a>
+pub struct bat::assets_metadata::AssetsMetadata
+pub struct bat::config::Config<'a>
+pub struct bat::controller::Controller<'a>
+pub struct bat::input::Input<'a>
+pub struct bat::input::InputDescription
+pub struct bat::line_range::HighlightedLineRanges
+pub struct bat::line_range::LineRange
+pub struct bat::line_range::LineRanges
+pub struct bat::style::StyleComponents
+pub struct field bat::assets::SyntaxReferenceInSet::syntax: &'a SyntaxReference
+pub struct field bat::assets::SyntaxReferenceInSet::syntax_set: &'a SyntaxSet
+pub struct field bat::config::Config::colored_output: bool
+pub struct field bat::config::Config::highlighted_lines: HighlightedLineRanges
+pub struct field bat::config::Config::language: Option<&'a str>
+pub struct field bat::config::Config::loop_through: bool
+pub struct field bat::config::Config::pager: Option<&'a str>
+pub struct field bat::config::Config::paging_mode: PagingMode
+pub struct field bat::config::Config::show_nonprintable: bool
+pub struct field bat::config::Config::style_components: StyleComponents
+pub struct field bat::config::Config::syntax_mapping: SyntaxMapping<'a>
+pub struct field bat::config::Config::tab_width: usize
+pub struct field bat::config::Config::term_width: usize
+pub struct field bat::config::Config::theme: String
+pub struct field bat::config::Config::true_color: bool
+pub struct field bat::config::Config::use_custom_assets: bool
+pub struct field bat::config::Config::use_italic_text: bool
+pub struct field bat::config::Config::visible_lines: VisibleLines
+pub struct field bat::config::Config::wrapping_mode: WrappingMode
+pub struct field bat::line_range::HighlightedLineRanges::0: LineRanges
+pub struct field bat::style::StyleComponents::0: HashSet<StyleComponent>
+pub type bat::Input::Error = <U as TryFrom<T>>::Error
+pub type bat::Input::Error = Infallible
+pub type bat::MappingTarget::Error = <U as TryFrom<T>>::Error
+pub type bat::MappingTarget::Error = Infallible
+pub type bat::MappingTarget::Owned = T
+pub type bat::PagingMode::Error = <U as TryFrom<T>>::Error
+pub type bat::PagingMode::Error = Infallible
+pub type bat::PagingMode::Owned = T
+pub type bat::PrettyPrinter::Error = <U as TryFrom<T>>::Error
+pub type bat::PrettyPrinter::Error = Infallible
+pub type bat::SyntaxMapping::Error = <U as TryFrom<T>>::Error
+pub type bat::SyntaxMapping::Error = Infallible
+pub type bat::SyntaxMapping::Owned = T
+pub type bat::WrappingMode::Error = <U as TryFrom<T>>::Error
+pub type bat::WrappingMode::Error = Infallible
+pub type bat::WrappingMode::Owned = T
+pub type bat::assets::HighlightingAssets::Error = <U as TryFrom<T>>::Error
+pub type bat::assets::HighlightingAssets::Error = Infallible
+pub type bat::assets::SyntaxReferenceInSet::Error = <U as TryFrom<T>>::Error
+pub type bat::assets::SyntaxReferenceInSet::Error = Infallible
+pub type bat::assets_metadata::AssetsMetadata::Error = <U as TryFrom<T>>::Error
+pub type bat::assets_metadata::AssetsMetadata::Error = Infallible
+pub type bat::config::Config::Error = <U as TryFrom<T>>::Error
+pub type bat::config::Config::Error = Infallible
+pub type bat::config::Config::Owned = T
+pub type bat::config::VisibleLines::Error = <U as TryFrom<T>>::Error
+pub type bat::config::VisibleLines::Error = Infallible
+pub type bat::config::VisibleLines::Owned = T
+pub type bat::controller::Controller::Error = <U as TryFrom<T>>::Error
+pub type bat::controller::Controller::Error = Infallible
+pub type bat::error::Error::Error = <U as TryFrom<T>>::Error
+pub type bat::error::Error::Error = Infallible
+pub type bat::error::Result<T> = std::result::Result<T, Error>
+pub type bat::input::Input::Error = <U as TryFrom<T>>::Error
+pub type bat::input::Input::Error = Infallible
+pub type bat::input::InputDescription::Error = <U as TryFrom<T>>::Error
+pub type bat::input::InputDescription::Error = Infallible
+pub type bat::input::InputDescription::Owned = T
+pub type bat::line_range::HighlightedLineRanges::Error = <U as TryFrom<T>>::Error
+pub type bat::line_range::HighlightedLineRanges::Error = Infallible
+pub type bat::line_range::HighlightedLineRanges::Owned = T
+pub type bat::line_range::LineRange::Error = <U as TryFrom<T>>::Error
+pub type bat::line_range::LineRange::Error = Infallible
+pub type bat::line_range::LineRange::Owned = T
+pub type bat::line_range::LineRanges::Error = <U as TryFrom<T>>::Error
+pub type bat::line_range::LineRanges::Error = Infallible
+pub type bat::line_range::LineRanges::Owned = T
+pub type bat::line_range::RangeCheckResult::Error = <U as TryFrom<T>>::Error
+pub type bat::line_range::RangeCheckResult::Error = Infallible
+pub type bat::line_range::RangeCheckResult::Owned = T
+pub type bat::style::StyleComponent::Err = Error
+pub type bat::style::StyleComponent::Error = <U as TryFrom<T>>::Error
+pub type bat::style::StyleComponent::Error = Infallible
+pub type bat::style::StyleComponent::Owned = T
+pub type bat::style::StyleComponents::Error = <U as TryFrom<T>>::Error
+pub type bat::style::StyleComponents::Error = Infallible
+pub type bat::style::StyleComponents::Owned = T

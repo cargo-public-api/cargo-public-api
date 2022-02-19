@@ -3,6 +3,12 @@ set -o nounset -o pipefail -o errexit
 
 base="tests/rustdoc_json"
 
-for input in syntect-v4.6.0 thiserror-v1.0.30; do
-    printf "%s" "$(cargo run ${base}/${input}_FORMAT_VERSION_10.json)" > "${base}/${input}-expected.txt"
+crates="
+    bat-v0.19.0
+    syntect-v4.6.0
+    thiserror-v1.0.30
+"
+
+for crate in ${crates}; do
+    printf "%s" "$(cargo run ${base}/${crate}_FORMAT_VERSION_10.json)" > "${base}/${crate}-expected.txt"
 done

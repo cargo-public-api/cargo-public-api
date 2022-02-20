@@ -108,7 +108,7 @@ pub fn syntect::easy::HighlightFile::type_id(&self) -> TypeId
 pub fn syntect::easy::HighlightLines::borrow(&self) -> &T
 pub fn syntect::easy::HighlightLines::borrow_mut(&mut self) -> &mut T
 pub fn syntect::easy::HighlightLines::from(t: T) -> T
-pub fn syntect::easy::HighlightLines::highlight<'b>(&mut self, line: &'b str, syntax_set: &SyntaxSet) -> Vec<(Style,&'b str)>
+pub fn syntect::easy::HighlightLines::highlight<'b>(&mut self, line: &'b str, syntax_set: &SyntaxSet) -> Vec<(Style, &'b str)>
 pub fn syntect::easy::HighlightLines::into(self) -> U
 pub fn syntect::easy::HighlightLines::new(syntax: &SyntaxReference, theme: &'a Theme) -> HighlightLines<'a>
 pub fn syntect::easy::HighlightLines::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
@@ -120,7 +120,7 @@ pub fn syntect::easy::ScopeRegionIterator::fmt(&self, f: &mut $crate::fmt::Forma
 pub fn syntect::easy::ScopeRegionIterator::from(t: T) -> T
 pub fn syntect::easy::ScopeRegionIterator::into(self) -> U
 pub fn syntect::easy::ScopeRegionIterator::into_iter(self) -> I
-pub fn syntect::easy::ScopeRegionIterator::new(ops: &'a [(usize,ScopeStackOp)], line: &'a str) -> ScopeRegionIterator<'a>
+pub fn syntect::easy::ScopeRegionIterator::new(ops: &'a [(usize, ScopeStackOp)], line: &'a str) -> ScopeRegionIterator<'a>
 pub fn syntect::easy::ScopeRegionIterator::next(&mut self) -> Option<<Self as >::Item>
 pub fn syntect::easy::ScopeRegionIterator::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
 pub fn syntect::easy::ScopeRegionIterator::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
@@ -204,8 +204,8 @@ pub fn syntect::highlighting::HighlightIterator::fmt(&self, f: &mut $crate::fmt:
 pub fn syntect::highlighting::HighlightIterator::from(t: T) -> T
 pub fn syntect::highlighting::HighlightIterator::into(self) -> U
 pub fn syntect::highlighting::HighlightIterator::into_iter(self) -> I
-pub fn syntect::highlighting::HighlightIterator::new(state: &'a mut HighlightState, changes: &'a [(usize,ScopeStackOp)], text: &'b str, highlighter: &'a Highlighter<'_>) -> HighlightIterator<'a, 'b>
-pub fn syntect::highlighting::HighlightIterator::next(&mut self) -> Option<(Style,&'b str)>
+pub fn syntect::highlighting::HighlightIterator::new(state: &'a mut HighlightState, changes: &'a [(usize, ScopeStackOp)], text: &'b str, highlighter: &'a Highlighter<'_>) -> HighlightIterator<'a, 'b>
+pub fn syntect::highlighting::HighlightIterator::next(&mut self) -> Option<(Style, &'b str)>
 pub fn syntect::highlighting::HighlightIterator::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
 pub fn syntect::highlighting::HighlightIterator::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
 pub fn syntect::highlighting::HighlightIterator::type_id(&self) -> TypeId
@@ -251,8 +251,8 @@ pub fn syntect::highlighting::RangedHighlightIterator::fmt(&self, f: &mut $crate
 pub fn syntect::highlighting::RangedHighlightIterator::from(t: T) -> T
 pub fn syntect::highlighting::RangedHighlightIterator::into(self) -> U
 pub fn syntect::highlighting::RangedHighlightIterator::into_iter(self) -> I
-pub fn syntect::highlighting::RangedHighlightIterator::new(state: &'a mut HighlightState, changes: &'a [(usize,ScopeStackOp)], text: &'b str, highlighter: &'a Highlighter<'_>) -> RangedHighlightIterator<'a, 'b>
-pub fn syntect::highlighting::RangedHighlightIterator::next(&mut self) -> Option<(Style,&'b str,Range<usize>)>
+pub fn syntect::highlighting::RangedHighlightIterator::new(state: &'a mut HighlightState, changes: &'a [(usize, ScopeStackOp)], text: &'b str, highlighter: &'a Highlighter<'_>) -> RangedHighlightIterator<'a, 'b>
+pub fn syntect::highlighting::RangedHighlightIterator::next(&mut self) -> Option<(Style, &'b str, Range<usize>)>
 pub fn syntect::highlighting::RangedHighlightIterator::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
 pub fn syntect::highlighting::RangedHighlightIterator::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
 pub fn syntect::highlighting::RangedHighlightIterator::type_id(&self) -> TypeId
@@ -471,16 +471,16 @@ pub fn syntect::html::IncludeBackground::to_owned(&self) -> T
 pub fn syntect::html::IncludeBackground::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
 pub fn syntect::html::IncludeBackground::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
 pub fn syntect::html::IncludeBackground::type_id(&self) -> TypeId
-pub fn syntect::html::append_highlighted_html_for_styled_line(v: &[(Style,&str)], bg: IncludeBackground, s: &mut String)
+pub fn syntect::html::append_highlighted_html_for_styled_line(v: &[(Style, &str)], bg: IncludeBackground, s: &mut String)
 pub fn syntect::html::css_for_theme(theme: &Theme) -> String
 pub fn syntect::html::css_for_theme_with_class_style(theme: &Theme, style: ClassStyle) -> String
 pub fn syntect::html::highlighted_html_for_file<P: AsRef<Path>>(path: P, ss: &SyntaxSet, theme: &Theme) -> io::Result<String>
 pub fn syntect::html::highlighted_html_for_string(s: &str, ss: &SyntaxSet, syntax: &SyntaxReference, theme: &Theme) -> String
-pub fn syntect::html::line_tokens_to_classed_spans(line: &str, ops: &[(usize,ScopeStackOp)], style: ClassStyle, stack: &mut ScopeStack) -> (String,isize)
-pub fn syntect::html::start_highlighted_html_snippet(t: &Theme) -> (String,Color)
-pub fn syntect::html::styled_line_to_highlighted_html(v: &[(Style,&str)], bg: IncludeBackground) -> String
-pub fn syntect::html::tokens_to_classed_html(line: &str, ops: &[(usize,ScopeStackOp)], style: ClassStyle) -> String
-pub fn syntect::html::tokens_to_classed_spans(line: &str, ops: &[(usize,ScopeStackOp)], style: ClassStyle) -> (String,isize)
+pub fn syntect::html::line_tokens_to_classed_spans(line: &str, ops: &[(usize, ScopeStackOp)], style: ClassStyle, stack: &mut ScopeStack) -> (String, isize)
+pub fn syntect::html::start_highlighted_html_snippet(t: &Theme) -> (String, Color)
+pub fn syntect::html::styled_line_to_highlighted_html(v: &[(Style, &str)], bg: IncludeBackground) -> String
+pub fn syntect::html::tokens_to_classed_html(line: &str, ops: &[(usize, ScopeStackOp)], style: ClassStyle) -> String
+pub fn syntect::html::tokens_to_classed_spans(line: &str, ops: &[(usize, ScopeStackOp)], style: ClassStyle) -> (String, isize)
 pub fn syntect::parsing::BasicScopeStackOp::borrow(&self) -> &T
 pub fn syntect::parsing::BasicScopeStackOp::borrow_mut(&mut self) -> &mut T
 pub fn syntect::parsing::BasicScopeStackOp::clone(&self) -> BasicScopeStackOp
@@ -546,7 +546,7 @@ pub fn syntect::parsing::ParseState::from(t: T) -> T
 pub fn syntect::parsing::ParseState::into(self) -> U
 pub fn syntect::parsing::ParseState::ne(&self, other: &ParseState) -> bool
 pub fn syntect::parsing::ParseState::new(syntax: &SyntaxReference) -> ParseState
-pub fn syntect::parsing::ParseState::parse_line(&mut self, line: &str, syntax_set: &SyntaxSet) -> Vec<(usize,ScopeStackOp)>
+pub fn syntect::parsing::ParseState::parse_line(&mut self, line: &str, syntax_set: &SyntaxSet) -> Vec<(usize, ScopeStackOp)>
 pub fn syntect::parsing::ParseState::to_owned(&self) -> T
 pub fn syntect::parsing::ParseState::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
 pub fn syntect::parsing::ParseState::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
@@ -593,7 +593,7 @@ pub fn syntect::parsing::Region::from(t: T) -> T
 pub fn syntect::parsing::Region::into(self) -> U
 pub fn syntect::parsing::Region::ne(&self, other: &Region) -> bool
 pub fn syntect::parsing::Region::new() -> Self
-pub fn syntect::parsing::Region::pos(&self, index: usize) -> Option<(usize,usize)>
+pub fn syntect::parsing::Region::pos(&self, index: usize) -> Option<(usize, usize)>
 pub fn syntect::parsing::Region::to_owned(&self) -> T
 pub fn syntect::parsing::Region::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
 pub fn syntect::parsing::Region::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
@@ -810,7 +810,7 @@ pub fn syntect::parsing::syntax_definition::MatchIter::fmt(&self, f: &mut $crate
 pub fn syntect::parsing::syntax_definition::MatchIter::from(t: T) -> T
 pub fn syntect::parsing::syntax_definition::MatchIter::into(self) -> U
 pub fn syntect::parsing::syntax_definition::MatchIter::into_iter(self) -> I
-pub fn syntect::parsing::syntax_definition::MatchIter::next(&mut self) -> Option<(&'a Context,usize)>
+pub fn syntect::parsing::syntax_definition::MatchIter::next(&mut self) -> Option<(&'a Context, usize)>
 pub fn syntect::parsing::syntax_definition::MatchIter::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
 pub fn syntect::parsing::syntax_definition::MatchIter::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
 pub fn syntect::parsing::syntax_definition::MatchIter::type_id(&self) -> TypeId
@@ -893,11 +893,11 @@ pub fn syntect::util::LinesWithEndings::next(&mut self) -> Option<&'a str>
 pub fn syntect::util::LinesWithEndings::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
 pub fn syntect::util::LinesWithEndings::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
 pub fn syntect::util::LinesWithEndings::type_id(&self) -> TypeId
-pub fn syntect::util::as_24_bit_terminal_escaped(v: &[(Style,&str)], bg: bool) -> String
-pub fn syntect::util::as_latex_escaped(v: &[(Style,&str)]) -> String
-pub fn syntect::util::debug_print_ops(line: &str, ops: &[(usize,ScopeStackOp)])
-pub fn syntect::util::modify_range<'a>(v: &[(Style,&'a str)], r: Range<usize>, modifier: StyleModifier) -> Vec<(Style,&'a str)>
-pub fn syntect::util::split_at<'a, A: Clone>(v: &[(A,&'a str)], split_i: usize) -> (Vec<(A,&'a str)>,Vec<(A,&'a str)>)
+pub fn syntect::util::as_24_bit_terminal_escaped(v: &[(Style, &str)], bg: bool) -> String
+pub fn syntect::util::as_latex_escaped(v: &[(Style, &str)]) -> String
+pub fn syntect::util::debug_print_ops(line: &str, ops: &[(usize, ScopeStackOp)])
+pub fn syntect::util::modify_range<'a>(v: &[(Style, &'a str)], r: Range<usize>, modifier: StyleModifier) -> Vec<(Style, &'a str)>
+pub fn syntect::util::split_at<'a, A: Clone>(v: &[(A, &'a str)], split_i: usize) -> (Vec<(A, &'a str)>, Vec<(A, &'a str)>)
 pub mod syntect
 pub mod syntect::dumps
 pub mod syntect::easy
@@ -952,9 +952,9 @@ pub struct field syntect::highlighting::HighlightState::path: ScopeStack
 pub struct field syntect::highlighting::ScopeSelector::excludes: Vec<ScopeStack>
 pub struct field syntect::highlighting::ScopeSelector::path: ScopeStack
 pub struct field syntect::highlighting::ScopeSelectors::selectors: Vec<ScopeSelector>
-pub struct field syntect::highlighting::ScoredStyle::background: (MatchPower,Color)
-pub struct field syntect::highlighting::ScoredStyle::font_style: (MatchPower,FontStyle)
-pub struct field syntect::highlighting::ScoredStyle::foreground: (MatchPower,Color)
+pub struct field syntect::highlighting::ScoredStyle::background: (MatchPower, Color)
+pub struct field syntect::highlighting::ScoredStyle::font_style: (MatchPower, FontStyle)
+pub struct field syntect::highlighting::ScoredStyle::foreground: (MatchPower, Color)
 pub struct field syntect::highlighting::Style::background: Color
 pub struct field syntect::highlighting::Style::font_style: FontStyle
 pub struct field syntect::highlighting::Style::foreground: Color
@@ -1042,7 +1042,7 @@ pub type syntect::easy::HighlightLines::Error = Infallible
 pub type syntect::easy::ScopeRegionIterator::Error = <U as TryFrom<T>>::Error
 pub type syntect::easy::ScopeRegionIterator::Error = Infallible
 pub type syntect::easy::ScopeRegionIterator::IntoIter = I
-pub type syntect::easy::ScopeRegionIterator::Item = (&'a str,&'a ScopeStackOp)
+pub type syntect::easy::ScopeRegionIterator::Item = (&'a str, &'a ScopeStackOp)
 pub type syntect::easy::ScopeRegionIterator::Item = <I as Iterator>::Item
 pub type syntect::highlighting::Color::Err = ParseThemeError
 pub type syntect::highlighting::Color::Error = <U as TryFrom<T>>::Error
@@ -1060,7 +1060,7 @@ pub type syntect::highlighting::FontStyle::Owned = T
 pub type syntect::highlighting::HighlightIterator::Error = <U as TryFrom<T>>::Error
 pub type syntect::highlighting::HighlightIterator::Error = Infallible
 pub type syntect::highlighting::HighlightIterator::IntoIter = I
-pub type syntect::highlighting::HighlightIterator::Item = (Style,&'b str)
+pub type syntect::highlighting::HighlightIterator::Item = (Style, &'b str)
 pub type syntect::highlighting::HighlightIterator::Item = <I as Iterator>::Item
 pub type syntect::highlighting::HighlightState::Error = <U as TryFrom<T>>::Error
 pub type syntect::highlighting::HighlightState::Error = Infallible
@@ -1072,7 +1072,7 @@ pub type syntect::highlighting::ParseThemeError::Error = Infallible
 pub type syntect::highlighting::RangedHighlightIterator::Error = <U as TryFrom<T>>::Error
 pub type syntect::highlighting::RangedHighlightIterator::Error = Infallible
 pub type syntect::highlighting::RangedHighlightIterator::IntoIter = I
-pub type syntect::highlighting::RangedHighlightIterator::Item = (Style,&'b str,Range<usize>)
+pub type syntect::highlighting::RangedHighlightIterator::Item = (Style, &'b str, Range<usize>)
 pub type syntect::highlighting::RangedHighlightIterator::Item = <I as Iterator>::Item
 pub type syntect::highlighting::ScopeSelector::Err = ParseScopeError
 pub type syntect::highlighting::ScopeSelector::Error = <U as TryFrom<T>>::Error
@@ -1163,7 +1163,7 @@ pub type syntect::parsing::SyntaxSet::Owned = T
 pub type syntect::parsing::SyntaxSetBuilder::Error = <U as TryFrom<T>>::Error
 pub type syntect::parsing::SyntaxSetBuilder::Error = Infallible
 pub type syntect::parsing::SyntaxSetBuilder::Owned = T
-pub type syntect::parsing::syntax_definition::CaptureMapping = Vec<(usize,Vec<Scope>)>
+pub type syntect::parsing::syntax_definition::CaptureMapping = Vec<(usize, Vec<Scope>)>
 pub type syntect::parsing::syntax_definition::Context::Error = <U as TryFrom<T>>::Error
 pub type syntect::parsing::syntax_definition::Context::Error = Infallible
 pub type syntect::parsing::syntax_definition::Context::Owned = T
@@ -1176,7 +1176,7 @@ pub type syntect::parsing::syntax_definition::ContextReference::Owned = T
 pub type syntect::parsing::syntax_definition::MatchIter::Error = <U as TryFrom<T>>::Error
 pub type syntect::parsing::syntax_definition::MatchIter::Error = Infallible
 pub type syntect::parsing::syntax_definition::MatchIter::IntoIter = I
-pub type syntect::parsing::syntax_definition::MatchIter::Item = (&'a Context,usize)
+pub type syntect::parsing::syntax_definition::MatchIter::Item = (&'a Context, usize)
 pub type syntect::parsing::syntax_definition::MatchIter::Item = <I as Iterator>::Item
 pub type syntect::parsing::syntax_definition::MatchOperation::Error = <U as TryFrom<T>>::Error
 pub type syntect::parsing::syntax_definition::MatchOperation::Error = Infallible

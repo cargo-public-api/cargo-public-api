@@ -129,7 +129,7 @@ pub fn bat::SyntaxMapping::from(t: T) -> T
 pub fn bat::SyntaxMapping::insert(&mut self, from: &str, to: MappingTarget<'a>) -> Result<()>
 pub fn bat::SyntaxMapping::insert_ignored_suffix(&mut self, suffix: &'a str)
 pub fn bat::SyntaxMapping::into(self) -> U
-pub fn bat::SyntaxMapping::mappings(&self) -> &[(GlobMatcher,MappingTarget<'a>)]
+pub fn bat::SyntaxMapping::mappings(&self) -> &[(GlobMatcher, MappingTarget<'a>)]
 pub fn bat::SyntaxMapping::to_owned(&self) -> T
 pub fn bat::SyntaxMapping::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
 pub fn bat::SyntaxMapping::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>

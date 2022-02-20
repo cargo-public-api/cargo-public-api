@@ -2,8 +2,9 @@ use std::{collections::HashMap, rc::Rc};
 
 use rustdoc_types::{Crate, Id, Impl, Item, ItemEnum, Type};
 
-mod intermediate_public_item;
-pub use intermediate_public_item::IntermediatePublicItem;
+use super::intermediate_public_item::IntermediatePublicItem;
+
+type Impls<'a> = HashMap<&'a Id, Vec<&'a Impl>>;
 
 /// Iterates over all items in a crate. Iterating over items has the benefit of
 /// behaving properly when:
@@ -33,33 +34,42 @@ pub struct ItemIterator<'a> {
     /// includes public items, all `impl`s we see are relevant. Whenever we
     /// encounter a type that has an `impl`, we inject the associated items of
     /// the `impl` as children of the type.
-    impls: HashMap<&'a Id, Vec<&'a Vec<Id>>>,
+    impls: Impls<'a>,
 }
 
 impl<'a> ItemIterator<'a> {
     pub fn new(crate_: &'a Crate) -> Self {
-        let mut impls: HashMap<&Id, Vec<&Vec<Id>>> = HashMap::new();
-        for item in crate_.index.values() {
-            if let ItemEnum::Impl(Impl {
-                for_: Type::ResolvedPath { ref id, .. },
-                items,
-                ..
-            }) = &item.inner
-            {
-                impls.entry(id).or_insert_with(Vec::new).push(items);
-            }
-        }
-
         let mut s = ItemIterator {
             crate_,
             items_left: vec![],
             missing_ids: vec![],
-            impls,
+            impls: find_all_impls(crate_),
         };
 
+        // Bootstrap with the root item
         s.try_add_item_to_visit(&crate_.root, None);
 
         s
+    }
+
+    fn add_children_for_item(&mut self, public_item: &Rc<IntermediatePublicItem<'a>>) {
+        // Handle any impls. See [`ItemIterator::impls`] docs for more info.
+        let mut add_after_borrow = vec![];
+        if let Some(impls) = self.impls.get(&public_item.item.id) {
+            for impl_ in impls {
+                for id in &impl_.items {
+                    add_after_borrow.push(id);
+                }
+            }
+        }
+        for id in add_after_borrow {
+            self.try_add_item_to_visit(id, Some(public_item.clone()));
+        }
+
+        // Handle regular children of the item
+        for child in items_in_container(public_item.item).into_iter().flatten() {
+            self.try_add_item_to_visit(child, Some(public_item.clone()));
+        }
     }
 
     fn try_add_item_to_visit(
@@ -68,8 +78,8 @@ impl<'a> ItemIterator<'a> {
         parent: Option<Rc<IntermediatePublicItem<'a>>>,
     ) {
         match self.crate_.index.get(id) {
-            // We handle `impl`s specially, so we don't want to process `impl`
-            // items directly. See other comments for more info
+            // We handle `impl`s specially, and we don't want to process `impl`
+            // items directly. See [`ItemIterator::impls`] docs for more info.
             Some(Item {
                 inner: ItemEnum::Impl { .. },
                 ..
@@ -91,29 +101,33 @@ impl<'a> Iterator for ItemIterator<'a> {
         let mut result = None;
 
         if let Some(public_item) = self.items_left.pop() {
-            // Handle any impls. See field doc for more info
-            let mut add_after_borrow = vec![];
-            if let Some(impls) = self.impls.get(&public_item.item.id) {
-                for items in impls {
-                    for id in *items {
-                        add_after_borrow.push(id);
-                    }
-                }
-            }
-            for id in add_after_borrow {
-                self.try_add_item_to_visit(id, Some(public_item.clone()));
-            }
-
-            // Handle regular children of the item
-            for child in items_in_container(public_item.item).into_iter().flatten() {
-                self.try_add_item_to_visit(child, Some(public_item.clone()));
-            }
+            self.add_children_for_item(&public_item.clone());
 
             result = Some(public_item);
         }
 
         result
     }
+}
+
+/// `impl`s are special. This helper finds all `impl`s. See
+/// [`ItemIterator::impls`] docs for more info.
+fn find_all_impls(crate_: &Crate) -> Impls {
+    let mut impls = HashMap::new();
+
+    for item in crate_.index.values() {
+        if let ItemEnum::Impl(impl_) = &item.inner {
+            if let Impl {
+                for_: Type::ResolvedPath { id, .. },
+                ..
+            } = impl_
+            {
+                impls.entry(id).or_insert_with(Vec::new).push(impl_);
+            }
+        }
+    }
+
+    impls
 }
 
 /// Some items contain other items, which is relevant for analysis. Keep track

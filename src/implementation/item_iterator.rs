@@ -2,8 +2,7 @@ use std::{collections::HashMap, rc::Rc};
 
 use rustdoc_types::{Crate, Id, Impl, Item, ItemEnum, Type};
 
-mod intermediate_public_item;
-pub use intermediate_public_item::IntermediatePublicItem;
+use super::intermediate_public_item::IntermediatePublicItem;
 
 type Impls<'a> = HashMap<&'a Id, Vec<&'a Impl>>;
 

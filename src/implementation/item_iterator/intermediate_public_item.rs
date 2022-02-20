@@ -254,7 +254,7 @@ impl Display for D<&Type> {
             Type::Primitive(p) => write!(f, "{}", p),
             Type::FunctionPointer(fp) => write!(f, "fn{}", D(&fp.decl)),
             Type::Tuple(types_) => {
-                write!(f, "({})", Joiner(types_, ",", D))
+                write!(f, "({})", Joiner(types_, ", ", D))
             }
             Type::Slice(t) => write!(f, "[{}]", D(t.as_ref())),
             Type::Array { type_, len } => write!(f, "[{};{}]", D(type_.as_ref()), len),

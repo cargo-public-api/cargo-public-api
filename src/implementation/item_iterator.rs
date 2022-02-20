@@ -78,7 +78,7 @@ impl<'a> ItemIterator<'a> {
         parent: Option<Rc<IntermediatePublicItem<'a>>>,
     ) {
         match self.crate_.index.get(id) {
-            // We handle `impl`s specially, so we don't want to process `impl`
+            // We handle `impl`s specially, and we don't want to process `impl`
             // items directly. See [`ItemIterator::impls`] docs for more info.
             Some(Item {
                 inner: ItemEnum::Impl { .. },
@@ -110,6 +110,8 @@ impl<'a> Iterator for ItemIterator<'a> {
     }
 }
 
+/// `impl`s are special. This helper finds all `impl`s. See
+/// [`ItemIterator::impls`] docs for more info.
 fn find_all_impls(crate_: &Crate) -> Impls {
     let mut impls = HashMap::new();
 

@@ -3,11 +3,7 @@ set -o nounset -o pipefail -o errexit
 
 base="tests/rustdoc_json"
 
-crates="
-    bat-v0.19.0
-    syntect-v4.6.0
-    thiserror-v1.0.30
-"
+source "${base}/crates.sh"
 
 for crate in ${crates}; do
     # Note that we must remove the trailing newline, otherwise `.split('\n')`

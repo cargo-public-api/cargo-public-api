@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - run: RUSTDOCFLAGS='-D warnings' cargo doc
+    - run: RUSTDOCFLAGS='-D warnings' cargo doc --no-deps
 
   cargo-clippy:
     name: cargo clippy -- -D clippy::all -D clippy::pedantic

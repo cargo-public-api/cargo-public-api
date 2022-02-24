@@ -3,7 +3,7 @@ use pretty_assertions::assert_eq;
 #[test]
 fn syntect_v4_6_0() {
     assert_public_items(
-        include_str!("./rustdoc_json/syntect-v4.6.0_FORMAT_VERSION_10.json"),
+        include_str!("./rustdoc_json/syntect-v4.6.0.json"),
         include_str!("./rustdoc_json/syntect-v4.6.0-expected.txt"),
     );
 }
@@ -11,8 +11,8 @@ fn syntect_v4_6_0() {
 #[test]
 fn thiserror_v1_0_30() {
     assert_public_items(
-        include_str!("./rustdoc_json/thiserror-v1.0.30_FORMAT_VERSION_10.json"),
-        include_str!("./rustdoc_json/thiserror-v1.0.30-expected.txt"),
+        include_str!("./rustdoc_json/thiserror-1.0.30.json"),
+        include_str!("./rustdoc_json/thiserror-1.0.30-expected.txt"),
     );
 }
 

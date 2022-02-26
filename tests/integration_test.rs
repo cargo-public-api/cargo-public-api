@@ -1,6 +1,14 @@
 use pretty_assertions::assert_eq;
 
 #[test]
+fn bat_v0_19_0() {
+    assert_public_items(
+        include_str!("./rustdoc_json/bat-v0.19.0.json"),
+        include_str!("./rustdoc_json/bat-v0.19.0-expected.txt"),
+    );
+}
+
+#[test]
 fn syntect_v4_6_0() {
     assert_public_items(
         include_str!("./rustdoc_json/syntect-v4.6.0.json"),

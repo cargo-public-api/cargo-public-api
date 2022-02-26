@@ -1,32 +1,28 @@
-use std::ffi::OsStr;
 use std::io::Write;
 use std::path::Path;
+
+use public_items::Options;
 
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
 fn main() -> Result<()> {
-    match std::env::args_os().nth(1) {
-        Some(first_arg) => handle_first_arg(&first_arg)?,
-        _ => print_usage()?,
-    }
+    let last_arg = std::env::args_os().last();
 
-    Ok(())
-}
-
-fn handle_first_arg(first_arg: &OsStr) -> Result<()> {
-    if first_arg == "--help" || first_arg == "-h" {
+    if flag_raised("--help") || flag_raised("-h") || last_arg.is_none() {
         print_usage()?;
     } else {
-        print_public_api_items(Path::new(&first_arg))?;
+        let mut options = Options::default();
+        options.omit_blanket_implementations = flag_raised("--omit-blanket-implementations");
+        print_public_api_items(Path::new(&last_arg.unwrap()), options)?;
     }
 
     Ok(())
 }
 
-fn print_public_api_items(path: &Path) -> Result<()> {
+fn print_public_api_items(path: &Path, options: Options) -> Result<()> {
     let json = &std::fs::read_to_string(path)?;
 
-    for public_item in public_items::sorted_public_items_from_rustdoc_json_str(json)? {
+    for public_item in public_items::sorted_public_items_from_rustdoc_json_str(json, options)? {
         writeln!(std::io::stdout(), "{}", public_item)?;
     }
 
@@ -52,6 +48,12 @@ where RUSTDOC_JSON_FILE is the path to the output of
 which you can find in
 
   ./target/doc/${{CRATE}}.json
+
+To omit blanket implementations, pass --omit-blanket-implementations.
 "
     )
+}
+
+fn flag_raised(flag: &str) -> bool {
+    std::env::args_os().into_iter().any(|e| e == flag)
 }

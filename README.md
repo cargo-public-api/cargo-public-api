@@ -21,46 +21,31 @@ RUSTDOCFLAGS='-Z unstable-options --output-format json' cargo +nightly doc --lib
 public_items ./target/doc/your_library.json
 ```
 
-# Example
+# Example: Letting the library list its own public items
 
-Using the tool on its own library:
+Note that we pass `--omit-blanket-implementations` in this case since blanket implementations such as `impl<T> Borrow<T> for T` are usually not of interest.
 ```txt
 % RUSTDOCFLAGS='-Z unstable-options --output-format json' cargo +nightly doc --lib --no-deps
-% public_items ./target/doc/public_items.json
+% public_items --omit-blanket-implementations ./target/doc/public_items.json
 pub enum public_items::Error
 pub enum variant public_items::Error::SerdeJsonError(serde_json::Error)
-pub fn public_items::Error::borrow(&self) -> &T
-pub fn public_items::Error::borrow_mut(&mut self) -> &mut T
 pub fn public_items::Error::fmt(&self, __formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
 pub fn public_items::Error::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
 pub fn public_items::Error::from(source: serde_json::Error) -> Self
-pub fn public_items::Error::from(t: T) -> T
-pub fn public_items::Error::into(self) -> U
 pub fn public_items::Error::source(&self) -> std::option::Option<&std::error::Error + 'static>
-pub fn public_items::Error::to_string(&self) -> String
-pub fn public_items::Error::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn public_items::Error::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
-pub fn public_items::Error::type_id(&self) -> TypeId
-pub fn public_items::PublicItem::borrow(&self) -> &T
-pub fn public_items::PublicItem::borrow_mut(&mut self) -> &mut T
+pub fn public_items::Options::clone(&self) -> Options
+pub fn public_items::Options::default() -> Self
+pub fn public_items::Options::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
 pub fn public_items::PublicItem::cmp(&self, other: &PublicItem) -> $crate::cmp::Ordering
 pub fn public_items::PublicItem::eq(&self, other: &PublicItem) -> bool
 pub fn public_items::PublicItem::fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
-pub fn public_items::PublicItem::from(t: T) -> T
-pub fn public_items::PublicItem::into(self) -> U
 pub fn public_items::PublicItem::ne(&self, other: &PublicItem) -> bool
 pub fn public_items::PublicItem::partial_cmp(&self, other: &PublicItem) -> $crate::option::Option<$crate::cmp::Ordering>
-pub fn public_items::PublicItem::to_string(&self) -> String
-pub fn public_items::PublicItem::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn public_items::PublicItem::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
-pub fn public_items::PublicItem::type_id(&self) -> TypeId
-pub fn public_items::sorted_public_items_from_rustdoc_json_str(rustdoc_json_str: &str) -> Result<Vec<PublicItem>>
+pub fn public_items::sorted_public_items_from_rustdoc_json_str(rustdoc_json_str: &str, options: Options) -> Result<Vec<PublicItem>>
 pub mod public_items
+pub struct public_items::Options
 pub struct public_items::PublicItem
-pub type public_items::Error::Error = <U as TryFrom<T>>::Error
-pub type public_items::Error::Error = Infallible
-pub type public_items::PublicItem::Error = <U as TryFrom<T>>::Error
-pub type public_items::PublicItem::Error = Infallible
+pub struct field public_items::Options::omit_blanket_implementations: bool
 pub type public_items::Result<T> = std::result::Result<T, Error>
 ```
 

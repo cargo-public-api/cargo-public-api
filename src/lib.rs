@@ -32,12 +32,12 @@ pub struct PublicItem {
 pub struct Options {
     /// If `true`, items part of blanket implementations such as `impl<T> Any
     /// for T`, `impl<T> Borrow<T> for T`, and `impl<T, U> Into<U> for T where
-    /// U: From<T>` are omitted from the list of public items of a crate.
+    /// U: From<T>` are included in the list of public items of a crate.
     ///
-    /// The default value is `false` since the point of this library is to list
-    /// all public items of a crate, and blanket implementations are formally
-    /// part of the public API of a crate.
-    pub omit_blanket_implementations: bool,
+    /// The default value is `false` since the the vast majority of users will
+    /// find the presence of these items to just constitute noise, even if they
+    /// formally are part of the public API of a crate.
+    pub with_blanket_implementations: bool,
 }
 
 /// Implementation that allows passing `Options::default()` for the `options`
@@ -45,7 +45,7 @@ pub struct Options {
 impl Default for Options {
     fn default() -> Self {
         Self {
-            omit_blanket_implementations: false,
+            with_blanket_implementations: false,
         }
     }
 }

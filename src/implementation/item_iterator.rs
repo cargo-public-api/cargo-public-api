@@ -124,7 +124,7 @@ fn find_all_impls(crate_: &Crate, options: Options) -> Impls {
                 ..
             } = impl_
             {
-                let omit = options.omit_blanket_implementations && matches!(blanket_impl, Some(_));
+                let omit = !options.with_blanket_implementations && matches!(blanket_impl, Some(_));
                 if !omit {
                     impls.entry(id).or_insert_with(Vec::new).push(impl_);
                 }

@@ -23,10 +23,9 @@ public_items ./target/doc/your_library.json
 
 # Example: Letting the library list its own public items
 
-Note that we pass `--omit-blanket-implementations` in this case since blanket implementations such as `impl<T> Borrow<T> for T` are usually not of interest.
 ```txt
 % RUSTDOCFLAGS='-Z unstable-options --output-format json' cargo +nightly doc --lib --no-deps
-% public_items --omit-blanket-implementations ./target/doc/public_items.json
+% public_items ./target/doc/public_items.json
 pub enum public_items::Error
 pub enum variant public_items::Error::SerdeJsonError(serde_json::Error)
 pub fn public_items::Error::fmt(&self, __formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
@@ -50,6 +49,12 @@ pub type public_items::Result<T> = std::result::Result<T, Error>
 ```
 
 Tip: By writing the public API to a file for two different versions of your library, you can diff your public API across versions.
+
+# Blanket implementations
+
+By default, blanket implementations such as `impl<T> Any for T`, `impl<T> Borrow<T> for T`, and `impl<T, U> Into<U> for T where U: From<T>` are omitted from the list of public items of a crate. For the vast majority of use cases, blanket implementations are not of interest, and just creates noise.
+
+If you want to include items of blanket implementations in the output, set `Options::with_blanket_implementations` to true if you use the library, or pass `--with-blanket-implementations` if you use the `public_items` binary utility.
 
 # Target audience
 

@@ -12,7 +12,7 @@ fn main() -> Result<()> {
         print_usage()?;
     } else {
         let mut options = Options::default();
-        options.omit_blanket_implementations = flag_raised("--omit-blanket-implementations");
+        options.with_blanket_implementations = flag_raised("--with-blanket-implementations");
         print_public_api_items(Path::new(&last_arg.unwrap()), options)?;
     }
 

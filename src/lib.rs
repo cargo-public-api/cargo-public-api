@@ -25,6 +25,31 @@ pub struct PublicItem {
     suffix: String,
 }
 
+/// Contains various options that you can pass to
+/// [`sorted_public_items_from_rustdoc_json_str`].
+#[derive(Copy, Clone, Debug)]
+#[non_exhaustive]
+pub struct Options {
+    /// If `true`, items part of blanket implementations such as `impl<T> Any
+    /// for T`, `impl<T> Borrow<T> for T`, and `impl<T, U> Into<U> for T where
+    /// U: From<T>` are omitted from the list of public items of a crate.
+    ///
+    /// The default value is `false` since the point of this library is to list
+    /// all public items of a crate, and blanket implementations are formally
+    /// part of the public API of a crate.
+    pub omit_blanket_implementations: bool,
+}
+
+/// Implementation that allows passing `Options::default()` for the `options`
+/// parameter to [`sorted_public_items_from_rustdoc_json_str`].
+impl Default for Options {
+    fn default() -> Self {
+        Self {
+            omit_blanket_implementations: false,
+        }
+    }
+}
+
 /// Takes rustdoc JSON and returns a [`Vec`] of [`PublicItem`]s where each
 /// [`PublicItem`] is one public item of the crate, i.e. part of the crate's
 /// public API. The [`Vec`] is sorted in a way suitable for display to humans,
@@ -48,10 +73,11 @@ pub struct PublicItem {
 /// E.g. if the JSON is invalid.
 pub fn sorted_public_items_from_rustdoc_json_str(
     rustdoc_json_str: &str,
+    options: Options,
 ) -> Result<Vec<PublicItem>> {
     let crate_: rustdoc_types::Crate = serde_json::from_str(rustdoc_json_str)?;
 
-    let mut v: Vec<PublicItem> = implementation::public_items_in_crate(&crate_).collect();
+    let mut v: Vec<PublicItem> = implementation::public_items_in_crate(&crate_, options).collect();
 
     v.sort();
 

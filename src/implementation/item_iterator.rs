@@ -3,6 +3,7 @@ use std::{collections::HashMap, rc::Rc};
 use rustdoc_types::{Crate, Id, Impl, Item, ItemEnum, Type};
 
 use super::intermediate_public_item::IntermediatePublicItem;
+use crate::Options;
 
 type Impls<'a> = HashMap<&'a Id, Vec<&'a Impl>>;
 
@@ -38,12 +39,12 @@ pub struct ItemIterator<'a> {
 }
 
 impl<'a> ItemIterator<'a> {
-    pub fn new(crate_: &'a Crate) -> Self {
+    pub fn new(crate_: &'a Crate, options: Options) -> Self {
         let mut s = ItemIterator {
             crate_,
             items_left: vec![],
             missing_ids: vec![],
-            impls: find_all_impls(crate_),
+            impls: find_all_impls(crate_, options),
         };
 
         // Bootstrap with the root item
@@ -112,17 +113,21 @@ impl<'a> Iterator for ItemIterator<'a> {
 
 /// `impl`s are special. This helper finds all `impl`s. See
 /// [`ItemIterator::impls`] docs for more info.
-fn find_all_impls(crate_: &Crate) -> Impls {
+fn find_all_impls(crate_: &Crate, options: Options) -> Impls {
     let mut impls = HashMap::new();
 
     for item in crate_.index.values() {
         if let ItemEnum::Impl(impl_) = &item.inner {
             if let Impl {
                 for_: Type::ResolvedPath { id, .. },
+                blanket_impl,
                 ..
             } = impl_
             {
-                impls.entry(id).or_insert_with(Vec::new).push(impl_);
+                let omit = options.omit_blanket_implementations && matches!(blanket_impl, Some(_));
+                if !omit {
+                    impls.entry(id).or_insert_with(Vec::new).push(impl_);
+                }
             }
         }
     }

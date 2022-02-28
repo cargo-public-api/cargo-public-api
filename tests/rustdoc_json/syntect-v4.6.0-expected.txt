@@ -76,8 +76,6 @@ pub enum variant syntect::parsing::syntax_definition::MatchOperation::Push(Vec<C
 pub enum variant syntect::parsing::syntax_definition::MatchOperation::Set(Vec<ContextReference>)
 pub enum variant syntect::parsing::syntax_definition::Pattern::Include(ContextReference)
 pub enum variant syntect::parsing::syntax_definition::Pattern::Match(MatchPattern)
-pub fn syntect::LoadingError::borrow(&self) -> &T
-pub fn syntect::LoadingError::borrow_mut(&mut self) -> &mut T
 pub fn syntect::LoadingError::cause(&self) -> Option<&Error>
 pub fn syntect::LoadingError::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
 pub fn syntect::LoadingError::fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result
@@ -85,64 +83,26 @@ pub fn syntect::LoadingError::from(error: IoError) -> LoadingError
 pub fn syntect::LoadingError::from(error: ParseSyntaxError) -> LoadingError
 pub fn syntect::LoadingError::from(error: ParseThemeError) -> LoadingError
 pub fn syntect::LoadingError::from(error: SettingsError) -> LoadingError
-pub fn syntect::LoadingError::from(t: T) -> T
-pub fn syntect::LoadingError::into(self) -> U
-pub fn syntect::LoadingError::to_string(&self) -> String
-pub fn syntect::LoadingError::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn syntect::LoadingError::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
-pub fn syntect::LoadingError::type_id(&self) -> TypeId
 pub fn syntect::dumps::dump_binary<T: Serialize>(o: &T) -> Vec<u8>
 pub fn syntect::dumps::dump_to_file<T: Serialize, P: AsRef<Path>>(o: &T, path: P) -> Result<()>
 pub fn syntect::dumps::dump_to_writer<T: Serialize, W: Write>(to_dump: &T, output: W) -> Result<()>
 pub fn syntect::dumps::from_binary<T: DeserializeOwned>(v: &[u8]) -> T
 pub fn syntect::dumps::from_dump_file<T: DeserializeOwned, P: AsRef<Path>>(path: P) -> Result<T>
 pub fn syntect::dumps::from_reader<T: DeserializeOwned, R: BufRead>(input: R) -> Result<T>
-pub fn syntect::easy::HighlightFile::borrow(&self) -> &T
-pub fn syntect::easy::HighlightFile::borrow_mut(&mut self) -> &mut T
-pub fn syntect::easy::HighlightFile::from(t: T) -> T
-pub fn syntect::easy::HighlightFile::into(self) -> U
 pub fn syntect::easy::HighlightFile::new<P: AsRef<Path>>(path_obj: P, ss: &SyntaxSet, theme: &'a Theme) -> io::Result<HighlightFile<'a>>
-pub fn syntect::easy::HighlightFile::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn syntect::easy::HighlightFile::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
-pub fn syntect::easy::HighlightFile::type_id(&self) -> TypeId
-pub fn syntect::easy::HighlightLines::borrow(&self) -> &T
-pub fn syntect::easy::HighlightLines::borrow_mut(&mut self) -> &mut T
-pub fn syntect::easy::HighlightLines::from(t: T) -> T
 pub fn syntect::easy::HighlightLines::highlight<'b>(&mut self, line: &'b str, syntax_set: &SyntaxSet) -> Vec<(Style, &'b str)>
-pub fn syntect::easy::HighlightLines::into(self) -> U
 pub fn syntect::easy::HighlightLines::new(syntax: &SyntaxReference, theme: &'a Theme) -> HighlightLines<'a>
-pub fn syntect::easy::HighlightLines::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn syntect::easy::HighlightLines::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
-pub fn syntect::easy::HighlightLines::type_id(&self) -> TypeId
-pub fn syntect::easy::ScopeRegionIterator::borrow(&self) -> &T
-pub fn syntect::easy::ScopeRegionIterator::borrow_mut(&mut self) -> &mut T
 pub fn syntect::easy::ScopeRegionIterator::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-pub fn syntect::easy::ScopeRegionIterator::from(t: T) -> T
-pub fn syntect::easy::ScopeRegionIterator::into(self) -> U
-pub fn syntect::easy::ScopeRegionIterator::into_iter(self) -> I
 pub fn syntect::easy::ScopeRegionIterator::new(ops: &'a [(usize, ScopeStackOp)], line: &'a str) -> ScopeRegionIterator<'a>
 pub fn syntect::easy::ScopeRegionIterator::next(&mut self) -> Option<<Self as >::Item>
-pub fn syntect::easy::ScopeRegionIterator::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn syntect::easy::ScopeRegionIterator::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
-pub fn syntect::easy::ScopeRegionIterator::type_id(&self) -> TypeId
-pub fn syntect::highlighting::Color::borrow(&self) -> &T
-pub fn syntect::highlighting::Color::borrow_mut(&mut self) -> &mut T
 pub fn syntect::highlighting::Color::clone(&self) -> Color
-pub fn syntect::highlighting::Color::clone_into(&self, target: &mut T) -> ()
 pub fn syntect::highlighting::Color::deserialize<__D>(__deserializer: __D) -> _serde::__private::Result<Self, <__D as >::Error> where __D: _serde::Deserializer<'de>
 pub fn syntect::highlighting::Color::eq(&self, other: &Color) -> bool
-pub fn syntect::highlighting::Color::equivalent(&self, key: &K) -> bool
 pub fn syntect::highlighting::Color::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-pub fn syntect::highlighting::Color::from(t: T) -> T
 pub fn syntect::highlighting::Color::from_str(s: &str) -> Result<Color, <Self as >::Err>
 pub fn syntect::highlighting::Color::hash<__H: $crate::hash::Hasher>(&self, state: &mut __H) -> ()
-pub fn syntect::highlighting::Color::into(self) -> U
 pub fn syntect::highlighting::Color::ne(&self, other: &Color) -> bool
 pub fn syntect::highlighting::Color::serialize<__S>(&self, __serializer: __S) -> _serde::__private::Result<<__S as >::Ok, <__S as >::Error> where __S: _serde::Serializer
-pub fn syntect::highlighting::Color::to_owned(&self) -> T
-pub fn syntect::highlighting::Color::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn syntect::highlighting::Color::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
-pub fn syntect::highlighting::Color::type_id(&self) -> TypeId
 pub fn syntect::highlighting::FontStyle::all() -> Self
 pub fn syntect::highlighting::FontStyle::bitand(self, other: Self) -> Self
 pub fn syntect::highlighting::FontStyle::bitand_assign(&mut self, other: Self)
@@ -151,10 +111,7 @@ pub fn syntect::highlighting::FontStyle::bitor_assign(&mut self, other: Self)
 pub fn syntect::highlighting::FontStyle::bits(&self) -> u8
 pub fn syntect::highlighting::FontStyle::bitxor(self, other: Self) -> Self
 pub fn syntect::highlighting::FontStyle::bitxor_assign(&mut self, other: Self)
-pub fn syntect::highlighting::FontStyle::borrow(&self) -> &T
-pub fn syntect::highlighting::FontStyle::borrow_mut(&mut self) -> &mut T
 pub fn syntect::highlighting::FontStyle::clone(&self) -> FontStyle
-pub fn syntect::highlighting::FontStyle::clone_into(&self, target: &mut T) -> ()
 pub fn syntect::highlighting::FontStyle::cmp(&self, other: &FontStyle) -> $crate::cmp::Ordering
 pub fn syntect::highlighting::FontStyle::complement(self) -> Self
 pub fn syntect::highlighting::FontStyle::contains(&self, other: Self) -> bool
@@ -163,14 +120,12 @@ pub fn syntect::highlighting::FontStyle::deserialize<__D>(__deserializer: __D) -
 pub fn syntect::highlighting::FontStyle::difference(self, other: Self) -> Self
 pub fn syntect::highlighting::FontStyle::empty() -> Self
 pub fn syntect::highlighting::FontStyle::eq(&self, other: &FontStyle) -> bool
-pub fn syntect::highlighting::FontStyle::equivalent(&self, key: &K) -> bool
 pub fn syntect::highlighting::FontStyle::extend<T: $crate::_core::iter::IntoIterator<Item = Self>>(&mut self, iterator: T)
 pub fn syntect::highlighting::FontStyle::fmt(&self, f: &mut $crate::_core::fmt::Formatter<'_>) -> $crate::_core::fmt::Result
 pub fn syntect::highlighting::FontStyle::fmt(&self, f: &mut $crate::_core::fmt::Formatter<'_>) -> $crate::_core::fmt::Result
 pub fn syntect::highlighting::FontStyle::fmt(&self, f: &mut $crate::_core::fmt::Formatter<'_>) -> $crate::_core::fmt::Result
 pub fn syntect::highlighting::FontStyle::fmt(&self, f: &mut $crate::_core::fmt::Formatter<'_>) -> $crate::_core::fmt::Result
 pub fn syntect::highlighting::FontStyle::fmt(&self, f: &mut $crate::_core::fmt::Formatter<'_>) -> $crate::_core::fmt::Result
-pub fn syntect::highlighting::FontStyle::from(t: T) -> T
 pub fn syntect::highlighting::FontStyle::from_bits(bits: u8) -> $crate::_core::option::Option<Self>
 pub fn syntect::highlighting::FontStyle::from_bits_truncate(bits: u8) -> Self
 pub fn syntect::highlighting::FontStyle::from_bits_unchecked(bits: u8) -> Self
@@ -180,7 +135,6 @@ pub fn syntect::highlighting::FontStyle::hash<__H: $crate::hash::Hasher>(&self, 
 pub fn syntect::highlighting::FontStyle::insert(&mut self, other: Self)
 pub fn syntect::highlighting::FontStyle::intersection(self, other: Self) -> Self
 pub fn syntect::highlighting::FontStyle::intersects(&self, other: Self) -> bool
-pub fn syntect::highlighting::FontStyle::into(self) -> U
 pub fn syntect::highlighting::FontStyle::is_all(&self) -> bool
 pub fn syntect::highlighting::FontStyle::is_empty(&self) -> bool
 pub fn syntect::highlighting::FontStyle::ne(&self, other: &FontStyle) -> bool
@@ -192,285 +146,114 @@ pub fn syntect::highlighting::FontStyle::set(&mut self, other: Self, value: bool
 pub fn syntect::highlighting::FontStyle::sub(self, other: Self) -> Self
 pub fn syntect::highlighting::FontStyle::sub_assign(&mut self, other: Self)
 pub fn syntect::highlighting::FontStyle::symmetric_difference(self, other: Self) -> Self
-pub fn syntect::highlighting::FontStyle::to_owned(&self) -> T
 pub fn syntect::highlighting::FontStyle::toggle(&mut self, other: Self)
-pub fn syntect::highlighting::FontStyle::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn syntect::highlighting::FontStyle::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
-pub fn syntect::highlighting::FontStyle::type_id(&self) -> TypeId
 pub fn syntect::highlighting::FontStyle::union(self, other: Self) -> Self
-pub fn syntect::highlighting::HighlightIterator::borrow(&self) -> &T
-pub fn syntect::highlighting::HighlightIterator::borrow_mut(&mut self) -> &mut T
 pub fn syntect::highlighting::HighlightIterator::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-pub fn syntect::highlighting::HighlightIterator::from(t: T) -> T
-pub fn syntect::highlighting::HighlightIterator::into(self) -> U
-pub fn syntect::highlighting::HighlightIterator::into_iter(self) -> I
 pub fn syntect::highlighting::HighlightIterator::new(state: &'a mut HighlightState, changes: &'a [(usize, ScopeStackOp)], text: &'b str, highlighter: &'a Highlighter<'_>) -> HighlightIterator<'a, 'b>
 pub fn syntect::highlighting::HighlightIterator::next(&mut self) -> Option<(Style, &'b str)>
-pub fn syntect::highlighting::HighlightIterator::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn syntect::highlighting::HighlightIterator::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
-pub fn syntect::highlighting::HighlightIterator::type_id(&self) -> TypeId
-pub fn syntect::highlighting::HighlightState::borrow(&self) -> &T
-pub fn syntect::highlighting::HighlightState::borrow_mut(&mut self) -> &mut T
 pub fn syntect::highlighting::HighlightState::clone(&self) -> HighlightState
-pub fn syntect::highlighting::HighlightState::clone_into(&self, target: &mut T) -> ()
 pub fn syntect::highlighting::HighlightState::eq(&self, other: &HighlightState) -> bool
-pub fn syntect::highlighting::HighlightState::equivalent(&self, key: &K) -> bool
 pub fn syntect::highlighting::HighlightState::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-pub fn syntect::highlighting::HighlightState::from(t: T) -> T
-pub fn syntect::highlighting::HighlightState::into(self) -> U
 pub fn syntect::highlighting::HighlightState::ne(&self, other: &HighlightState) -> bool
 pub fn syntect::highlighting::HighlightState::new(highlighter: &Highlighter<'_>, initial_stack: ScopeStack) -> HighlightState
-pub fn syntect::highlighting::HighlightState::to_owned(&self) -> T
-pub fn syntect::highlighting::HighlightState::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn syntect::highlighting::HighlightState::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
-pub fn syntect::highlighting::HighlightState::type_id(&self) -> TypeId
-pub fn syntect::highlighting::Highlighter::borrow(&self) -> &T
-pub fn syntect::highlighting::Highlighter::borrow_mut(&mut self) -> &mut T
 pub fn syntect::highlighting::Highlighter::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-pub fn syntect::highlighting::Highlighter::from(t: T) -> T
 pub fn syntect::highlighting::Highlighter::get_default(&self) -> Style
-pub fn syntect::highlighting::Highlighter::into(self) -> U
 pub fn syntect::highlighting::Highlighter::new(theme: &'a Theme) -> Highlighter<'a>
 pub fn syntect::highlighting::Highlighter::style_for_stack(&self, stack: &[Scope]) -> Style
 pub fn syntect::highlighting::Highlighter::style_mod_for_stack(&self, path: &[Scope]) -> StyleModifier
-pub fn syntect::highlighting::Highlighter::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn syntect::highlighting::Highlighter::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
-pub fn syntect::highlighting::Highlighter::type_id(&self) -> TypeId
-pub fn syntect::highlighting::ParseThemeError::borrow(&self) -> &T
-pub fn syntect::highlighting::ParseThemeError::borrow_mut(&mut self) -> &mut T
 pub fn syntect::highlighting::ParseThemeError::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
 pub fn syntect::highlighting::ParseThemeError::from(error: ParseScopeError) -> ParseThemeError
-pub fn syntect::highlighting::ParseThemeError::from(t: T) -> T
-pub fn syntect::highlighting::ParseThemeError::into(self) -> U
-pub fn syntect::highlighting::ParseThemeError::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn syntect::highlighting::ParseThemeError::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
-pub fn syntect::highlighting::ParseThemeError::type_id(&self) -> TypeId
-pub fn syntect::highlighting::RangedHighlightIterator::borrow(&self) -> &T
-pub fn syntect::highlighting::RangedHighlightIterator::borrow_mut(&mut self) -> &mut T
 pub fn syntect::highlighting::RangedHighlightIterator::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-pub fn syntect::highlighting::RangedHighlightIterator::from(t: T) -> T
-pub fn syntect::highlighting::RangedHighlightIterator::into(self) -> U
-pub fn syntect::highlighting::RangedHighlightIterator::into_iter(self) -> I
 pub fn syntect::highlighting::RangedHighlightIterator::new(state: &'a mut HighlightState, changes: &'a [(usize, ScopeStackOp)], text: &'b str, highlighter: &'a Highlighter<'_>) -> RangedHighlightIterator<'a, 'b>
 pub fn syntect::highlighting::RangedHighlightIterator::next(&mut self) -> Option<(Style, &'b str, Range<usize>)>
-pub fn syntect::highlighting::RangedHighlightIterator::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn syntect::highlighting::RangedHighlightIterator::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
-pub fn syntect::highlighting::RangedHighlightIterator::type_id(&self) -> TypeId
-pub fn syntect::highlighting::ScopeSelector::borrow(&self) -> &T
-pub fn syntect::highlighting::ScopeSelector::borrow_mut(&mut self) -> &mut T
 pub fn syntect::highlighting::ScopeSelector::clone(&self) -> ScopeSelector
-pub fn syntect::highlighting::ScopeSelector::clone_into(&self, target: &mut T) -> ()
 pub fn syntect::highlighting::ScopeSelector::default() -> ScopeSelector
 pub fn syntect::highlighting::ScopeSelector::deserialize<__D>(__deserializer: __D) -> _serde::__private::Result<Self, <__D as >::Error> where __D: _serde::Deserializer<'de>
 pub fn syntect::highlighting::ScopeSelector::does_match(&self, stack: &[Scope]) -> Option<MatchPower>
 pub fn syntect::highlighting::ScopeSelector::eq(&self, other: &ScopeSelector) -> bool
-pub fn syntect::highlighting::ScopeSelector::equivalent(&self, key: &K) -> bool
 pub fn syntect::highlighting::ScopeSelector::extract_scopes(&self) -> Vec<Scope>
 pub fn syntect::highlighting::ScopeSelector::extract_single_scope(&self) -> Option<Scope>
 pub fn syntect::highlighting::ScopeSelector::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-pub fn syntect::highlighting::ScopeSelector::from(t: T) -> T
 pub fn syntect::highlighting::ScopeSelector::from_str(s: &str) -> Result<ScopeSelector, ParseScopeError>
-pub fn syntect::highlighting::ScopeSelector::into(self) -> U
 pub fn syntect::highlighting::ScopeSelector::ne(&self, other: &ScopeSelector) -> bool
 pub fn syntect::highlighting::ScopeSelector::serialize<__S>(&self, __serializer: __S) -> _serde::__private::Result<<__S as >::Ok, <__S as >::Error> where __S: _serde::Serializer
-pub fn syntect::highlighting::ScopeSelector::to_owned(&self) -> T
-pub fn syntect::highlighting::ScopeSelector::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn syntect::highlighting::ScopeSelector::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
-pub fn syntect::highlighting::ScopeSelector::type_id(&self) -> TypeId
-pub fn syntect::highlighting::ScopeSelectors::borrow(&self) -> &T
-pub fn syntect::highlighting::ScopeSelectors::borrow_mut(&mut self) -> &mut T
 pub fn syntect::highlighting::ScopeSelectors::clone(&self) -> ScopeSelectors
-pub fn syntect::highlighting::ScopeSelectors::clone_into(&self, target: &mut T) -> ()
 pub fn syntect::highlighting::ScopeSelectors::default() -> ScopeSelectors
 pub fn syntect::highlighting::ScopeSelectors::deserialize<__D>(__deserializer: __D) -> _serde::__private::Result<Self, <__D as >::Error> where __D: _serde::Deserializer<'de>
 pub fn syntect::highlighting::ScopeSelectors::does_match(&self, stack: &[Scope]) -> Option<MatchPower>
 pub fn syntect::highlighting::ScopeSelectors::eq(&self, other: &ScopeSelectors) -> bool
-pub fn syntect::highlighting::ScopeSelectors::equivalent(&self, key: &K) -> bool
 pub fn syntect::highlighting::ScopeSelectors::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-pub fn syntect::highlighting::ScopeSelectors::from(t: T) -> T
 pub fn syntect::highlighting::ScopeSelectors::from_str(s: &str) -> Result<ScopeSelectors, ParseScopeError>
-pub fn syntect::highlighting::ScopeSelectors::into(self) -> U
 pub fn syntect::highlighting::ScopeSelectors::ne(&self, other: &ScopeSelectors) -> bool
 pub fn syntect::highlighting::ScopeSelectors::serialize<__S>(&self, __serializer: __S) -> _serde::__private::Result<<__S as >::Ok, <__S as >::Error> where __S: _serde::Serializer
-pub fn syntect::highlighting::ScopeSelectors::to_owned(&self) -> T
-pub fn syntect::highlighting::ScopeSelectors::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn syntect::highlighting::ScopeSelectors::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
-pub fn syntect::highlighting::ScopeSelectors::type_id(&self) -> TypeId
-pub fn syntect::highlighting::ScoredStyle::borrow(&self) -> &T
-pub fn syntect::highlighting::ScoredStyle::borrow_mut(&mut self) -> &mut T
 pub fn syntect::highlighting::ScoredStyle::clone(&self) -> ScoredStyle
-pub fn syntect::highlighting::ScoredStyle::clone_into(&self, target: &mut T) -> ()
 pub fn syntect::highlighting::ScoredStyle::eq(&self, other: &ScoredStyle) -> bool
-pub fn syntect::highlighting::ScoredStyle::equivalent(&self, key: &K) -> bool
 pub fn syntect::highlighting::ScoredStyle::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-pub fn syntect::highlighting::ScoredStyle::from(t: T) -> T
-pub fn syntect::highlighting::ScoredStyle::into(self) -> U
 pub fn syntect::highlighting::ScoredStyle::ne(&self, other: &ScoredStyle) -> bool
-pub fn syntect::highlighting::ScoredStyle::to_owned(&self) -> T
-pub fn syntect::highlighting::ScoredStyle::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn syntect::highlighting::ScoredStyle::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
-pub fn syntect::highlighting::ScoredStyle::type_id(&self) -> TypeId
-pub fn syntect::highlighting::SettingsError::borrow(&self) -> &T
-pub fn syntect::highlighting::SettingsError::borrow_mut(&mut self) -> &mut T
 pub fn syntect::highlighting::SettingsError::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
 pub fn syntect::highlighting::SettingsError::from(error: PlistError) -> SettingsError
-pub fn syntect::highlighting::SettingsError::from(t: T) -> T
-pub fn syntect::highlighting::SettingsError::into(self) -> U
-pub fn syntect::highlighting::SettingsError::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn syntect::highlighting::SettingsError::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
-pub fn syntect::highlighting::SettingsError::type_id(&self) -> TypeId
 pub fn syntect::highlighting::Style::apply(&self, modifier: StyleModifier) -> Style
-pub fn syntect::highlighting::Style::borrow(&self) -> &T
-pub fn syntect::highlighting::Style::borrow_mut(&mut self) -> &mut T
 pub fn syntect::highlighting::Style::clone(&self) -> Style
-pub fn syntect::highlighting::Style::clone_into(&self, target: &mut T) -> ()
 pub fn syntect::highlighting::Style::default() -> Style
 pub fn syntect::highlighting::Style::deserialize<__D>(__deserializer: __D) -> _serde::__private::Result<Self, <__D as >::Error> where __D: _serde::Deserializer<'de>
 pub fn syntect::highlighting::Style::eq(&self, other: &Style) -> bool
-pub fn syntect::highlighting::Style::equivalent(&self, key: &K) -> bool
 pub fn syntect::highlighting::Style::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-pub fn syntect::highlighting::Style::from(t: T) -> T
 pub fn syntect::highlighting::Style::hash<__H: $crate::hash::Hasher>(&self, state: &mut __H) -> ()
-pub fn syntect::highlighting::Style::into(self) -> U
 pub fn syntect::highlighting::Style::ne(&self, other: &Style) -> bool
 pub fn syntect::highlighting::Style::serialize<__S>(&self, __serializer: __S) -> _serde::__private::Result<<__S as >::Ok, <__S as >::Error> where __S: _serde::Serializer
-pub fn syntect::highlighting::Style::to_owned(&self) -> T
-pub fn syntect::highlighting::Style::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn syntect::highlighting::Style::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
-pub fn syntect::highlighting::Style::type_id(&self) -> TypeId
 pub fn syntect::highlighting::StyleModifier::apply(&self, other: StyleModifier) -> StyleModifier
-pub fn syntect::highlighting::StyleModifier::borrow(&self) -> &T
-pub fn syntect::highlighting::StyleModifier::borrow_mut(&mut self) -> &mut T
 pub fn syntect::highlighting::StyleModifier::clone(&self) -> StyleModifier
-pub fn syntect::highlighting::StyleModifier::clone_into(&self, target: &mut T) -> ()
 pub fn syntect::highlighting::StyleModifier::default() -> StyleModifier
 pub fn syntect::highlighting::StyleModifier::deserialize<__D>(__deserializer: __D) -> _serde::__private::Result<Self, <__D as >::Error> where __D: _serde::Deserializer<'de>
 pub fn syntect::highlighting::StyleModifier::eq(&self, other: &StyleModifier) -> bool
-pub fn syntect::highlighting::StyleModifier::equivalent(&self, key: &K) -> bool
 pub fn syntect::highlighting::StyleModifier::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-pub fn syntect::highlighting::StyleModifier::from(t: T) -> T
-pub fn syntect::highlighting::StyleModifier::into(self) -> U
 pub fn syntect::highlighting::StyleModifier::ne(&self, other: &StyleModifier) -> bool
 pub fn syntect::highlighting::StyleModifier::serialize<__S>(&self, __serializer: __S) -> _serde::__private::Result<<__S as >::Ok, <__S as >::Error> where __S: _serde::Serializer
-pub fn syntect::highlighting::StyleModifier::to_owned(&self) -> T
-pub fn syntect::highlighting::StyleModifier::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn syntect::highlighting::StyleModifier::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
-pub fn syntect::highlighting::StyleModifier::type_id(&self) -> TypeId
-pub fn syntect::highlighting::Theme::borrow(&self) -> &T
-pub fn syntect::highlighting::Theme::borrow_mut(&mut self) -> &mut T
 pub fn syntect::highlighting::Theme::clone(&self) -> Theme
-pub fn syntect::highlighting::Theme::clone_into(&self, target: &mut T) -> ()
 pub fn syntect::highlighting::Theme::default() -> Theme
 pub fn syntect::highlighting::Theme::deserialize<__D>(__deserializer: __D) -> _serde::__private::Result<Self, <__D as >::Error> where __D: _serde::Deserializer<'de>
 pub fn syntect::highlighting::Theme::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-pub fn syntect::highlighting::Theme::from(t: T) -> T
-pub fn syntect::highlighting::Theme::into(self) -> U
 pub fn syntect::highlighting::Theme::serialize<__S>(&self, __serializer: __S) -> _serde::__private::Result<<__S as >::Ok, <__S as >::Error> where __S: _serde::Serializer
-pub fn syntect::highlighting::Theme::to_owned(&self) -> T
-pub fn syntect::highlighting::Theme::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn syntect::highlighting::Theme::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
-pub fn syntect::highlighting::Theme::type_id(&self) -> TypeId
-pub fn syntect::highlighting::ThemeItem::borrow(&self) -> &T
-pub fn syntect::highlighting::ThemeItem::borrow_mut(&mut self) -> &mut T
 pub fn syntect::highlighting::ThemeItem::clone(&self) -> ThemeItem
-pub fn syntect::highlighting::ThemeItem::clone_into(&self, target: &mut T) -> ()
 pub fn syntect::highlighting::ThemeItem::default() -> ThemeItem
 pub fn syntect::highlighting::ThemeItem::deserialize<__D>(__deserializer: __D) -> _serde::__private::Result<Self, <__D as >::Error> where __D: _serde::Deserializer<'de>
 pub fn syntect::highlighting::ThemeItem::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-pub fn syntect::highlighting::ThemeItem::from(t: T) -> T
-pub fn syntect::highlighting::ThemeItem::into(self) -> U
 pub fn syntect::highlighting::ThemeItem::serialize<__S>(&self, __serializer: __S) -> _serde::__private::Result<<__S as >::Ok, <__S as >::Error> where __S: _serde::Serializer
-pub fn syntect::highlighting::ThemeItem::to_owned(&self) -> T
-pub fn syntect::highlighting::ThemeItem::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn syntect::highlighting::ThemeItem::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
-pub fn syntect::highlighting::ThemeItem::type_id(&self) -> TypeId
 pub fn syntect::highlighting::ThemeSet::add_from_folder<P: AsRef<Path>>(&mut self, folder: P) -> Result<(), LoadingError>
-pub fn syntect::highlighting::ThemeSet::borrow(&self) -> &T
-pub fn syntect::highlighting::ThemeSet::borrow_mut(&mut self) -> &mut T
 pub fn syntect::highlighting::ThemeSet::default() -> ThemeSet
 pub fn syntect::highlighting::ThemeSet::deserialize<__D>(__deserializer: __D) -> _serde::__private::Result<Self, <__D as >::Error> where __D: _serde::Deserializer<'de>
 pub fn syntect::highlighting::ThemeSet::discover_theme_paths<P: AsRef<Path>>(folder: P) -> Result<Vec<PathBuf>, LoadingError>
 pub fn syntect::highlighting::ThemeSet::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-pub fn syntect::highlighting::ThemeSet::from(t: T) -> T
 pub fn syntect::highlighting::ThemeSet::get_theme<P: AsRef<Path>>(path: P) -> Result<Theme, LoadingError>
-pub fn syntect::highlighting::ThemeSet::into(self) -> U
 pub fn syntect::highlighting::ThemeSet::load_defaults() -> ThemeSet
 pub fn syntect::highlighting::ThemeSet::load_from_folder<P: AsRef<Path>>(folder: P) -> Result<ThemeSet, LoadingError>
 pub fn syntect::highlighting::ThemeSet::load_from_reader<R: BufRead, Seek>(r: &mut R) -> Result<Theme, LoadingError>
 pub fn syntect::highlighting::ThemeSet::new() -> ThemeSet
 pub fn syntect::highlighting::ThemeSet::serialize<__S>(&self, __serializer: __S) -> _serde::__private::Result<<__S as >::Ok, <__S as >::Error> where __S: _serde::Serializer
-pub fn syntect::highlighting::ThemeSet::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn syntect::highlighting::ThemeSet::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
-pub fn syntect::highlighting::ThemeSet::type_id(&self) -> TypeId
-pub fn syntect::highlighting::ThemeSettings::borrow(&self) -> &T
-pub fn syntect::highlighting::ThemeSettings::borrow_mut(&mut self) -> &mut T
 pub fn syntect::highlighting::ThemeSettings::clone(&self) -> ThemeSettings
-pub fn syntect::highlighting::ThemeSettings::clone_into(&self, target: &mut T) -> ()
 pub fn syntect::highlighting::ThemeSettings::default() -> ThemeSettings
 pub fn syntect::highlighting::ThemeSettings::deserialize<__D>(__deserializer: __D) -> _serde::__private::Result<Self, <__D as >::Error> where __D: _serde::Deserializer<'de>
 pub fn syntect::highlighting::ThemeSettings::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-pub fn syntect::highlighting::ThemeSettings::from(t: T) -> T
-pub fn syntect::highlighting::ThemeSettings::into(self) -> U
 pub fn syntect::highlighting::ThemeSettings::serialize<__S>(&self, __serializer: __S) -> _serde::__private::Result<<__S as >::Ok, <__S as >::Error> where __S: _serde::Serializer
-pub fn syntect::highlighting::ThemeSettings::to_owned(&self) -> T
-pub fn syntect::highlighting::ThemeSettings::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn syntect::highlighting::ThemeSettings::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
-pub fn syntect::highlighting::ThemeSettings::type_id(&self) -> TypeId
-pub fn syntect::highlighting::UnderlineOption::borrow(&self) -> &T
-pub fn syntect::highlighting::UnderlineOption::borrow_mut(&mut self) -> &mut T
 pub fn syntect::highlighting::UnderlineOption::clone(&self) -> UnderlineOption
-pub fn syntect::highlighting::UnderlineOption::clone_into(&self, target: &mut T) -> ()
 pub fn syntect::highlighting::UnderlineOption::default() -> UnderlineOption
 pub fn syntect::highlighting::UnderlineOption::deserialize<__D>(__deserializer: __D) -> _serde::__private::Result<Self, <__D as >::Error> where __D: _serde::Deserializer<'de>
 pub fn syntect::highlighting::UnderlineOption::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-pub fn syntect::highlighting::UnderlineOption::from(t: T) -> T
 pub fn syntect::highlighting::UnderlineOption::from_str(s: &str) -> Result<UnderlineOption, <Self as >::Err>
-pub fn syntect::highlighting::UnderlineOption::into(self) -> U
 pub fn syntect::highlighting::UnderlineOption::serialize<__S>(&self, __serializer: __S) -> _serde::__private::Result<<__S as >::Ok, <__S as >::Error> where __S: _serde::Serializer
-pub fn syntect::highlighting::UnderlineOption::to_owned(&self) -> T
-pub fn syntect::highlighting::UnderlineOption::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn syntect::highlighting::UnderlineOption::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
-pub fn syntect::highlighting::UnderlineOption::type_id(&self) -> TypeId
-pub fn syntect::html::ClassStyle::borrow(&self) -> &T
-pub fn syntect::html::ClassStyle::borrow_mut(&mut self) -> &mut T
 pub fn syntect::html::ClassStyle::clone(&self) -> ClassStyle
-pub fn syntect::html::ClassStyle::clone_into(&self, target: &mut T) -> ()
 pub fn syntect::html::ClassStyle::eq(&self, other: &ClassStyle) -> bool
-pub fn syntect::html::ClassStyle::equivalent(&self, key: &K) -> bool
 pub fn syntect::html::ClassStyle::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-pub fn syntect::html::ClassStyle::from(t: T) -> T
-pub fn syntect::html::ClassStyle::into(self) -> U
 pub fn syntect::html::ClassStyle::ne(&self, other: &ClassStyle) -> bool
-pub fn syntect::html::ClassStyle::to_owned(&self) -> T
-pub fn syntect::html::ClassStyle::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn syntect::html::ClassStyle::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
-pub fn syntect::html::ClassStyle::type_id(&self) -> TypeId
-pub fn syntect::html::ClassedHTMLGenerator::borrow(&self) -> &T
-pub fn syntect::html::ClassedHTMLGenerator::borrow_mut(&mut self) -> &mut T
 pub fn syntect::html::ClassedHTMLGenerator::finalize(self) -> String
-pub fn syntect::html::ClassedHTMLGenerator::from(t: T) -> T
-pub fn syntect::html::ClassedHTMLGenerator::into(self) -> U
 pub fn syntect::html::ClassedHTMLGenerator::new(syntax_reference: &'a SyntaxReference, syntax_set: &'a SyntaxSet) -> ClassedHTMLGenerator<'a>
 pub fn syntect::html::ClassedHTMLGenerator::new_with_class_style(syntax_reference: &'a SyntaxReference, syntax_set: &'a SyntaxSet, style: ClassStyle) -> ClassedHTMLGenerator<'a>
 pub fn syntect::html::ClassedHTMLGenerator::parse_html_for_line(&mut self, line: &str)
 pub fn syntect::html::ClassedHTMLGenerator::parse_html_for_line_which_includes_newline(&mut self, line: &str)
-pub fn syntect::html::ClassedHTMLGenerator::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn syntect::html::ClassedHTMLGenerator::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
-pub fn syntect::html::ClassedHTMLGenerator::type_id(&self) -> TypeId
-pub fn syntect::html::IncludeBackground::borrow(&self) -> &T
-pub fn syntect::html::IncludeBackground::borrow_mut(&mut self) -> &mut T
 pub fn syntect::html::IncludeBackground::clone(&self) -> IncludeBackground
-pub fn syntect::html::IncludeBackground::clone_into(&self, target: &mut T) -> ()
 pub fn syntect::html::IncludeBackground::eq(&self, other: &IncludeBackground) -> bool
-pub fn syntect::html::IncludeBackground::equivalent(&self, key: &K) -> bool
 pub fn syntect::html::IncludeBackground::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-pub fn syntect::html::IncludeBackground::from(t: T) -> T
-pub fn syntect::html::IncludeBackground::into(self) -> U
 pub fn syntect::html::IncludeBackground::ne(&self, other: &IncludeBackground) -> bool
-pub fn syntect::html::IncludeBackground::to_owned(&self) -> T
-pub fn syntect::html::IncludeBackground::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn syntect::html::IncludeBackground::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
-pub fn syntect::html::IncludeBackground::type_id(&self) -> TypeId
 pub fn syntect::html::append_highlighted_html_for_styled_line(v: &[(Style, &str)], bg: IncludeBackground, s: &mut String)
 pub fn syntect::html::css_for_theme(theme: &Theme) -> String
 pub fn syntect::html::css_for_theme_with_class_style(theme: &Theme, style: ClassStyle) -> String
@@ -481,148 +264,60 @@ pub fn syntect::html::start_highlighted_html_snippet(t: &Theme) -> (String, Colo
 pub fn syntect::html::styled_line_to_highlighted_html(v: &[(Style, &str)], bg: IncludeBackground) -> String
 pub fn syntect::html::tokens_to_classed_html(line: &str, ops: &[(usize, ScopeStackOp)], style: ClassStyle) -> String
 pub fn syntect::html::tokens_to_classed_spans(line: &str, ops: &[(usize, ScopeStackOp)], style: ClassStyle) -> (String, isize)
-pub fn syntect::parsing::BasicScopeStackOp::borrow(&self) -> &T
-pub fn syntect::parsing::BasicScopeStackOp::borrow_mut(&mut self) -> &mut T
 pub fn syntect::parsing::BasicScopeStackOp::clone(&self) -> BasicScopeStackOp
-pub fn syntect::parsing::BasicScopeStackOp::clone_into(&self, target: &mut T) -> ()
 pub fn syntect::parsing::BasicScopeStackOp::eq(&self, other: &BasicScopeStackOp) -> bool
-pub fn syntect::parsing::BasicScopeStackOp::equivalent(&self, key: &K) -> bool
 pub fn syntect::parsing::BasicScopeStackOp::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-pub fn syntect::parsing::BasicScopeStackOp::from(t: T) -> T
-pub fn syntect::parsing::BasicScopeStackOp::into(self) -> U
 pub fn syntect::parsing::BasicScopeStackOp::ne(&self, other: &BasicScopeStackOp) -> bool
-pub fn syntect::parsing::BasicScopeStackOp::to_owned(&self) -> T
-pub fn syntect::parsing::BasicScopeStackOp::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn syntect::parsing::BasicScopeStackOp::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
-pub fn syntect::parsing::BasicScopeStackOp::type_id(&self) -> TypeId
-pub fn syntect::parsing::ClearAmount::borrow(&self) -> &T
-pub fn syntect::parsing::ClearAmount::borrow_mut(&mut self) -> &mut T
 pub fn syntect::parsing::ClearAmount::clone(&self) -> ClearAmount
-pub fn syntect::parsing::ClearAmount::clone_into(&self, target: &mut T) -> ()
 pub fn syntect::parsing::ClearAmount::deserialize<__D>(__deserializer: __D) -> _serde::__private::Result<Self, <__D as >::Error> where __D: _serde::Deserializer<'de>
 pub fn syntect::parsing::ClearAmount::eq(&self, other: &ClearAmount) -> bool
-pub fn syntect::parsing::ClearAmount::equivalent(&self, key: &K) -> bool
 pub fn syntect::parsing::ClearAmount::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-pub fn syntect::parsing::ClearAmount::from(t: T) -> T
-pub fn syntect::parsing::ClearAmount::into(self) -> U
 pub fn syntect::parsing::ClearAmount::ne(&self, other: &ClearAmount) -> bool
 pub fn syntect::parsing::ClearAmount::serialize<__S>(&self, __serializer: __S) -> _serde::__private::Result<<__S as >::Ok, <__S as >::Error> where __S: _serde::Serializer
-pub fn syntect::parsing::ClearAmount::to_owned(&self) -> T
-pub fn syntect::parsing::ClearAmount::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn syntect::parsing::ClearAmount::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
-pub fn syntect::parsing::ClearAmount::type_id(&self) -> TypeId
-pub fn syntect::parsing::MatchPower::borrow(&self) -> &T
-pub fn syntect::parsing::MatchPower::borrow_mut(&mut self) -> &mut T
 pub fn syntect::parsing::MatchPower::clone(&self) -> MatchPower
-pub fn syntect::parsing::MatchPower::clone_into(&self, target: &mut T) -> ()
 pub fn syntect::parsing::MatchPower::cmp(&self, other: &Self) -> Ordering
 pub fn syntect::parsing::MatchPower::eq(&self, other: &MatchPower) -> bool
-pub fn syntect::parsing::MatchPower::equivalent(&self, key: &K) -> bool
 pub fn syntect::parsing::MatchPower::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-pub fn syntect::parsing::MatchPower::from(t: T) -> T
-pub fn syntect::parsing::MatchPower::into(self) -> U
 pub fn syntect::parsing::MatchPower::ne(&self, other: &MatchPower) -> bool
 pub fn syntect::parsing::MatchPower::partial_cmp(&self, other: &MatchPower) -> $crate::option::Option<$crate::cmp::Ordering>
-pub fn syntect::parsing::MatchPower::to_owned(&self) -> T
-pub fn syntect::parsing::MatchPower::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn syntect::parsing::MatchPower::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
-pub fn syntect::parsing::MatchPower::type_id(&self) -> TypeId
-pub fn syntect::parsing::ParseScopeError::borrow(&self) -> &T
-pub fn syntect::parsing::ParseScopeError::borrow_mut(&mut self) -> &mut T
 pub fn syntect::parsing::ParseScopeError::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-pub fn syntect::parsing::ParseScopeError::from(t: T) -> T
-pub fn syntect::parsing::ParseScopeError::into(self) -> U
-pub fn syntect::parsing::ParseScopeError::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn syntect::parsing::ParseScopeError::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
-pub fn syntect::parsing::ParseScopeError::type_id(&self) -> TypeId
-pub fn syntect::parsing::ParseState::borrow(&self) -> &T
-pub fn syntect::parsing::ParseState::borrow_mut(&mut self) -> &mut T
 pub fn syntect::parsing::ParseState::clone(&self) -> ParseState
-pub fn syntect::parsing::ParseState::clone_into(&self, target: &mut T) -> ()
 pub fn syntect::parsing::ParseState::eq(&self, other: &ParseState) -> bool
-pub fn syntect::parsing::ParseState::equivalent(&self, key: &K) -> bool
 pub fn syntect::parsing::ParseState::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-pub fn syntect::parsing::ParseState::from(t: T) -> T
-pub fn syntect::parsing::ParseState::into(self) -> U
 pub fn syntect::parsing::ParseState::ne(&self, other: &ParseState) -> bool
 pub fn syntect::parsing::ParseState::new(syntax: &SyntaxReference) -> ParseState
 pub fn syntect::parsing::ParseState::parse_line(&mut self, line: &str, syntax_set: &SyntaxSet) -> Vec<(usize, ScopeStackOp)>
-pub fn syntect::parsing::ParseState::to_owned(&self) -> T
-pub fn syntect::parsing::ParseState::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn syntect::parsing::ParseState::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
-pub fn syntect::parsing::ParseState::type_id(&self) -> TypeId
-pub fn syntect::parsing::ParseSyntaxError::borrow(&self) -> &T
-pub fn syntect::parsing::ParseSyntaxError::borrow_mut(&mut self) -> &mut T
 pub fn syntect::parsing::ParseSyntaxError::cause(&self) -> Option<&Error>
 pub fn syntect::parsing::ParseSyntaxError::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
 pub fn syntect::parsing::ParseSyntaxError::fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result
-pub fn syntect::parsing::ParseSyntaxError::from(t: T) -> T
-pub fn syntect::parsing::ParseSyntaxError::into(self) -> U
-pub fn syntect::parsing::ParseSyntaxError::to_string(&self) -> String
-pub fn syntect::parsing::ParseSyntaxError::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn syntect::parsing::ParseSyntaxError::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
-pub fn syntect::parsing::ParseSyntaxError::type_id(&self) -> TypeId
-pub fn syntect::parsing::Regex::borrow(&self) -> &T
-pub fn syntect::parsing::Regex::borrow_mut(&mut self) -> &mut T
 pub fn syntect::parsing::Regex::clone(&self) -> Self
-pub fn syntect::parsing::Regex::clone_into(&self, target: &mut T) -> ()
 pub fn syntect::parsing::Regex::deserialize<D>(deserializer: D) -> Result<Self, <D as >::Error> where D: Deserializer<'de>
 pub fn syntect::parsing::Regex::eq(&self, other: &Regex) -> bool
-pub fn syntect::parsing::Regex::equivalent(&self, key: &K) -> bool
 pub fn syntect::parsing::Regex::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-pub fn syntect::parsing::Regex::from(t: T) -> T
-pub fn syntect::parsing::Regex::into(self) -> U
 pub fn syntect::parsing::Regex::is_match(&self, text: &str) -> bool
 pub fn syntect::parsing::Regex::new(regex_str: String) -> Self
 pub fn syntect::parsing::Regex::regex_str(&self) -> &str
 pub fn syntect::parsing::Regex::search(&self, text: &str, begin: usize, end: usize, region: Option<&mut Region>) -> bool
 pub fn syntect::parsing::Regex::serialize<S>(&self, serializer: S) -> Result<<S as >::Ok, <S as >::Error> where S: Serializer
-pub fn syntect::parsing::Regex::to_owned(&self) -> T
 pub fn syntect::parsing::Regex::try_compile(regex_str: &str) -> Option<Box<Error + Send + Sync + 'static>>
-pub fn syntect::parsing::Regex::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn syntect::parsing::Regex::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
-pub fn syntect::parsing::Regex::type_id(&self) -> TypeId
-pub fn syntect::parsing::Region::borrow(&self) -> &T
-pub fn syntect::parsing::Region::borrow_mut(&mut self) -> &mut T
 pub fn syntect::parsing::Region::clone(&self) -> Region
-pub fn syntect::parsing::Region::clone_into(&self, target: &mut T) -> ()
 pub fn syntect::parsing::Region::eq(&self, other: &Region) -> bool
-pub fn syntect::parsing::Region::equivalent(&self, key: &K) -> bool
 pub fn syntect::parsing::Region::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-pub fn syntect::parsing::Region::from(t: T) -> T
-pub fn syntect::parsing::Region::into(self) -> U
 pub fn syntect::parsing::Region::ne(&self, other: &Region) -> bool
 pub fn syntect::parsing::Region::new() -> Self
 pub fn syntect::parsing::Region::pos(&self, index: usize) -> Option<(usize, usize)>
-pub fn syntect::parsing::Region::to_owned(&self) -> T
-pub fn syntect::parsing::Region::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn syntect::parsing::Region::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
-pub fn syntect::parsing::Region::type_id(&self) -> TypeId
-pub fn syntect::parsing::SCOPE_REPO::borrow(&self) -> &T
-pub fn syntect::parsing::SCOPE_REPO::borrow_mut(&mut self) -> &mut T
 pub fn syntect::parsing::SCOPE_REPO::deref(&self) -> &Mutex<ScopeRepository>
-pub fn syntect::parsing::SCOPE_REPO::from(t: T) -> T
-pub fn syntect::parsing::SCOPE_REPO::into(self) -> U
-pub fn syntect::parsing::SCOPE_REPO::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn syntect::parsing::SCOPE_REPO::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
-pub fn syntect::parsing::SCOPE_REPO::type_id(&self) -> TypeId
 pub fn syntect::parsing::Scope::atom_at(self, index: usize) -> u16
-pub fn syntect::parsing::Scope::borrow(&self) -> &T
-pub fn syntect::parsing::Scope::borrow_mut(&mut self) -> &mut T
 pub fn syntect::parsing::Scope::build_string(self) -> String
 pub fn syntect::parsing::Scope::clone(&self) -> Scope
-pub fn syntect::parsing::Scope::clone_into(&self, target: &mut T) -> ()
 pub fn syntect::parsing::Scope::cmp(&self, other: &Scope) -> $crate::cmp::Ordering
 pub fn syntect::parsing::Scope::default() -> Scope
 pub fn syntect::parsing::Scope::deserialize<D>(deserializer: D) -> Result<Self, <D as >::Error> where D: Deserializer<'de>
 pub fn syntect::parsing::Scope::eq(&self, other: &Scope) -> bool
-pub fn syntect::parsing::Scope::equivalent(&self, key: &K) -> bool
 pub fn syntect::parsing::Scope::fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result
 pub fn syntect::parsing::Scope::fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result
-pub fn syntect::parsing::Scope::from(t: T) -> T
 pub fn syntect::parsing::Scope::from_str(s: &str) -> Result<Scope, ParseScopeError>
 pub fn syntect::parsing::Scope::hash<__H: $crate::hash::Hasher>(&self, state: &mut __H) -> ()
-pub fn syntect::parsing::Scope::into(self) -> U
 pub fn syntect::parsing::Scope::is_empty(&self) -> bool
 pub fn syntect::parsing::Scope::is_prefix_of(self, s: Scope) -> bool
 pub fn syntect::parsing::Scope::len(self) -> u32
@@ -630,42 +325,24 @@ pub fn syntect::parsing::Scope::ne(&self, other: &Scope) -> bool
 pub fn syntect::parsing::Scope::new(s: &str) -> Result<Scope, ParseScopeError>
 pub fn syntect::parsing::Scope::partial_cmp(&self, other: &Scope) -> $crate::option::Option<$crate::cmp::Ordering>
 pub fn syntect::parsing::Scope::serialize<S>(&self, serializer: S) -> Result<<S as >::Ok, <S as >::Error> where S: Serializer
-pub fn syntect::parsing::Scope::to_owned(&self) -> T
-pub fn syntect::parsing::Scope::to_string(&self) -> String
-pub fn syntect::parsing::Scope::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn syntect::parsing::Scope::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
-pub fn syntect::parsing::Scope::type_id(&self) -> TypeId
 pub fn syntect::parsing::ScopeRepository::atom_str(&self, atom_number: u16) -> &str
-pub fn syntect::parsing::ScopeRepository::borrow(&self) -> &T
-pub fn syntect::parsing::ScopeRepository::borrow_mut(&mut self) -> &mut T
 pub fn syntect::parsing::ScopeRepository::build(&mut self, s: &str) -> Result<Scope, ParseScopeError>
 pub fn syntect::parsing::ScopeRepository::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-pub fn syntect::parsing::ScopeRepository::from(t: T) -> T
-pub fn syntect::parsing::ScopeRepository::into(self) -> U
 pub fn syntect::parsing::ScopeRepository::to_string(&self, scope: Scope) -> String
-pub fn syntect::parsing::ScopeRepository::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn syntect::parsing::ScopeRepository::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
-pub fn syntect::parsing::ScopeRepository::type_id(&self) -> TypeId
 pub fn syntect::parsing::ScopeStack::apply(&mut self, op: &ScopeStackOp)
 pub fn syntect::parsing::ScopeStack::apply_with_hook<F>(&mut self, op: &ScopeStackOp, hook: F) where F: FnMutFn<BasicScopeStackOp, &[Scope]>
 pub fn syntect::parsing::ScopeStack::as_slice(&self) -> &[Scope]
-pub fn syntect::parsing::ScopeStack::borrow(&self) -> &T
-pub fn syntect::parsing::ScopeStack::borrow_mut(&mut self) -> &mut T
 pub fn syntect::parsing::ScopeStack::bottom_n(&self, n: usize) -> &[Scope]
 pub fn syntect::parsing::ScopeStack::clone(&self) -> ScopeStack
-pub fn syntect::parsing::ScopeStack::clone_into(&self, target: &mut T) -> ()
 pub fn syntect::parsing::ScopeStack::debug_print(&self, repo: &ScopeRepository)
 pub fn syntect::parsing::ScopeStack::default() -> ScopeStack
 pub fn syntect::parsing::ScopeStack::deserialize<__D>(__deserializer: __D) -> _serde::__private::Result<Self, <__D as >::Error> where __D: _serde::Deserializer<'de>
 pub fn syntect::parsing::ScopeStack::does_match(&self, stack: &[Scope]) -> Option<MatchPower>
 pub fn syntect::parsing::ScopeStack::eq(&self, other: &ScopeStack) -> bool
-pub fn syntect::parsing::ScopeStack::equivalent(&self, key: &K) -> bool
 pub fn syntect::parsing::ScopeStack::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
 pub fn syntect::parsing::ScopeStack::fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result
-pub fn syntect::parsing::ScopeStack::from(t: T) -> T
 pub fn syntect::parsing::ScopeStack::from_str(s: &str) -> Result<ScopeStack, ParseScopeError>
 pub fn syntect::parsing::ScopeStack::from_vec(v: Vec<Scope>) -> ScopeStack
-pub fn syntect::parsing::ScopeStack::into(self) -> U
 pub fn syntect::parsing::ScopeStack::is_empty(&self) -> bool
 pub fn syntect::parsing::ScopeStack::len(&self) -> usize
 pub fn syntect::parsing::ScopeStack::ne(&self, other: &ScopeStack) -> bool
@@ -673,42 +350,15 @@ pub fn syntect::parsing::ScopeStack::new() -> ScopeStack
 pub fn syntect::parsing::ScopeStack::pop(&mut self)
 pub fn syntect::parsing::ScopeStack::push(&mut self, s: Scope)
 pub fn syntect::parsing::ScopeStack::serialize<__S>(&self, __serializer: __S) -> _serde::__private::Result<<__S as >::Ok, <__S as >::Error> where __S: _serde::Serializer
-pub fn syntect::parsing::ScopeStack::to_owned(&self) -> T
-pub fn syntect::parsing::ScopeStack::to_string(&self) -> String
-pub fn syntect::parsing::ScopeStack::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn syntect::parsing::ScopeStack::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
-pub fn syntect::parsing::ScopeStack::type_id(&self) -> TypeId
-pub fn syntect::parsing::ScopeStackOp::borrow(&self) -> &T
-pub fn syntect::parsing::ScopeStackOp::borrow_mut(&mut self) -> &mut T
 pub fn syntect::parsing::ScopeStackOp::clone(&self) -> ScopeStackOp
-pub fn syntect::parsing::ScopeStackOp::clone_into(&self, target: &mut T) -> ()
 pub fn syntect::parsing::ScopeStackOp::eq(&self, other: &ScopeStackOp) -> bool
-pub fn syntect::parsing::ScopeStackOp::equivalent(&self, key: &K) -> bool
 pub fn syntect::parsing::ScopeStackOp::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-pub fn syntect::parsing::ScopeStackOp::from(t: T) -> T
-pub fn syntect::parsing::ScopeStackOp::into(self) -> U
 pub fn syntect::parsing::ScopeStackOp::ne(&self, other: &ScopeStackOp) -> bool
-pub fn syntect::parsing::ScopeStackOp::to_owned(&self) -> T
-pub fn syntect::parsing::ScopeStackOp::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn syntect::parsing::ScopeStackOp::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
-pub fn syntect::parsing::ScopeStackOp::type_id(&self) -> TypeId
-pub fn syntect::parsing::SyntaxReference::borrow(&self) -> &T
-pub fn syntect::parsing::SyntaxReference::borrow_mut(&mut self) -> &mut T
 pub fn syntect::parsing::SyntaxReference::clone(&self) -> SyntaxReference
-pub fn syntect::parsing::SyntaxReference::clone_into(&self, target: &mut T) -> ()
 pub fn syntect::parsing::SyntaxReference::deserialize<__D>(__deserializer: __D) -> _serde::__private::Result<Self, <__D as >::Error> where __D: _serde::Deserializer<'de>
 pub fn syntect::parsing::SyntaxReference::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-pub fn syntect::parsing::SyntaxReference::from(t: T) -> T
-pub fn syntect::parsing::SyntaxReference::into(self) -> U
 pub fn syntect::parsing::SyntaxReference::serialize<__S>(&self, __serializer: __S) -> _serde::__private::Result<<__S as >::Ok, <__S as >::Error> where __S: _serde::Serializer
-pub fn syntect::parsing::SyntaxReference::to_owned(&self) -> T
-pub fn syntect::parsing::SyntaxReference::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn syntect::parsing::SyntaxReference::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
-pub fn syntect::parsing::SyntaxReference::type_id(&self) -> TypeId
-pub fn syntect::parsing::SyntaxSet::borrow(&self) -> &T
-pub fn syntect::parsing::SyntaxSet::borrow_mut(&mut self) -> &mut T
 pub fn syntect::parsing::SyntaxSet::clone(&self) -> SyntaxSet
-pub fn syntect::parsing::SyntaxSet::clone_into(&self, target: &mut T) -> ()
 pub fn syntect::parsing::SyntaxSet::default() -> Self
 pub fn syntect::parsing::SyntaxSet::deserialize<__D>(__deserializer: __D) -> _serde::__private::Result<Self, <__D as >::Error> where __D: _serde::Deserializer<'de>
 pub fn syntect::parsing::SyntaxSet::find_syntax_by_extension<'a>(&'a self, extension: &str) -> Option<&'a SyntaxReference>
@@ -721,8 +371,6 @@ pub fn syntect::parsing::SyntaxSet::find_syntax_for_file<P: AsRef<Path>>(&self, 
 pub fn syntect::parsing::SyntaxSet::find_syntax_plain_text(&self) -> &SyntaxReference
 pub fn syntect::parsing::SyntaxSet::find_unlinked_contexts(&self) -> BTreeSet<String>
 pub fn syntect::parsing::SyntaxSet::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-pub fn syntect::parsing::SyntaxSet::from(t: T) -> T
-pub fn syntect::parsing::SyntaxSet::into(self) -> U
 pub fn syntect::parsing::SyntaxSet::into_builder(self) -> SyntaxSetBuilder
 pub fn syntect::parsing::SyntaxSet::load_defaults_newlines() -> SyntaxSet
 pub fn syntect::parsing::SyntaxSet::load_defaults_nonewlines() -> SyntaxSet
@@ -730,169 +378,70 @@ pub fn syntect::parsing::SyntaxSet::load_from_folder<P: AsRef<Path>>(folder: P) 
 pub fn syntect::parsing::SyntaxSet::new() -> SyntaxSet
 pub fn syntect::parsing::SyntaxSet::serialize<__S>(&self, __serializer: __S) -> _serde::__private::Result<<__S as >::Ok, <__S as >::Error> where __S: _serde::Serializer
 pub fn syntect::parsing::SyntaxSet::syntaxes(&self) -> &[SyntaxReference]
-pub fn syntect::parsing::SyntaxSet::to_owned(&self) -> T
-pub fn syntect::parsing::SyntaxSet::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn syntect::parsing::SyntaxSet::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
-pub fn syntect::parsing::SyntaxSet::type_id(&self) -> TypeId
 pub fn syntect::parsing::SyntaxSetBuilder::add(&mut self, syntax: SyntaxDefinition)
 pub fn syntect::parsing::SyntaxSetBuilder::add_from_folder<P: AsRef<Path>>(&mut self, folder: P, lines_include_newline: bool) -> Result<(), LoadingError>
 pub fn syntect::parsing::SyntaxSetBuilder::add_plain_text_syntax(&mut self)
-pub fn syntect::parsing::SyntaxSetBuilder::borrow(&self) -> &T
-pub fn syntect::parsing::SyntaxSetBuilder::borrow_mut(&mut self) -> &mut T
 pub fn syntect::parsing::SyntaxSetBuilder::build(self) -> SyntaxSet
 pub fn syntect::parsing::SyntaxSetBuilder::clone(&self) -> SyntaxSetBuilder
-pub fn syntect::parsing::SyntaxSetBuilder::clone_into(&self, target: &mut T) -> ()
 pub fn syntect::parsing::SyntaxSetBuilder::default() -> SyntaxSetBuilder
-pub fn syntect::parsing::SyntaxSetBuilder::from(t: T) -> T
-pub fn syntect::parsing::SyntaxSetBuilder::into(self) -> U
 pub fn syntect::parsing::SyntaxSetBuilder::new() -> SyntaxSetBuilder
 pub fn syntect::parsing::SyntaxSetBuilder::syntaxes(&self) -> &[SyntaxDefinition]
-pub fn syntect::parsing::SyntaxSetBuilder::to_owned(&self) -> T
-pub fn syntect::parsing::SyntaxSetBuilder::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn syntect::parsing::SyntaxSetBuilder::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
-pub fn syntect::parsing::SyntaxSetBuilder::type_id(&self) -> TypeId
-pub fn syntect::parsing::syntax_definition::Context::borrow(&self) -> &T
-pub fn syntect::parsing::syntax_definition::Context::borrow_mut(&mut self) -> &mut T
 pub fn syntect::parsing::syntax_definition::Context::clone(&self) -> Context
-pub fn syntect::parsing::syntax_definition::Context::clone_into(&self, target: &mut T) -> ()
 pub fn syntect::parsing::syntax_definition::Context::deserialize<__D>(__deserializer: __D) -> _serde::__private::Result<Self, <__D as >::Error> where __D: _serde::Deserializer<'de>
 pub fn syntect::parsing::syntax_definition::Context::eq(&self, other: &Context) -> bool
-pub fn syntect::parsing::syntax_definition::Context::equivalent(&self, key: &K) -> bool
 pub fn syntect::parsing::syntax_definition::Context::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-pub fn syntect::parsing::syntax_definition::Context::from(t: T) -> T
-pub fn syntect::parsing::syntax_definition::Context::into(self) -> U
 pub fn syntect::parsing::syntax_definition::Context::match_at(&self, index: usize) -> &MatchPattern
 pub fn syntect::parsing::syntax_definition::Context::ne(&self, other: &Context) -> bool
 pub fn syntect::parsing::syntax_definition::Context::new(meta_include_prototype: bool) -> Context
 pub fn syntect::parsing::syntax_definition::Context::serialize<__S>(&self, __serializer: __S) -> _serde::__private::Result<<__S as >::Ok, <__S as >::Error> where __S: _serde::Serializer
-pub fn syntect::parsing::syntax_definition::Context::to_owned(&self) -> T
-pub fn syntect::parsing::syntax_definition::Context::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn syntect::parsing::syntax_definition::Context::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
-pub fn syntect::parsing::syntax_definition::Context::type_id(&self) -> TypeId
-pub fn syntect::parsing::syntax_definition::ContextId::borrow(&self) -> &T
-pub fn syntect::parsing::syntax_definition::ContextId::borrow_mut(&mut self) -> &mut T
 pub fn syntect::parsing::syntax_definition::ContextId::clone(&self) -> ContextId
-pub fn syntect::parsing::syntax_definition::ContextId::clone_into(&self, target: &mut T) -> ()
 pub fn syntect::parsing::syntax_definition::ContextId::deserialize<__D>(__deserializer: __D) -> _serde::__private::Result<Self, <__D as >::Error> where __D: _serde::Deserializer<'de>
 pub fn syntect::parsing::syntax_definition::ContextId::eq(&self, other: &ContextId) -> bool
-pub fn syntect::parsing::syntax_definition::ContextId::equivalent(&self, key: &K) -> bool
 pub fn syntect::parsing::syntax_definition::ContextId::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-pub fn syntect::parsing::syntax_definition::ContextId::from(t: T) -> T
-pub fn syntect::parsing::syntax_definition::ContextId::into(self) -> U
 pub fn syntect::parsing::syntax_definition::ContextId::ne(&self, other: &ContextId) -> bool
 pub fn syntect::parsing::syntax_definition::ContextId::new(index: usize) -> Self
 pub fn syntect::parsing::syntax_definition::ContextId::serialize<__S>(&self, __serializer: __S) -> _serde::__private::Result<<__S as >::Ok, <__S as >::Error> where __S: _serde::Serializer
-pub fn syntect::parsing::syntax_definition::ContextId::to_owned(&self) -> T
-pub fn syntect::parsing::syntax_definition::ContextId::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn syntect::parsing::syntax_definition::ContextId::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
-pub fn syntect::parsing::syntax_definition::ContextId::type_id(&self) -> TypeId
-pub fn syntect::parsing::syntax_definition::ContextReference::borrow(&self) -> &T
-pub fn syntect::parsing::syntax_definition::ContextReference::borrow_mut(&mut self) -> &mut T
 pub fn syntect::parsing::syntax_definition::ContextReference::clone(&self) -> ContextReference
-pub fn syntect::parsing::syntax_definition::ContextReference::clone_into(&self, target: &mut T) -> ()
 pub fn syntect::parsing::syntax_definition::ContextReference::deserialize<__D>(__deserializer: __D) -> _serde::__private::Result<Self, <__D as >::Error> where __D: _serde::Deserializer<'de>
 pub fn syntect::parsing::syntax_definition::ContextReference::eq(&self, other: &ContextReference) -> bool
-pub fn syntect::parsing::syntax_definition::ContextReference::equivalent(&self, key: &K) -> bool
 pub fn syntect::parsing::syntax_definition::ContextReference::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-pub fn syntect::parsing::syntax_definition::ContextReference::from(t: T) -> T
 pub fn syntect::parsing::syntax_definition::ContextReference::id(&self) -> ContextId
-pub fn syntect::parsing::syntax_definition::ContextReference::into(self) -> U
 pub fn syntect::parsing::syntax_definition::ContextReference::ne(&self, other: &ContextReference) -> bool
 pub fn syntect::parsing::syntax_definition::ContextReference::resolve<'a>(&self, syntax_set: &'a SyntaxSet) -> &'a Context
 pub fn syntect::parsing::syntax_definition::ContextReference::serialize<__S>(&self, __serializer: __S) -> _serde::__private::Result<<__S as >::Ok, <__S as >::Error> where __S: _serde::Serializer
-pub fn syntect::parsing::syntax_definition::ContextReference::to_owned(&self) -> T
-pub fn syntect::parsing::syntax_definition::ContextReference::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn syntect::parsing::syntax_definition::ContextReference::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
-pub fn syntect::parsing::syntax_definition::ContextReference::type_id(&self) -> TypeId
-pub fn syntect::parsing::syntax_definition::MatchIter::borrow(&self) -> &T
-pub fn syntect::parsing::syntax_definition::MatchIter::borrow_mut(&mut self) -> &mut T
 pub fn syntect::parsing::syntax_definition::MatchIter::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-pub fn syntect::parsing::syntax_definition::MatchIter::from(t: T) -> T
-pub fn syntect::parsing::syntax_definition::MatchIter::into(self) -> U
-pub fn syntect::parsing::syntax_definition::MatchIter::into_iter(self) -> I
 pub fn syntect::parsing::syntax_definition::MatchIter::next(&mut self) -> Option<(&'a Context, usize)>
-pub fn syntect::parsing::syntax_definition::MatchIter::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn syntect::parsing::syntax_definition::MatchIter::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
-pub fn syntect::parsing::syntax_definition::MatchIter::type_id(&self) -> TypeId
-pub fn syntect::parsing::syntax_definition::MatchOperation::borrow(&self) -> &T
-pub fn syntect::parsing::syntax_definition::MatchOperation::borrow_mut(&mut self) -> &mut T
 pub fn syntect::parsing::syntax_definition::MatchOperation::clone(&self) -> MatchOperation
-pub fn syntect::parsing::syntax_definition::MatchOperation::clone_into(&self, target: &mut T) -> ()
 pub fn syntect::parsing::syntax_definition::MatchOperation::deserialize<__D>(__deserializer: __D) -> _serde::__private::Result<Self, <__D as >::Error> where __D: _serde::Deserializer<'de>
 pub fn syntect::parsing::syntax_definition::MatchOperation::eq(&self, other: &MatchOperation) -> bool
-pub fn syntect::parsing::syntax_definition::MatchOperation::equivalent(&self, key: &K) -> bool
 pub fn syntect::parsing::syntax_definition::MatchOperation::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-pub fn syntect::parsing::syntax_definition::MatchOperation::from(t: T) -> T
-pub fn syntect::parsing::syntax_definition::MatchOperation::into(self) -> U
 pub fn syntect::parsing::syntax_definition::MatchOperation::ne(&self, other: &MatchOperation) -> bool
 pub fn syntect::parsing::syntax_definition::MatchOperation::serialize<__S>(&self, __serializer: __S) -> _serde::__private::Result<<__S as >::Ok, <__S as >::Error> where __S: _serde::Serializer
-pub fn syntect::parsing::syntax_definition::MatchOperation::to_owned(&self) -> T
-pub fn syntect::parsing::syntax_definition::MatchOperation::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn syntect::parsing::syntax_definition::MatchOperation::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
-pub fn syntect::parsing::syntax_definition::MatchOperation::type_id(&self) -> TypeId
-pub fn syntect::parsing::syntax_definition::MatchPattern::borrow(&self) -> &T
-pub fn syntect::parsing::syntax_definition::MatchPattern::borrow_mut(&mut self) -> &mut T
 pub fn syntect::parsing::syntax_definition::MatchPattern::clone(&self) -> MatchPattern
-pub fn syntect::parsing::syntax_definition::MatchPattern::clone_into(&self, target: &mut T) -> ()
 pub fn syntect::parsing::syntax_definition::MatchPattern::deserialize<__D>(__deserializer: __D) -> _serde::__private::Result<Self, <__D as >::Error> where __D: _serde::Deserializer<'de>
 pub fn syntect::parsing::syntax_definition::MatchPattern::eq(&self, other: &MatchPattern) -> bool
-pub fn syntect::parsing::syntax_definition::MatchPattern::equivalent(&self, key: &K) -> bool
 pub fn syntect::parsing::syntax_definition::MatchPattern::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-pub fn syntect::parsing::syntax_definition::MatchPattern::from(t: T) -> T
-pub fn syntect::parsing::syntax_definition::MatchPattern::into(self) -> U
 pub fn syntect::parsing::syntax_definition::MatchPattern::ne(&self, other: &MatchPattern) -> bool
 pub fn syntect::parsing::syntax_definition::MatchPattern::new(has_captures: bool, regex_str: String, scope: Vec<Scope>, captures: Option<CaptureMapping>, operation: MatchOperation, with_prototype: Option<ContextReference>) -> MatchPattern
 pub fn syntect::parsing::syntax_definition::MatchPattern::regex(&self) -> &Regex
 pub fn syntect::parsing::syntax_definition::MatchPattern::regex_with_refs(&self, region: &Region, text: &str) -> Regex
 pub fn syntect::parsing::syntax_definition::MatchPattern::serialize<__S>(&self, __serializer: __S) -> _serde::__private::Result<<__S as >::Ok, <__S as >::Error> where __S: _serde::Serializer
-pub fn syntect::parsing::syntax_definition::MatchPattern::to_owned(&self) -> T
-pub fn syntect::parsing::syntax_definition::MatchPattern::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn syntect::parsing::syntax_definition::MatchPattern::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
-pub fn syntect::parsing::syntax_definition::MatchPattern::type_id(&self) -> TypeId
-pub fn syntect::parsing::syntax_definition::Pattern::borrow(&self) -> &T
-pub fn syntect::parsing::syntax_definition::Pattern::borrow_mut(&mut self) -> &mut T
 pub fn syntect::parsing::syntax_definition::Pattern::clone(&self) -> Pattern
-pub fn syntect::parsing::syntax_definition::Pattern::clone_into(&self, target: &mut T) -> ()
 pub fn syntect::parsing::syntax_definition::Pattern::deserialize<__D>(__deserializer: __D) -> _serde::__private::Result<Self, <__D as >::Error> where __D: _serde::Deserializer<'de>
 pub fn syntect::parsing::syntax_definition::Pattern::eq(&self, other: &Pattern) -> bool
-pub fn syntect::parsing::syntax_definition::Pattern::equivalent(&self, key: &K) -> bool
 pub fn syntect::parsing::syntax_definition::Pattern::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-pub fn syntect::parsing::syntax_definition::Pattern::from(t: T) -> T
-pub fn syntect::parsing::syntax_definition::Pattern::into(self) -> U
 pub fn syntect::parsing::syntax_definition::Pattern::ne(&self, other: &Pattern) -> bool
 pub fn syntect::parsing::syntax_definition::Pattern::serialize<__S>(&self, __serializer: __S) -> _serde::__private::Result<<__S as >::Ok, <__S as >::Error> where __S: _serde::Serializer
-pub fn syntect::parsing::syntax_definition::Pattern::to_owned(&self) -> T
-pub fn syntect::parsing::syntax_definition::Pattern::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn syntect::parsing::syntax_definition::Pattern::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
-pub fn syntect::parsing::syntax_definition::Pattern::type_id(&self) -> TypeId
-pub fn syntect::parsing::syntax_definition::SyntaxDefinition::borrow(&self) -> &T
-pub fn syntect::parsing::syntax_definition::SyntaxDefinition::borrow_mut(&mut self) -> &mut T
 pub fn syntect::parsing::syntax_definition::SyntaxDefinition::clone(&self) -> SyntaxDefinition
-pub fn syntect::parsing::syntax_definition::SyntaxDefinition::clone_into(&self, target: &mut T) -> ()
 pub fn syntect::parsing::syntax_definition::SyntaxDefinition::deserialize<__D>(__deserializer: __D) -> _serde::__private::Result<Self, <__D as >::Error> where __D: _serde::Deserializer<'de>
 pub fn syntect::parsing::syntax_definition::SyntaxDefinition::eq(&self, other: &SyntaxDefinition) -> bool
-pub fn syntect::parsing::syntax_definition::SyntaxDefinition::equivalent(&self, key: &K) -> bool
 pub fn syntect::parsing::syntax_definition::SyntaxDefinition::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-pub fn syntect::parsing::syntax_definition::SyntaxDefinition::from(t: T) -> T
-pub fn syntect::parsing::syntax_definition::SyntaxDefinition::into(self) -> U
 pub fn syntect::parsing::syntax_definition::SyntaxDefinition::load_from_str(s: &str, lines_include_newline: bool, fallback_name: Option<&str>) -> Result<SyntaxDefinition, ParseSyntaxError>
 pub fn syntect::parsing::syntax_definition::SyntaxDefinition::ne(&self, other: &SyntaxDefinition) -> bool
 pub fn syntect::parsing::syntax_definition::SyntaxDefinition::serialize<__S>(&self, __serializer: __S) -> _serde::__private::Result<<__S as >::Ok, <__S as >::Error> where __S: _serde::Serializer
-pub fn syntect::parsing::syntax_definition::SyntaxDefinition::to_owned(&self) -> T
-pub fn syntect::parsing::syntax_definition::SyntaxDefinition::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn syntect::parsing::syntax_definition::SyntaxDefinition::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
-pub fn syntect::parsing::syntax_definition::SyntaxDefinition::type_id(&self) -> TypeId
 pub fn syntect::parsing::syntax_definition::context_iter<'a>(syntax_set: &'a SyntaxSet, context: &'a Context) -> MatchIter<'a>
-pub fn syntect::util::LinesWithEndings::borrow(&self) -> &T
-pub fn syntect::util::LinesWithEndings::borrow_mut(&mut self) -> &mut T
 pub fn syntect::util::LinesWithEndings::from(input: &'a str) -> LinesWithEndings<'a>
-pub fn syntect::util::LinesWithEndings::from(t: T) -> T
-pub fn syntect::util::LinesWithEndings::into(self) -> U
-pub fn syntect::util::LinesWithEndings::into_iter(self) -> I
 pub fn syntect::util::LinesWithEndings::next(&mut self) -> Option<&'a str>
-pub fn syntect::util::LinesWithEndings::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn syntect::util::LinesWithEndings::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
-pub fn syntect::util::LinesWithEndings::type_id(&self) -> TypeId
 pub fn syntect::util::as_24_bit_terminal_escaped(v: &[(Style, &str)], bg: bool) -> String
 pub fn syntect::util::as_latex_escaped(v: &[(Style, &str)]) -> String
 pub fn syntect::util::debug_print_ops(line: &str, ops: &[(usize, ScopeStackOp)])
@@ -1033,166 +582,23 @@ pub struct field syntect::parsing::syntax_definition::SyntaxDefinition::hidden: 
 pub struct field syntect::parsing::syntax_definition::SyntaxDefinition::name: String
 pub struct field syntect::parsing::syntax_definition::SyntaxDefinition::scope: Scope
 pub struct field syntect::parsing::syntax_definition::SyntaxDefinition::variables: HashMap<String, String>
-pub type syntect::LoadingError::Error = <U as TryFrom<T>>::Error
-pub type syntect::LoadingError::Error = Infallible
-pub type syntect::easy::HighlightFile::Error = <U as TryFrom<T>>::Error
-pub type syntect::easy::HighlightFile::Error = Infallible
-pub type syntect::easy::HighlightLines::Error = <U as TryFrom<T>>::Error
-pub type syntect::easy::HighlightLines::Error = Infallible
-pub type syntect::easy::ScopeRegionIterator::Error = <U as TryFrom<T>>::Error
-pub type syntect::easy::ScopeRegionIterator::Error = Infallible
-pub type syntect::easy::ScopeRegionIterator::IntoIter = I
 pub type syntect::easy::ScopeRegionIterator::Item = (&'a str, &'a ScopeStackOp)
-pub type syntect::easy::ScopeRegionIterator::Item = <I as Iterator>::Item
 pub type syntect::highlighting::Color::Err = ParseThemeError
-pub type syntect::highlighting::Color::Error = <U as TryFrom<T>>::Error
-pub type syntect::highlighting::Color::Error = Infallible
-pub type syntect::highlighting::Color::Owned = T
 pub type syntect::highlighting::FontStyle::Err = ParseThemeError
-pub type syntect::highlighting::FontStyle::Error = <U as TryFrom<T>>::Error
-pub type syntect::highlighting::FontStyle::Error = Infallible
 pub type syntect::highlighting::FontStyle::Output = Self
 pub type syntect::highlighting::FontStyle::Output = Self
 pub type syntect::highlighting::FontStyle::Output = Self
 pub type syntect::highlighting::FontStyle::Output = Self
 pub type syntect::highlighting::FontStyle::Output = Self
-pub type syntect::highlighting::FontStyle::Owned = T
-pub type syntect::highlighting::HighlightIterator::Error = <U as TryFrom<T>>::Error
-pub type syntect::highlighting::HighlightIterator::Error = Infallible
-pub type syntect::highlighting::HighlightIterator::IntoIter = I
 pub type syntect::highlighting::HighlightIterator::Item = (Style, &'b str)
-pub type syntect::highlighting::HighlightIterator::Item = <I as Iterator>::Item
-pub type syntect::highlighting::HighlightState::Error = <U as TryFrom<T>>::Error
-pub type syntect::highlighting::HighlightState::Error = Infallible
-pub type syntect::highlighting::HighlightState::Owned = T
-pub type syntect::highlighting::Highlighter::Error = <U as TryFrom<T>>::Error
-pub type syntect::highlighting::Highlighter::Error = Infallible
-pub type syntect::highlighting::ParseThemeError::Error = <U as TryFrom<T>>::Error
-pub type syntect::highlighting::ParseThemeError::Error = Infallible
-pub type syntect::highlighting::RangedHighlightIterator::Error = <U as TryFrom<T>>::Error
-pub type syntect::highlighting::RangedHighlightIterator::Error = Infallible
-pub type syntect::highlighting::RangedHighlightIterator::IntoIter = I
 pub type syntect::highlighting::RangedHighlightIterator::Item = (Style, &'b str, Range<usize>)
-pub type syntect::highlighting::RangedHighlightIterator::Item = <I as Iterator>::Item
 pub type syntect::highlighting::ScopeSelector::Err = ParseScopeError
-pub type syntect::highlighting::ScopeSelector::Error = <U as TryFrom<T>>::Error
-pub type syntect::highlighting::ScopeSelector::Error = Infallible
-pub type syntect::highlighting::ScopeSelector::Owned = T
 pub type syntect::highlighting::ScopeSelectors::Err = ParseScopeError
-pub type syntect::highlighting::ScopeSelectors::Error = <U as TryFrom<T>>::Error
-pub type syntect::highlighting::ScopeSelectors::Error = Infallible
-pub type syntect::highlighting::ScopeSelectors::Owned = T
-pub type syntect::highlighting::ScoredStyle::Error = <U as TryFrom<T>>::Error
-pub type syntect::highlighting::ScoredStyle::Error = Infallible
-pub type syntect::highlighting::ScoredStyle::Owned = T
-pub type syntect::highlighting::SettingsError::Error = <U as TryFrom<T>>::Error
-pub type syntect::highlighting::SettingsError::Error = Infallible
-pub type syntect::highlighting::Style::Error = <U as TryFrom<T>>::Error
-pub type syntect::highlighting::Style::Error = Infallible
-pub type syntect::highlighting::Style::Owned = T
-pub type syntect::highlighting::StyleModifier::Error = <U as TryFrom<T>>::Error
-pub type syntect::highlighting::StyleModifier::Error = Infallible
-pub type syntect::highlighting::StyleModifier::Owned = T
-pub type syntect::highlighting::Theme::Error = <U as TryFrom<T>>::Error
-pub type syntect::highlighting::Theme::Error = Infallible
-pub type syntect::highlighting::Theme::Owned = T
-pub type syntect::highlighting::ThemeItem::Error = <U as TryFrom<T>>::Error
-pub type syntect::highlighting::ThemeItem::Error = Infallible
-pub type syntect::highlighting::ThemeItem::Owned = T
-pub type syntect::highlighting::ThemeSet::Error = <U as TryFrom<T>>::Error
-pub type syntect::highlighting::ThemeSet::Error = Infallible
-pub type syntect::highlighting::ThemeSettings::Error = <U as TryFrom<T>>::Error
-pub type syntect::highlighting::ThemeSettings::Error = Infallible
-pub type syntect::highlighting::ThemeSettings::Owned = T
 pub type syntect::highlighting::UnderlineOption::Err = ParseThemeError
-pub type syntect::highlighting::UnderlineOption::Error = <U as TryFrom<T>>::Error
-pub type syntect::highlighting::UnderlineOption::Error = Infallible
-pub type syntect::highlighting::UnderlineOption::Owned = T
-pub type syntect::html::ClassStyle::Error = <U as TryFrom<T>>::Error
-pub type syntect::html::ClassStyle::Error = Infallible
-pub type syntect::html::ClassStyle::Owned = T
-pub type syntect::html::ClassedHTMLGenerator::Error = <U as TryFrom<T>>::Error
-pub type syntect::html::ClassedHTMLGenerator::Error = Infallible
-pub type syntect::html::IncludeBackground::Error = <U as TryFrom<T>>::Error
-pub type syntect::html::IncludeBackground::Error = Infallible
-pub type syntect::html::IncludeBackground::Owned = T
-pub type syntect::parsing::BasicScopeStackOp::Error = <U as TryFrom<T>>::Error
-pub type syntect::parsing::BasicScopeStackOp::Error = Infallible
-pub type syntect::parsing::BasicScopeStackOp::Owned = T
-pub type syntect::parsing::ClearAmount::Error = <U as TryFrom<T>>::Error
-pub type syntect::parsing::ClearAmount::Error = Infallible
-pub type syntect::parsing::ClearAmount::Owned = T
-pub type syntect::parsing::MatchPower::Error = <U as TryFrom<T>>::Error
-pub type syntect::parsing::MatchPower::Error = Infallible
-pub type syntect::parsing::MatchPower::Owned = T
-pub type syntect::parsing::ParseScopeError::Error = <U as TryFrom<T>>::Error
-pub type syntect::parsing::ParseScopeError::Error = Infallible
-pub type syntect::parsing::ParseState::Error = <U as TryFrom<T>>::Error
-pub type syntect::parsing::ParseState::Error = Infallible
-pub type syntect::parsing::ParseState::Owned = T
-pub type syntect::parsing::ParseSyntaxError::Error = <U as TryFrom<T>>::Error
-pub type syntect::parsing::ParseSyntaxError::Error = Infallible
-pub type syntect::parsing::Regex::Error = <U as TryFrom<T>>::Error
-pub type syntect::parsing::Regex::Error = Infallible
-pub type syntect::parsing::Regex::Owned = T
-pub type syntect::parsing::Region::Error = <U as TryFrom<T>>::Error
-pub type syntect::parsing::Region::Error = Infallible
-pub type syntect::parsing::Region::Owned = T
-pub type syntect::parsing::SCOPE_REPO::Error = <U as TryFrom<T>>::Error
-pub type syntect::parsing::SCOPE_REPO::Error = Infallible
 pub type syntect::parsing::SCOPE_REPO::Target = Mutex<ScopeRepository>
 pub type syntect::parsing::Scope::Err = ParseScopeError
-pub type syntect::parsing::Scope::Error = <U as TryFrom<T>>::Error
-pub type syntect::parsing::Scope::Error = Infallible
-pub type syntect::parsing::Scope::Owned = T
-pub type syntect::parsing::ScopeRepository::Error = <U as TryFrom<T>>::Error
-pub type syntect::parsing::ScopeRepository::Error = Infallible
 pub type syntect::parsing::ScopeStack::Err = ParseScopeError
-pub type syntect::parsing::ScopeStack::Error = <U as TryFrom<T>>::Error
-pub type syntect::parsing::ScopeStack::Error = Infallible
-pub type syntect::parsing::ScopeStack::Owned = T
-pub type syntect::parsing::ScopeStackOp::Error = <U as TryFrom<T>>::Error
-pub type syntect::parsing::ScopeStackOp::Error = Infallible
-pub type syntect::parsing::ScopeStackOp::Owned = T
-pub type syntect::parsing::SyntaxReference::Error = <U as TryFrom<T>>::Error
-pub type syntect::parsing::SyntaxReference::Error = Infallible
-pub type syntect::parsing::SyntaxReference::Owned = T
-pub type syntect::parsing::SyntaxSet::Error = <U as TryFrom<T>>::Error
-pub type syntect::parsing::SyntaxSet::Error = Infallible
-pub type syntect::parsing::SyntaxSet::Owned = T
-pub type syntect::parsing::SyntaxSetBuilder::Error = <U as TryFrom<T>>::Error
-pub type syntect::parsing::SyntaxSetBuilder::Error = Infallible
-pub type syntect::parsing::SyntaxSetBuilder::Owned = T
 pub type syntect::parsing::syntax_definition::CaptureMapping = Vec<(usize, Vec<Scope>)>
-pub type syntect::parsing::syntax_definition::Context::Error = <U as TryFrom<T>>::Error
-pub type syntect::parsing::syntax_definition::Context::Error = Infallible
-pub type syntect::parsing::syntax_definition::Context::Owned = T
-pub type syntect::parsing::syntax_definition::ContextId::Error = <U as TryFrom<T>>::Error
-pub type syntect::parsing::syntax_definition::ContextId::Error = Infallible
-pub type syntect::parsing::syntax_definition::ContextId::Owned = T
-pub type syntect::parsing::syntax_definition::ContextReference::Error = <U as TryFrom<T>>::Error
-pub type syntect::parsing::syntax_definition::ContextReference::Error = Infallible
-pub type syntect::parsing::syntax_definition::ContextReference::Owned = T
-pub type syntect::parsing::syntax_definition::MatchIter::Error = <U as TryFrom<T>>::Error
-pub type syntect::parsing::syntax_definition::MatchIter::Error = Infallible
-pub type syntect::parsing::syntax_definition::MatchIter::IntoIter = I
 pub type syntect::parsing::syntax_definition::MatchIter::Item = (&'a Context, usize)
-pub type syntect::parsing::syntax_definition::MatchIter::Item = <I as Iterator>::Item
-pub type syntect::parsing::syntax_definition::MatchOperation::Error = <U as TryFrom<T>>::Error
-pub type syntect::parsing::syntax_definition::MatchOperation::Error = Infallible
-pub type syntect::parsing::syntax_definition::MatchOperation::Owned = T
-pub type syntect::parsing::syntax_definition::MatchPattern::Error = <U as TryFrom<T>>::Error
-pub type syntect::parsing::syntax_definition::MatchPattern::Error = Infallible
-pub type syntect::parsing::syntax_definition::MatchPattern::Owned = T
-pub type syntect::parsing::syntax_definition::Pattern::Error = <U as TryFrom<T>>::Error
-pub type syntect::parsing::syntax_definition::Pattern::Error = Infallible
-pub type syntect::parsing::syntax_definition::Pattern::Owned = T
-pub type syntect::parsing::syntax_definition::SyntaxDefinition::Error = <U as TryFrom<T>>::Error
-pub type syntect::parsing::syntax_definition::SyntaxDefinition::Error = Infallible
-pub type syntect::parsing::syntax_definition::SyntaxDefinition::Owned = T
-pub type syntect::util::LinesWithEndings::Error = <U as TryFrom<T>>::Error
-pub type syntect::util::LinesWithEndings::Error = Infallible
-pub type syntect::util::LinesWithEndings::IntoIter = I
 pub type syntect::util::LinesWithEndings::Item = &'a str
-pub type syntect::util::LinesWithEndings::Item = <I as Iterator>::Item
 pub use syntect::parsing::SyntaxDefinition

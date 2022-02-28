@@ -310,8 +310,20 @@ impl Display for D<&FnDecl> {
 
 impl Display for D<&Vec<GenericParamDef>> {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
-        if !self.0.is_empty() {
-            write!(f, "<{}>", Joiner(self.0, ", ", D))?;
+        let params_without_synthetics: Vec<_> = self
+            .0
+            .iter()
+            // For now we use a heuristic that I think is pretty solid.
+            // Once https://github.com/rust-lang/rust/pull/94150 is fixed
+            // we should replace this with a solid and simple check for `.synthetic`
+            .filter(|p| !p.name.starts_with("impl "))
+            .collect();
+        if !&params_without_synthetics.is_empty() {
+            write!(
+                f,
+                "<{}>",
+                Joiner(&params_without_synthetics, ", ", |x| D(*x))
+            )?;
         }
 
         Ok(())
@@ -416,7 +428,7 @@ impl Display for D<&GenericArgs> {
                 if !inputs.is_empty() {
                     write!(
                         f,
-                        "Fn<{}>{}",
+                        "({}){}",
                         Joiner(inputs, ", ", D),
                         Optional(" -> ", output.as_ref().map(D))
                     )?;

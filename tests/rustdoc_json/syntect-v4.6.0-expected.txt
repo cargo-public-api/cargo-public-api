@@ -330,7 +330,7 @@ pub fn syntect::parsing::ScopeRepository::build(&mut self, s: &str) -> Result<Sc
 pub fn syntect::parsing::ScopeRepository::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
 pub fn syntect::parsing::ScopeRepository::to_string(&self, scope: Scope) -> String
 pub fn syntect::parsing::ScopeStack::apply(&mut self, op: &ScopeStackOp)
-pub fn syntect::parsing::ScopeStack::apply_with_hook<F>(&mut self, op: &ScopeStackOp, hook: F) where F: FnMutFn<BasicScopeStackOp, &[Scope]>
+pub fn syntect::parsing::ScopeStack::apply_with_hook<F>(&mut self, op: &ScopeStackOp, hook: F) where F: FnMut(BasicScopeStackOp, &[Scope])
 pub fn syntect::parsing::ScopeStack::as_slice(&self) -> &[Scope]
 pub fn syntect::parsing::ScopeStack::bottom_n(&self, n: usize) -> &[Scope]
 pub fn syntect::parsing::ScopeStack::clone(&self) -> ScopeStack

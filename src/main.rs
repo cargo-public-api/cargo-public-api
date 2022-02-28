@@ -2,6 +2,7 @@ use std::io::Write;
 use std::path::{Path, PathBuf};
 
 use anyhow::{Context, Result};
+use public_items::Options;
 
 fn main() -> Result<()> {
     let crate_root = crate_root()?;
@@ -67,8 +68,9 @@ fn print_public_api_items(path: &Path) -> Result<()> {
     let rustdoc_json = &std::fs::read_to_string(path)
         .with_context(|| format!("Failed to read rustdoc JSON at {:?}", path))?;
 
-    let public_items = public_items::sorted_public_items_from_rustdoc_json_str(rustdoc_json)
-        .with_context(|| format!("Failed to parse rustdoc JSON at {:?}", path))?;
+    let public_items =
+        public_items::sorted_public_items_from_rustdoc_json_str(rustdoc_json, Options::default())
+            .with_context(|| format!("Failed to parse rustdoc JSON at {:?}", path))?;
 
     for public_item in public_items {
         writeln!(std::io::stdout(), "{}", public_item)?;

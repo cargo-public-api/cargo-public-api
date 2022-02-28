@@ -416,7 +416,7 @@ impl Display for D<&GenericArgs> {
                 if !inputs.is_empty() {
                     write!(
                         f,
-                        "Fn<{}>{}",
+                        "({}){}",
                         Joiner(inputs, ", ", D),
                         Optional(" -> ", output.as_ref().map(D))
                     )?;

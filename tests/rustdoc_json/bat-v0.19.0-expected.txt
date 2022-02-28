@@ -129,7 +129,7 @@ pub fn bat::config::VisibleLines::fmt(&self, f: &mut $crate::fmt::Formatter<'_>)
 pub fn bat::config::get_pager_executable(config_pager: Option<&str>) -> Option<String>
 pub fn bat::controller::Controller::new<'a>(config: &'a Config<'_>, assets: &'a HighlightingAssets) -> Controller<'a>
 pub fn bat::controller::Controller::run(&self, inputs: Vec<Input<'_>>) -> Result<bool>
-pub fn bat::controller::Controller::run_with_error_handler<impl Fn(&Error, &mut dyn Write): FnFn<&Error, &mut Write>>(&self, inputs: Vec<Input<'_>>, handle_error: impl FnFn<&Error, &mut Write>) -> Result<bool>
+pub fn bat::controller::Controller::run_with_error_handler<impl Fn(&Error, &mut dyn Write): Fn(&Error, &mut Write)>(&self, inputs: Vec<Input<'_>>, handle_error: impl Fn(&Error, &mut Write)) -> Result<bool>
 pub fn bat::error::Error::fmt(&self, __formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
 pub fn bat::error::Error::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
 pub fn bat::error::Error::from(s: &'static str) -> Self

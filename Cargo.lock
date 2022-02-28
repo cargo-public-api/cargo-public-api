@@ -10,7 +10,7 @@ checksum = "94a45b455c14666b85fc40a019e8ab9eb75e3a124e05494f5397122bc9eb06e0"
 
 [[package]]
 name = "cargo-public-items"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "anyhow",
  "cargo_toml",
@@ -45,9 +45,9 @@ dependencies = [
 
 [[package]]
 name = "public_items"
-version = "0.3.0"
+version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "743e5c417d8addd64a7050969789774848bf09c93121ae131a6b4e6597ac4a3a"
+checksum = "bfaa350881976060a7d2529a281354366bd4d46435644ed166d905de87468f4c"
 dependencies = [
  "rustdoc-types",
  "serde",

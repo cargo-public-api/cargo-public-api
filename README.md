@@ -50,6 +50,30 @@ pub type public_items::Result<T> = std::result::Result<T, Error>
 
 Tip: By writing the public API to a file for two different versions of your library, you can diff your public API across versions.
 
+# Expected output
+
+In general, output aims to be character-by-character identical to the textual parts of the regular `cargo doc` HTML output. For example, [this item](https://docs.rs/bat/0.20.0/bat/struct.PrettyPrinter.html#method.input_files) has the following textual representation in the rendered HTML:
+
+```
+pub fn input_files<I, P>(&mut self, paths: I) -> &mut Self
+where
+    I: IntoIterator<Item = P>,
+    P: AsRef<Path>,
+```
+
+and `public_items` represent this item in the following manner:
+
+```
+pub fn bat::PrettyPrinter::input_files<I, P>(&mut self, paths: I) -> &mut Self where I: IntoIterator<Item = P>, P: AsRef<Path>
+```
+
+If we re-arrange the whitespace and put them next to each other we can see that they are essentially the same:
+
+```
+pub fn                     input_files<I, P>(&mut self, paths: I) -> &mut Self where I: IntoIterator<Item = P>, P: AsRef<Path>,
+pub fn bat::PrettyPrinter::input_files<I, P>(&mut self, paths: I) -> &mut Self where I: IntoIterator<Item = P>, P: AsRef<Path>
+```
+
 # Blanket implementations
 
 By default, blanket implementations such as `impl<T> Any for T`, `impl<T> Borrow<T> for T`, and `impl<T, U> Into<U> for T where U: From<T>` are omitted from the list of public items of a crate. For the vast majority of use cases, blanket implementations are not of interest, and just creates noise.

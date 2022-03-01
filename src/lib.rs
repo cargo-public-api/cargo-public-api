@@ -1,10 +1,10 @@
 mod error;
 mod implementation;
 
-/// Enumerates all errors that can occur within this crate.
+// Documented at the definition site so cargo doc picks it up
 pub use error::Error;
 
-/// Shorthand for [`std::result::Result<T, crate::Error>`].
+// Documented at the definition site so cargo doc picks it up
 pub use error::Result;
 
 /// Represent a public item of an analyzed crate, i.e. an item that forms part

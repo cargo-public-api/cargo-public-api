@@ -24,6 +24,7 @@ public_items ./target/doc/your_library.json
 # Example: Letting the library list its own public items
 
 ```txt
+% cd ~/src/public_items
 % RUSTDOCFLAGS='-Z unstable-options --output-format json' cargo +nightly doc --lib --no-deps
 % public_items ./target/doc/public_items.json
 pub enum public_items::Error

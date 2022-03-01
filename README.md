@@ -44,7 +44,7 @@ pub fn public_items::sorted_public_items_from_rustdoc_json_str(rustdoc_json_str:
 pub mod public_items
 pub struct public_items::Options
 pub struct public_items::PublicItem
-pub struct field public_items::Options::omit_blanket_implementations: bool
+pub struct field public_items::Options::with_blanket_implementations: bool
 pub type public_items::Result<T> = std::result::Result<T, Error>
 ```
 
@@ -54,7 +54,7 @@ Tip: By writing the public API to a file for two different versions of your libr
 
 By default, blanket implementations such as `impl<T> Any for T`, `impl<T> Borrow<T> for T`, and `impl<T, U> Into<U> for T where U: From<T>` are omitted from the list of public items of a crate. For the vast majority of use cases, blanket implementations are not of interest, and just creates noise.
 
-If you want to include items of blanket implementations in the output, set `Options::with_blanket_implementations` to true if you use the library, or pass `--with-blanket-implementations` if you use the `public_items` binary utility.
+If you want to include items of blanket implementations in the output, set [`Options::with_blanket_implementations`](https://docs.rs/public_items/latest/public_items/struct.Options.html#structfield.with_blanket_implementations) to true if you use the library, or pass `--with-blanket-implementations` to `public_items`.
 
 # Target audience
 

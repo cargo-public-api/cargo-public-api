@@ -1,6 +1,6 @@
-# `cargo` wrapper for this library
+# `cargo public-items` wrapper for this library
 
-You probably want the `cargo` wrapper to this library. See https://github.com/Enselic/cargo-public-items.
+You probably want the convenient `cargo public-items` wrapper for this library. See https://github.com/Enselic/cargo-public-items.
 
 # public_items
 
@@ -8,23 +8,25 @@ List public items (the public API) of a Rust library crate by analyzing the rust
 
 # Usage
 
-Again, you probably want to use the convenient [`cargo public-items`](https://crates.io/crates/cargo-public-items) wrapper. But if you don't want to use the `cargo` wrapper, you do as follows:
+If you prefer not to use the convenient [`cargo public-items`](https://crates.io/crates/cargo-public-items) wrapper then you do like this:
 
 ```bash
-# Install the tool that comes with this package
+# Install the tool that is a thin wrapper around the `public_items` library
 cargo install public_items
 
-# Generate rustdoc JSON for your Rust library
+# Generate rustdoc JSON for your own Rust library
+cd ~/src/your_library
 RUSTDOCFLAGS='-Z unstable-options --output-format json' cargo +nightly doc --lib --no-deps
 
-# List all items in the public API of the Rust library using the tool
+# List all items in the public API of your Rust library
 public_items ./target/doc/your_library.json
 ```
 
-# Example: Letting the library list its own public items
+# Example: List the public items of the `public_items` library itself
 
 ```txt
-% cd ~/src/public_items
+% git clone https://github.com/Enselic/public_items.git
+% cd public_items
 % RUSTDOCFLAGS='-Z unstable-options --output-format json' cargo +nightly doc --lib --no-deps
 % public_items ./target/doc/public_items.json
 pub enum public_items::Error
@@ -68,7 +70,7 @@ and `public_items` represent this item in the following manner:
 pub fn bat::PrettyPrinter::input_files<I, P>(&mut self, paths: I) -> &mut Self where I: IntoIterator<Item = P>, P: AsRef<Path>
 ```
 
-If we re-arrange the whitespace and put them next to each other we can see that they are essentially the same:
+If we just remove newline characters and add some whitespace padding to get the alignment right, we can see that they are essentially the same:
 
 ```
 pub fn                     input_files<I, P>(&mut self, paths: I) -> &mut Self where I: IntoIterator<Item = P>, P: AsRef<Path>,

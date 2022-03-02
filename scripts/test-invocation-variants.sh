@@ -5,7 +5,7 @@ set -o errexit -o nounset -o pipefail -o xtrace
 cargo run
 
 # Make sure we can conveniently run the tool from the source dir on an external crate
-cargo run "$(pwd)"
+cargo run -- --manifest-path "$(pwd)"/Cargo.toml
 
 # Install the tool
 cargo install --debug --path .
@@ -14,10 +14,10 @@ cargo install --debug --path .
 cargo-public-items
 
 # Make sure we can run the tool on an external directory stand-alone
-cargo-public-items "$(pwd)"
+cargo-public-items --manifest-path "$(pwd)"/Cargo.toml
 
 # Make sure we can run the tool on the current directory as a cargo sub-command
 cargo public-items
 
 # Make sure we can run the tool on an external directory as a cargo sub-command
-cargo public-items "$(pwd)"
+cargo public-items --manifest-path "$(pwd)"/Cargo.toml

@@ -2,7 +2,7 @@ use std::io::Write;
 use std::path::{Path, PathBuf};
 
 use anyhow::{Context, Result};
-use public_items::Options;
+use public_items::{Options, PublicItem};
 
 use clap::Parser;
 
@@ -40,7 +40,8 @@ fn main() -> Result<()> {
     let lib_name = package_name(&args.manifest_path)?;
     let json_path = rustdoc_json_path_for_name(&target_directory, &lib_name);
     let options = get_options(&args);
-    print_public_api_items(&json_path, options)?;
+    let public_items = collect_public_api_items(&json_path, options)?;
+    print_public_items(&public_items)?;
 
     Ok(())
 }
@@ -109,8 +110,8 @@ fn rustdoc_json_path_for_name(target_directory: &Path, lib_name: &str) -> PathBu
     rustdoc_json_path
 }
 
-/// Prints all public API items.
-fn print_public_api_items(path: &Path, options: Options) -> Result<()> {
+/// Collects public items from a given rustdoc JSON path.
+fn collect_public_api_items(path: &Path, options: Options) -> Result<Vec<PublicItem>> {
     let rustdoc_json = &std::fs::read_to_string(path).with_context(|| {
         format!(
             "Failed to read rustdoc JSON at {:?}.\n\
@@ -121,10 +122,12 @@ fn print_public_api_items(path: &Path, options: Options) -> Result<()> {
         )
     })?;
 
-    let public_items =
-        public_items::sorted_public_items_from_rustdoc_json_str(rustdoc_json, options)
-            .with_context(|| format!("Failed to parse rustdoc JSON at {:?}", path))?;
+    public_items::sorted_public_items_from_rustdoc_json_str(rustdoc_json, options)
+        .with_context(|| format!("Failed to parse rustdoc JSON at {:?}", path))
+}
 
+/// Prints all public items.
+fn print_public_items(public_items: &[PublicItem]) -> Result<()> {
     for public_item in public_items {
         writeln!(std::io::stdout(), "{}", public_item)?;
     }

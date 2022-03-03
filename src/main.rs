@@ -2,7 +2,7 @@ use std::io::Write;
 use std::path::{Path, PathBuf};
 
 use anyhow::{Context, Result};
-use public_items::{Options, PublicItem};
+use public_items::{sorted_public_items_from_rustdoc_json_str, Options, PublicItem};
 
 use clap::Parser;
 
@@ -112,18 +112,18 @@ fn rustdoc_json_path_for_name(target_directory: &Path, lib_name: &str) -> PathBu
 
 /// Collects public items from a given rustdoc JSON path.
 fn collect_public_api_items(path: &Path, options: Options) -> Result<Vec<PublicItem>> {
-    let rustdoc_json = &std::fs::read_to_string(path).with_context(|| {
+    let rustdoc_json = &std::fs::read_to_string(path)
+        .with_context(|| format!("Failed to read rustdoc JSON at {:?}", path))?;
+
+    sorted_public_items_from_rustdoc_json_str(rustdoc_json, options).with_context(|| {
         format!(
-            "Failed to read rustdoc JSON at {:?}.\n\
-             This version of `cargo public-items` requires at least:\n\n    {}.\n\n\
-             If you have that, it might be `cargo public-items` that is out of date. Try\n\
-             to install the latest versions with `cargo install cargo-public-items`,",
+            "Failed to parse rustdoc JSON at {:?}.\n\
+            This version of `cargo public-items` requires at least:\n\n    {}\n\n\
+            If you have that, it might be `cargo public-items` that is out of date. Try\n\
+            to install the latest versions with `cargo install cargo-public-items`",
             path, MIN_NIGHTLY
         )
-    })?;
-
-    public_items::sorted_public_items_from_rustdoc_json_str(rustdoc_json, options)
-        .with_context(|| format!("Failed to parse rustdoc JSON at {:?}", path))
+    })
 }
 
 /// Prints all public items.

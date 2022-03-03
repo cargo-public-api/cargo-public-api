@@ -11,6 +11,10 @@ const MIN_NIGHTLY: &str = "nightly-2022-02-23";
 #[derive(Parser, Debug)]
 #[clap(author, version, about, long_about = None)]
 pub struct Args {
+    /// Path to `Cargo.toml`.
+    #[clap(long, name = "PATH", default_value = "Cargo.toml", parse(from_os_str))]
+    manifest_path: PathBuf,
+
     /// Raise this flag to make items part of blanket implementations such as
     /// `impl<T> Any for T`, `impl<T> Borrow<T> for T`, and `impl<T, U> Into<U>
     /// for T where U: From<T>` be included in the list of public items of a
@@ -22,10 +26,6 @@ pub struct Args {
     /// crate.
     #[clap(long)]
     with_blanket_implementations: bool,
-
-    /// Path to `Cargo.toml`.
-    #[clap(long, default_value = "Cargo.toml")]
-    manifest_path: PathBuf,
 }
 
 fn main() -> Result<()> {

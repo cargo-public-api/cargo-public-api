@@ -17,6 +17,13 @@ jobs:
     - uses: actions/checkout@v2
     - run: cargo fmt -- --check
 
+  cargo-doc:
+    name: RUSTDOCFLAGS='-D warnings' cargo doc
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - run: RUSTDOCFLAGS='-D warnings' cargo doc --no-deps
+
   cargo-clippy:
     name: cargo clippy -- -D clippy::all -D clippy::pedantic
     runs-on: ubuntu-latest

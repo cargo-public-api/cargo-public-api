@@ -13,6 +13,7 @@ fn main() -> Result<()> {
     } else {
         let mut options = Options::default();
         options.with_blanket_implementations = flag_raised("--with-blanket-implementations");
+        options.sorted = true;
         print_public_api_items(Path::new(&last_arg.unwrap()), options)?;
     }
 
@@ -22,7 +23,7 @@ fn main() -> Result<()> {
 fn print_public_api_items(path: &Path, options: Options) -> Result<()> {
     let json = &std::fs::read_to_string(path)?;
 
-    for public_item in public_items::sorted_public_items_from_rustdoc_json_str(json, options)? {
+    for public_item in public_items::public_items_from_rustdoc_json_str(json, options)? {
         writeln!(std::io::stdout(), "{}", public_item)?;
     }
 

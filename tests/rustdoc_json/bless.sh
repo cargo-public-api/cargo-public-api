@@ -11,4 +11,4 @@ for crate in ${crates}; do
     printf "%s" "$(cargo run -- ${base}/${crate}.json)" > "${base}/${crate}-expected.txt"
 done
 
-printf "%s" "$(cargo run -- --with-blanket-implementations ${base}/public_items-git.json)" > "${base}/public_items-git-expected-with-blanket-implementations.txt"
+printf "%s" "$(cargo run -- --with-blanket-implementations ${base}/public_items-v0.4.0.json)" > "${base}/public_items-v0.4.0-expected-with-blanket-implementations.txt"

@@ -51,7 +51,7 @@ dependencies = [
 
 [[package]]
 name = "cargo-public-items"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "anyhow",
  "cargo_metadata",
@@ -75,9 +75,9 @@ dependencies = [
 
 [[package]]
 name = "cargo_toml"
-version = "0.10.3"
+version = "0.11.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "363c7cfaa15f101415c4ac9e68706ca4a2277773932828b33f96e59d28c68e62"
+checksum = "4e270ef0cd868745878982f7ce470aa898d0d4bb248af67f0cf66f54617913ef"
 dependencies = [
  "serde",
  "serde_derive",

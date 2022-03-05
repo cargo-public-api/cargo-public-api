@@ -21,3 +21,14 @@ cargo public-items
 
 # Make sure we can run the tool on an external directory as a cargo sub-command
 cargo public-items --manifest-path "$(pwd)"/Cargo.toml
+
+# cd ~/src/public_items
+
+# git stash
+# cargo public-items --diff-between-git-checkouts-in-current-git-repo v0.0.4 v0.0.5
+
+# git stash
+# cargo public-items --diff-between-git-checkouts-in-current-git-repo v0.2.0 v0.3.0
+
+# git stash
+# cargo public-items --diff-between-git-checkouts-in-current-git-repo v0.3.0 v0.4.0

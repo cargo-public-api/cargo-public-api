@@ -22,6 +22,10 @@ RUSTDOCFLAGS='-Z unstable-options --output-format json' cargo +nightly doc --lib
 public_items ./target/doc/your_library.json
 ```
 
+## Diffing
+
+This library contains APIs to diff different versions of the same public API. This API is currently only used in tests and in `cargo public-items`, but not the `public_items` binary.
+
 # Example: List the public items of the `public_items` library itself
 
 ```txt

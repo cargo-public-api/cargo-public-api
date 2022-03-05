@@ -3,7 +3,7 @@ use std::{collections::HashMap, rc::Rc};
 use rustdoc_types::{Crate, Id, Impl, Item, ItemEnum, Type};
 
 use super::intermediate_public_item::IntermediatePublicItem;
-use crate::Options;
+use crate::{Options, PublicItem};
 
 type Impls<'a> = HashMap<&'a Id, Vec<&'a Impl>>;
 
@@ -148,5 +148,27 @@ fn items_in_container(item: &Item) -> Option<&Vec<Id>> {
         ItemEnum::Variant(rustdoc_types::Variant::Struct(ids)) => Some(ids),
         // TODO: `ItemEnum::Variant(rustdoc_types::Variant::Tuple(ids)) => Some(ids),` when https://github.com/rust-lang/rust/issues/92945 is fixed
         _ => None,
+    }
+}
+
+pub fn public_items_in_crate(
+    crate_: &Crate,
+    options: Options,
+) -> impl Iterator<Item = crate::PublicItem> + '_ {
+    ItemIterator::new(crate_, options).map(|p| intermediate_public_item_to_public_item(&p))
+}
+
+fn intermediate_public_item_to_public_item(
+    public_item: &Rc<IntermediatePublicItem<'_>>,
+) -> PublicItem {
+    PublicItem {
+        prefix: public_item.prefix(),
+        path: public_item
+            .path()
+            .iter()
+            .map(|i| i.get_effective_name())
+            .collect::<Vec<String>>()
+            .join("::"),
+        suffix: public_item.suffix(),
     }
 }

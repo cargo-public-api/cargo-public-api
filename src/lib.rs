@@ -1,5 +1,6 @@
 mod error;
-mod implementation;
+mod intermediate_public_item;
+mod item_iterator;
 
 pub mod diff;
 
@@ -104,8 +105,7 @@ pub fn public_items_from_rustdoc_json_str(
 ) -> Result<Vec<PublicItem>> {
     let crate_: rustdoc_types::Crate = serde_json::from_str(rustdoc_json_str)?;
 
-    let mut public_items: Vec<_> =
-        implementation::public_items_in_crate(&crate_, options).collect();
+    let mut public_items: Vec<_> = item_iterator::public_items_in_crate(&crate_, options).collect();
 
     if options.sorted {
         public_items.sort();

@@ -1,6 +1,6 @@
 # `cargo public-items` wrapper for this library
 
-You probably want the convenient `cargo public-items` wrapper for this library. See https://github.com/Enselic/cargo-public-items.
+You might want the convenient `cargo public-items` wrapper for this library. See https://github.com/Enselic/cargo-public-items.
 
 # public_items
 
@@ -8,7 +8,7 @@ List public items (the public API) of a Rust library crate by analyzing the rust
 
 # Usage
 
-If you prefer not to use the convenient [`cargo public-items`](https://crates.io/crates/cargo-public-items) wrapper then you do like this:
+If you prefer not to use the convenient [`cargo public-items`](https://crates.io/crates/cargo-public-items) wrapper, do like this:
 
 ```bash
 # Install the tool that is a thin wrapper around the `public_items` library
@@ -70,7 +70,7 @@ and `public_items` represent this item in the following manner:
 pub fn bat::PrettyPrinter::input_files<I, P>(&mut self, paths: I) -> &mut Self where I: IntoIterator<Item = P>, P: AsRef<Path>
 ```
 
-If we just remove newline characters and add some whitespace padding to get the alignment right, we can see that they are essentially the same:
+If normalize by removing newline characters and adding some whitespace padding to get the alignment right for direct comparison, we can see that they are exactly the same, except an irrelevant trailing comma:
 
 ```
 pub fn                     input_files<I, P>(&mut self, paths: I) -> &mut Self where I: IntoIterator<Item = P>, P: AsRef<Path>,

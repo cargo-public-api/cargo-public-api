@@ -1,5 +1,5 @@
 [package]
-description = "List public items (public API) of library crates. Enables diffing public API between releases."
+description = "List public items (public API) of Rust library crates. Enables diffing public API between releases and commits."
 documentation = "https://docs.rs/public_items"
 edition = "2021"
 homepage = "https://github.com/Enselic/public_items"

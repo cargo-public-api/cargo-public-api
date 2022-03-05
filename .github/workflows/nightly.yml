@@ -3,7 +3,7 @@ name: Nightly
 on:
   workflow_dispatch:
   schedule:
-    - cron: '30 17 * * *'
+    - cron: '33 3 * * *'
   push:
     branches: [ main ]
   pull_request:

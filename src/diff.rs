@@ -9,6 +9,7 @@ use crate::PublicItem;
 
 /// An item has changed in the public API. Two [`PublicItem`]s are considered
 /// the same if their `path` is the same.
+#[derive(Debug)]
 pub struct ChangedPublicItem {
     /// How the item used to look.
     pub old: PublicItem,
@@ -19,6 +20,7 @@ pub struct ChangedPublicItem {
 
 /// The return value of [`Self::between`]
 #[allow(clippy::module_name_repetitions)]
+#[derive(Debug)]
 pub struct PublicItemsDiff {
     /// Items that have been removed from the public API. A MAJOR change, in
     /// semver terminology. Sorted.

@@ -82,51 +82,15 @@ fn print_public_items_diff_between_two_commits(commits: &[String]) -> Result<()>
     let new = collect_public_items(Some(new_commit))?;
 
     let diff = public_items::diff::PublicItemsDiff::between(old, new);
-
-    print_items_with_header_if_not_empty(
+    diff.print_with_headers(
+        &mut std::io::stdout(),
         "Removed from the public API:\n\
-         ============================\n",
-        &diff.removed,
-        |item| writeln!(std::io::stdout(), "-{}", item),
-    )?;
-
-    print_items_with_header_if_not_empty(
+         ============================",
         "Changes to the public API:\n\
-         ==========================\n",
-        &diff.changed,
-        |item| {
-            writeln!(std::io::stdout(), "-{}", item.old)?;
-            writeln!(std::io::stdout(), "+{}", item.new)
-        },
-    )?;
-
-    print_items_with_header_if_not_empty(
+         ==========================",
         "Added to the public API:\n\
-         ========================\n",
-        &diff.added,
-        |item| writeln!(std::io::stdout(), "+{}", item),
+         ========================",
     )?;
-
-    if diff.removed.is_empty() && diff.added.is_empty() && diff.changed.is_empty() {
-        writeln!(std::io::stdout(), "No changes to the public API.")?;
-    }
-
-    Ok(())
-}
-
-fn print_items_with_header_if_not_empty<T>(
-    header: &str,
-    items: &[T],
-    print: impl Fn(&T) -> Result<(), std::io::Error>,
-) -> Result<()> {
-    if items.is_empty() {
-        return Ok(());
-    }
-
-    writeln!(std::io::stdout(), "\n\n{}", header)?;
-    for item in items {
-        print(item)?;
-    }
 
     Ok(())
 }

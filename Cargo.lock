@@ -213,9 +213,9 @@ dependencies = [
 
 [[package]]
 name = "public_items"
-version = "0.5.1"
+version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "25bcfbf429bc76bccf9c83fe665430d8f16cae9d414052e22b415d82d55c3845"
+checksum = "2b90845d7ec68aba75d6e420d580346b331ede1b81d1a975ab95810c2f0159c5"
 dependencies = [
  "rustdoc-types",
  "serde",

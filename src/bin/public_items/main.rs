@@ -1,4 +1,4 @@
-use std::io::Write;
+use std::io::{stdout, Write};
 use std::path::{Path, PathBuf};
 
 use public_items::diff::PublicItemsDiff;
@@ -46,27 +46,14 @@ fn print_public_items_diff(old: &Path, new: &Path, options: Options) -> Result<(
     let new_items = public_items_from_rustdoc_json_str(&new_json, options)?;
 
     let diff = PublicItemsDiff::between(old_items, new_items);
-
-    writeln!(std::io::stdout(), "\nRemoved:")?;
-    for item in diff.removed {
-        writeln!(std::io::stdout(), "-{}", item)?;
-    }
-    writeln!(std::io::stdout(), "\nChanged:")?;
-    for item in diff.changed {
-        writeln!(std::io::stdout(), "-{}", item.old)?;
-        writeln!(std::io::stdout(), "+{}", item.new)?;
-    }
-    writeln!(std::io::stdout(), "\nAdded:")?;
-    for item in diff.added {
-        writeln!(std::io::stdout(), "+{}", item)?;
-    }
+    diff.print_with_headers(&mut stdout(), "Removed:", "Changed:", "Added:")?;
 
     Ok(())
 }
 
 fn print_usage() -> std::io::Result<()> {
     writeln!(
-        std::io::stdout(),
+        stdout(),
         "public_items v{}
 
 Requires at least {}.

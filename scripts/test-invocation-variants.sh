@@ -22,13 +22,22 @@ cargo public-items
 # Make sure we can run the tool on an external directory as a cargo sub-command
 cargo public-items --manifest-path "$(pwd)"/Cargo.toml
 
-# cd ~/src/public_items
+# Make sure diffing works
+if [ -d "${HOME}/src/public_items" ]; then
+    cd ~/src/public_items
 
-# git stash
-# cargo public-items --diff-between-git-checkouts-in-current-git-repo v0.0.4 v0.0.5
+    original_branch=$(git branch --show-current)
 
-# git stash
-# cargo public-items --diff-between-git-checkouts-in-current-git-repo v0.2.0 v0.3.0
+    git stash
+    cargo public-items --diff-between-git-checkouts-in-current-git-repo v0.0.4 v0.0.5
 
-# git stash
-# cargo public-items --diff-between-git-checkouts-in-current-git-repo v0.3.0 v0.4.0
+    git stash
+    cargo public-items --diff-between-git-checkouts-in-current-git-repo v0.2.0 v0.3.0
+
+    git stash
+    cargo public-items --diff-between-git-checkouts-in-current-git-repo v0.3.0 v0.4.0
+
+    if [ -n "${original_branch}" ]; then
+        git checkout "${original_branch}"
+    fi
+fi

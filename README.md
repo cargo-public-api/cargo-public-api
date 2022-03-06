@@ -88,8 +88,8 @@ It is frequently of interest to know how the public API of a crate has changed. 
 % RUSTDOCFLAGS='-Z unstable-options --output-format json' cargo +nightly doc --lib --no-deps
 % cp ./target/doc/public_items.json /tmp/public_items-v0.4.0.json
 % public_items /tmp/public_items-v0.2.0.json /tmp/public_items-v0.4.0.json
-
 Removed:
+(nothing)
 
 Changed:
 -pub fn public_items::sorted_public_items_from_rustdoc_json_str(rustdoc_json_str: &str) -> Result<Vec<PublicItem>>
@@ -101,6 +101,7 @@ Added:
 +pub fn public_items::Options::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
 +pub struct public_items::Options
 +pub struct field public_items::Options::with_blanket_implementations: bool
+
 ```
 
 # Library documentation and example code

@@ -3,11 +3,11 @@ use std::io::Write;
 use std::path::{Path, PathBuf};
 
 use anyhow::{anyhow, Context, Result};
-use public_items::{public_items_from_rustdoc_json_str, Options, PublicItem};
+use public_items::{
+    public_items_from_rustdoc_json_str, Options, PublicItem, MINIMUM_RUSTDOC_JSON_VERSION,
+};
 
 use clap::Parser;
-
-const MIN_NIGHTLY: &str = "nightly-2022-02-23";
 
 #[derive(Parser, Debug)]
 #[clap(author, version, about, long_about = None)]
@@ -242,7 +242,7 @@ fn collect_public_items(commit: Option<&str>) -> Result<Vec<PublicItem>> {
             This version of `cargo public-items` requires at least:\n\n    {}\n\n\
             If you have that, it might be `cargo public-items` that is out of date. Try\n\
             to install the latest versions with `cargo install cargo-public-items`",
-            json_path, MIN_NIGHTLY
+            json_path, MINIMUM_RUSTDOC_JSON_VERSION,
         )
     })
 }

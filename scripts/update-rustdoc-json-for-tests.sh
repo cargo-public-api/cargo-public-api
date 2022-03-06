@@ -9,7 +9,7 @@ fi
 base="tests/rustdoc_json"
 src_base="$HOME/src"
 
-source "${base}/crates.sh"
+source "${base}/test-crates-and-versions.sh"
 git rm ${base}/*.json || true
 
 for crate in ${crates}; do

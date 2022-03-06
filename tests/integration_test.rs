@@ -13,7 +13,7 @@ struct ExpectedDiff<'a> {
 fn bat_v0_19_0() {
     assert_public_items(
         include_str!("./rustdoc_json/bat-v0.19.0.json"),
-        include_str!("./rustdoc_json/bat-v0.19.0-expected.txt"),
+        include_str!("./expected_output/bat-v0.19.0.txt"),
     );
 }
 
@@ -21,7 +21,7 @@ fn bat_v0_19_0() {
 fn syntect_v4_6_0() {
     assert_public_items(
         include_str!("./rustdoc_json/syntect-v4.6.0.json"),
-        include_str!("./rustdoc_json/syntect-v4.6.0-expected.txt"),
+        include_str!("./expected_output/syntect-v4.6.0.txt"),
     );
 }
 
@@ -29,7 +29,7 @@ fn syntect_v4_6_0() {
 fn thiserror_v1_0_30() {
     assert_public_items(
         include_str!("./rustdoc_json/thiserror-1.0.30.json"),
-        include_str!("./rustdoc_json/thiserror-1.0.30-expected.txt"),
+        include_str!("./expected_output/thiserror-1.0.30.txt"),
     );
 }
 
@@ -37,9 +37,7 @@ fn thiserror_v1_0_30() {
 fn public_items_v0_4_0_with_blanket_implementations() {
     assert_public_items_with_blanket_implementations(
         include_str!("./rustdoc_json/public_items-v0.4.0.json"),
-        include_str!(
-            "./rustdoc_json/public_items-v0.4.0-expected-with-blanket-implementations.txt"
-        ),
+        include_str!("./expected_output/public_items-v0.4.0-with-blanket-implementations.txt"),
     );
 }
 

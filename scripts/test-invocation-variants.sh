@@ -32,13 +32,13 @@ if [ -d "${HOME}/src/public_items" ]; then
     original_branch=$(git branch --show-current)
 
     git stash
-    cargo public-items --diff-between-git-checkouts-in-current-git-repo v0.0.4 v0.0.5
+    cargo public-items --diff-git-checkouts v0.0.4 v0.0.5
 
     git stash
-    cargo public-items --diff-between-git-checkouts-in-current-git-repo v0.2.0 v0.3.0
+    cargo public-items --diff-git-checkouts v0.2.0 v0.3.0
 
     git stash
-    cargo public-items --diff-between-git-checkouts-in-current-git-repo v0.3.0 v0.4.0
+    cargo public-items --diff-git-checkouts v0.3.0 v0.4.0
 
     if [ -n "${original_branch}" ]; then
         git checkout "${original_branch}"

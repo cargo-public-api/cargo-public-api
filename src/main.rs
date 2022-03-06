@@ -28,8 +28,7 @@ pub struct Args {
     #[clap(long)]
     with_blanket_implementations: bool,
 
-    /// Usage: --diff-between-git-checkouts-in-current-git-repo <COMMIT_1>
-    /// <COMMIT_2>
+    /// Usage: --diff-git-checkouts <COMMIT_1> <COMMIT_2>
     ///
     /// Rudimentary wrapper "script" to diff the public API across two different
     /// commits. The following steps are performed:
@@ -57,13 +56,13 @@ pub struct Args {
     /// the working tree is restored to your current state after the diff
     /// has been printed.
     #[clap(long, max_values = 2)]
-    diff_between_git_checkouts_in_current_git_repo: Option<Vec<String>>,
+    diff_git_checkouts: Option<Vec<String>>,
 }
 
 fn main() -> Result<()> {
     let args = get_args();
 
-    if let Some(commits) = args.diff_between_git_checkouts_in_current_git_repo {
+    if let Some(commits) = args.diff_git_checkouts {
         print_public_items_diff_between_two_commits(&commits)
     } else {
         print_public_items_of_current_commit()

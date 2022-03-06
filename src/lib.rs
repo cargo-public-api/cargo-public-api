@@ -14,7 +14,7 @@ pub use error::Result;
 /// of the public API of a crate. Implements `Display` so it can be printed. It
 /// also implements [`Ord`], but how items are ordered are not stable yet, and
 /// will change in later versions.
-#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Debug)]
 pub struct PublicItem {
     /// Private implementation detail. The "pub struct/fn/..." part of an item.
     prefix: String,

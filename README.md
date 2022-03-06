@@ -4,11 +4,11 @@ You might want the convenient `cargo public-items` wrapper for this library. See
 
 # public_items
 
-List public items (the public API) of a Rust library crate by analyzing the rustdoc JSON of the crate. Enables diffing public API between releases.
+List public items (the public API) of a Rust library crate by analyzing the rustdoc JSON of the crate. Enables diffing public API between releases and commits.
 
 # Usage
 
-If you prefer not to use the convenient [`cargo public-items`](https://crates.io/crates/cargo-public-items) wrapper, do like this:
+If you prefer not to use the convenient [`cargo public-items`](https://crates.io/crates/cargo-public-items) wrapper you can play around with the thin `public_items` bin wrapper around this library. Do like this:
 
 ```bash
 # Install the tool that is a thin wrapper around the `public_items` library
@@ -21,10 +21,6 @@ RUSTDOCFLAGS='-Z unstable-options --output-format json' cargo +nightly doc --lib
 # List all items in the public API of your Rust library
 public_items ./target/doc/your_library.json
 ```
-
-## Diffing
-
-This library contains APIs to diff different versions of the same public API. This API is currently only used in tests and in `cargo public-items`, but not the `public_items` binary.
 
 # Example: List the public items of the `public_items` library itself
 
@@ -55,8 +51,6 @@ pub struct field public_items::Options::with_blanket_implementations: bool
 pub type public_items::Result<T> = std::result::Result<T, Error>
 ```
 
-Tip: By writing the public API to a file for two different versions of your library, you can diff your public API across versions.
-
 # Expected output
 
 In general, output aims to be character-by-character identical to the textual parts of the regular `cargo doc` HTML output. For example, [this item](https://docs.rs/bat/0.20.0/bat/struct.PrettyPrinter.html#method.input_files) has the following textual representation in the rendered HTML:
@@ -74,12 +68,46 @@ and `public_items` represent this item in the following manner:
 pub fn bat::PrettyPrinter::input_files<I, P>(&mut self, paths: I) -> &mut Self where I: IntoIterator<Item = P>, P: AsRef<Path>
 ```
 
-If normalize by removing newline characters and adding some whitespace padding to get the alignment right for direct comparison, we can see that they are exactly the same, except an irrelevant trailing comma:
+If we normalize by removing newline characters and adding some whitespace padding to get the alignment right for side-by-side comparison, we can see that they are exactly the same, except an irrelevant trailing comma:
 
 ```
 pub fn                     input_files<I, P>(&mut self, paths: I) -> &mut Self where I: IntoIterator<Item = P>, P: AsRef<Path>,
 pub fn bat::PrettyPrinter::input_files<I, P>(&mut self, paths: I) -> &mut Self where I: IntoIterator<Item = P>, P: AsRef<Path>
 ```
+
+# Diffing
+
+It is frequently of interest to know how the public API of a crate has changed. You can find this out by doing a diff between different versions of the same library. Again, `cargo public-items` makes this more convenient, but it is straightforward enough without it. This example does a diff between [public_items v0.2.0](https://docs.rs/public_items/0.2.0/public_items/index.html) and [public_items v0.4.0](https://docs.rs/public_items/0.4.0/public_items/index.html):
+
+```
+% cd ~/src/public_items
+% git checkout v0.4.0
+% RUSTDOCFLAGS='-Z unstable-options --output-format json' cargo +nightly doc --lib --no-deps
+% cp ./target/doc/public_items.json /tmp/public_items-v0.2.0.json
+% git checkout v0.4.0
+% RUSTDOCFLAGS='-Z unstable-options --output-format json' cargo +nightly doc --lib --no-deps
+% cp ./target/doc/public_items.json /tmp/public_items-v0.4.0.json
+% public_items /tmp/public_items-v0.2.0.json /tmp/public_items-v0.4.0.json
+
+Removed:
+
+Changed:
+-pub fn public_items::sorted_public_items_from_rustdoc_json_str(rustdoc_json_str: &str) -> Result<Vec<PublicItem>>
++pub fn public_items::sorted_public_items_from_rustdoc_json_str(rustdoc_json_str: &str, options: Options) -> Result<Vec<PublicItem>>
+
+Added:
++pub fn public_items::Options::clone(&self) -> Options
++pub fn public_items::Options::default() -> Self
++pub fn public_items::Options::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
++pub struct public_items::Options
++pub struct field public_items::Options::with_blanket_implementations: bool
+```
+
+# Library documentation and example code
+
+Documentation can be found at [docs.rs](https://docs.rs/public_items/latest/public_items/) as usual:
+
+The best example code is the code for the thin wrapper around the library: https://github.com/Enselic/public_items/blob/main/src/bin/public_items/main.rs
 
 # Blanket implementations
 

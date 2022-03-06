@@ -1,30 +1,64 @@
 use std::io::Write;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
-use public_items::Options;
+use public_items::diff::PublicItemsDiff;
+use public_items::{public_items_from_rustdoc_json_str, Options};
 
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
 fn main() -> Result<()> {
-    let last_arg = std::env::args_os().last();
+    let mut options = Options::default();
+    options.with_blanket_implementations = flag_raised("--with-blanket-implementations");
+    options.sorted = true;
 
-    if flag_raised("--help") || flag_raised("-h") || last_arg.is_none() {
+    let mut args = std::env::args_os();
+    if flag_raised("--help") || flag_raised("-h") || args.len() <= 1 || args.len() > 3 {
         print_usage()?;
-    } else {
-        let mut options = Options::default();
-        options.with_blanket_implementations = flag_raised("--with-blanket-implementations");
-        options.sorted = true;
-        print_public_api_items(Path::new(&last_arg.unwrap()), options)?;
+    } else if args.len() == 2 {
+        args.next();
+        let path = PathBuf::from(args.next().unwrap());
+        print_public_items(&path, options)?;
+    } else if args.len() == 3 {
+        args.next();
+        let old = PathBuf::from(args.next().unwrap());
+        let new = PathBuf::from(args.next().unwrap());
+        print_public_items_diff(&old, &new, options)?;
     }
 
     Ok(())
 }
 
-fn print_public_api_items(path: &Path, options: Options) -> Result<()> {
+fn print_public_items(path: &Path, options: Options) -> Result<()> {
     let json = &std::fs::read_to_string(path)?;
 
-    for public_item in public_items::public_items_from_rustdoc_json_str(json, options)? {
+    for public_item in public_items_from_rustdoc_json_str(json, options)? {
         writeln!(std::io::stdout(), "{}", public_item)?;
+    }
+
+    Ok(())
+}
+
+fn print_public_items_diff(old: &Path, new: &Path, options: Options) -> Result<()> {
+    let old_json = std::fs::read_to_string(old)?;
+    let old_items = public_items_from_rustdoc_json_str(&old_json, options)?;
+
+    let new_json = std::fs::read_to_string(new)?;
+    let new_items = public_items_from_rustdoc_json_str(&new_json, options)?;
+
+    let diff = PublicItemsDiff::between(old_items, new_items);
+
+    writeln!(std::io::stdout(), "\nRemoved:")?;
+    for item in diff.removed {
+        writeln!(std::io::stdout(), "-{}", item)?;
+    }
+    writeln!(std::io::stdout(), "\nChanged:")?;
+    for item in diff.changed {
+        writeln!(std::io::stdout(), "-{}", item.old)?;
+        writeln!(std::io::stdout(), "+{}", item.new)?;
+    }
+    writeln!(std::io::stdout(), "\nAdded:")?;
+    for item in diff.added {
+        writeln!(std::io::stdout(), "+{}", item)?;
     }
 
     Ok(())
@@ -38,9 +72,9 @@ NOTE: See https://github.com/Enselic/cargo-public-items for a convenient cargo
 wrapper around this program (or to be precise; library) that does everything
 automatically.
 
-If you insist of using this low-level utility, you run it like this:
+If you insist of using this low-level utility and thin wrapper, you run it like this:
 
-   public_items RUSTDOC_JSON_FILE
+   public_items <RUSTDOC_JSON_FILE>
 
 where RUSTDOC_JSON_FILE is the path to the output of
 
@@ -50,11 +84,25 @@ which you can find in
 
   ./target/doc/${{CRATE}}.json
 
-To omit blanket implementations, pass --omit-blanket-implementations.
+To diff the public API between two commits, you generate one rustdoc JSON file for each
+commit and then pass the path of both files to this utility:
+
+   public_items <RUSTDOC_JSON_FILE_OLD> <RUSTDOC_JSON_FILE_NEW>
+
+To include blanket implementations, pass --with-blanket-implementations.
 "
     )
 }
 
+/// Helper to check if a flag is raised in command line args.
+///
+/// Note: I want this Rust package to be simple and without unnecessary
+/// dependencies and without the need to select features. For that reason I
+/// currently consider it undesirable to for example make this utility depend on
+/// `clap` or `anyhow`.
+///
+/// The convenient wrapper <https://github.com/Enselic/cargo-public-items>
+/// depends on both `clap` and `anyhow` though which is perfectly fine.
 fn flag_raised(flag: &str) -> bool {
     std::env::args_os().into_iter().any(|e| e == flag)
 }

@@ -4,6 +4,16 @@ mod item_iterator;
 
 pub mod diff;
 
+/// This library is implemented with stable Rust. But the rustdoc JSON that this
+/// library parses can only be produced by nightly. This constant defines the
+/// minimum version of nightly that is required in order for the rustdoc JSON
+/// output to be parsable by this library.
+///
+/// The rustdoc JSON format is still changing, so every now and then we update
+/// this library to support the latest format. If you use this version of
+/// nightly or later, you should be fine.
+pub const MINIMUM_REQUIRED_NIGHTLY_VERSION: &str = "nightly-2022-02-23";
+
 // Documented at the definition site so cargo doc picks it up
 pub use error::Error;
 

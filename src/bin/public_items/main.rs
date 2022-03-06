@@ -2,7 +2,7 @@ use std::io::Write;
 use std::path::{Path, PathBuf};
 
 use public_items::diff::PublicItemsDiff;
-use public_items::{public_items_from_rustdoc_json_str, Options};
+use public_items::{public_items_from_rustdoc_json_str, Options, MINIMUM_REQUIRED_NIGHTLY_VERSION};
 
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
@@ -67,7 +67,10 @@ fn print_public_items_diff(old: &Path, new: &Path, options: Options) -> Result<(
 fn print_usage() -> std::io::Result<()> {
     writeln!(
         std::io::stdout(),
-        r"
+        "public_items v{}
+
+Requires at least {}.
+
 NOTE: See https://github.com/Enselic/cargo-public-items for a convenient cargo
 wrapper around this program (or to be precise; library) that does everything
 automatically.
@@ -90,7 +93,9 @@ commit and then pass the path of both files to this utility:
    public_items <RUSTDOC_JSON_FILE_OLD> <RUSTDOC_JSON_FILE_NEW>
 
 To include blanket implementations, pass --with-blanket-implementations.
-"
+",
+        env!("CARGO_PKG_VERSION"),
+        MINIMUM_REQUIRED_NIGHTLY_VERSION,
     )
 }
 

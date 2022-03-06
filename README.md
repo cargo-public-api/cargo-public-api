@@ -44,7 +44,7 @@ pub type public_items::Result<T> = std::result::Result<T, Error>
 
 ## Diff public items between commits
 
-To diff two different versions of your API, use `--dif-git-checkouts`. This example prints the public API diff between v0.2.0 and v0.4.0:
+To diff two different versions of your API, use `--diff-git-checkouts`. This example prints the public API diff between v0.2.0 and v0.4.0:
 
 ```
 % cargo public-items --diff-git-checkouts v0.2.0 v0.4.0

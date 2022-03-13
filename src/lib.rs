@@ -9,7 +9,7 @@
 //!
 //! The most comprehensive example code on how to use the library can be found
 //! in the thin binary wrapper around the library, which can be found at
-//! <https://github.com/Enselic/public_items/blob/main/src/bin/public_items/main.rs>.
+//! <https://github.com/Enselic/public_items/blob/main/src/main.rs>.
 
 #![deny(missing_docs)]
 

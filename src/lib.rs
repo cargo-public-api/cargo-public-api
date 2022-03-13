@@ -1,3 +1,18 @@
+//! This library gives you a list of all public items (otherwise known as the
+//! public API) of a library crate. As input to the library, a special output
+//! format from `cargo doc` is used, which goes by the name **rustdoc JSON**.
+//! Currently, only `cargo doc` from the Nightly toolchain can produce **rustdoc
+//! JSON** for a library.
+//!
+//! The main entry point to the library is
+//! [`public_items_from_rustdoc_json_str`], so please read its documentation.
+//!
+//! The most comprehensive example code on how to use the library can be found
+//! in the thin binary wrapper around the library, which can be found at
+//! <https://github.com/Enselic/public_items/blob/main/src/bin/public_items/main.rs>.
+
+#![deny(missing_docs)]
+
 mod error;
 mod intermediate_public_item;
 mod item_iterator;
@@ -7,7 +22,7 @@ pub mod diff;
 /// This constant defines the minimum version of nightly that is required in
 /// order for the rustdoc JSON output to be parsable by this library. Note that
 /// this library is implemented with stable Rust. But the rustdoc JSON that this
-/// library parses can only be produced by nightly.
+/// library parses can currently only be produced by nightly.
 ///
 /// The rustdoc JSON format is still changing, so every now and then we update
 /// this library to support the latest format. If you use this version of

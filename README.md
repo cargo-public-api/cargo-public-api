@@ -106,9 +106,9 @@ Added:
 
 # Library documentation and example code
 
-Documentation can be found at [docs.rs](https://docs.rs/public_items/latest/public_items/) as usual:
+Documentation can be found at [docs.rs](https://docs.rs/public_items/latest/public_items/) as usual.
 
-The best example code is the code for the thin wrapper around the library: https://github.com/Enselic/public_items/blob/main/src/bin/public_items/main.rs
+The most comprehensive example code is the code for the [thin wrapper around the library](https://github.com/Enselic/public_items/blob/main/src/main.rs). There are also some [examples](https://github.com/Enselic/public_items/tree/main/examples).
 
 # Blanket implementations
 

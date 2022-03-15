@@ -6,11 +6,10 @@ if [[ `git status --porcelain` ]]; then
   exit 1
 fi
 
-base="tests/rustdoc_json"
+output_dir=$(mktemp -d)
 src_base="$HOME/src"
 
-source "${base}/test-crates-and-versions.sh"
-git rm ${base}/*.json || true
+source "scripts/test-crates-and-versions.sh"
 
 for crate in ${crates}; do
     crate_split=(${crate//-/ })
@@ -26,5 +25,7 @@ for crate in ${crates}; do
     fi
 
     RUSTDOCFLAGS='-Z unstable-options --output-format json' cargo +nightly doc --lib --no-deps
-    cp -v ./target/doc/${name}.json ../public_items/${base}/${name}-${tag}.json
+    cp -v ./target/doc/${name}.json ${output_dir}/${name}-${tag}.json
 done
+
+echo "New JSON put in ${output_dir}"

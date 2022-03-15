@@ -6,10 +6,10 @@ homepage = "https://github.com/Enselic/public_items"
 license = "MIT"
 name = "public_items"
 repository = "https://github.com/Enselic/public_items"
-version = "0.5.3"
+version = "0.6.0"
 
 [dependencies]
-rustdoc-types = "0.7.0"
+rustdoc-types = "0.10.0"
 serde = { version = "1.0.135", features = ["derive"] }
 serde_json = "1.0.77"
 thiserror = "1.0.29"

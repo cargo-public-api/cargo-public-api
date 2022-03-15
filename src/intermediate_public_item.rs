@@ -132,7 +132,9 @@ impl Display for ItemSuffix<'_> {
                 // Skip the `default` value for now because it can be multi-line
                 write!(f, ": {}", D(type_))
             }
-            ItemEnum::AssocType { bounds, default } => {
+            ItemEnum::AssocType {
+                bounds, default, ..
+            } => {
                 write!(f, "{}{:?}", Optional("= ", default.as_ref().map(D)), bounds)
             }
             ItemEnum::Macro(_) | ItemEnum::ProcMacro(_) => write!(f, "!"),
@@ -280,6 +282,7 @@ impl Display for D<&Type> {
                 name,
                 self_type,
                 trait_,
+                ..
             } => write!(
                 f,
                 "<{} as {}>::{}",
@@ -313,10 +316,13 @@ impl Display for D<&Vec<GenericParamDef>> {
         let params_without_synthetics: Vec<_> = self
             .0
             .iter()
-            // For now we use a heuristic that I think is pretty solid.
-            // Once https://github.com/rust-lang/rust/pull/94150 is fixed
-            // we should replace this with a solid and simple check for `.synthetic`
-            .filter(|p| !p.name.starts_with("impl "))
+            .filter(|p| {
+                if let GenericParamDefKind::Type { synthetic, .. } = p.kind {
+                    !synthetic
+                } else {
+                    true
+                }
+            })
             .collect();
         if !&params_without_synthetics.is_empty() {
             write!(
@@ -359,8 +365,8 @@ impl Display for D<&GenericParamDef> {
 impl Display for D<&WherePredicate> {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         match self.0 {
-            WherePredicate::BoundPredicate { ty, bounds } => {
-                write!(f, "{}: {}", D(ty), Joiner(bounds, " + ", D))
+            WherePredicate::BoundPredicate { type_, bounds } => {
+                write!(f, "{}: {}", D(type_), Joiner(bounds, " + ", D))
             }
             WherePredicate::RegionPredicate { lifetime, bounds } => {
                 write!(f, "{}{:?}", lifetime, bounds)
@@ -378,7 +384,9 @@ impl Display for D<&GenericParamDefKind> {
                     write!(f, ": {}", outlives.join(", "))?;
                 }
             }
-            GenericParamDefKind::Type { bounds, default } => {
+            GenericParamDefKind::Type {
+                bounds, default, ..
+            } => {
                 if !bounds.is_empty() {
                     write!(
                         f,
@@ -388,10 +396,10 @@ impl Display for D<&GenericParamDefKind> {
                     )?;
                 }
             }
-            GenericParamDefKind::Const { ty, default } => write!(
+            GenericParamDefKind::Const { type_, default } => write!(
                 f,
                 "GenericParamDefKind::Const{}{}",
-                D(ty),
+                D(type_),
                 Optional(" = ", default.as_ref())
             )?,
         }

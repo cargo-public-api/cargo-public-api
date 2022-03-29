@@ -110,6 +110,40 @@ fn options() {
     let _ = options.clone();
 }
 
+#[test]
+fn pretty_printed_diff() {
+    let options = Options::default();
+    let old = public_items_from_rustdoc_json_str(
+        include_str!("./rustdoc_json/public_items-v0.2.0.json"),
+        options,
+    )
+    .unwrap();
+    let new = public_items_from_rustdoc_json_str(
+        include_str!("./rustdoc_json/public_items-v0.4.0.json"),
+        options,
+    )
+    .unwrap();
+
+    let diff = public_items::diff::PublicItemsDiff::between(old, new);
+    let pretty_printed = format!("{:#?}", diff);
+    assert_eq!(pretty_printed, "PublicItemsDiff {
+    removed: [],
+    changed: [
+        ChangedPublicItem {
+            old: pub fn public_items::sorted_public_items_from_rustdoc_json_str(rustdoc_json_str: &str) -> Result<Vec<PublicItem>>,
+            new: pub fn public_items::sorted_public_items_from_rustdoc_json_str(rustdoc_json_str: &str, options: Options) -> Result<Vec<PublicItem>>,
+        },
+    ],
+    added: [
+        pub fn public_items::Options::clone(&self) -> Options,
+        pub fn public_items::Options::default() -> Self,
+        pub fn public_items::Options::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result,
+        pub struct public_items::Options,
+        pub struct field public_items::Options::with_blanket_implementations: bool,
+    ],
+}");
+}
+
 fn assert_public_items_diff(old_json: &str, new_json: &str, expected: &ExpectedDiff) {
     let old = public_items_from_rustdoc_json_str(old_json, Options::default()).unwrap();
     let new = public_items_from_rustdoc_json_str(new_json, Options::default()).unwrap();

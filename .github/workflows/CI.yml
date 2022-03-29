@@ -37,3 +37,16 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - run: cargo test
+
+  code-coverage:
+    name: code coverage
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions-rs/toolchain@v1
+      with:
+        toolchain: nightly
+        profile: minimal
+        components: llvm-tools-preview
+    - run: cargo install cargo-llvm-cov
+    - run: cargo llvm-cov

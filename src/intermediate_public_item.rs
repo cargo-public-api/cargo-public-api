@@ -14,7 +14,7 @@ use std::fmt::Result;
 /// It wraps a single [Item] but adds additional calculated values to make it
 /// easier to work with. Later, one [`Self`] will be converted to exactly one
 /// [`crate::PublicItem`].
-#[derive(Debug, Clone)]
+#[derive(Clone)]
 pub struct IntermediatePublicItem<'a> {
     /// The item we are effectively wrapping.
     pub item: &'a Item,

@@ -64,20 +64,20 @@ automatically.
 
 If you insist of using this low-level utility and thin wrapper, you run it like this:
 
-   public_items <RUSTDOC_JSON_FILE>
+    public_items <RUSTDOC_JSON_FILE>
 
 where RUSTDOC_JSON_FILE is the path to the output of
 
-  RUSTDOCFLAGS='-Z unstable-options --output-format json' cargo +nightly doc --lib --no-deps
+    RUSTDOCFLAGS='-Z unstable-options --output-format json' cargo +nightly doc --lib --no-deps
 
 which you can find in
 
-  ./target/doc/${{CRATE}}.json
+    ./target/doc/${{CRATE}}.json
 
 To diff the public API between two commits, you generate one rustdoc JSON file for each
 commit and then pass the path of both files to this utility:
 
-   public_items <RUSTDOC_JSON_FILE_OLD> <RUSTDOC_JSON_FILE_NEW>
+    public_items <RUSTDOC_JSON_FILE_OLD> <RUSTDOC_JSON_FILE_NEW>
 
 To include blanket implementations, pass --with-blanket-implementations.
 ",

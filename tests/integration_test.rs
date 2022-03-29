@@ -1,7 +1,7 @@
 use std::fmt::Display;
 
 use pretty_assertions::assert_eq;
-use public_items::{public_items_from_rustdoc_json_str, Options};
+use public_items::{public_items_from_rustdoc_json_str, Error, Options};
 
 struct ExpectedDiff<'a> {
     removed: &'a [&'a str],
@@ -92,6 +92,24 @@ fn public_items_diff_between_v0_3_0_and_v0_4_0() {
     );
 }
 
+#[test]
+fn invalid_json() {
+    let result = public_items_from_rustdoc_json_str("}}}}}}}}}", Options::default());
+    ensure_impl_debug(&result);
+    assert!(matches!(result, Err(Error::SerdeJsonError(_))));
+}
+
+#[test]
+fn options() {
+    let options = Options::default();
+    ensure_impl_debug(&options);
+
+    // If we don't do this, we will not have code coverage 100% of functions in
+    // lib.rs, which is more annoying than doing this clone
+    #[allow(clippy::clone_on_copy)]
+    let _ = options.clone();
+}
+
 fn assert_public_items_diff(old_json: &str, new_json: &str, expected: &ExpectedDiff) {
     let old = public_items_from_rustdoc_json_str(old_json, Options::default()).unwrap();
     let new = public_items_from_rustdoc_json_str(new_json, Options::default()).unwrap();
@@ -145,4 +163,10 @@ fn expected_output_to_string_vec(expected_output: &str) -> Vec<String> {
 
 fn into_strings(items: Vec<impl Display>) -> Vec<String> {
     items.into_iter().map(|x| format!("{}", x)).collect()
+}
+
+/// To be honest this is mostly to get higher code coverage numbers.
+/// But it is actually useful thing to test.
+fn ensure_impl_debug(impl_debug: &impl std::fmt::Debug) {
+    eprintln!("Yes, this can be debugged: {:?}", impl_debug);
 }

@@ -29,7 +29,7 @@ pub type public_items::Result<T> = std::result::Result<T, Error>
 }
 
 #[test]
-fn print_diff() {
+fn print_diff_with_changed_and_added() {
     let mut cmd = Command::cargo_bin("public_items").unwrap();
     cmd.arg("./tests/rustdoc_json/public_items-v0.2.0.json");
     cmd.arg("./tests/rustdoc_json/public_items-v0.4.0.json");
@@ -46,6 +46,23 @@ Added:
 +pub fn public_items::Options::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
 +pub struct public_items::Options
 +pub struct field public_items::Options::with_blanket_implementations: bool
+
+").stderr("").success();
+}
+
+#[test]
+fn print_diff_with_removed_and_added() {
+    let mut cmd = Command::cargo_bin("public_items").unwrap();
+    cmd.arg("./tests/rustdoc_json/public_items-v0.0.4.json");
+    cmd.arg("./tests/rustdoc_json/public_items-v0.0.5.json");
+    cmd.assert().stdout("Removed:
+-pub fn public_items::from_rustdoc_json_str(rustdoc_json_str: &str) -> Result<HashSet<String>>
+
+Changed:
+(nothing)
+
+Added:
++pub fn public_items::sorted_public_items_from_rustdoc_json_str(rustdoc_json_str: &str) -> Result<Vec<String>>
 
 ").stderr("").success();
 }

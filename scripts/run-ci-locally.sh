@@ -14,5 +14,3 @@ RUSTDOCFLAGS='-D warnings' cargo doc --no-deps
 cargo clippy --all-targets --all-features -- -D clippy::all -D clippy::pedantic
 
 cargo test
-
-./scripts/test-invocation-variants.sh

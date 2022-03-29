@@ -15,4 +15,5 @@ serde_json = "1.0.77"
 thiserror = "1.0.29"
 
 [dev-dependencies]
+assert_cmd = "2.0.4"
 pretty_assertions = "1.1.0"

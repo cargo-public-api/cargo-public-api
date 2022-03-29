@@ -2,13 +2,29 @@
 //! public API) of a library crate. As input to the library, a special output
 //! format from `cargo doc` is used, which goes by the name **rustdoc JSON**.
 //! Currently, only `cargo doc` from the Nightly toolchain can produce **rustdoc
-//! JSON** for a library.
+//! JSON** for a library. You build **rustdoc JSON** like this:
+//!
+//! ```bash
+//! RUSTDOCFLAGS='-Z unstable-options --output-format json' cargo +nightly doc --lib --no-deps
+//! ```
 //!
 //! The main entry point to the library is
 //! [`public_items_from_rustdoc_json_str`], so please read its documentation.
 //!
+//! # Examples
+//!
+//! ## List all public items of a crate
+//! ```
+#![doc = include_str!("../examples/list_public_items.rs")]
+//! ```
+//!
+//! ## Diff two versions of a public API
+//! ```
+#![doc = include_str!("../examples/public_api_diff.rs")]
+//! ```
+//!
 //! The most comprehensive example code on how to use the library can be found
-//! in the thin binary wrapper around the library, which can be found at
+//! in the thin binary wrapper around the library, see
 //! <https://github.com/Enselic/public_items/blob/main/src/main.rs>.
 
 #![deny(missing_docs)]
@@ -39,7 +55,7 @@ pub use error::Result;
 /// of the public API of a crate. Implements `Display` so it can be printed. It
 /// also implements [`Ord`], but how items are ordered are not stable yet, and
 /// will change in later versions.
-#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Debug)]
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct PublicItem {
     /// Private implementation detail. The "pub struct/fn/..." part of an item.
     prefix: String,
@@ -58,6 +74,14 @@ pub struct PublicItem {
 impl std::fmt::Display for PublicItem {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}{}{}", self.prefix, self.path, self.suffix)
+    }
+}
+
+/// We want pretty-printing (`"{:#?}"`) of [`diff::PublicItemsDiff`] to print
+/// each public item as `Display`, so implement `Debug` with `Display`.
+impl std::fmt::Debug for PublicItem {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Display::fmt(self, f)
     }
 }
 

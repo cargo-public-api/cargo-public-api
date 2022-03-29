@@ -95,49 +95,4 @@ impl PublicItemsDiff {
             added,
         }
     }
-
-    /// Utility function to print this diff to somewhere. The format of the
-    /// output of this function might change in the future.
-    ///
-    /// # Errors
-    ///
-    /// E.g. if you try to redirect the output to a file you do not have write
-    /// access to.
-    pub fn print_with_headers(
-        &self,
-        w: &mut impl std::io::Write,
-        header_removed: &str,
-        header_changed: &str,
-        header_added: &str,
-    ) -> std::io::Result<()> {
-        print_items_with_header(w, header_removed, &self.removed, |w, item| {
-            writeln!(w, "-{}", item)
-        })?;
-        print_items_with_header(w, header_changed, &self.changed, |w, item| {
-            writeln!(w, "-{}", item.old)?;
-            writeln!(w, "+{}", item.new)
-        })?;
-        print_items_with_header(w, header_added, &self.added, |w, item| {
-            writeln!(w, "+{}", item)
-        })?;
-
-        Ok(())
-    }
-}
-
-fn print_items_with_header<W: std::io::Write, T>(
-    w: &mut W,
-    header: &str,
-    items: &[T],
-    print_fn: impl Fn(&mut W, &T) -> std::io::Result<()>,
-) -> std::io::Result<()> {
-    writeln!(w, "{}", header)?;
-    if items.is_empty() {
-        writeln!(w, "(nothing)")?;
-    } else {
-        for item in items {
-            print_fn(w, item)?;
-        }
-    }
-    writeln!(w)
 }

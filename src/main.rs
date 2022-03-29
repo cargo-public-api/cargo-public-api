@@ -46,9 +46,47 @@ fn print_public_items_diff(old: &Path, new: &Path, options: Options) -> Result<(
     let new_items = public_items_from_rustdoc_json_str(&new_json, options)?;
 
     let diff = PublicItemsDiff::between(old_items, new_items);
-    diff.print_with_headers(&mut stdout(), "Removed:", "Changed:", "Added:")?;
+    print_diff_with_headers(&diff, &mut stdout(), "Removed:", "Changed:", "Added:")?;
 
     Ok(())
+}
+
+fn print_diff_with_headers(
+    diff: &PublicItemsDiff,
+    w: &mut impl std::io::Write,
+    header_removed: &str,
+    header_changed: &str,
+    header_added: &str,
+) -> std::io::Result<()> {
+    print_items_with_header(w, header_removed, &diff.removed, |w, item| {
+        writeln!(w, "-{}", item)
+    })?;
+    print_items_with_header(w, header_changed, &diff.changed, |w, item| {
+        writeln!(w, "-{}", item.old)?;
+        writeln!(w, "+{}", item.new)
+    })?;
+    print_items_with_header(w, header_added, &diff.added, |w, item| {
+        writeln!(w, "+{}", item)
+    })?;
+
+    Ok(())
+}
+
+fn print_items_with_header<W: std::io::Write, T>(
+    w: &mut W,
+    header: &str,
+    items: &[T],
+    print_fn: impl Fn(&mut W, &T) -> std::io::Result<()>,
+) -> std::io::Result<()> {
+    writeln!(w, "{}", header)?;
+    if items.is_empty() {
+        writeln!(w, "(nothing)")?;
+    } else {
+        for item in items {
+            print_fn(w, item)?;
+        }
+    }
+    writeln!(w)
 }
 
 fn print_usage() -> std::io::Result<()> {

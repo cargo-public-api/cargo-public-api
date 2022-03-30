@@ -48,22 +48,19 @@ To diff two different versions of your API, use `--diff-git-checkouts`. This exa
 
 ```
 % cargo public-items --diff-git-checkouts v0.2.0 v0.4.0
-Removed from the public API:
-============================
-(nothing)
+## Removed items from the public API
+(none)
 
-Changes to the public API:
-==========================
--pub fn public_items::sorted_public_items_from_rustdoc_json_str(rustdoc_json_str: &str) -> Result<Vec<PublicItem>>
-+pub fn public_items::sorted_public_items_from_rustdoc_json_str(rustdoc_json_str: &str, options: Options) -> Result<Vec<PublicItem>>
+## Changed items in the public API
+* `pub fn public_items::sorted_public_items_from_rustdoc_json_str(rustdoc_json_str: &str) -> Result<Vec<PublicItem>>` changed to
+  `pub fn public_items::sorted_public_items_from_rustdoc_json_str(rustdoc_json_str: &str, options: Options) -> Result<Vec<PublicItem>>`
 
-Added to the public API:
-========================
-+pub fn public_items::Options::clone(&self) -> Options
-+pub fn public_items::Options::default() -> Self
-+pub fn public_items::Options::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-+pub struct public_items::Options
-+pub struct field public_items::Options::with_blanket_implementations: bool
+## Added items to the public API
+* `pub fn public_items::Options::clone(&self) -> Options`
+* `pub fn public_items::Options::default() -> Self`
+* `pub fn public_items::Options::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result`
+* `pub struct public_items::Options`
+* `pub struct field public_items::Options::with_blanket_implementations: bool`
 ```
 
 You can also manually do a diff by writing the full list of items to a file for two different versions of your library and then do a regular `diff` between the files.

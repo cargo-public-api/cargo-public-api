@@ -1,12 +1,12 @@
 [package]
-description = "List and diff public items (the public API) of Rust library crates by rustdoc JSON processing."
+description = "List and diff public items (the public API) of Rust library crates. Relies on rustdoc JSON output from the nightly toolchain."
 documentation = "https://docs.rs/public_items"
 edition = "2021"
 homepage = "https://github.com/Enselic/public_items"
 license = "MIT"
 name = "public_items"
 repository = "https://github.com/Enselic/public_items"
-version = "0.6.0"
+version = "0.7.0"
 
 [dependencies]
 rustdoc-types = "0.10.0"

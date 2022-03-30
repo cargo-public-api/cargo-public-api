@@ -18,7 +18,11 @@ pub struct ChangedPublicItem {
     pub new: PublicItem,
 }
 
-/// The return value of [`Self::between`]
+/// The return value of [`Self::between`]. To quickly get a sense of what it
+/// contains, you can pretty-print it:
+/// ```txt
+/// println!("{:#?}", public_items_diff);
+/// ```
 #[allow(clippy::module_name_repetitions)]
 #[derive(Debug)]
 pub struct PublicItemsDiff {

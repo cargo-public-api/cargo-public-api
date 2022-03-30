@@ -17,3 +17,8 @@ thiserror = "1.0.29"
 [dev-dependencies]
 assert_cmd = "2.0.4"
 pretty_assertions = "1.1.0"
+
+[workspace]
+members = [
+    "tests/crates/fn_double_fn_triple",
+]

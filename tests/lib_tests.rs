@@ -92,6 +92,29 @@ fn public_items_diff_between_v0_3_0_and_v0_4_0() {
     );
 }
 
+/// I confess: this test is mainly to get function code coverage on Ord
+#[test]
+fn public_item_ord() {
+    let public_items = public_items_from_rustdoc_json_str(
+        include_str!("./rustdoc_json/fn_double_fn_triple-v0.1.0.json"),
+        Options::default(),
+    )
+    .unwrap();
+
+    let fn_double = public_items
+        .clone()
+        .into_iter()
+        .find(|x| format!("{}", x).contains("double"))
+        .unwrap();
+
+    let fn_triple = public_items
+        .into_iter()
+        .find(|x| format!("{}", x).contains("triple"))
+        .unwrap();
+
+    assert_eq!(fn_double.max(fn_triple.clone()), fn_triple);
+}
+
 #[test]
 fn invalid_json() {
     let result = public_items_from_rustdoc_json_str("}}}}}}}}}", Options::default());

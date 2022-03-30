@@ -1,5 +1,5 @@
 [package]
-description = "List and diff public items (the public API) of library crates."
+description = "List and diff public items (the public API) of Rust library crates. Requires nightly Rust to be installed."
 documentation = "https://docs.rs/cargo-public-items"
 edition = "2021"
 homepage = "https://github.com/Enselic/cargo-public-items"

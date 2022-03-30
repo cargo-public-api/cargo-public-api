@@ -9,7 +9,7 @@ use crate::PublicItem;
 
 /// An item has changed in the public API. Two [`PublicItem`]s are considered
 /// the same if their `path` is the same.
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct ChangedPublicItem {
     /// How the item used to look.
     pub old: PublicItem,
@@ -89,6 +89,8 @@ impl PublicItemsDiff {
 
         let mut removed: Vec<_> = removed_set.into_iter().collect();
         removed.sort();
+
+        changed.sort();
 
         let mut added: Vec<_> = added_set.into_iter().collect();
         added.sort();

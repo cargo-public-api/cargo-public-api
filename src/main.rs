@@ -9,6 +9,8 @@ use public_items::{
 
 use clap::Parser;
 
+mod markdown;
+
 #[derive(Parser, Debug)]
 #[clap(author, version, about, long_about = None)]
 pub struct Args {
@@ -82,15 +84,7 @@ fn print_public_items_diff_between_two_commits(commits: &[String]) -> Result<()>
     let new = collect_public_items(Some(new_commit))?;
 
     let diff = public_items::diff::PublicItemsDiff::between(old, new);
-    diff.print_with_headers(
-        &mut std::io::stdout(),
-        "Removed from the public API:\n\
-         ============================",
-        "Changes to the public API:\n\
-         ==========================",
-        "Added to the public API:\n\
-         ========================",
-    )?;
+    markdown::print_diff(&mut std::io::stdout(), &diff)?;
 
     Ok(())
 }

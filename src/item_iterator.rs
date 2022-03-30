@@ -175,7 +175,7 @@ fn intermediate_public_item_to_public_item(
 
 /// To hide implementation details as much as possible from people who casually
 /// skims over the code in our lib.rs
-#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct PublicItemInner {
     /// The "pub struct/fn/..." part of an item.
     pub(crate) prefix: String,

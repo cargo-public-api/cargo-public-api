@@ -55,7 +55,7 @@ pub use error::Result;
 /// of the public API of a crate. Implements `Display` so it can be printed. It
 /// also implements [`Ord`], but how items are ordered are not stable yet, and
 /// will change in later versions.
-#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct PublicItem(item_iterator::PublicItemInner);
 
 /// One of the basic uses cases is printing a sorted `Vec` of `PublicItem`s. So

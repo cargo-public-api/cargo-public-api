@@ -21,6 +21,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+      with:
+        path: public_items
     - uses: actions/checkout@v2
       with:
         repository: trishume/syntect
@@ -31,4 +33,4 @@ jobs:
         toolchain: nightly
         profile: minimal
     - run: RUSTDOCFLAGS='-Z unstable-options --output-format json' cargo +nightly doc --manifest-path ./syntect/Cargo.toml --lib --no-deps
-    - run: cargo run ./syntect/target/doc/syntect.json
+    - run: cargo run --manifest-path ./public_items/Cargo.toml -- ./syntect/target/doc/syntect.json

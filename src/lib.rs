@@ -56,32 +56,13 @@ pub use error::Result;
 /// also implements [`Ord`], but how items are ordered are not stable yet, and
 /// will change in later versions.
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct PublicItem {
-    /// Private implementation detail. The "pub struct/fn/..." part of an item.
-    prefix: String,
-
-    /// Private implementation detail. The "your_crate::mod_a::mod_b" part of an
-    /// item.
-    path: String,
-
-    /// Private implementation detail. The type info part, e.g. "(param_a: Type,
-    /// param_b: OtherType)" for a `fn`.
-    suffix: String,
-}
+pub struct PublicItem(item_iterator::PublicItemInner);
 
 /// One of the basic uses cases is printing a sorted `Vec` of `PublicItem`s. So
 /// we implement `Display` for it.
 impl std::fmt::Display for PublicItem {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}{}{}", self.prefix, self.path, self.suffix)
-    }
-}
-
-/// We want pretty-printing (`"{:#?}"`) of [`diff::PublicItemsDiff`] to print
-/// each public item as `Display`, so implement `Debug` with `Display`.
-impl std::fmt::Debug for PublicItem {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        std::fmt::Display::fmt(self, f)
+        write!(f, "{}", self.0)
     }
 }
 

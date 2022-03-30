@@ -1,4 +1,4 @@
-use std::{collections::HashMap, rc::Rc};
+use std::{collections::HashMap, fmt::Debug, fmt::Display, rc::Rc};
 
 use rustdoc_types::{Crate, Id, Impl, Item, ItemEnum, Type};
 
@@ -161,7 +161,7 @@ pub fn public_items_in_crate(
 fn intermediate_public_item_to_public_item(
     public_item: &Rc<IntermediatePublicItem<'_>>,
 ) -> PublicItem {
-    PublicItem {
+    PublicItem(PublicItemInner {
         prefix: public_item.prefix(),
         path: public_item
             .path()
@@ -170,5 +170,36 @@ fn intermediate_public_item_to_public_item(
             .collect::<Vec<String>>()
             .join("::"),
         suffix: public_item.suffix(),
+    })
+}
+
+/// To hide implementation details as much as possible from people who casually
+/// skims over the code in our lib.rs
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct PublicItemInner {
+    /// The "pub struct/fn/..." part of an item.
+    pub(crate) prefix: String,
+
+    /// The "your_crate::mod_a::mod_b" part of an item.
+    pub(crate) path: String,
+
+    /// The type info part, e.g. "(param_a: Type, param_b: OtherType)" for a
+    /// `fn`.
+    pub(crate) suffix: String,
+}
+
+/// One of the basic uses cases is printing a sorted `Vec` of `PublicItem`s. So
+/// we implement `Display` for it.
+impl Display for PublicItemInner {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}{}{}", self.prefix, self.path, self.suffix)
+    }
+}
+
+/// We want pretty-printing (`"{:#?}"`) of [`crate::diff::PublicItemsDiff`] to print
+/// each public item as `Display`, so implement `Debug` with `Display`.
+impl Debug for PublicItem {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        Display::fmt(self, f)
     }
 }

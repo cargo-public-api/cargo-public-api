@@ -1,0 +1,5 @@
+[package]
+name = "fn_double_fn_triple"
+description = "For when you want two trivial public items in your integration test."
+version = "0.1.0"
+edition = "2021"

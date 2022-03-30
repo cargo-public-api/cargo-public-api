@@ -66,7 +66,7 @@ impl PublicItemsDiff {
         for removed_item in &removed_set {
             if let Some(added_item) = added_set
                 .iter()
-                .find(|added_item| added_item.path == removed_item.path)
+                .find(|added_item| added_item.0.path == removed_item.0.path)
             {
                 move_to_changed.push((removed_item.clone(), added_item.clone()));
             }

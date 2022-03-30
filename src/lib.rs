@@ -27,11 +27,12 @@
 //! in the thin binary wrapper around the library, see
 //! <https://github.com/Enselic/public_items/blob/main/src/main.rs>.
 
-#![deny(missing_docs)]
+//#![deny(missing_docs)] TODO: add when done
 
 mod error;
 mod intermediate_public_item;
 mod item_iterator;
+pub mod tokens;
 
 pub mod diff;
 
@@ -58,10 +59,17 @@ pub use error::Result;
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct PublicItem(item_iterator::PublicItemInner);
 
+impl PublicItem {
+    pub fn tokens(&self) -> &std::result::Result<tokens::PublicItemTokenStream, ()> {
+        &self.0.tokens
+    }
+}
+
 /// One of the basic uses cases is printing a sorted `Vec` of `PublicItem`s. So
 /// we implement `Display` for it.
 impl std::fmt::Display for PublicItem {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        //self.0.tokenize();
         write!(f, "{}", self.0)
     }
 }
@@ -137,9 +145,9 @@ pub fn public_items_from_rustdoc_json_str(
 
     let mut public_items: Vec<_> = item_iterator::public_items_in_crate(&crate_, options).collect();
 
-    if options.sorted {
-        public_items.sort();
-    }
+    //if options.sorted {
+    //    public_items.sort();
+    //}
 
     Ok(public_items)
 }

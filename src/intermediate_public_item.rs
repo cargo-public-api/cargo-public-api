@@ -10,6 +10,8 @@ use rustdoc_types::{
 
 use std::fmt::Result;
 
+use crate::tokens::{Kind, PublicItemTokenStream, Qualifier};
+
 /// This struct represents one public item of a crate, but in intermediate form.
 /// It wraps a single [Item] but adds additional calculated values to make it
 /// easier to work with. Later, one [`Self`] will be converted to exactly one
@@ -94,6 +96,110 @@ impl<'a> IntermediatePublicItem<'a> {
             _ => self.item.name.as_deref().unwrap_or("<<no_name>>"),
         }
         .to_owned()
+    }
+
+    pub fn get_token_stream(&self) -> std::result::Result<PublicItemTokenStream, ()> {
+        match &self.item.inner {
+            ItemEnum::Module(_) => Err(()),
+            ItemEnum::ExternCrate { .. } => Err(()),
+            ItemEnum::Import(_) => Err(()),
+            ItemEnum::Union(_) => todo!(),
+            ItemEnum::Struct(_) => Ok(PublicItemTokenStream {
+                qualifiers: vec![Qualifier::Pub],
+                path: self
+                    .path()
+                    .into_iter()
+                    .map(|i| i.get_effective_name())
+                    .collect(),
+                kind: crate::tokens::Kind::Struct,
+            }),
+            ItemEnum::StructField(inner) => Ok(PublicItemTokenStream {
+                qualifiers: vec![Qualifier::Pub],
+                path: self
+                    .path()
+                    .into_iter()
+                    .map(|i| i.get_effective_name())
+                    .collect(),
+                kind: crate::tokens::Kind::StructField(inner.clone()),
+            }),
+            ItemEnum::Enum(_) => Ok(PublicItemTokenStream {
+                qualifiers: vec![Qualifier::Pub],
+                path: self
+                    .path()
+                    .into_iter()
+                    .map(|i| i.get_effective_name())
+                    .collect(),
+                kind: crate::tokens::Kind::Enum,
+            }),
+            ItemEnum::Variant(inner) => Ok(PublicItemTokenStream {
+                qualifiers: vec![Qualifier::Pub],
+                path: self
+                    .path()
+                    .into_iter()
+                    .map(|i| i.get_effective_name())
+                    .collect(),
+                kind: Kind::EnumVariant(inner.clone()),
+            }),
+            ItemEnum::Function(inner) => {
+                let mut qualifiers = vec![Qualifier::Pub];
+                if inner.header.const_ {
+                    qualifiers.push(Qualifier::Const)
+                };
+                if inner.header.async_ {
+                    qualifiers.push(Qualifier::Async)
+                };
+                // Do something with ABI?
+
+                Ok(PublicItemTokenStream {
+                    qualifiers,
+                    path: self
+                        .path()
+                        .into_iter()
+                        .map(|i| i.get_effective_name())
+                        .collect(),
+                    kind: Kind::Function {
+                        generics: inner.generics.clone(),
+                        arguments: inner.decl.inputs.clone(),
+                        return_type: inner.decl.output.clone(),
+                    },
+                })
+            }
+            ItemEnum::Method(inner) => {
+                let mut qualifiers = vec![Qualifier::Pub];
+                if inner.header.const_ {
+                    qualifiers.push(Qualifier::Const)
+                };
+                if inner.header.async_ {
+                    qualifiers.push(Qualifier::Async)
+                };
+                // Do something with ABI?
+
+                Ok(PublicItemTokenStream {
+                    qualifiers,
+                    path: self
+                        .path()
+                        .into_iter()
+                        .map(|i| i.get_effective_name())
+                        .collect(),
+                    kind: Kind::Function {
+                        generics: inner.generics.clone(),
+                        arguments: inner.decl.inputs.clone(),
+                        return_type: inner.decl.output.clone(),
+                    },
+                })
+            }
+            ItemEnum::Trait(_) => Err(()),
+            ItemEnum::TraitAlias(_) => Err(()),
+            ItemEnum::Impl(_) => Err(()),
+            ItemEnum::Typedef(_) | ItemEnum::AssocType { .. } => Err(()),
+            ItemEnum::OpaqueTy(_) => Err(()),
+            ItemEnum::Constant(_) | ItemEnum::AssocConst { .. } => Err(()),
+            ItemEnum::Static(_) => Err(()),
+            ItemEnum::ForeignType => Err(()),
+            ItemEnum::Macro(_) => Err(()),
+            ItemEnum::ProcMacro(_) => Err(()),
+            ItemEnum::PrimitiveType(_) => Err(()),
+        }
     }
 }
 

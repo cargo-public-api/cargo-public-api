@@ -7,7 +7,7 @@ use crate::PublicItem;
 
 /// An item has changed in the public API. Two [`PublicItem`]s are considered
 /// the same if their `path` is the same.
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct ChangedPublicItem {
     /// How the item used to look.
     pub old: PublicItem,
@@ -22,7 +22,7 @@ pub struct ChangedPublicItem {
 /// println!("{:#?}", public_items_diff);
 /// ```
 #[allow(clippy::module_name_repetitions)]
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct PublicItemsDiff {
     /// Items that have been removed from the public API. A MAJOR change, in
     /// semver terminology. Sorted.
@@ -189,6 +189,7 @@ mod tests {
             prefix: String::from("prefix "),
             path: String::from(path),
             suffix: String::from(" suffix"),
+            tokens: Err(()),
         })
     }
 }

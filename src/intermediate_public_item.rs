@@ -98,12 +98,13 @@ impl<'a> IntermediatePublicItem<'a> {
         .to_owned()
     }
 
+    // TODO: Maybe more tokens need/can be used?
     pub fn get_token_stream(&self) -> std::result::Result<PublicItemTokenStream, ()> {
         match &self.item.inner {
             ItemEnum::Module(_) => Err(()),
             ItemEnum::ExternCrate { .. } => Err(()),
             ItemEnum::Import(_) => Err(()),
-            ItemEnum::Union(_) => todo!(),
+            ItemEnum::Union(_) => Err(()), // TODO: Union seems like something that should be used
             ItemEnum::Struct(_) => Ok(PublicItemTokenStream {
                 qualifiers: vec![Qualifier::Pub],
                 path: self
@@ -188,7 +189,7 @@ impl<'a> IntermediatePublicItem<'a> {
                     },
                 })
             }
-            ItemEnum::Trait(_) => Err(()),
+            ItemEnum::Trait(_) => Err(()), // TODO: Traits would be nice
             ItemEnum::TraitAlias(_) => Err(()),
             ItemEnum::Impl(_) => Err(()),
             ItemEnum::Typedef(_) | ItemEnum::AssocType { .. } => Err(()),

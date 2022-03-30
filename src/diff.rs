@@ -3,8 +3,6 @@
 //! public-items`](https://github.com/Enselic/cargo-public-items) contains
 //! additional helpers for that.
 
-use std::collections::HashSet;
-
 use crate::PublicItem;
 
 /// An item has changed in the public API. Two [`PublicItem`]s are considered
@@ -24,7 +22,7 @@ pub struct ChangedPublicItem {
 /// println!("{:#?}", public_items_diff);
 /// ```
 #[allow(clippy::module_name_repetitions)]
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub struct PublicItemsDiff {
     /// Items that have been removed from the public API. A MAJOR change, in
     /// semver terminology. Sorted.
@@ -47,52 +45,65 @@ impl PublicItemsDiff {
     /// is the output of two different invocations of
     /// [`crate::public_items_from_rustdoc_json_str`].
     #[must_use]
-    pub fn between(old: Vec<PublicItem>, new: Vec<PublicItem>) -> Self {
-        let old_set: HashSet<_> = HashSet::from_iter(old);
-        let new_set: HashSet<_> = HashSet::from_iter(new);
+    pub fn between(old_items: Vec<PublicItem>, new_items: Vec<PublicItem>) -> Self {
+        let mut old_sorted = old_items;
+        old_sorted.sort();
 
-        // Using a Set here relies on that two different items do not look the
-        // same. This is currently not guaranteed due to
-        // https://github.com/Enselic/public_items/issues/16, but this algorithm
-        // will have to do for now. In real world use, it is not very common for
-        // two different items to look the same.
-        let mut added_set: HashSet<_> = new_set.difference(&old_set).cloned().collect();
-        let mut removed_set: HashSet<_> = old_set.difference(&new_set).cloned().collect();
-        let mut changed = vec![];
+        let mut new_sorted = new_items;
+        new_sorted.sort();
 
-        // Find what items to move from `added` and `removed` to `changed`. We
-        // use the strategy of moving to make sure that we never lose an item.
-        // Even if the algorithm is buggy and does not find all items that
-        // should be reported as changes, we can be confident that the items
-        // will at least remain in `added` and `removed` and not get lost, which
-        // is very important.
-        let mut move_to_changed = vec![];
-        for removed_item in &removed_set {
-            if let Some(added_item) = added_set
-                .iter()
-                .find(|added_item| added_item.0.path == removed_item.0.path)
-            {
-                move_to_changed.push((removed_item.clone(), added_item.clone()));
+        // We can't implement this with sets, because different items might have
+        // the same representations (e.g. because of limitations or bugs), so if
+        // we used a Set, we would lose one of them.
+        //
+        // Our strategy is to only move items around, to reduce the risk of
+        // duplicates and lost items.
+        let mut removed: Vec<PublicItem> = vec![];
+        let mut changed: Vec<ChangedPublicItem> = vec![];
+        let mut added: Vec<PublicItem> = vec![];
+        loop {
+            match (old_sorted.pop(), new_sorted.pop()) {
+                (None, None) => break,
+                (Some(old), None) => {
+                    removed.push(old);
+                }
+                (None, Some(new)) => {
+                    added.push(new);
+                }
+                (Some(old), Some(new)) => {
+                    if old != new && old.0.path == new.0.path {
+                        // The same item, but there has been a change in type
+                        changed.push(ChangedPublicItem { old, new });
+                    } else {
+                        match old.cmp(&new) {
+                            std::cmp::Ordering::Less => {
+                                added.push(new);
+
+                                // Add it back and compare it again next
+                                // iteration
+                                old_sorted.push(old);
+                            }
+                            std::cmp::Ordering::Equal => {
+                                // This is the same item, so just continue to
+                                // the next pair
+                                continue;
+                            }
+                            std::cmp::Ordering::Greater => {
+                                removed.push(old);
+
+                                // Add it back and compare it again next
+                                // iteration
+                                new_sorted.push(new);
+                            }
+                        }
+                    }
+                }
             }
         }
 
-        for pair in move_to_changed {
-            changed.push(ChangedPublicItem {
-                old: removed_set
-                    .take(&pair.0)
-                    .expect("it must exist because we used it above!"),
-                new: added_set
-                    .take(&pair.1)
-                    .expect("it must exist because we found it above!"),
-            });
-        }
-
-        let mut removed: Vec<_> = removed_set.into_iter().collect();
+        // Make output predictable and stable
         removed.sort();
-
         changed.sort();
-
-        let mut added: Vec<_> = added_set.into_iter().collect();
         added.sort();
 
         Self {
@@ -100,5 +111,84 @@ impl PublicItemsDiff {
             changed,
             added,
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::item_iterator::PublicItemInner;
+
+    use super::*;
+
+    #[test]
+    fn single_and_only_item_removed() {
+        let old = vec![item_with_path("foo")];
+        let new = vec![];
+
+        let actual = PublicItemsDiff::between(old, new);
+        let expected = PublicItemsDiff {
+            removed: vec![item_with_path("foo")],
+            changed: vec![],
+            added: vec![],
+        };
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn single_and_only_item_added() {
+        let old = vec![];
+        let new = vec![item_with_path("foo")];
+
+        let actual = PublicItemsDiff::between(old, new);
+        let expected = PublicItemsDiff {
+            removed: vec![],
+            changed: vec![],
+            added: vec![item_with_path("foo")],
+        };
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn middle_item_added() {
+        let old = vec![item_with_path("1"), item_with_path("3")];
+        let new = vec![
+            item_with_path("1"),
+            item_with_path("2"),
+            item_with_path("3"),
+        ];
+
+        let actual = PublicItemsDiff::between(old, new);
+        let expected = PublicItemsDiff {
+            removed: vec![],
+            changed: vec![],
+            added: vec![item_with_path("2")],
+        };
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn middle_item_removed() {
+        let old = vec![
+            item_with_path("1"),
+            item_with_path("2"),
+            item_with_path("3"),
+        ];
+        let new = vec![item_with_path("1"), item_with_path("3")];
+
+        let actual = PublicItemsDiff::between(old, new);
+        let expected = PublicItemsDiff {
+            removed: vec![item_with_path("2")],
+            changed: vec![],
+            added: vec![],
+        };
+        assert_eq!(actual, expected);
+    }
+
+    fn item_with_path(path: &str) -> PublicItem {
+        PublicItem(PublicItemInner {
+            prefix: String::from("prefix "),
+            path: String::from(path),
+            suffix: String::from(" suffix"),
+        })
     }
 }

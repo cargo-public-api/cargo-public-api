@@ -1,5 +1,5 @@
 [package]
-description = "List public items (public API) of library crates. Supports diffing public API between releases and commits."
+description = "List and diff public items (the public API) of library crates."
 documentation = "https://docs.rs/cargo-public-items"
 edition = "2021"
 homepage = "https://github.com/Enselic/cargo-public-items"

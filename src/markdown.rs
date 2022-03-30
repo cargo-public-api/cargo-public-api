@@ -85,7 +85,7 @@ fn print_with_colour(item: &public_items::PublicItem) -> String {
                     for param in &generics.params {
                         output.push(Colour::Blue.paint(param.name.clone()));
                         output.push(Style::new().paint(": "));
-                        output.push(Colour::Red.paint("generic stuff")); // TODO: add
+                        output.push(Colour::Red.paint("generic stuff")); // TODO: add better support
                         output.push(Style::new().paint(","));
                     }
                     output.remove(output.len() - 1);
@@ -155,15 +155,13 @@ fn colour_type(ty: &Type) -> Vec<ANSIString<'_>> {
         Type::FunctionPointer(_) => vec![Colour::Red.paint("Function pointer")], // TODO: add something better
         Type::Tuple(types) => colour_tuple(types),
         Type::Slice(ty) => {
-            let mut output = Vec::new();
-            output.push(Style::new().paint("["));
+            let mut output = vec![Style::new().paint("[")];
             output.extend(colour_type(ty));
             output.push(Style::new().paint("]"));
             output
         }
         Type::Array { type_, len } => {
-            let mut output = Vec::new();
-            output.push(Style::new().paint("["));
+            let mut output = vec![Style::new().paint("[")];
             output.extend(colour_type(type_));
             output.push(Style::new().paint(": "));
             output.push(Colour::Green.bold().paint(len));
@@ -171,8 +169,7 @@ fn colour_type(ty: &Type) -> Vec<ANSIString<'_>> {
             output
         }
         Type::ImplTrait(bounds) => {
-            let mut output = Vec::new();
-            output.push(Style::new().paint("impl "));
+            let mut output = vec![Style::new().paint("impl ")];
             for bound in bounds {
                 if let GenericBound::TraitBound { trait_, .. } = bound {
                     output.extend(colour_type(trait_));
@@ -184,8 +181,7 @@ fn colour_type(ty: &Type) -> Vec<ANSIString<'_>> {
         }
         Type::Infer => vec![Style::new().paint("_")],
         Type::RawPointer { mutable, type_ } => {
-            let mut output = Vec::new();
-            output.push(Style::new().paint("*"));
+            let mut output = vec![Style::new().paint("*")];
             if *mutable {
                 output.push(Colour::Blue.paint("mut"));
             }
@@ -198,8 +194,7 @@ fn colour_type(ty: &Type) -> Vec<ANSIString<'_>> {
             mutable,
             type_,
         } => {
-            let mut output = Vec::new();
-            output.push(Style::new().paint("&"));
+            let mut output = vec![Style::new().paint("&")];
             if let Some(lt) = lifetime {
                 output.push(Colour::Yellow.paint(lt));
                 output.push(Style::new().paint(" "));
@@ -213,12 +208,11 @@ fn colour_type(ty: &Type) -> Vec<ANSIString<'_>> {
         }
         Type::QualifiedPath {
             name,
-            args: _,
+            args: _, // TODO: check if this output if correct
             self_type,
             trait_,
         } => {
-            let mut output = Vec::new();
-            output.push(Style::new().paint("<"));
+            let mut output = vec![Style::new().paint("<")];
             output.extend(colour_type(self_type));
             output.push(Style::new().paint(" as "));
             output.extend(colour_type(trait_));
@@ -230,8 +224,7 @@ fn colour_type(ty: &Type) -> Vec<ANSIString<'_>> {
 }
 
 fn colour_tuple(types: &[Type]) -> Vec<ANSIString<'_>> {
-    let mut output = Vec::new();
-    output.push(Style::new().paint("("));
+    let mut output = vec![Style::new().paint("(")];
     for ty in types {
         output.extend(colour_type(ty));
         output.push(Style::new().paint(", "));

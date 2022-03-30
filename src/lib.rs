@@ -32,6 +32,16 @@
 mod error;
 mod intermediate_public_item;
 mod item_iterator;
+use lazy_static::lazy_static;
+use syntect::easy::HighlightLines;
+use syntect::highlighting::{Style, ThemeSet};
+use syntect::parsing::SyntaxSet;
+use syntect::util::{as_24_bit_terminal_escaped, LinesWithEndings};
+
+lazy_static! {
+    static ref PS: SyntaxSet = SyntaxSet::load_defaults_newlines();
+    static ref TS: ThemeSet = ThemeSet::load_defaults();
+}
 
 pub mod diff;
 
@@ -62,7 +72,20 @@ pub struct PublicItem(item_iterator::PublicItemInner);
 /// we implement `Display` for it.
 impl std::fmt::Display for PublicItem {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.0)
+        //write!(f, "{}", self.0)?;
+        let code = &format!("{}", self.0);
+        //let s = "pub struct Wow { hi: u64 }\nfn blah() -> u64 {}\n";
+        let syntax = PS.find_syntax_by_extension("rs").unwrap();
+        let theme = &TS.themes["base16-ocean.dark"];
+        let mut h = HighlightLines::new(syntax, theme);
+        for line in LinesWithEndings::from(code) {
+            // LinesWithEndings enables use of newlines mode
+            let ranges: Vec<(Style, &str)> = h.highlight(line, &PS);
+            //h.highlight_line(line, &ps).unwrap();
+            let escaped = as_24_bit_terminal_escaped(&ranges[..], false);
+            write!(f, "{}\x1b[0m", escaped)?;
+        }
+        Ok(())
     }
 }
 

@@ -1,5 +1,5 @@
 [package]
-description = "List and diff public items (the public API) of Rust library crates by rustdoc JSON processing."
+description = "List and diff public items (the public API) of Rust library crates. Relies on rustdoc JSON output from the nightly toolchain."
 documentation = "https://docs.rs/public_items"
 edition = "2021"
 homepage = "https://github.com/Enselic/public_items"

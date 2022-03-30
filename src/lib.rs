@@ -27,21 +27,12 @@
 //! in the thin binary wrapper around the library, see
 //! <https://github.com/Enselic/public_items/blob/main/src/main.rs>.
 
-#![deny(missing_docs)]
+//#![deny(missing_docs)] TODO: add when done
 
 mod error;
 mod intermediate_public_item;
 mod item_iterator;
-use lazy_static::lazy_static;
-use syntect::easy::HighlightLines;
-use syntect::highlighting::{Style, ThemeSet};
-use syntect::parsing::SyntaxSet;
-use syntect::util::{as_24_bit_terminal_escaped, LinesWithEndings};
-
-lazy_static! {
-    static ref PS: SyntaxSet = SyntaxSet::load_defaults_newlines();
-    static ref TS: ThemeSet = ThemeSet::load_defaults();
-}
+pub mod tokens;
 
 pub mod diff;
 
@@ -65,27 +56,21 @@ pub use error::Result;
 /// of the public API of a crate. Implements `Display` so it can be printed. It
 /// also implements [`Ord`], but how items are ordered are not stable yet, and
 /// will change in later versions.
-#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct PublicItem(item_iterator::PublicItemInner);
+
+impl PublicItem {
+    pub fn tokens(&self) -> &std::result::Result<tokens::PublicItemTokenStream, ()> {
+        &self.0.tokens
+    }
+}
 
 /// One of the basic uses cases is printing a sorted `Vec` of `PublicItem`s. So
 /// we implement `Display` for it.
 impl std::fmt::Display for PublicItem {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        //write!(f, "{}", self.0)?;
-        let code = &format!("{}", self.0);
-        //let s = "pub struct Wow { hi: u64 }\nfn blah() -> u64 {}\n";
-        let syntax = PS.find_syntax_by_extension("rs").unwrap();
-        let theme = &TS.themes["base16-ocean.dark"];
-        let mut h = HighlightLines::new(syntax, theme);
-        for line in LinesWithEndings::from(code) {
-            // LinesWithEndings enables use of newlines mode
-            let ranges: Vec<(Style, &str)> = h.highlight(line, &PS);
-            //h.highlight_line(line, &ps).unwrap();
-            let escaped = as_24_bit_terminal_escaped(&ranges[..], false);
-            write!(f, "{}\x1b[0m", escaped)?;
-        }
-        Ok(())
+        //self.0.tokenize();
+        write!(f, "{}", self.0)
     }
 }
 
@@ -160,9 +145,9 @@ pub fn public_items_from_rustdoc_json_str(
 
     let mut public_items: Vec<_> = item_iterator::public_items_in_crate(&crate_, options).collect();
 
-    if options.sorted {
-        public_items.sort();
-    }
+    //if options.sorted {
+    //    public_items.sort();
+    //}
 
     Ok(public_items)
 }

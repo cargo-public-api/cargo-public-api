@@ -3,7 +3,7 @@ use std::{collections::HashMap, fmt::Debug, fmt::Display, rc::Rc};
 use rustdoc_types::{Crate, Id, Impl, Item, ItemEnum, Type};
 
 use super::intermediate_public_item::IntermediatePublicItem;
-use crate::{Options, PublicItem};
+use crate::{tokens, Options, PublicItem};
 
 type Impls<'a> = HashMap<&'a Id, Vec<&'a Impl>>;
 
@@ -170,12 +170,13 @@ fn intermediate_public_item_to_public_item(
             .collect::<Vec<String>>()
             .join("::"),
         suffix: public_item.suffix(),
+        tokens: public_item.get_token_stream(),
     })
 }
 
 /// To hide implementation details as much as possible from people who casually
 /// skims over the code in our lib.rs
-#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Clone)]
 pub struct PublicItemInner {
     /// The "pub struct/fn/..." part of an item.
     pub(crate) prefix: String,
@@ -186,6 +187,7 @@ pub struct PublicItemInner {
     /// The type info part, e.g. "(param_a: Type, param_b: OtherType)" for a
     /// `fn`.
     pub(crate) suffix: String,
+    pub tokens: Result<tokens::PublicItemTokenStream, ()>,
 }
 
 /// One of the basic uses cases is printing a sorted `Vec` of `PublicItem`s. So
@@ -201,5 +203,25 @@ impl Display for PublicItemInner {
 impl Debug for PublicItem {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         Display::fmt(self, f)
+    }
+}
+
+impl PartialEq for PublicItemInner {
+    fn eq(&self, other: &Self) -> bool {
+        self.prefix == other.prefix && self.path == other.path && self.suffix == other.suffix
+    }
+}
+
+impl Eq for PublicItemInner {}
+
+impl PartialOrd for PublicItemInner {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl Ord for PublicItemInner {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        (&self.path, &self.suffix).cmp(&(&other.path, &other.suffix))
     }
 }

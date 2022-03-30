@@ -19,7 +19,7 @@ pub fn print_diff(w: &mut impl std::io::Write, diff: &PublicItemsDiff) -> std::i
         |w, changed_item| {
             writeln!(
                 w,
-                "* `{}` became <br/> `{}`",
+                "* `{}` changed to\n  `{}`",
                 changed_item.old, changed_item.new
             )
         },

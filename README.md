@@ -70,6 +70,10 @@ You can also manually do a diff by writing the full list of items to a file for 
 
 Maintainers of Rust libraries that want to keep track of changes to their public API.
 
+# Development tips
+
+See [development.md](./doc/development.md).
+
 # Implementation details
 
 This utility is a convenient `cargo` wrapper around the [public_items](https://crates.io/crates/public_items) crate (https://github.com/Enselic/public_items).

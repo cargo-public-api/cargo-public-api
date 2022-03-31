@@ -5,12 +5,13 @@ use std::{
 
 use rustdoc_types::{
     Constant, FnDecl, GenericArg, GenericArgs, GenericBound, GenericParamDef, GenericParamDefKind,
-    Generics, Item, ItemEnum, Term, Type, TypeBinding, TypeBindingKind, Variant, WherePredicate,
+    Generics, Header, Item, ItemEnum, Term, Type, TypeBinding, TypeBindingKind, Variant,
+    WherePredicate,
 };
 
 use std::fmt::Result;
 
-use crate::tokens::{Kind, PublicItemTokenStream, Qualifier};
+use crate::tokens::{Token, TokenStream};
 
 /// This struct represents one public item of a crate, but in intermediate form.
 /// It wraps a single [Item] but adds additional calculated values to make it
@@ -99,111 +100,349 @@ impl<'a> IntermediatePublicItem<'a> {
     }
 
     // TODO: Maybe more tokens need/can be used?
-    pub fn get_token_stream(&self) -> std::result::Result<PublicItemTokenStream, ()> {
+    pub fn render_token_stream(&self) -> Option<TokenStream> {
         match &self.item.inner {
-            ItemEnum::Module(_) => Err(()),
-            ItemEnum::ExternCrate { .. } => Err(()),
-            ItemEnum::Import(_) => Err(()),
-            ItemEnum::Union(_) => Err(()), // TODO: Union seems like something that should be used
-            ItemEnum::Struct(_) => Ok(PublicItemTokenStream {
-                qualifiers: vec![Qualifier::Pub],
-                path: self
-                    .path()
-                    .into_iter()
-                    .map(|i| i.get_effective_name())
-                    .collect(),
-                kind: crate::tokens::Kind::Struct,
-            }),
-            ItemEnum::StructField(inner) => Ok(PublicItemTokenStream {
-                qualifiers: vec![Qualifier::Pub],
-                path: self
-                    .path()
-                    .into_iter()
-                    .map(|i| i.get_effective_name())
-                    .collect(),
-                kind: crate::tokens::Kind::StructField(inner.clone()),
-            }),
-            ItemEnum::Enum(_) => Ok(PublicItemTokenStream {
-                qualifiers: vec![Qualifier::Pub],
-                path: self
-                    .path()
-                    .into_iter()
-                    .map(|i| i.get_effective_name())
-                    .collect(),
-                kind: crate::tokens::Kind::Enum,
-            }),
-            ItemEnum::Variant(inner) => Ok(PublicItemTokenStream {
-                qualifiers: vec![Qualifier::Pub],
-                path: self
-                    .path()
-                    .into_iter()
-                    .map(|i| i.get_effective_name())
-                    .collect(),
-                kind: Kind::EnumVariant(inner.clone()),
-            }),
-            ItemEnum::Function(inner) => {
-                let mut qualifiers = vec![Qualifier::Pub];
-                if inner.header.const_ {
-                    qualifiers.push(Qualifier::Const)
-                };
-                if inner.header.async_ {
-                    qualifiers.push(Qualifier::Async)
-                };
-                // Do something with ABI?
+            ItemEnum::Module(_) => None,
+            ItemEnum::ExternCrate { .. } => None,
+            ItemEnum::Import(_) => None,
+            ItemEnum::Union(_) => None, // TODO: Union seems like something that should be used
+            ItemEnum::Struct(_) => {
+                let mut output = vec![
+                    Token::qualifier("pub"),
+                    Token::Whitespace,
+                    Token::kind("struct"),
+                    Token::Whitespace,
+                ];
+                for item in self.path() {
+                    output.push(Token::identifier(item.get_effective_name()));
+                    output.push(Token::symbol("::"));
+                }
+                output.remove(output.len() - 1);
 
-                Ok(PublicItemTokenStream {
-                    qualifiers,
-                    path: self
-                        .path()
-                        .into_iter()
-                        .map(|i| i.get_effective_name())
-                        .collect(),
-                    kind: Kind::Function {
-                        generics: inner.generics.clone(),
-                        arguments: inner.decl.inputs.clone(),
-                        return_type: inner.decl.output.clone(),
-                    },
-                })
+                Some(TokenStream { tokens: output })
+            }
+            ItemEnum::StructField(inner) => {
+                let mut output: TokenStream = vec![
+                    Token::qualifier("pub"),
+                    Token::Whitespace,
+                    Token::kind("struct"),
+                    Token::Whitespace,
+                    Token::kind("field"),
+                    Token::Whitespace,
+                ]
+                .into();
+                for item in self.path() {
+                    output.push(Token::identifier(item.get_effective_name()));
+                    output.push(Token::symbol("::"));
+                }
+                output.remove_from_back(1);
+                output.push(Token::symbol(":"));
+                output.push(Token::Whitespace);
+                output.extend(render_type(inner));
+
+                Some(output)
+            }
+            ItemEnum::Enum(_) => {
+                let mut output = vec![
+                    Token::qualifier("pub"),
+                    Token::Whitespace,
+                    Token::kind("enum"),
+                    Token::Whitespace,
+                ];
+                for item in self.path() {
+                    output.push(Token::identifier(item.get_effective_name()));
+                    output.push(Token::symbol("::"));
+                }
+                output.remove(output.len() - 1);
+
+                Some(TokenStream { tokens: output })
+            }
+            ItemEnum::Variant(inner) => {
+                let mut output: TokenStream = vec![
+                    Token::qualifier("pub"),
+                    Token::Whitespace,
+                    Token::kind("enum"),
+                    Token::Whitespace,
+                    Token::kind("variant"),
+                    Token::Whitespace,
+                ]
+                .into();
+                for item in self.path() {
+                    output.push(Token::identifier(item.get_effective_name()));
+                    output.push(Token::symbol("::"));
+                }
+                output.remove_from_back(1);
+                match inner {
+                    Variant::Plain => {}
+                    Variant::Tuple(types) => output.extend(render_sequence(
+                        Token::symbol("("),
+                        Token::symbol(")"),
+                        vec![Token::symbol(","), Token::Whitespace],
+                        types,
+                        render_type,
+                    )),
+                    Variant::Struct(ids) => output.extend(render_sequence(
+                        Token::symbol("{"),
+                        Token::symbol("}"),
+                        vec![Token::symbol(","), Token::Whitespace],
+                        ids,
+                        |id| Token::identifier(id.0.clone()).into(),
+                    )),
+                }
+                Some(output)
+            }
+            ItemEnum::Function(inner) => {
+                let mut name = TokenStream::default();
+                for item in self.path() {
+                    name.push(Token::identifier(item.get_effective_name()));
+                    name.push(Token::symbol("::"));
+                }
+                name.remove_from_back(1);
+                Some(render_function(
+                    name,
+                    &inner.decl,
+                    &inner.generics.params,
+                    &inner.header,
+                ))
             }
             ItemEnum::Method(inner) => {
-                let mut qualifiers = vec![Qualifier::Pub];
-                if inner.header.const_ {
-                    qualifiers.push(Qualifier::Const)
-                };
-                if inner.header.async_ {
-                    qualifiers.push(Qualifier::Async)
-                };
-                // Do something with ABI?
-
-                Ok(PublicItemTokenStream {
-                    qualifiers,
-                    path: self
-                        .path()
-                        .into_iter()
-                        .map(|i| i.get_effective_name())
-                        .collect(),
-                    kind: Kind::Function {
-                        generics: inner.generics.clone(),
-                        arguments: inner.decl.inputs.clone(),
-                        return_type: inner.decl.output.clone(),
-                    },
-                })
+                let mut name = TokenStream::default();
+                for item in self.path() {
+                    name.push(Token::identifier(item.get_effective_name()));
+                    name.push(Token::symbol("::"));
+                }
+                name.remove_from_back(1);
+                Some(render_function(
+                    name,
+                    &inner.decl,
+                    &inner.generics.params,
+                    &inner.header,
+                ))
             }
-            ItemEnum::Trait(_) => Err(()), // TODO: Traits would be nice
-            ItemEnum::TraitAlias(_) => Err(()),
-            ItemEnum::Impl(_) => Err(()),
-            ItemEnum::Typedef(_) | ItemEnum::AssocType { .. } => Err(()),
-            ItemEnum::OpaqueTy(_) => Err(()),
-            ItemEnum::Constant(_) | ItemEnum::AssocConst { .. } => Err(()),
-            ItemEnum::Static(_) => Err(()),
-            ItemEnum::ForeignType => Err(()),
-            ItemEnum::Macro(_) => Err(()),
-            ItemEnum::ProcMacro(_) => Err(()),
-            ItemEnum::PrimitiveType(_) => Err(()),
+            ItemEnum::Trait(_) => None, // TODO: Traits would be nice
+            ItemEnum::TraitAlias(_) => None,
+            ItemEnum::Impl(_) => None,
+            ItemEnum::Typedef(_) | ItemEnum::AssocType { .. } => None,
+            ItemEnum::OpaqueTy(_) => None,
+            ItemEnum::Constant(_) | ItemEnum::AssocConst { .. } => None,
+            ItemEnum::Static(_) => None,
+            ItemEnum::ForeignType => None,
+            ItemEnum::Macro(_) => None,
+            ItemEnum::ProcMacro(_) => None,
+            ItemEnum::PrimitiveType(_) => None,
         }
     }
 }
 
+fn render_sequence<T>(
+    start: impl Into<TokenStream>,
+    end: impl Into<TokenStream>,
+    between: impl Into<TokenStream>,
+    sequence: &[T],
+    render: impl Fn(&T) -> TokenStream,
+) -> TokenStream {
+    let mut output = start.into();
+    let between = between.into();
+    for seq in sequence {
+        output.extend(render(seq));
+        output.extend(between.clone());
+    }
+    if !sequence.is_empty() {
+        output.remove_from_back(between.len());
+    }
+    output.extend(end);
+    output
+}
+
+fn render_type(ty: &Type) -> TokenStream {
+    match ty {
+        Type::ResolvedPath { name, .. } => {
+            let mut output = TokenStream::default();
+            let len = name.split("::").count();
+            for (index, part) in name.split("::").enumerate() {
+                if index == 0 && part == "$crate" {
+                    output.push(Token::keyword("crate"));
+                } else if index == len - 1 {
+                    output.push(Token::type_(part))
+                } else {
+                    output.push(Token::identifier(part))
+                }
+                output.push(Token::symbol("::"));
+            }
+            if len > 0 {
+                output.remove_from_back(1);
+            }
+
+            output
+        } //  _serde::__private::Result | standard type
+        Type::Generic(name) => Token::generic(name).into(),
+        Type::Primitive(name) => Token::primitive(name).into(),
+        Type::FunctionPointer(ptr) => render_function(
+            TokenStream::default(),
+            &ptr.decl,
+            &ptr.generic_params,
+            &ptr.header,
+        ), // TODO: add something better
+        Type::Tuple(types) => render_sequence(
+            Token::symbol("("),
+            Token::symbol(")"),
+            vec![Token::symbol(","), Token::Whitespace],
+            types,
+            render_type,
+        ),
+        Type::Slice(ty) => {
+            let mut output: TokenStream = Token::symbol("[").into();
+            output.extend(render_type(ty));
+            output.push(Token::symbol("]"));
+            output
+        }
+        Type::Array { type_, len } => {
+            let mut output: TokenStream = Token::symbol("[").into();
+            output.extend(render_type(type_));
+            output.push(Token::symbol(":"));
+            output.push(Token::Whitespace);
+            output.push(Token::primitive(len));
+            output.push(Token::symbol("]"));
+            output
+        }
+        Type::ImplTrait(bounds) => render_generic_bounds(bounds),
+        Type::Infer => Token::symbol("_").into(),
+        Type::RawPointer { mutable, type_ } => {
+            let mut output: TokenStream = Token::symbol("*").into();
+            if *mutable {
+                output.push(Token::keyword("mut"))
+            }
+            output.push(Token::Whitespace);
+            output.extend(render_type(type_));
+            output
+        }
+        Type::BorrowedRef {
+            lifetime,
+            mutable,
+            type_,
+        } => {
+            let mut output: TokenStream = Token::symbol("&").into();
+            if let Some(lt) = lifetime {
+                output.extend(vec![
+                    Token::symbol("'"),
+                    Token::identifier(lt),
+                    Token::Whitespace,
+                ]);
+            }
+            if *mutable {
+                output.extend(vec![Token::keyword("mut"), Token::Whitespace]);
+            }
+            output.extend(render_type(type_));
+            output
+        }
+        Type::QualifiedPath {
+            name,
+            args: _, // TODO: check if this output if correct
+            self_type,
+            trait_,
+        } => {
+            let mut output: TokenStream = Token::symbol("<").into();
+            output.extend(render_type(self_type));
+            output.extend(vec![
+                Token::Whitespace,
+                Token::keyword("as"),
+                Token::Whitespace,
+            ]);
+            output.extend(render_type(trait_));
+            output.push(Token::symbol(">::"));
+            output.push(Token::identifier(name));
+            output
+        }
+    }
+}
+
+fn render_function(
+    name: TokenStream,
+    decl: &FnDecl,
+    generics: &[GenericParamDef],
+    header: &Header,
+) -> TokenStream {
+    let mut output: TokenStream = vec![Token::qualifier("pub"), Token::Whitespace].into();
+    if header.const_ {
+        output.extend(vec![Token::qualifier("const"), Token::Whitespace])
+    };
+    if header.async_ {
+        output.extend(vec![Token::qualifier("async"), Token::Whitespace])
+    };
+    // TODO: Do something with ABI?
+    output.extend(vec![Token::kind("fn"), Token::Whitespace]);
+    output.extend(name);
+
+    // Generic
+    if !generics.is_empty() {
+        output.extend(render_sequence(
+            Token::symbol("<"),
+            Token::symbol(">"),
+            vec![Token::symbol(","), Token::Whitespace],
+            generics,
+            |param| {
+                let mut output: TokenStream = vec![
+                    Token::identifier(param.name.clone()),
+                    Token::symbol(":"),
+                    Token::Whitespace,
+                ]
+                .into();
+                output.extend(render_generic(&param.kind));
+                output
+            },
+        ));
+    }
+    // Main arguments
+    output.extend(render_sequence(
+        Token::symbol("("),
+        Token::symbol(")"),
+        vec![Token::symbol(","), Token::Whitespace],
+        &decl.inputs,
+        |(name, ty)| {
+            let mut output: TokenStream = vec![
+                Token::identifier(name),
+                Token::symbol(":"),
+                Token::Whitespace,
+            ]
+            .into();
+            output.extend(render_type(ty));
+            output
+        },
+    ));
+    // Return type
+    if let Some(ty) = &decl.output {
+        output.extend(vec![
+            Token::Whitespace,
+            Token::symbol("->"),
+            Token::Whitespace,
+        ]);
+        output.extend(render_type(ty));
+    }
+    output
+}
+
+fn render_generic(generic: &GenericParamDefKind) -> TokenStream {
+    match generic {
+        GenericParamDefKind::Lifetime { outlives } => {
+            vec![Token::symbol("'"), Token::identifier(outlives.join(" "))].into()
+        }
+        GenericParamDefKind::Type { bounds, .. } => render_generic_bounds(bounds),
+        GenericParamDefKind::Const { type_, .. } => render_type(type_),
+    }
+}
+
+fn render_generic_bounds(bounds: &[GenericBound]) -> TokenStream {
+    render_sequence(
+        vec![Token::keyword("impl"), Token::Whitespace],
+        Vec::new(),
+        vec![Token::Whitespace, Token::symbol("+"), Token::Whitespace],
+        bounds,
+        |bound| match bound {
+            GenericBound::TraitBound { trait_, .. } => render_type(trait_),
+            GenericBound::Outlives(id) => vec![Token::symbol("'"), Token::identifier(id)].into(),
+        },
+    )
+}
 /// Decides what should be shown at the end of each item, i.e. item-specific
 /// type information.
 struct ItemSuffix<'a>(&'a IntermediatePublicItem<'a>);

@@ -170,7 +170,7 @@ fn intermediate_public_item_to_public_item(
             .collect::<Vec<String>>()
             .join("::"),
         suffix: public_item.suffix(),
-        tokens: public_item.get_token_stream(),
+        tokens: public_item.render_token_stream(),
     })
 }
 
@@ -187,7 +187,7 @@ pub struct PublicItemInner {
     /// The type info part, e.g. "(param_a: Type, param_b: OtherType)" for a
     /// `fn`.
     pub(crate) suffix: String,
-    pub tokens: Result<tokens::PublicItemTokenStream, ()>,
+    pub tokens: Option<tokens::TokenStream>,
 }
 
 /// One of the basic uses cases is printing a sorted `Vec` of `PublicItem`s. So

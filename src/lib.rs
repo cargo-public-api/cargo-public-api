@@ -60,7 +60,7 @@ pub use error::Result;
 pub struct PublicItem(item_iterator::PublicItemInner);
 
 impl PublicItem {
-    pub fn tokens(&self) -> &std::result::Result<tokens::PublicItemTokenStream, ()> {
+    pub fn tokens(&self) -> &Option<tokens::TokenStream> {
         &self.0.tokens
     }
 }
@@ -143,7 +143,7 @@ pub fn public_items_from_rustdoc_json_str(
 ) -> Result<Vec<PublicItem>> {
     let crate_: rustdoc_types::Crate = serde_json::from_str(rustdoc_json_str)?;
 
-    let mut public_items: Vec<_> = item_iterator::public_items_in_crate(&crate_, options).collect();
+    let public_items: Vec<_> = item_iterator::public_items_in_crate(&crate_, options).collect();
 
     //if options.sorted {
     //    public_items.sort();

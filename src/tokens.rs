@@ -64,6 +64,10 @@ impl TokenStream {
         self.tokens
             .resize(self.tokens.len() - len, Token::Whitespace)
     }
+
+    pub fn tokens(&self) -> impl Iterator<Item = &Token> + '_ {
+        self.tokens.iter()
+    }
 }
 
 impl From<Vec<Token>> for TokenStream {

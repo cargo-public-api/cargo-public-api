@@ -6,6 +6,7 @@ pub enum Token {
     Whitespace,
     Identifier(String),
     Function(String),
+    Lifetime(String),
     Keyword(String),
     Generic(String),
     Primitive(String),
@@ -28,6 +29,9 @@ impl Token {
     pub fn function(text: impl Into<String>) -> Self {
         Token::Function(text.into())
     }
+    pub fn lifetime(text: impl Into<String>) -> Self {
+        Token::Lifetime(text.into())
+    }
     pub fn keyword(text: impl Into<String>) -> Self {
         Token::Keyword(text.into())
     }
@@ -39,6 +43,25 @@ impl Token {
     }
     pub fn type_(text: impl Into<String>) -> Self {
         Token::Type(text.into())
+    }
+
+    pub(crate) fn align_score(&self, other: &Self) -> isize {
+        let cmp = |a, b| if a == b { 1 } else { -2 };
+        match (self, other) {
+            (Self::Symbol(a), Self::Symbol(b)) => cmp(a, b),
+            (Self::Qualifier(a), Self::Qualifier(b)) => cmp(a, b),
+            (Self::Kind(a), Self::Kind(b)) => cmp(a, b),
+            (Self::Whitespace, Self::Whitespace) => 0,
+            (Self::Identifier(a) | Self::Function(a), Self::Identifier(b) | Self::Function(b)) => {
+                cmp(a, b)
+            }
+            (Self::Lifetime(a), Self::Lifetime(b)) => cmp(a, b),
+            (Self::Keyword(a), Self::Keyword(b)) => cmp(a, b),
+            (Self::Generic(a), Self::Generic(b)) => cmp(a, b),
+            (Self::Primitive(a), Self::Primitive(b)) => cmp(a, b),
+            (Self::Type(a), Self::Type(b)) => cmp(a, b),
+            _ => -2,
+        }
     }
 }
 

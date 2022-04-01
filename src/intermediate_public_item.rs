@@ -221,7 +221,53 @@ impl<'a> IntermediatePublicItem<'a> {
             }
             ItemEnum::TraitAlias(_) => None,
             ItemEnum::Impl(_) => None,
-            ItemEnum::Typedef(_) | ItemEnum::AssocType { .. } => None,
+            ItemEnum::Typedef(inner) => {
+                let mut output: TokenStream = vec![
+                    Token::qualifier("pub"),
+                    Token::Whitespace,
+                    Token::kind("type"),
+                    Token::Whitespace,
+                ]
+                .into();
+
+                output.extend(render_path(self.path()));
+                output.extend(render_generics(self.root, &inner.generics.params));
+                output.extend(vec![
+                    Token::Whitespace,
+                    Token::symbol("="),
+                    Token::Whitespace,
+                ]);
+                output.extend(render_type(self.root, &inner.type_));
+
+                Some(output)
+            }
+            ItemEnum::AssocType {
+                generics,
+                bounds,
+                default,
+            } => {
+                let mut output: TokenStream = vec![
+                    Token::qualifier("pub"),
+                    Token::Whitespace,
+                    Token::kind("type"),
+                    Token::Whitespace,
+                ]
+                .into();
+
+                output.extend(render_path(self.path()));
+                output.extend(render_generics(self.root, &generics.params));
+                output.extend(render_generic_bounds(self.root, bounds));
+                output.extend(vec![
+                    Token::Whitespace,
+                    Token::symbol("="),
+                    Token::Whitespace,
+                ]);
+                if let Some(ty) = default {
+                    output.extend(render_type(self.root, ty));
+                }
+
+                Some(output)
+            }
             ItemEnum::OpaqueTy(_) => None,
             ItemEnum::Constant(_) | ItemEnum::AssocConst { .. } => None,
             ItemEnum::Static(_) => None,
@@ -361,11 +407,7 @@ fn render_type(root: &Crate, ty: &Type) -> TokenStream {
         } => {
             let mut output: TokenStream = Token::symbol("&").into();
             if let Some(lt) = lifetime {
-                output.extend(vec![
-                    Token::symbol("'"),
-                    Token::identifier(lt.trim_start_matches('\'')),
-                    Token::Whitespace,
-                ]);
+                output.extend(vec![Token::lifetime(lt), Token::Whitespace]);
             }
             if *mutable {
                 output.extend(vec![Token::keyword("mut"), Token::Whitespace]);
@@ -426,7 +468,7 @@ fn render_function(
         });
         output.push(Token::Whitespace);
     }
-    // TODO: Do something with ABI?
+
     output.extend(vec![Token::kind("fn"), Token::Whitespace]);
     output.extend(name);
 
@@ -536,11 +578,7 @@ fn render_generic_args(root: &Crate, args: &GenericArgs) -> TokenStream {
 
 fn render_generic_arg(root: &Crate, arg: &GenericArg) -> TokenStream {
     match arg {
-        GenericArg::Lifetime(name) => vec![
-            Token::symbol("'"),
-            Token::identifier(name.trim_start_matches('\'')),
-        ]
-        .into(),
+        GenericArg::Lifetime(name) => Token::lifetime(name).into(),
         GenericArg::Type(ty) => render_type(root, ty),
         GenericArg::Const(c) => render_constant(root, c),
         GenericArg::Infer => Token::symbol("_").into(),
@@ -598,12 +636,7 @@ fn render_generic(root: &Crate, generic: &GenericParamDefKind) -> TokenStream {
     match generic {
         GenericParamDefKind::Lifetime { outlives } => outlives
             .iter()
-            .flat_map(|lt| {
-                vec![
-                    Token::symbol("'"),
-                    Token::identifier(lt.trim_start_matches('\'')),
-                ]
-            })
+            .map(Token::lifetime)
             .collect::<Vec<_>>()
             .into(),
         GenericParamDefKind::Type { bounds, .. } => render_generic_bounds(root, bounds),
@@ -634,9 +667,7 @@ fn render_generic_bounds(root: &Crate, bounds: &[GenericBound]) -> TokenStream {
                     output.extend(render_generics(root, generic_params));
                     output
                 }
-                GenericBound::Outlives(id) => {
-                    vec![Token::symbol("'"), Token::identifier(id)].into()
-                }
+                GenericBound::Outlives(id) => Token::lifetime(id).into(),
             },
         )
     }

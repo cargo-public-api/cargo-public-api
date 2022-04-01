@@ -77,15 +77,14 @@ impl ChangedPublicItem {
 
         for x in 1..a.len() {
             for y in 1..b.len() {
-                if a[x - 1] == b[y - 1] {
-                    matrix[y][x] = (matrix[y - 1][x - 1].0 + 1, Direction::Match);
-                } else {
-                    matrix[y][x] = max(
-                        (matrix[y - 1][x].0 - 1, Direction::Inserted),
-                        (matrix[y][x - 1].0 - 1, Direction::Removed),
-                        (matrix[y - 1][x - 1].0 - 1, Direction::Match),
-                    );
-                }
+                matrix[y][x] = max(
+                    (matrix[y - 1][x].0 - 1, Direction::Inserted),
+                    (matrix[y][x - 1].0 - 1, Direction::Removed),
+                    (
+                        matrix[y - 1][x - 1].0 + Token::align_score(a[x - 1], b[y - 1]),
+                        Direction::Match,
+                    ),
+                );
             }
         }
 
@@ -93,7 +92,7 @@ impl ChangedPublicItem {
         let mut x: usize = a.len();
         let mut y: usize = b.len();
         let mut diffs = Vec::new();
-        let mut diffs_return = Vec::new();
+        let mut diffs_return: Vec<ChangedToken>;
         loop {
             if x == 0 {
                 diffs_return = b[0..y]
@@ -117,7 +116,7 @@ impl ChangedPublicItem {
                 Direction::Match => {
                     x -= 1;
                     y -= 1;
-                    if a[x] != b[y] {
+                    if Token::align_score(a[x], b[y]) < 0 {
                         diffs.push(ChangedToken::Inserted(b[y].clone()));
                         diffs.push(ChangedToken::Removed(a[x].clone()));
                     } else {
@@ -325,6 +324,20 @@ mod tests {
             vec![
                 ChangedToken::Same(Token::identifier("a")),
                 ChangedToken::Removed(Token::Whitespace),
+                ChangedToken::Same(Token::identifier("a"))
+            ]
+        )
+    }
+
+    #[test]
+    fn aligned_fn_id_equality() {
+        let a = vec![Token::identifier("a"), Token::identifier("a")].into();
+        let b = vec![Token::function("a"), Token::identifier("a")].into();
+        let aligned = ChangedPublicItem::align_tokens(&a, &b);
+        assert_eq!(
+            aligned,
+            vec![
+                ChangedToken::Same(Token::identifier("a")),
                 ChangedToken::Same(Token::identifier("a"))
             ]
         )

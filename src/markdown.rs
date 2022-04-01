@@ -7,8 +7,10 @@ use crate::{output_formatter::print_items_with_header, Args, OutputFormatter};
 pub struct Markdown;
 
 impl OutputFormatter for Markdown {
-    fn print_items(&self, _w: &mut dyn Write, _args: &Args, _items: Vec<PublicItem>) -> Result<()> {
-        todo!("Not yet implemented because I'm not sure what the output should look like. Feel free to open a PR with a proposal.")
+    fn print_items(&self, w: &mut dyn Write, _args: &Args, items: Vec<PublicItem>) -> Result<()> {
+        print_items_with_header(w, "## Public API", &items, |w, item| {
+            writeln!(w, "* `{}`", item)
+        })
     }
 
     fn print_diff(&self, w: &mut dyn Write, _args: &Args, diff: &PublicItemsDiff) -> Result<()> {

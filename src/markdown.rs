@@ -9,7 +9,7 @@ pub fn print_diff(w: &mut impl std::io::Write, diff: &PublicItemsDiff) -> std::i
         w,
         "## Removed items from the public API",
         &diff.removed,
-        |w, item| writeln!(w, "* `{}`", item),
+        |w, item| writeln!(w, "* {}", print_with_colour(item)),
     )?;
 
     print_items_with_header(
@@ -90,7 +90,7 @@ fn print_with_colour(item: &public_items::PublicItem) -> String {
         let styled = tokens.tokens().map(colour_token).collect::<Vec<_>>();
         ANSIStrings(&styled).to_string()
     } else {
-        format!("{}", item)
+        format!("`{}`", item)
     }
 }
 
@@ -98,10 +98,11 @@ fn colour_token(token: &Token) -> ANSIString<'_> {
     match token {
         Token::Symbol(text) => Colour::White.paint(text),
         Token::Qualifier(text) => Colour::Blue.paint(text),
-        Token::Kind(text) => Colour::Blue.paint(text),
+        Token::Kind(text) => Colour::Blue.bold().paint(text),
         Token::Whitespace => Colour::White.paint(" "),
         Token::Identifier(text) => Colour::Cyan.paint(text),
         Token::Function(text) => Colour::Yellow.paint(text),
+        Token::Lifetime(text) => Colour::Blue.bold().paint(text),
         Token::Keyword(text) => Colour::Purple.paint(text),
         Token::Generic(text) => Colour::Green.bold().paint(text),
         Token::Primitive(text) => Colour::Yellow.paint(text),

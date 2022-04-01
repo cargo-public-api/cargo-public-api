@@ -14,12 +14,10 @@ impl FromStr for OutputFormat {
     type Err = anyhow::Error;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        if s == "plain" {
-            Ok(OutputFormat::Plain)
-        } else if s == "markdown" {
-            Ok(OutputFormat::Markdown)
-        } else {
-            Err(anyhow!("See --help"))
+        match s {
+            "plain" => Ok(OutputFormat::Plain),
+            "markdown" => Ok(OutputFormat::Markdown),
+            _ => Err(anyhow!("See --help")),
         }
     }
 }
@@ -44,14 +42,11 @@ impl FromStr for Color {
     type Err = anyhow::Error;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        if s == "auto" {
-            Ok(Color::Auto)
-        } else if s == "never" {
-            Ok(Color::Never)
-        } else if s == "always" {
-            Ok(Color::Always)
-        } else {
-            Err(anyhow!("See --help"))
+        match s {
+            "auto" => Ok(Color::Auto),
+            "never" => Ok(Color::Never),
+            "always" => Ok(Color::Always),
+            _ => Err(anyhow!("See --help")),
         }
     }
 }

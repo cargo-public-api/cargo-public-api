@@ -71,6 +71,7 @@ fn colour_token(token: &Token) -> ANSIString<'_> {
         Token::Kind(text) => Colour::Blue.paint(text),
         Token::Whitespace => Colour::White.paint(" "),
         Token::Identifier(text) => Colour::Cyan.paint(text),
+        Token::Function(text) => Colour::Yellow.paint(text),
         Token::Keyword(text) => Colour::Purple.paint(text),
         Token::Generic(text) => Colour::Green.bold().paint(text),
         Token::Primitive(text) => Colour::Yellow.paint(text),

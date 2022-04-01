@@ -103,3 +103,10 @@ impl From<Token> for TokenStream {
         }
     }
 }
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub enum ChangedToken {
+    Same(Token),
+    Inserted(Token),
+    Removed(Token),
+}

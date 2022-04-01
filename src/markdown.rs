@@ -16,13 +16,7 @@ pub fn print_diff(w: &mut impl std::io::Write, diff: &PublicItemsDiff) -> std::i
         w,
         "## Changed items in the public API",
         &diff.changed,
-        |w, changed_item| {
-            writeln!(
-                w,
-                "* `{}` changed to\n  `{}`",
-                changed_item.old, changed_item.new
-            )
-        },
+        |w, changed_item| writeln!(w, "{}", print_dif_with_colour(changed_item)),
     )?;
 
     print_items_with_header(
@@ -54,6 +48,42 @@ fn print_items_with_header<W: std::io::Write, T>(
 
 use ansi_term::{ANSIString, ANSIStrings, Colour};
 use public_items::tokens::*;
+
+fn print_dif_with_colour(item: &public_items::diff::ChangedPublicItem) -> String {
+    if let Some(tokens) = item.changed_tokens() {
+        let (previous, current): (Vec<ANSIString<'_>>, Vec<ANSIString<'_>>) =
+            tokens.iter().map(colour_diff).unzip();
+        format!("- {}\n+ {}", ANSIStrings(&previous), ANSIStrings(&current))
+    } else {
+        format!(
+            "* `{}` changed to\n  `{}`",
+            print_with_colour(&item.old),
+            print_with_colour(&item.new)
+        )
+    }
+}
+
+fn colour_diff(token: &ChangedToken) -> (ANSIString<'_>, ANSIString<'_>) {
+    match token {
+        ChangedToken::Same(token) => {
+            let s = colour_token(token);
+            let l = s.len();
+            (s, Colour::White.paint(" ".repeat(l)))
+        }
+        ChangedToken::Inserted(token) => {
+            let s = colour_token(token);
+            (
+                Colour::White.on(Colour::Green).paint(" ".repeat(s.len())),
+                s,
+            )
+        }
+        ChangedToken::Removed(token) => {
+            let s = colour_token(token);
+            let l = s.len();
+            (s, Colour::White.on(Colour::Red).paint(" ".repeat(l)))
+        }
+    }
+}
 
 fn print_with_colour(item: &public_items::PublicItem) -> String {
     if let Some(tokens) = item.tokens() {

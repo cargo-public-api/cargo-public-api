@@ -4,7 +4,7 @@ use std::{
 };
 
 use rustdoc_types::{
-    Constant, Crate, FnDecl, GenericArg, GenericArgs, GenericBound, GenericParamDef,
+    Abi, Constant, Crate, FnDecl, GenericArg, GenericArgs, GenericBound, GenericParamDef,
     GenericParamDefKind, Generics, Header, Id, Item, ItemEnum, Term, Type, TypeBinding,
     TypeBindingKind, Variant, WherePredicate,
 };
@@ -402,12 +402,30 @@ fn render_function(
     header: &Header,
 ) -> TokenStream {
     let mut output: TokenStream = vec![Token::qualifier("pub"), Token::Whitespace].into();
+    if header.unsafe_ {
+        output.extend(vec![Token::qualifier("unsafe"), Token::Whitespace])
+    };
     if header.const_ {
         output.extend(vec![Token::qualifier("const"), Token::Whitespace])
     };
     if header.async_ {
         output.extend(vec![Token::qualifier("async"), Token::Whitespace])
     };
+    if header.abi != Abi::Rust {
+        output.push(match &header.abi {
+            Abi::C { .. } => Token::qualifier("c"),
+            Abi::Cdecl { .. } => Token::qualifier("cdecl"),
+            Abi::Stdcall { .. } => Token::qualifier("stdcall"),
+            Abi::Fastcall { .. } => Token::qualifier("fastcall"),
+            Abi::Aapcs { .. } => Token::qualifier("aapcs"),
+            Abi::Win64 { .. } => Token::qualifier("win64"),
+            Abi::SysV64 { .. } => Token::qualifier("sysV64"),
+            Abi::System { .. } => Token::qualifier("system"),
+            Abi::Other(text) => Token::qualifier(text),
+            _ => unreachable!(),
+        });
+        output.push(Token::Whitespace);
+    }
     // TODO: Do something with ABI?
     output.extend(vec![Token::kind("fn"), Token::Whitespace]);
     output.extend(name);

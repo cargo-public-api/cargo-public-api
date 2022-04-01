@@ -86,9 +86,11 @@ impl<'a> ItemIterator<'a> {
                 ..
             }) => (),
 
-            Some(item) => self
-                .items_left
-                .push(Rc::new(IntermediatePublicItem::new(item, parent))),
+            Some(item) => self.items_left.push(Rc::new(IntermediatePublicItem::new(
+                item,
+                self.crate_,
+                parent,
+            ))),
 
             None => self.missing_ids.push(id),
         }

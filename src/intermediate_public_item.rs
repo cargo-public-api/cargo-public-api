@@ -4,9 +4,9 @@ use std::{
 };
 
 use rustdoc_types::{
-    Constant, FnDecl, GenericArg, GenericArgs, GenericBound, GenericParamDef, GenericParamDefKind,
-    Generics, Header, Item, ItemEnum, Term, Type, TypeBinding, TypeBindingKind, Variant,
-    WherePredicate,
+    Constant, Crate, FnDecl, GenericArg, GenericArgs, GenericBound, GenericParamDef,
+    GenericParamDefKind, Generics, Header, Id, Item, ItemEnum, Term, Type, TypeBinding,
+    TypeBindingKind, Variant, WherePredicate,
 };
 
 use std::fmt::Result;
@@ -21,6 +21,7 @@ use crate::tokens::{Token, TokenStream};
 pub struct IntermediatePublicItem<'a> {
     /// The item we are effectively wrapping.
     pub item: &'a Item,
+    root: &'a Crate,
 
     /// The parent item. If [Self::item] is e.g. an enum variant, then the
     /// parent is an enum. We follow the chain of parents to be able to know the
@@ -30,8 +31,12 @@ pub struct IntermediatePublicItem<'a> {
 
 impl<'a> IntermediatePublicItem<'a> {
     #[must_use]
-    pub fn new(item: &'a Item, parent: Option<Rc<IntermediatePublicItem<'a>>>) -> Self {
-        Self { item, parent }
+    pub fn new(
+        item: &'a Item,
+        root: &'a Crate,
+        parent: Option<Rc<IntermediatePublicItem<'a>>>,
+    ) -> Self {
+        Self { item, root, parent }
     }
 
     #[must_use]
@@ -105,21 +110,28 @@ impl<'a> IntermediatePublicItem<'a> {
             ItemEnum::Module(_) => None,
             ItemEnum::ExternCrate { .. } => None,
             ItemEnum::Import(_) => None,
-            ItemEnum::Union(_) => None, // TODO: Union seems like something that should be used
+            ItemEnum::Union(_) => {
+                let mut output: TokenStream = vec![
+                    Token::qualifier("pub"),
+                    Token::Whitespace,
+                    Token::kind("union"),
+                    Token::Whitespace,
+                ]
+                .into();
+                output.extend(render_path(self.path()));
+                Some(output)
+            }
             ItemEnum::Struct(_) => {
-                let mut output = vec![
+                let mut output: TokenStream = vec![
                     Token::qualifier("pub"),
                     Token::Whitespace,
                     Token::kind("struct"),
                     Token::Whitespace,
-                ];
-                for item in self.path() {
-                    output.push(Token::identifier(item.get_effective_name()));
-                    output.push(Token::symbol("::"));
-                }
-                output.remove(output.len() - 1);
+                ]
+                .into();
+                output.extend(render_path(self.path()));
 
-                Some(TokenStream { tokens: output })
+                Some(output)
             }
             ItemEnum::StructField(inner) => {
                 let mut output: TokenStream = vec![
@@ -131,31 +143,23 @@ impl<'a> IntermediatePublicItem<'a> {
                     Token::Whitespace,
                 ]
                 .into();
-                for item in self.path() {
-                    output.push(Token::identifier(item.get_effective_name()));
-                    output.push(Token::symbol("::"));
-                }
-                output.remove_from_back(1);
+                output.extend(render_path(self.path()));
                 output.push(Token::symbol(":"));
                 output.push(Token::Whitespace);
-                output.extend(render_type(inner));
+                output.extend(render_type(self.root, inner));
 
                 Some(output)
             }
             ItemEnum::Enum(_) => {
-                let mut output = vec![
+                let mut output: TokenStream = vec![
                     Token::qualifier("pub"),
                     Token::Whitespace,
                     Token::kind("enum"),
                     Token::Whitespace,
-                ];
-                for item in self.path() {
-                    output.push(Token::identifier(item.get_effective_name()));
-                    output.push(Token::symbol("::"));
-                }
-                output.remove(output.len() - 1);
-
-                Some(TokenStream { tokens: output })
+                ]
+                .into();
+                output.extend(render_path(self.path()));
+                Some(output)
             }
             ItemEnum::Variant(inner) => {
                 let mut output: TokenStream = vec![
@@ -167,59 +171,54 @@ impl<'a> IntermediatePublicItem<'a> {
                     Token::Whitespace,
                 ]
                 .into();
-                for item in self.path() {
-                    output.push(Token::identifier(item.get_effective_name()));
-                    output.push(Token::symbol("::"));
-                }
-                output.remove_from_back(1);
+                output.extend(render_path(self.path()));
                 match inner {
                     Variant::Plain => {}
                     Variant::Tuple(types) => output.extend(render_sequence(
                         Token::symbol("("),
                         Token::symbol(")"),
                         vec![Token::symbol(","), Token::Whitespace],
+                        false,
                         types,
-                        render_type,
+                        |ty| render_type(self.root, ty),
                     )),
                     Variant::Struct(ids) => output.extend(render_sequence(
                         Token::symbol("{"),
                         Token::symbol("}"),
                         vec![Token::symbol(","), Token::Whitespace],
+                        false,
                         ids,
-                        |id| Token::identifier(id.0.clone()).into(),
+                        |id| render_id(self.root, id),
                     )),
                 }
                 Some(output)
             }
-            ItemEnum::Function(inner) => {
-                let mut name = TokenStream::default();
-                for item in self.path() {
-                    name.push(Token::identifier(item.get_effective_name()));
-                    name.push(Token::symbol("::"));
+            ItemEnum::Function(inner) => Some(render_function(
+                self.root,
+                render_path(self.path()),
+                &inner.decl,
+                &inner.generics.params,
+                &inner.header,
+            )),
+            ItemEnum::Method(inner) => Some(render_function(
+                self.root,
+                render_path(self.path()),
+                &inner.decl,
+                &inner.generics.params,
+                &inner.header,
+            )),
+            ItemEnum::Trait(inner) => {
+                let mut output: TokenStream =
+                    vec![Token::qualifier("pub"), Token::Whitespace].into();
+
+                if inner.is_unsafe {
+                    output.extend(vec![Token::qualifier("unsafe"), Token::Whitespace]);
                 }
-                name.remove_from_back(1);
-                Some(render_function(
-                    name,
-                    &inner.decl,
-                    &inner.generics.params,
-                    &inner.header,
-                ))
+                output.extend(vec![Token::kind("trait"), Token::Whitespace]);
+                output.extend(render_path(self.path()));
+                output.extend(render_generics(self.root, &inner.generics.params));
+                Some(output)
             }
-            ItemEnum::Method(inner) => {
-                let mut name = TokenStream::default();
-                for item in self.path() {
-                    name.push(Token::identifier(item.get_effective_name()));
-                    name.push(Token::symbol("::"));
-                }
-                name.remove_from_back(1);
-                Some(render_function(
-                    name,
-                    &inner.decl,
-                    &inner.generics.params,
-                    &inner.header,
-                ))
-            }
-            ItemEnum::Trait(_) => None, // TODO: Traits would be nice
             ItemEnum::TraitAlias(_) => None,
             ItemEnum::Impl(_) => None,
             ItemEnum::Typedef(_) | ItemEnum::AssocType { .. } => None,
@@ -234,78 +233,117 @@ impl<'a> IntermediatePublicItem<'a> {
     }
 }
 
+fn render_id(root: &Crate, id: &Id) -> TokenStream {
+    if let Some(name) = &root.index[id].name {
+        Token::identifier(name).into()
+    } else {
+        TokenStream::default()
+    }
+}
+
+fn render_path(path: Vec<Rc<IntermediatePublicItem<'_>>>) -> TokenStream {
+    let mut output = TokenStream::default();
+    for item in &path {
+        if matches!(item.item.inner, ItemEnum::Function(_) | ItemEnum::Method(_)) {
+            output.push(Token::function(item.get_effective_name()));
+        } else {
+            output.push(Token::identifier(item.get_effective_name()));
+        }
+        output.push(Token::symbol("::"));
+    }
+    if !path.is_empty() {
+        output.remove_from_back(1);
+    }
+    output
+}
+
 fn render_sequence<T>(
     start: impl Into<TokenStream>,
     end: impl Into<TokenStream>,
     between: impl Into<TokenStream>,
+    return_nothing_if_empty: bool,
     sequence: &[T],
     render: impl Fn(&T) -> TokenStream,
 ) -> TokenStream {
-    let mut output = start.into();
+    let start = start.into();
     let between = between.into();
+    let mut output = start.clone();
     for seq in sequence {
         output.extend(render(seq));
         output.extend(between.clone());
     }
     if !sequence.is_empty() {
         output.remove_from_back(between.len());
+    } else if return_nothing_if_empty {
+        return TokenStream::default();
+    }
+    if output.len() == start.len() && return_nothing_if_empty {
+        return TokenStream::default();
     }
     output.extend(end);
     output
 }
 
-fn render_type(ty: &Type) -> TokenStream {
+fn render_type(root: &Crate, ty: &Type) -> TokenStream {
     match ty {
-        Type::ResolvedPath { name, .. } => {
+        Type::ResolvedPath { name, args, id, .. } => {
             let mut output = TokenStream::default();
-            let len = name.split("::").count();
-            for (index, part) in name.split("::").enumerate() {
-                if index == 0 && part == "$crate" {
-                    output.push(Token::keyword("crate"));
-                } else if index == len - 1 {
-                    output.push(Token::type_(part))
-                } else {
-                    output.push(Token::identifier(part))
+            if name.is_empty() {
+                output.extend(render_id(root, id))
+            } else {
+                let len = name.split("::").count();
+                for (index, part) in name.split("::").enumerate() {
+                    if index == 0 && part == "$crate" {
+                        output.push(Token::keyword("crate"));
+                    } else if index == len - 1 {
+                        output.push(Token::type_(part))
+                    } else {
+                        output.push(Token::identifier(part))
+                    }
+                    output.push(Token::symbol("::"));
                 }
-                output.push(Token::symbol("::"));
+                if len > 0 {
+                    output.remove_from_back(1);
+                }
+                if let Some(args) = args {
+                    output.extend(render_generic_args(root, args));
+                }
             }
-            if len > 0 {
-                output.remove_from_back(1);
-            }
-
             output
         } //  _serde::__private::Result | standard type
         Type::Generic(name) => Token::generic(name).into(),
         Type::Primitive(name) => Token::primitive(name).into(),
         Type::FunctionPointer(ptr) => render_function(
+            root,
             TokenStream::default(),
             &ptr.decl,
             &ptr.generic_params,
             &ptr.header,
-        ), // TODO: add something better
+        ), // TODO: add something better?
         Type::Tuple(types) => render_sequence(
             Token::symbol("("),
             Token::symbol(")"),
             vec![Token::symbol(","), Token::Whitespace],
+            false,
             types,
-            render_type,
+            |ty| render_type(root, ty),
         ),
         Type::Slice(ty) => {
             let mut output: TokenStream = Token::symbol("[").into();
-            output.extend(render_type(ty));
+            output.extend(render_type(root, ty));
             output.push(Token::symbol("]"));
             output
         }
         Type::Array { type_, len } => {
             let mut output: TokenStream = Token::symbol("[").into();
-            output.extend(render_type(type_));
+            output.extend(render_type(root, type_));
             output.push(Token::symbol(":"));
             output.push(Token::Whitespace);
             output.push(Token::primitive(len));
             output.push(Token::symbol("]"));
             output
         }
-        Type::ImplTrait(bounds) => render_generic_bounds(bounds),
+        Type::ImplTrait(bounds) => render_generic_bounds(root, bounds),
         Type::Infer => Token::symbol("_").into(),
         Type::RawPointer { mutable, type_ } => {
             let mut output: TokenStream = Token::symbol("*").into();
@@ -313,7 +351,7 @@ fn render_type(ty: &Type) -> TokenStream {
                 output.push(Token::keyword("mut"))
             }
             output.push(Token::Whitespace);
-            output.extend(render_type(type_));
+            output.extend(render_type(root, type_));
             output
         }
         Type::BorrowedRef {
@@ -325,14 +363,14 @@ fn render_type(ty: &Type) -> TokenStream {
             if let Some(lt) = lifetime {
                 output.extend(vec![
                     Token::symbol("'"),
-                    Token::identifier(lt),
+                    Token::identifier(lt.trim_start_matches('\'')),
                     Token::Whitespace,
                 ]);
             }
             if *mutable {
                 output.extend(vec![Token::keyword("mut"), Token::Whitespace]);
             }
-            output.extend(render_type(type_));
+            output.extend(render_type(root, type_));
             output
         }
         Type::QualifiedPath {
@@ -342,13 +380,13 @@ fn render_type(ty: &Type) -> TokenStream {
             trait_,
         } => {
             let mut output: TokenStream = Token::symbol("<").into();
-            output.extend(render_type(self_type));
+            output.extend(render_type(root, self_type));
             output.extend(vec![
                 Token::Whitespace,
                 Token::keyword("as"),
                 Token::Whitespace,
             ]);
-            output.extend(render_type(trait_));
+            output.extend(render_type(root, trait_));
             output.push(Token::symbol(">::"));
             output.push(Token::identifier(name));
             output
@@ -357,6 +395,7 @@ fn render_type(ty: &Type) -> TokenStream {
 }
 
 fn render_function(
+    root: &Crate,
     name: TokenStream,
     decl: &FnDecl,
     generics: &[GenericParamDef],
@@ -374,29 +413,13 @@ fn render_function(
     output.extend(name);
 
     // Generic
-    if !generics.is_empty() {
-        output.extend(render_sequence(
-            Token::symbol("<"),
-            Token::symbol(">"),
-            vec![Token::symbol(","), Token::Whitespace],
-            generics,
-            |param| {
-                let mut output: TokenStream = vec![
-                    Token::identifier(param.name.clone()),
-                    Token::symbol(":"),
-                    Token::Whitespace,
-                ]
-                .into();
-                output.extend(render_generic(&param.kind));
-                output
-            },
-        ));
-    }
+    output.extend(render_generics(root, generics));
     // Main arguments
     output.extend(render_sequence(
         Token::symbol("("),
         Token::symbol(")"),
         vec![Token::symbol(","), Token::Whitespace],
+        false,
         &decl.inputs,
         |(name, ty)| {
             let mut output: TokenStream = vec![
@@ -405,7 +428,7 @@ fn render_function(
                 Token::Whitespace,
             ]
             .into();
-            output.extend(render_type(ty));
+            output.extend(render_type(root, ty));
             output
         },
     ));
@@ -416,32 +439,189 @@ fn render_function(
             Token::symbol("->"),
             Token::Whitespace,
         ]);
-        output.extend(render_type(ty));
+        output.extend(render_type(root, ty));
     }
     output
 }
 
-fn render_generic(generic: &GenericParamDefKind) -> TokenStream {
-    match generic {
-        GenericParamDefKind::Lifetime { outlives } => {
-            vec![Token::symbol("'"), Token::identifier(outlives.join(" "))].into()
+enum Binding<'a> {
+    GenericArg(&'a GenericArg),
+    TypeBinding(&'a TypeBinding),
+}
+
+fn render_generic_args(root: &Crate, args: &GenericArgs) -> TokenStream {
+    match args {
+        GenericArgs::AngleBracketed { args, bindings } => render_sequence(
+            Token::symbol("<"),
+            Token::symbol(">"),
+            vec![Token::symbol(","), Token::Whitespace],
+            true,
+            &args
+                .iter()
+                .map(Binding::GenericArg)
+                .chain(bindings.iter().map(Binding::TypeBinding))
+                .collect::<Vec<_>>(),
+            |arg| match arg {
+                Binding::GenericArg(arg) => render_generic_arg(root, arg),
+                Binding::TypeBinding(TypeBinding {
+                    name,
+                    args,
+                    binding,
+                }) => {
+                    let mut output: TokenStream = Token::identifier(name).into();
+                    output.extend(render_generic_args(root, args));
+                    match binding {
+                        TypeBindingKind::Equality(term) => {
+                            output.extend(vec![
+                                Token::Whitespace,
+                                Token::symbol("="),
+                                Token::Whitespace,
+                            ]);
+                            output.extend(match term {
+                                Term::Type(ty) => render_type(root, ty),
+                                Term::Constant(c) => render_constant(root, c),
+                            });
+                        }
+                        TypeBindingKind::Constraint(bounds) => {
+                            output.extend(render_generic_bounds(root, bounds))
+                        }
+                    }
+                    output
+                }
+            },
+        ),
+        GenericArgs::Parenthesized {
+            inputs,
+            output: return_ty,
+        } => {
+            let mut output: TokenStream = Token::kind("Fn").into();
+            output.extend(render_sequence(
+                Token::symbol("("),
+                Token::symbol(")"),
+                vec![Token::symbol(","), Token::Whitespace],
+                false,
+                inputs,
+                |ty| render_type(root, ty),
+            ));
+            if let Some(return_ty) = return_ty {
+                output.extend(vec![
+                    Token::Whitespace,
+                    Token::symbol("->"),
+                    Token::Whitespace,
+                ]);
+                output.extend(render_type(root, return_ty));
+            }
+            output
         }
-        GenericParamDefKind::Type { bounds, .. } => render_generic_bounds(bounds),
-        GenericParamDefKind::Const { type_, .. } => render_type(type_),
     }
 }
 
-fn render_generic_bounds(bounds: &[GenericBound]) -> TokenStream {
-    render_sequence(
-        vec![Token::keyword("impl"), Token::Whitespace],
-        Vec::new(),
-        vec![Token::Whitespace, Token::symbol("+"), Token::Whitespace],
-        bounds,
-        |bound| match bound {
-            GenericBound::TraitBound { trait_, .. } => render_type(trait_),
-            GenericBound::Outlives(id) => vec![Token::symbol("'"), Token::identifier(id)].into(),
-        },
-    )
+fn render_generic_arg(root: &Crate, arg: &GenericArg) -> TokenStream {
+    match arg {
+        GenericArg::Lifetime(name) => vec![
+            Token::symbol("'"),
+            Token::identifier(name.trim_start_matches('\'')),
+        ]
+        .into(),
+        GenericArg::Type(ty) => render_type(root, ty),
+        GenericArg::Const(c) => render_constant(root, c),
+        GenericArg::Infer => Token::symbol("_").into(),
+    }
+}
+
+fn render_constant(root: &Crate, constant: &Constant) -> TokenStream {
+    let mut output = render_type(root, &constant.type_);
+    if let Some(value) = &constant.value {
+        output.extend(vec![
+            Token::Whitespace,
+            Token::symbol("="),
+            Token::Whitespace,
+        ]);
+        if constant.is_literal {
+            output.push(Token::primitive(value));
+        } else {
+            output.push(Token::identifier(value));
+        }
+    }
+    output
+}
+
+fn render_generics(root: &Crate, generics: &[GenericParamDef]) -> TokenStream {
+    let mut output = TokenStream::default();
+    if !generics.is_empty() {
+        output.extend(render_sequence(
+            Token::symbol("<"),
+            Token::symbol(">"),
+            vec![Token::symbol(","), Token::Whitespace],
+            true,
+            generics,
+            |param| match &param.kind {
+                // See if this is an empty definition (for a human reader)
+                GenericParamDefKind::Type {
+                    bounds, synthetic, ..
+                } if bounds.is_empty() || *synthetic => TokenStream::default(),
+                _ => {
+                    let mut output: TokenStream = vec![
+                        Token::identifier(param.name.clone()),
+                        Token::symbol(":"),
+                        Token::Whitespace,
+                    ]
+                    .into();
+                    output.extend(render_generic(root, &param.kind));
+                    output
+                }
+            },
+        ));
+    }
+    output
+}
+
+fn render_generic(root: &Crate, generic: &GenericParamDefKind) -> TokenStream {
+    match generic {
+        GenericParamDefKind::Lifetime { outlives } => outlives
+            .iter()
+            .flat_map(|lt| {
+                vec![
+                    Token::symbol("'"),
+                    Token::identifier(lt.trim_start_matches('\'')),
+                ]
+            })
+            .collect::<Vec<_>>()
+            .into(),
+        GenericParamDefKind::Type { bounds, .. } => render_generic_bounds(root, bounds),
+        GenericParamDefKind::Const { type_, .. } => render_type(root, type_),
+    }
+}
+
+fn render_generic_bounds(root: &Crate, bounds: &[GenericBound]) -> TokenStream {
+    if bounds.is_empty() {
+        TokenStream::default()
+    } else {
+        render_sequence(
+            vec![Token::keyword("impl"), Token::Whitespace],
+            Vec::new(),
+            vec![Token::Whitespace, Token::symbol("+"), Token::Whitespace],
+            true,
+            bounds,
+            |bound| match bound {
+                GenericBound::TraitBound {
+                    trait_,
+                    generic_params,
+                    ..
+                } => {
+                    let mut output = render_type(root, trait_);
+                    if output == Token::type_("Iterator").into() {
+                        dbg!(trait_);
+                    }
+                    output.extend(render_generics(root, generic_params));
+                    output
+                }
+                GenericBound::Outlives(id) => {
+                    vec![Token::symbol("'"), Token::identifier(id)].into()
+                }
+            },
+        )
+    }
 }
 /// Decides what should be shown at the end of each item, i.e. item-specific
 /// type information.

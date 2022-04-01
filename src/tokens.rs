@@ -1,10 +1,11 @@
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Token {
     Symbol(String),
     Qualifier(String),
     Kind(String),
     Whitespace,
     Identifier(String),
+    Function(String),
     Keyword(String),
     Generic(String),
     Primitive(String),
@@ -24,6 +25,9 @@ impl Token {
     pub fn identifier(text: impl Into<String>) -> Self {
         Token::Identifier(text.into())
     }
+    pub fn function(text: impl Into<String>) -> Self {
+        Token::Function(text.into())
+    }
     pub fn keyword(text: impl Into<String>) -> Self {
         Token::Keyword(text.into())
     }
@@ -38,7 +42,7 @@ impl Token {
     }
 }
 
-#[derive(Clone, Debug, Default)]
+#[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub struct TokenStream {
     pub tokens: Vec<Token>,
 }
@@ -69,6 +73,14 @@ impl TokenStream {
         self.tokens.iter()
     }
 }
+
+//impl<T: Iterator<Item = Token>> From<T> for TokenStream {
+//    fn from(tokens: T) -> TokenStream {
+//        TokenStream {
+//            tokens: tokens.collect(),
+//        }
+//    }
+//}
 
 impl From<Vec<Token>> for TokenStream {
     fn from(tokens: Vec<Token>) -> TokenStream {

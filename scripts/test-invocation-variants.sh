@@ -35,10 +35,16 @@ if [ -d "${HOME}/src/public_items" ]; then
     cargo public-items --diff-git-checkouts v0.0.4 v0.0.5
 
     git stash
+    cargo public-items --diff-git-checkouts v0.0.4 v0.0.5 --color=never
+
+    git stash
     cargo public-items --diff-git-checkouts v0.2.0 v0.3.0
 
     git stash
     cargo public-items --diff-git-checkouts v0.3.0 v0.4.0
+
+    git stash
+    cargo public-items --diff-git-checkouts v0.3.0 v0.4.0 --output-format markdown
 
     if [ -n "${original_branch}" ]; then
         git checkout "${original_branch}"

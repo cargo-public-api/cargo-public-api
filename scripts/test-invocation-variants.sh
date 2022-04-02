@@ -7,9 +7,6 @@ cargo run
 # Make sure we can conveniently run the tool from the source dir on an external crate
 cargo run -- --manifest-path "$(pwd)"/Cargo.toml
 
-# Check help
-cargo run -- --help
-
 # Install the tool
 cargo install --debug --path .
 

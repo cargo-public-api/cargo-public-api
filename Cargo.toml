@@ -19,3 +19,7 @@ clap = { version = "3.1.2", features = ["derive"] }
 [dependencies.public_items]
 # path = "/Users/martin/src/public_items"
 version = "0.7.1"
+
+[dev-dependencies]
+assert_cmd = "2.0.4"
+predicates = "2.1.1"

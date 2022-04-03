@@ -5,12 +5,20 @@ pub enum Token {
     Kind(String),
     Whitespace,
     Identifier(String),
+    Self_(String),
     Function(String),
     Lifetime(String),
     Keyword(String),
     Generic(String),
     Primitive(String),
     Type(String),
+}
+
+#[macro_export]
+macro_rules! ws {
+    () => {
+        Token::Whitespace
+    };
 }
 
 impl Token {
@@ -25,6 +33,9 @@ impl Token {
     }
     pub fn identifier(text: impl Into<String>) -> Self {
         Token::Identifier(text.into())
+    }
+    pub fn self_(text: impl Into<String>) -> Self {
+        Token::Self_(text.into())
     }
     pub fn function(text: impl Into<String>) -> Self {
         Token::Function(text.into())

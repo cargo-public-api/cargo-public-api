@@ -20,13 +20,8 @@ pub struct ChangedPublicItem {
 }
 
 impl ChangedPublicItem {
-    pub fn changed_tokens(&self) -> Option<Vec<ChangedToken>> {
-        self.old.tokens().as_ref().and_then(|old| {
-            self.new
-                .tokens()
-                .as_ref()
-                .map(|new| ChangedPublicItem::align_tokens(old, new))
-        })
+    pub fn changed_tokens(&self) -> Vec<ChangedToken> {
+        ChangedPublicItem::align_tokens(self.old.tokens(), self.new.tokens())
     }
 
     /// Calculates the difference between two TokenStreams, the algorithm is the Needleman-Wunsch algorithm
@@ -348,7 +343,7 @@ mod tests {
             prefix: String::from("prefix "),
             path: String::from(path),
             suffix: String::from(" suffix"),
-            tokens: None,
+            tokens: TokenStream::default(),
         })
     }
 }

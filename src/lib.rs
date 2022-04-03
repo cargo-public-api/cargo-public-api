@@ -60,7 +60,7 @@ pub use error::Result;
 pub struct PublicItem(item_iterator::PublicItemInner);
 
 impl PublicItem {
-    pub fn tokens(&self) -> &Option<tokens::TokenStream> {
+    pub fn tokens(&self) -> &tokens::TokenStream {
         &self.0.tokens
     }
 }

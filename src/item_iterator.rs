@@ -189,7 +189,7 @@ pub struct PublicItemInner {
     /// The type info part, e.g. "(param_a: Type, param_b: OtherType)" for a
     /// `fn`.
     pub(crate) suffix: String,
-    pub tokens: Option<tokens::TokenStream>,
+    pub tokens: tokens::TokenStream,
 }
 
 /// One of the basic uses cases is printing a sorted `Vec` of `PublicItem`s. So

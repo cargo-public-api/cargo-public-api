@@ -401,12 +401,9 @@ impl Display for D<&GenericParamDefKind> {
                     )?;
                 }
             }
-            GenericParamDefKind::Const { type_, default } => write!(
-                f,
-                "GenericParamDefKind::Const{}{}",
-                D(type_),
-                Optional(" = ", default.as_ref())
-            )?,
+            GenericParamDefKind::Const { type_, default } => {
+                write!(f, ": {}{}", D(type_), Optional(" = ", default.as_ref()))?;
+            }
         }
 
         Ok(())

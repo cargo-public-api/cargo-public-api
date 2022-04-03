@@ -39,7 +39,7 @@ pub mod comprehensive_api::traits
 pub mod comprehensive_api::unions
 pub static comprehensive_api::statics::ANSWER: i8
 pub struct comprehensive_api::StructInPrivateMod
-pub struct comprehensive_api::structs::ConstArg<T, NGenericParamDefKind::Constusize>
+pub struct comprehensive_api::structs::ConstArg<T, N: usize>
 pub struct comprehensive_api::structs::Plain
 pub struct comprehensive_api::structs::PrivateField
 pub struct comprehensive_api::structs::Tuple

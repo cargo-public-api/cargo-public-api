@@ -215,7 +215,11 @@ fn assert_public_items_impl(
 }
 
 fn expected_output_to_string_vec(expected_output: &str) -> Vec<String> {
-    expected_output.split('\n').map(String::from).collect()
+    expected_output
+        .split('\n')
+        .map(String::from)
+        .filter(|s| !s.is_empty()) // Remove empty entry caused by trailing newline in files
+        .collect()
 }
 
 fn into_strings(items: Vec<impl Display>) -> Vec<String> {

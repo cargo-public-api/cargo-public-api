@@ -105,7 +105,6 @@ impl<'a> IntermediatePublicItem<'a> {
         .to_owned()
     }
 
-    // TODO: Maybe more tokens need/can be used?
     pub fn render_token_stream(&self) -> TokenStream {
         match &self.item.inner {
             ItemEnum::Module(_) => render_simple(&["mod"], self.path()),
@@ -331,7 +330,7 @@ fn render_type(root: &Crate, ty: &Type) -> TokenStream {
             &ptr.decl,
             &ptr.generic_params,
             &ptr.header,
-        ), // TODO: add something better?
+        ),
         Type::Tuple(types) => render_sequence(
             Token::symbol("("),
             Token::symbol(")"),
@@ -383,7 +382,7 @@ fn render_type(root: &Crate, ty: &Type) -> TokenStream {
         }
         Type::QualifiedPath {
             name,
-            args: _, // TODO: check if this output if correct
+            args: _,
             self_type,
             trait_,
         } => {

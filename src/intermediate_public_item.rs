@@ -381,7 +381,7 @@ impl Display for D<&GenericParamDefKind> {
         match self.0 {
             GenericParamDefKind::Lifetime { outlives } => {
                 if !outlives.is_empty() {
-                    write!(f, ": {}", outlives.join(", "))?;
+                    write!(f, ": {}", outlives.join(" + "))?;
                 }
             }
             GenericParamDefKind::Type {

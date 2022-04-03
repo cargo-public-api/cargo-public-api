@@ -1,4 +1,4 @@
-use std::fmt::Display;
+use std::{fmt::Display, path::Path};
 
 use pretty_assertions::assert_eq;
 use public_items::{public_items_from_rustdoc_json_str, Error, Options};
@@ -7,22 +7,6 @@ struct ExpectedDiff<'a> {
     removed: &'a [&'a str],
     changed: &'a [(&'a str, &'a str)],
     added: &'a [&'a str],
-}
-
-#[test]
-fn bat_v0_19_0() {
-    assert_public_items(
-        include_str!("./rustdoc_json/bat-v0.19.0.json"),
-        include_str!("./expected_output/bat-v0.19.0.txt"),
-    );
-}
-
-#[test]
-fn syntect_v4_6_0() {
-    assert_public_items(
-        include_str!("./rustdoc_json/syntect-v4.6.0.json"),
-        include_str!("./expected_output/syntect-v4.6.0.txt"),
-    );
 }
 
 #[test]
@@ -89,6 +73,15 @@ fn public_items_diff_between_v0_3_0_and_v0_4_0() {
                   "pub struct field public_items::Options::with_blanket_implementations: bool",
                 ],
         },
+    );
+}
+
+#[test]
+fn comprehensive_api() {
+    build_rustdoc_json("./tests/crates/comprehensive_api/Cargo.toml");
+    assert_public_items(
+        &std::fs::read_to_string("./target/doc/comprehensive_api.json").unwrap(),
+        include_str!("./expected_output/comprehensive_api.txt"),
     );
 }
 
@@ -165,6 +158,16 @@ fn pretty_printed_diff() {
         pub struct field public_items::Options::with_blanket_implementations: bool,
     ],
 }");
+}
+
+/// Synchronously generate the rustdoc JSON for a library crate.
+fn build_rustdoc_json<P: AsRef<Path>>(manifest_path: P) {
+    let mut command = std::process::Command::new("cargo");
+    command.args(["+nightly", "doc", "--lib", "--no-deps"]);
+    command.arg("--manifest-path");
+    command.arg(manifest_path.as_ref());
+    command.env("RUSTDOCFLAGS", "-Z unstable-options --output-format json");
+    assert!(command.spawn().unwrap().wait().unwrap().success());
 }
 
 fn assert_public_items_diff(old_json: &str, new_json: &str, expected: &ExpectedDiff) {

@@ -6,7 +6,7 @@ homepage = "https://github.com/Enselic/public_items"
 license = "MIT"
 name = "public_items"
 repository = "https://github.com/Enselic/public_items"
-version = "0.7.0"
+version = "0.7.1"
 
 [dependencies]
 rustdoc-types = "0.10.0"
@@ -22,5 +22,6 @@ pretty_assertions = "1.1.0"
 
 [workspace]
 members = [
+    "tests/crates/comprehensive_api",
     "tests/crates/fn_double_fn_triple",
 ]

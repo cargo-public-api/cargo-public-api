@@ -259,11 +259,16 @@ impl Display for D<&Type> {
                 write!(f, "({})", Joiner(types_, ", ", D))
             }
             Type::Slice(t) => write!(f, "[{}]", D(t.as_ref())),
-            Type::Array { type_, len } => write!(f, "[{};{}]", D(type_.as_ref()), len),
+            Type::Array { type_, len } => write!(f, "[{}; {}]", D(type_.as_ref()), len),
             Type::ImplTrait(bounds) => write!(f, "impl {}", Joiner(bounds, " + ", D)),
             Type::Infer => write!(f, "_"),
             Type::RawPointer { mutable, type_ } => {
-                write!(f, "*{}{}", Mutable(*mutable), D(type_.as_ref()))
+                write!(
+                    f,
+                    "*{} {}",
+                    if *mutable { "mut" } else { "const" },
+                    D(type_.as_ref())
+                )
             }
             Type::BorrowedRef {
                 lifetime,
@@ -381,7 +386,7 @@ impl Display for D<&GenericParamDefKind> {
         match self.0 {
             GenericParamDefKind::Lifetime { outlives } => {
                 if !outlives.is_empty() {
-                    write!(f, ": {}", outlives.join(", "))?;
+                    write!(f, ": {}", outlives.join(" + "))?;
                 }
             }
             GenericParamDefKind::Type {
@@ -396,12 +401,9 @@ impl Display for D<&GenericParamDefKind> {
                     )?;
                 }
             }
-            GenericParamDefKind::Const { type_, default } => write!(
-                f,
-                "GenericParamDefKind::Const{}{}",
-                D(type_),
-                Optional(" = ", default.as_ref())
-            )?,
+            GenericParamDefKind::Const { type_, default } => {
+                write!(f, ": {}{}", D(type_), Optional(" = ", default.as_ref()))?;
+            }
         }
 
         Ok(())
@@ -433,14 +435,12 @@ impl Display for D<&GenericArgs> {
                 }
             }
             GenericArgs::Parenthesized { inputs, output } => {
-                if !inputs.is_empty() {
-                    write!(
-                        f,
-                        "({}){}",
-                        Joiner(inputs, ", ", D),
-                        Optional(" -> ", output.as_ref().map(D))
-                    )?;
-                }
+                write!(
+                    f,
+                    "({}){}",
+                    Joiner(inputs, ", ", D),
+                    Optional(" -> ", output.as_ref().map(D))
+                )?;
             }
         }
 

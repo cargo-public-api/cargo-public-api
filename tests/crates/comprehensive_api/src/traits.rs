@@ -5,7 +5,11 @@ pub trait Simple {
 }
 
 pub trait AssociatedConst {
-    const Flag: bool;
+    const CONST: bool;
+}
+
+pub trait AssociatedConstDefault {
+    const CONST_WITH_DEFAULT: bool = true;
 }
 
 pub trait AssociatedType {

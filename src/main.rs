@@ -6,23 +6,30 @@ use public_items::{public_items_from_rustdoc_json_str, Options, MINIMUM_RUSTDOC_
 
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
+#[derive(Default)]
+struct Args {
+    help: bool,
+    with_blanket_implementations: bool,
+    files: Vec<PathBuf>,
+}
+
 fn main() -> Result<()> {
+    let args = args();
+
     let mut options = Options::default();
-    options.with_blanket_implementations = flag_raised("--with-blanket-implementations");
+    options.with_blanket_implementations = args.with_blanket_implementations;
     options.sorted = true;
 
-    let mut args = std::env::args_os();
-    if flag_raised("--help") || flag_raised("-h") || args.len() <= 1 || args.len() > 3 {
+    let files = args.files;
+    if args.help || files.is_empty() || files.len() > 2 {
         print_usage()?;
-    } else if args.len() == 2 {
-        args.next();
-        let path = PathBuf::from(args.next().unwrap());
-        print_public_items(&path, options)?;
-    } else if args.len() == 3 {
-        args.next();
-        let old = PathBuf::from(args.next().unwrap());
-        let new = PathBuf::from(args.next().unwrap());
-        print_public_items_diff(&old, &new, options)?;
+    } else if files.len() == 1 {
+        let path = &files[0];
+        print_public_items(path, options)?;
+    } else if files.len() == 2 {
+        let old = &files[0];
+        let new = &files[1];
+        print_public_items_diff(old, new, options)?;
     }
 
     Ok(())
@@ -124,7 +131,7 @@ To include blanket implementations, pass --with-blanket-implementations.
     )
 }
 
-/// Helper to check if a flag is raised in command line args.
+/// Helper to parse args.
 ///
 /// Note: I want this Rust package to be simple and without unnecessary
 /// dependencies and without the need to select features. For that reason I
@@ -133,6 +140,18 @@ To include blanket implementations, pass --with-blanket-implementations.
 ///
 /// The convenient wrapper <https://github.com/Enselic/cargo-public-items>
 /// depends on both `clap` and `anyhow` though which is perfectly fine.
-fn flag_raised(flag: &str) -> bool {
-    std::env::args_os().into_iter().any(|e| e == flag)
+fn args() -> Args {
+    let mut args = Args::default();
+
+    for arg in std::env::args_os().skip(1) {
+        if arg == "--with-blanket-implementations" {
+            args.with_blanket_implementations = true;
+        } else if arg == "--help" || arg == "-h" {
+            args.help = true;
+        } else {
+            args.files.push(PathBuf::from(arg));
+        }
+    }
+
+    args
 }

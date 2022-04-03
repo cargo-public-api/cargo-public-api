@@ -29,6 +29,19 @@ pub type public_items::Result<T> = std::result::Result<T, Error>
 }
 
 #[test]
+fn print_public_items_with_blanket_implementations() {
+    let mut cmd = Command::cargo_bin("public_items").unwrap();
+    cmd.arg("--with-blanket-implementations");
+    cmd.arg("./tests/rustdoc_json/public_items-v0.4.0.json");
+    cmd.assert()
+        .stdout(include_str!(
+            "./expected_output/public_items-v0.4.0-with-blanket-implementations.txt"
+        ))
+        .stderr("")
+        .success();
+}
+
+#[test]
 fn print_diff_with_changed_and_added() {
     let mut cmd = Command::cargo_bin("public_items").unwrap();
     cmd.arg("./tests/rustdoc_json/public_items-v0.2.0.json");

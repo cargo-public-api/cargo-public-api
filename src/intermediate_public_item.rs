@@ -259,7 +259,7 @@ impl Display for D<&Type> {
                 write!(f, "({})", Joiner(types_, ", ", D))
             }
             Type::Slice(t) => write!(f, "[{}]", D(t.as_ref())),
-            Type::Array { type_, len } => write!(f, "[{};{}]", D(type_.as_ref()), len),
+            Type::Array { type_, len } => write!(f, "[{}; {}]", D(type_.as_ref()), len),
             Type::ImplTrait(bounds) => write!(f, "impl {}", Joiner(bounds, " + ", D)),
             Type::Infer => write!(f, "_"),
             Type::RawPointer { mutable, type_ } => {

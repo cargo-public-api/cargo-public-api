@@ -12,7 +12,7 @@ pub fn comprehensive_api::functions::inferred_lifetime(foo: &usize) -> usize
 pub fn comprehensive_api::functions::one_arg(x: usize)
 pub fn comprehensive_api::functions::outlives<'a, 'b: 'a, 'c: 'b + 'a>(x: &'a bool, y: &'b i128, z: &'c Tuple) -> usize
 pub fn comprehensive_api::functions::plain()
-pub fn comprehensive_api::functions::return_array() -> [u8;2]
+pub fn comprehensive_api::functions::return_array() -> [u8; 2]
 pub fn comprehensive_api::functions::return_iterator() -> impl Iterator<Item = u32>
 pub fn comprehensive_api::functions::return_mut_raw_pointer(input: &mut usize) -> *mut usize
 pub fn comprehensive_api::functions::return_raw_pointer(input: &usize) -> *const usize
@@ -45,7 +45,7 @@ pub struct comprehensive_api::structs::PrivateField
 pub struct comprehensive_api::structs::Tuple
 pub struct comprehensive_api::structs::Unit
 pub struct comprehensive_api::structs::WithLifetime<'a>
-pub struct field comprehensive_api::structs::ConstArg::items: [T;N]
+pub struct field comprehensive_api::structs::ConstArg::items: [T; N]
 pub struct field comprehensive_api::structs::Plain::x: usize
 pub struct field comprehensive_api::structs::Tuple::0: usize
 pub struct field comprehensive_api::structs::WithLifetime::z: &'a Unit

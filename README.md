@@ -1,14 +1,12 @@
 # cargo-public-items
 
-List public items (the public API) of a Rust library crate by analyzing the rustdoc JSON of the crate. Also supports diffing the public API between releases and commits.
-
-Automatically builds the rustdoc JSON for you, which requires a nightly Rust toolchain to be installed (see [here](https://github.com/Enselic/public_items#compatibility-matrix)).
-
+List and diff public items (the public API) of different versions of Rust library crates. Relies on and automatically builds rustdoc JSON, for which a recent version of the Rust nighty toolchain must be installed. See [here](https://github.com/Enselic/public_items#compatibility-matrix).
 
 # Installation
 
 ```
-cargo install cargo-public-items
+% cargo install cargo-public-items
+% rustup install nightly
 ```
 
 # Usage
@@ -44,9 +42,12 @@ pub type public_items::Result<T> = std::result::Result<T, Error>
 
 ## Diff public items between commits
 
-To diff two different versions of your API, use `--diff-git-checkouts`. This example prints the public API diff between v0.2.0 and v0.4.0:
+To diff two different versions of your API, use `--diff-git-checkouts` while standing in the git repo of your project.
+
+The following example prints the public API diff between v0.2.0 and v0.4.0 of the `public_items` library:
 
 ```
+% cd ~/src/public_items
 % cargo public-items --diff-git-checkouts v0.2.0 v0.4.0
 ## Removed items from the public API
 (none)
@@ -68,6 +69,10 @@ You can also manually do a diff by writing the full list of items to a file for 
 # Target audience
 
 Maintainers of Rust libraries that want to keep track of changes to their public API.
+
+# Development tips
+
+See [development.md](./doc/development.md).
 
 # Implementation details
 

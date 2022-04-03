@@ -1,15 +1,18 @@
-use std::fmt::Display;
-use std::io::Write;
+use std::io::stdout;
 use std::path::{Path, PathBuf};
 
 use anyhow::{anyhow, Context, Result};
+use output_formatter::OutputFormatter;
 use public_items::{
     public_items_from_rustdoc_json_str, Options, PublicItem, MINIMUM_RUSTDOC_JSON_VERSION,
 };
 
 use clap::Parser;
 
+mod arg_types;
 mod markdown;
+mod output_formatter;
+mod plain;
 
 #[derive(Parser, Debug)]
 #[clap(author, version, about, long_about = None)]
@@ -59,24 +62,39 @@ pub struct Args {
     /// has been printed.
     #[clap(long, max_values = 2)]
     diff_git_checkouts: Option<Vec<String>>,
+
+    /// What output format to use. You can select between "plain" and "markdown".
+    /// Currently "markdown" is only supported when doing an API diff.
+    #[clap(long, name = "FORMAT", default_value = "plain")]
+    output_format: arg_types::OutputFormat,
+
+    /// Whether or not to use colors. You can select between "auto", "never", "always".
+    /// If "auto" (the default), colors will be used if stdout is a terminal. If you pipe
+    /// the output to a file, colors will be disabled by default.
+    #[clap(long, default_value = "auto")]
+    color: arg_types::Color,
 }
 
 fn main() -> Result<()> {
     let args = get_args();
 
-    if let Some(commits) = args.diff_git_checkouts {
-        print_public_items_diff_between_two_commits(&commits)
+    if let Some(commits) = &args.diff_git_checkouts {
+        print_public_items_diff_between_two_commits(&args, commits)
     } else {
-        print_public_items_of_current_commit()
+        print_public_items_of_current_commit(&args)
     }
 }
 
-fn print_public_items_of_current_commit() -> Result<()> {
+fn print_public_items_of_current_commit(args: &Args) -> Result<()> {
     let public_items = collect_public_items(None)?;
-    print_items(public_items)
+    args.output_format
+        .formatter()
+        .print_items(&mut stdout(), args, public_items)?;
+
+    Ok(())
 }
 
-fn print_public_items_diff_between_two_commits(commits: &[String]) -> Result<()> {
+fn print_public_items_diff_between_two_commits(args: &Args, commits: &[String]) -> Result<()> {
     let old_commit = commits.get(0).expect("clap makes sure first commit exist");
     let old = collect_public_items(Some(old_commit))?;
 
@@ -84,7 +102,9 @@ fn print_public_items_diff_between_two_commits(commits: &[String]) -> Result<()>
     let new = collect_public_items(Some(new_commit))?;
 
     let diff = public_items::diff::PublicItemsDiff::between(old, new);
-    markdown::print_diff(&mut std::io::stdout(), &diff)?;
+    args.output_format
+        .formatter()
+        .print_diff(&mut stdout(), args, &diff)?;
 
     Ok(())
 }
@@ -202,13 +222,4 @@ fn collect_public_items(commit: Option<&str>) -> Result<Vec<PublicItem>> {
             json_path, MINIMUM_RUSTDOC_JSON_VERSION,
         )
     })
-}
-
-/// Prints all public items.
-fn print_items(items: impl IntoIterator<Item = impl Display>) -> Result<()> {
-    for item in items {
-        writeln!(std::io::stdout(), "{}", item)?;
-    }
-
-    Ok(())
 }

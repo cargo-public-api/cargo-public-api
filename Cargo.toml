@@ -6,15 +6,21 @@ homepage = "https://github.com/Enselic/cargo-public-items"
 license = "MIT"
 name = "cargo-public-items"
 repository = "https://github.com/Enselic/cargo-public-items"
-version = "0.7.0"
+version = "0.7.1"
 
 [dependencies]
+ansi_term = "0.12.1"
 anyhow = "1.0.53"
+atty = "0.2.14"
 cargo_metadata = "0.14.2"
 cargo_toml = "0.11.4"
 clap = { version = "3.1.2", features = ["derive"] }
-ansi_term = "0.12"
 
 [dependencies.public_items]
 path = "/Users/douwe/Sources/public_items"
-version = "0.7.0"
+version = "0.7.1"
+
+[dev-dependencies]
+assert_cmd = "2.0.4"
+predicates = "2.1.1"
+serial_test = "0.6.0"

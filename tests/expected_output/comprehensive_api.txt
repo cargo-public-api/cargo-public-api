@@ -15,7 +15,7 @@ pub fn comprehensive_api::functions::plain()
 pub fn comprehensive_api::functions::return_array() -> [u8;2]
 pub fn comprehensive_api::functions::return_iterator() -> impl Iterator<Item = u32>
 pub fn comprehensive_api::functions::return_mut_raw_pointer(input: &mut usize) -> *mut usize
-pub fn comprehensive_api::functions::return_raw_pointer(input: &usize) -> *usize
+pub fn comprehensive_api::functions::return_raw_pointer(input: &usize) -> *const usize
 pub fn comprehensive_api::functions::return_slice<'a>(input: &'a [usize]) -> &'a [usize]
 pub fn comprehensive_api::functions::return_tuple() -> (bool, Basic)
 pub fn comprehensive_api::functions::somewhere<T, U>(t: T, u: U) where T: Display, U: Debug

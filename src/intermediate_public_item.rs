@@ -263,7 +263,12 @@ impl Display for D<&Type> {
             Type::ImplTrait(bounds) => write!(f, "impl {}", Joiner(bounds, " + ", D)),
             Type::Infer => write!(f, "_"),
             Type::RawPointer { mutable, type_ } => {
-                write!(f, "*{}{}", Mutable(*mutable), D(type_.as_ref()))
+                write!(
+                    f,
+                    "*{} {}",
+                    if *mutable { "mut" } else { "const" },
+                    D(type_.as_ref())
+                )
             }
             Type::BorrowedRef {
                 lifetime,

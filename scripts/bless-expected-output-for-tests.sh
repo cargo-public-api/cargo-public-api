@@ -11,3 +11,6 @@ for crate in ${crates}; do
 done
 
 cargo run -- --with-blanket-implementations "${src}/public_items-v0.4.0.json" > "${dst}/public_items-v0.4.0-with-blanket-implementations.txt"
+
+RUSTDOCFLAGS='-Z unstable-options --output-format json' cargo +nightly doc --manifest-path ./tests/crates/comprehensive_api/Cargo.toml --lib --no-deps
+cargo run ./target/doc/comprehensive_api.json > "${dst}/comprehensive_api.txt"

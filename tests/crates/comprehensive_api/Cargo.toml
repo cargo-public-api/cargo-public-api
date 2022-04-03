@@ -1,0 +1,8 @@
+[package]
+description = "Systematically defines public items of all kinds and variants. For testing."
+name = "comprehensive_api"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+rand = "0.8.5" # So we can test "pub extern crate ..." statements

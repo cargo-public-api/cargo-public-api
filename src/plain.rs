@@ -15,7 +15,7 @@ pub struct Plain;
 impl OutputFormatter for Plain {
     fn print_items(&self, w: &mut dyn Write, _args: &Args, items: Vec<PublicItem>) -> Result<()> {
         for item in items {
-            writeln!(w, "{}", item)?;
+            writeln!(w, "{}", colour_item(&item))?;
         }
 
         Ok(())
@@ -71,17 +71,10 @@ impl OutputFormatter for Plain {
 }
 
 fn colour_diff(item: &public_items::diff::ChangedPublicItem) -> String {
-    if let Some(tokens) = item.changed_tokens() {
-        let (previous, current): (Vec<ANSIString<'_>>, Vec<ANSIString<'_>>) =
-            tokens.iter().map(colour_diff_token).unzip();
-        format!("- {}\n+ {}", ANSIStrings(&previous), ANSIStrings(&current))
-    } else {
-        format!(
-            "* `{}` changed to\n  `{}`",
-            colour_item(&item.old),
-            colour_item(&item.new)
-        )
-    }
+    let tokens = item.changed_tokens();
+    let (previous, current): (Vec<ANSIString<'_>>, Vec<ANSIString<'_>>) =
+        tokens.iter().map(colour_diff_token).unzip();
+    format!("- {}\n+ {}", ANSIStrings(&previous), ANSIStrings(&current))
 }
 
 fn colour_diff_token(token: &ChangedToken) -> (ANSIString<'_>, ANSIString<'_>) {
@@ -107,12 +100,12 @@ fn colour_diff_token(token: &ChangedToken) -> (ANSIString<'_>, ANSIString<'_>) {
 }
 
 fn colour_item(item: &public_items::PublicItem) -> String {
-    if let Some(tokens) = item.tokens() {
-        let styled = tokens.tokens().map(colour_item_token).collect::<Vec<_>>();
-        ANSIStrings(&styled).to_string()
-    } else {
-        format!("`{}`", item)
-    }
+    let styled = item
+        .tokens()
+        .tokens()
+        .map(colour_item_token)
+        .collect::<Vec<_>>();
+    ANSIStrings(&styled).to_string()
 }
 
 fn colour_item_token(token: &Token) -> ANSIString<'_> {
@@ -122,6 +115,7 @@ fn colour_item_token(token: &Token) -> ANSIString<'_> {
         Token::Kind(text) => Colour::Blue.bold().paint(text),
         Token::Whitespace => Colour::White.paint(" "),
         Token::Identifier(text) => Colour::Cyan.paint(text),
+        Token::Self_(text) => Colour::Blue.paint(text),
         Token::Function(text) => Colour::Yellow.paint(text),
         Token::Lifetime(text) => Colour::Blue.bold().paint(text),
         Token::Keyword(text) => Colour::Purple.paint(text),

@@ -433,14 +433,12 @@ impl Display for D<&GenericArgs> {
                 }
             }
             GenericArgs::Parenthesized { inputs, output } => {
-                if !inputs.is_empty() {
-                    write!(
-                        f,
-                        "({}){}",
-                        Joiner(inputs, ", ", D),
-                        Optional(" -> ", output.as_ref().map(D))
-                    )?;
-                }
+                write!(
+                    f,
+                    "({}){}",
+                    Joiner(inputs, ", ", D),
+                    Optional(" -> ", output.as_ref().map(D))
+                )?;
             }
         }
 

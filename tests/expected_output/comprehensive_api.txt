@@ -1,5 +1,6 @@
 pub const comprehensive_api::constants::CONST: &str
-pub const comprehensive_api::traits::AssociatedConst::Flag: bool
+pub const comprehensive_api::traits::AssociatedConst::CONST: bool
+pub const comprehensive_api::traits::AssociatedConstDefault::CONST_WITH_DEFAULT: bool
 pub extern crate comprehensive_api::rand
 pub fn comprehensive_api::RngCore::fill_bytes(&mut self, dest: &mut [u8])
 pub fn comprehensive_api::RngCore::next_u32(&mut self) -> u32
@@ -53,6 +54,7 @@ pub struct field comprehensive_api::unions::Basic::x: usize
 pub struct field comprehensive_api::unions::Basic::y: usize
 pub trait comprehensive_api::RngCore
 pub trait comprehensive_api::traits::AssociatedConst
+pub trait comprehensive_api::traits::AssociatedConstDefault
 pub trait comprehensive_api::traits::AssociatedType
 pub trait comprehensive_api::traits::Empty
 pub trait comprehensive_api::traits::Simple

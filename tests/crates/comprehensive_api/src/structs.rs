@@ -10,8 +10,9 @@ pub struct PrivateField {
 
 pub struct Tuple(pub usize);
 
-pub struct WithLifetime<'a> {
-    pub z: &'a Unit,
+pub struct WithLifetimeAndGenericParam<'a, T> {
+    pub unit_ref: &'a Unit,
+    pub t: T,
 }
 
 pub struct ConstArg<T, const N: usize> {

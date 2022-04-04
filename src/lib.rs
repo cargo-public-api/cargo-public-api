@@ -27,7 +27,7 @@
 //! in the thin binary wrapper around the library, see
 //! <https://github.com/Enselic/public_items/blob/main/src/main.rs>.
 
-//#![deny(missing_docs)] TODO: add when done
+#![deny(missing_docs)]
 
 mod error;
 mod intermediate_public_item;

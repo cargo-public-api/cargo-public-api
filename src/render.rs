@@ -10,7 +10,7 @@ use rustdoc_types::{
 use crate::tokens::{Token, TokenStream};
 use crate::ws;
 
-pub fn render_token_stream(item: &IntermediatePublicItem) -> TokenStream {
+pub fn token_stream(item: &IntermediatePublicItem) -> TokenStream {
     match &item.item.inner {
         ItemEnum::Module(_) => render_simple(&["mod"], item.path()),
         ItemEnum::ExternCrate { .. } => render_simple(&["extern", "crate"], item.path()),
@@ -50,14 +50,14 @@ pub fn render_token_stream(item: &IntermediatePublicItem) -> TokenStream {
         }
         ItemEnum::Function(inner) => render_function(
             item.root,
-            render_path(item.path()),
+            render_path(&item.path()),
             &inner.decl,
             &inner.generics.params,
             &inner.header,
         ),
         ItemEnum::Method(inner) => render_function(
             item.root,
-            render_path(item.path()),
+            render_path(&item.path()),
             &inner.decl,
             &inner.generics.params,
             &inner.header,
@@ -69,7 +69,7 @@ pub fn render_token_stream(item: &IntermediatePublicItem) -> TokenStream {
                 vec!["trait"]
             };
             let mut output = render_simple(&tags, item.path());
-            output.extend(render_path(item.path()));
+            output.extend(render_path(&item.path()));
             output.extend(render_generics(item.root, &inner.generics.params));
             output
         }
@@ -144,21 +144,20 @@ fn render_simple(tags: &[&str], path: Vec<Rc<IntermediatePublicItem<'_>>>) -> To
             .flat_map(|t| [Token::kind(*t), ws!()])
             .collect::<Vec<Token>>(),
     );
-    output.extend(render_path(path));
+    output.extend(render_path(&path));
     output
 }
 
 fn render_id(root: &Crate, id: &Id) -> TokenStream {
-    if let Some(name) = &root.index[id].name {
-        Token::identifier(name).into()
-    } else {
-        TokenStream::default()
-    }
+    root.index[id]
+        .name
+        .as_ref()
+        .map_or_else(TokenStream::default, |name| Token::identifier(name).into())
 }
 
-fn render_path(path: Vec<Rc<IntermediatePublicItem<'_>>>) -> TokenStream {
+fn render_path(path: &[Rc<IntermediatePublicItem<'_>>]) -> TokenStream {
     let mut output = TokenStream::default();
-    for item in &path {
+    for item in path {
         if matches!(item.item.inner, ItemEnum::Function(_) | ItemEnum::Method(_)) {
             output.push(Token::function(item.get_effective_name()));
         } else {
@@ -204,16 +203,16 @@ fn render_type(root: &Crate, ty: &Type) -> TokenStream {
         Type::ResolvedPath { name, args, id, .. } => {
             let mut output = TokenStream::default();
             if name.is_empty() {
-                output.extend(render_id(root, id))
+                output.extend(render_id(root, id));
             } else {
                 let len = name.split("::").count();
                 for (index, part) in name.split("::").enumerate() {
                     if index == 0 && part == "$crate" {
                         output.push(Token::keyword("crate"));
                     } else if index == len - 1 {
-                        output.push(Token::type_(part))
+                        output.push(Token::type_(part));
                     } else {
-                        output.push(Token::identifier(part))
+                        output.push(Token::identifier(part));
                     }
                     output.push(Token::symbol("::"));
                 }
@@ -263,7 +262,7 @@ fn render_type(root: &Crate, ty: &Type) -> TokenStream {
         Type::RawPointer { mutable, type_ } => {
             let mut output: TokenStream = Token::symbol("*").into();
             if *mutable {
-                output.push(Token::keyword("mut"))
+                output.push(Token::keyword("mut"));
             }
             output.push(ws!());
             output.extend(render_type(root, type_));
@@ -310,13 +309,13 @@ fn render_function(
 ) -> TokenStream {
     let mut output: TokenStream = vec![Token::qualifier("pub"), ws!()].into();
     if header.unsafe_ {
-        output.extend(vec![Token::qualifier("unsafe"), ws!()])
+        output.extend(vec![Token::qualifier("unsafe"), ws!()]);
     };
     if header.const_ {
-        output.extend(vec![Token::qualifier("const"), ws!()])
+        output.extend(vec![Token::qualifier("const"), ws!()]);
     };
     if header.async_ {
-        output.extend(vec![Token::qualifier("async"), ws!()])
+        output.extend(vec![Token::qualifier("async"), ws!()]);
     };
     if header.abi != Abi::Rust {
         output.push(match &header.abi {
@@ -361,7 +360,7 @@ fn render_function(
                                 output.extend(vec![Token::lifetime(lt), ws!()]);
                             }
                             if *mutable {
-                                output.extend(vec![Token::symbol("mut"), ws!()])
+                                output.extend(vec![Token::symbol("mut"), ws!()]);
                             }
                             output.extend(Token::self_("self"));
                             Some(output)
@@ -424,7 +423,7 @@ fn render_generic_args(root: &Crate, args: &GenericArgs) -> TokenStream {
                             });
                         }
                         TypeBindingKind::Constraint(bounds) => {
-                            output.extend(render_generic_bounds(root, bounds))
+                            output.extend(render_generic_bounds(root, bounds));
                         }
                     }
                     output

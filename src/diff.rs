@@ -20,14 +20,12 @@ pub struct ChangedPublicItem {
 }
 
 impl ChangedPublicItem {
+    /// The rendering into [`Token`]s of this changed public item.
     pub fn changed_tokens(&self) -> Vec<ChangedTokenStream> {
-        ChangedTokenStream::new(ChangedPublicItem::align_tokens(
-            &self.old.tokens,
-            &self.new.tokens,
-        ))
+        ChangedTokenStream::new(Self::align_tokens(&self.old.tokens, &self.new.tokens))
     }
 
-    /// Calculates the difference between two TokenStreams, the algorithm is the Needleman-Wunsch algorithm
+    /// Calculates the difference between two [`TokenStream`]s, the algorithm is the Needleman-Wunsch algorithm
     fn align_tokens(a: &TokenStream, b: &TokenStream) -> Vec<ChangedToken> {
         // Reused code from an older project of mine, please go hard with the code refactoring suggestions ;-)
         // Match between sequences A and B.
@@ -35,17 +33,12 @@ impl ChangedPublicItem {
         // With A as reference an Removed is something missing in A but present in B.
         // With A as reference a Inserted is something present in A but missing in B.
 
-        let a: Vec<&Token> = a.tokens().collect();
-        let b: Vec<&Token> = b.tokens().collect();
         #[derive(Clone)]
         enum Direction {
             Match,
             Removed,
             Inserted,
         }
-
-        let mut matrix: Vec<Vec<(isize, Direction)>> =
-            vec![vec![(0, Direction::Match); a.len() + 1]; b.len() + 1];
 
         fn max(
             (a1, a2): (isize, Direction),
@@ -63,6 +56,12 @@ impl ChangedPublicItem {
             };
             unreachable!();
         }
+
+        let a: Vec<&Token> = a.tokens().collect();
+        let b: Vec<&Token> = b.tokens().collect();
+
+        let mut matrix: Vec<Vec<(isize, Direction)>> =
+            vec![vec![(0, Direction::Match); a.len() + 1]; b.len() + 1];
 
         //Build the matrix
         for x in 0..a.len() {
@@ -322,7 +321,7 @@ mod tests {
                 ChangedToken::Removed(Token::Whitespace),
                 ChangedToken::Same(Token::identifier("a"))
             ]
-        )
+        );
     }
 
     #[test]
@@ -336,12 +335,15 @@ mod tests {
                 ChangedToken::Same(Token::identifier("a")),
                 ChangedToken::Same(Token::identifier("a"))
             ]
-        )
+        );
     }
 
     fn item_with_path(path: &str) -> PublicItem {
         PublicItem {
-            path: path.split("::").map(|i| i.to_string()).collect(),
+            path: path
+                .split("::")
+                .map(std::string::ToString::to_string)
+                .collect(),
             tokens: TokenStream::default(),
         }
     }

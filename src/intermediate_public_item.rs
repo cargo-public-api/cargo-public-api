@@ -62,6 +62,6 @@ impl<'a> IntermediatePublicItem<'a> {
     }
 
     pub fn render_token_stream(&self) -> TokenStream {
-        render::render_token_stream(self)
+        render::token_stream(self)
     }
 }

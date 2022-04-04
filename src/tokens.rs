@@ -1,19 +1,35 @@
+//! The module tp contain all token handling logic.
+
+/// A token in a rendered [`PublicItem`], used to apply syntax colouring in downstream applications.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Token {
+    /// A symbol, like `=` or `::<`
     Symbol(String),
+    /// A qualifier, like `pub` or `const`
     Qualifier(String),
+    /// The kind of an item, like `function` or `trait`
     Kind(String),
+    /// Whitespace, a single space
     Whitespace,
+    /// An identifier, like variable names or parts of the path of an item
     Identifier(String),
+    /// The identifier self, the text can be `self` or `Self`
     Self_(String),
+    /// The identifier for a function, like `fn_arg` in `comprehensive_api::functions::fn_arg`
     Function(String),
+    /// A lifetime including the apostrophe `'`, like `'a`
     Lifetime(String),
+    /// A keyword, like `impl`
     Keyword(String),
+    /// A generic, like `T`
     Generic(String),
+    /// A primitive type, like `usize`
     Primitive(String),
+    /// A type, like `Iterator`
     Type(String),
 }
 
+/// A simple macro to write `Token::Whitespace` in less characters.
 #[macro_export]
 macro_rules! ws {
     () => {
@@ -22,39 +38,52 @@ macro_rules! ws {
 }
 
 impl Token {
+    /// A symbol, like `=` or `::<`
     pub fn symbol(text: impl Into<String>) -> Self {
-        Token::Symbol(text.into())
+        Self::Symbol(text.into())
     }
+    /// A qualifier, like `pub` or `const`
     pub fn qualifier(text: impl Into<String>) -> Self {
-        Token::Qualifier(text.into())
+        Self::Qualifier(text.into())
     }
+    /// The kind of an item, like `function` or `trait`
     pub fn kind(text: impl Into<String>) -> Self {
-        Token::Kind(text.into())
+        Self::Kind(text.into())
     }
+    /// An identifier, like variable names or parts of the path of an item
     pub fn identifier(text: impl Into<String>) -> Self {
-        Token::Identifier(text.into())
+        Self::Identifier(text.into())
     }
+    /// The identifier self, the text can be `self` or `Self`
     pub fn self_(text: impl Into<String>) -> Self {
-        Token::Self_(text.into())
+        Self::Self_(text.into())
     }
+    /// The identifier for a function, like `fn_arg` in `comprehensive_api::functions::fn_arg`
     pub fn function(text: impl Into<String>) -> Self {
-        Token::Function(text.into())
+        Self::Function(text.into())
     }
+    /// A lifetime including the apostrophe `'`, like `'a`
     pub fn lifetime(text: impl Into<String>) -> Self {
-        Token::Lifetime(text.into())
+        Self::Lifetime(text.into())
     }
+    /// A keyword, like `impl`
     pub fn keyword(text: impl Into<String>) -> Self {
-        Token::Keyword(text.into())
+        Self::Keyword(text.into())
     }
+    /// A generic, like `T`
     pub fn generic(text: impl Into<String>) -> Self {
-        Token::Generic(text.into())
+        Self::Generic(text.into())
     }
+    /// A primitive type, like `usize`
     pub fn primitive(text: impl Into<String>) -> Self {
-        Token::Primitive(text.into())
+        Self::Primitive(text.into())
     }
+    /// A type, like `Iterator`
     pub fn type_(text: impl Into<String>) -> Self {
-        Token::Type(text.into())
+        Self::Type(text.into())
     }
+    /// Give the length of the inner text of this token
+    #[allow(clippy::len_without_is_empty)]
     pub fn len(&self) -> usize {
         match self {
             Self::Symbol(l)
@@ -71,9 +100,7 @@ impl Token {
             Self::Whitespace => 1,
         }
     }
-    pub fn is_empty(&self) -> bool {
-        self.len() == 0
-    }
+    /// Get the inner text of this token
     pub fn text(&self) -> &str {
         match self {
             Self::Symbol(l)
@@ -91,57 +118,67 @@ impl Token {
         }
     }
 
+    /// Get the score if this Token is aligned to another Token
     pub(crate) fn align_score(&self, other: &Self) -> isize {
         let cmp = |a, b| if a == b { 1 } else { -2 };
         match (self, other) {
-            (Self::Symbol(a), Self::Symbol(b)) => cmp(a, b),
-            (Self::Qualifier(a), Self::Qualifier(b)) => cmp(a, b),
-            (Self::Kind(a), Self::Kind(b)) => cmp(a, b),
+            (Self::Symbol(a), Self::Symbol(b))
+            | (Self::Qualifier(a), Self::Qualifier(b))
+            | (Self::Kind(a), Self::Kind(b))
+            | (Self::Lifetime(a), Self::Lifetime(b))
+            | (Self::Keyword(a), Self::Keyword(b))
+            | (Self::Generic(a), Self::Generic(b))
+            | (Self::Primitive(a), Self::Primitive(b))
+            | (Self::Type(a), Self::Type(b)) => cmp(a, b),
             (Self::Whitespace, Self::Whitespace) => 0,
             (Self::Identifier(a) | Self::Function(a), Self::Identifier(b) | Self::Function(b)) => {
                 cmp(a, b)
             }
-            (Self::Lifetime(a), Self::Lifetime(b)) => cmp(a, b),
-            (Self::Keyword(a), Self::Keyword(b)) => cmp(a, b),
-            (Self::Generic(a), Self::Generic(b)) => cmp(a, b),
-            (Self::Primitive(a), Self::Primitive(b)) => cmp(a, b),
-            (Self::Type(a), Self::Type(b)) => cmp(a, b),
             _ => -2,
         }
     }
 }
 
+/// A sequence of Tokens with nice helper functions.
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub struct TokenStream {
+    /// The tokens
     pub tokens: Vec<Token>,
 }
 
 impl TokenStream {
-    pub fn extend(&mut self, tokens: impl Into<TokenStream>) {
-        self.tokens.extend(tokens.into().tokens)
+    /// Extend this [`TokenStream`] with extra [`Token`]s.
+    pub fn extend(&mut self, tokens: impl Into<Self>) {
+        self.tokens.extend(tokens.into().tokens);
     }
 
+    /// Push a single [`Token`] to the end of this sequence.
     pub fn push(&mut self, token: Token) {
         self.tokens.push(token);
     }
 
+    /// Get the number of tokens in this [`TokenStream`].
     pub fn len(&self) -> usize {
         self.tokens.len()
     }
 
+    /// Check if there are no [`Token`]s in this sequence.
     pub fn is_empty(&self) -> bool {
         self.tokens.is_empty()
     }
 
+    /// Remove the specified number of [`Token`]s from the end of this sequence.
     pub fn remove_from_back(&mut self, len: usize) {
         self.tokens
-            .resize(self.tokens.len() - len, Token::Whitespace)
+            .resize(self.tokens.len() - len, Token::Whitespace);
     }
 
+    /// Get access to the tokens with an Iterator.
     pub fn tokens(&self) -> impl Iterator<Item = &Token> + '_ {
         self.tokens.iter()
     }
 
+    /// Get the total length of all [`Token`]s in this sequence, see [`Token::len`].
     pub fn tokens_len(&self) -> usize {
         self.tokens().map(Token::len).sum()
     }
@@ -162,22 +199,22 @@ impl std::fmt::Display for TokenStream {
 //}
 
 impl From<Vec<Token>> for TokenStream {
-    fn from(tokens: Vec<Token>) -> TokenStream {
-        TokenStream { tokens }
+    fn from(tokens: Vec<Token>) -> Self {
+        Self { tokens }
     }
 }
 
 impl From<&[Token]> for TokenStream {
-    fn from(tokens: &[Token]) -> TokenStream {
-        TokenStream {
+    fn from(tokens: &[Token]) -> Self {
+        Self {
             tokens: tokens.to_vec(),
         }
     }
 }
 
 impl From<Token> for TokenStream {
-    fn from(token: Token) -> TokenStream {
-        TokenStream {
+    fn from(token: Token) -> Self {
+        Self {
             tokens: vec![token],
         }
     }
@@ -190,11 +227,18 @@ pub(crate) enum ChangedToken {
     Removed(Token),
 }
 
+/// The elemental building block of the rendering into [`Token`]s of a changed public item.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum ChangedTokenStream {
+    /// A sequence of [`Token`]s that has stayed the same across both versions.
     Same(TokenStream),
+    /// A sequence of [`Token`]s that has changed between the two versions.
+    /// The [`Token`]s in `removed` are present in the first version but removed and replaced
+    /// with the tokens in `inserted` in the second version.
     Changed {
+        /// These [`Token`]s were present in the first version but not the second version.
         removed: TokenStream,
+        /// These [`Token`]s were present in the second version but not the first version.
         inserted: TokenStream,
     },
 }
@@ -212,7 +256,7 @@ impl ChangedTokenStream {
                     if !recent_change {
                         stream_a.push(t);
                     } else if !stream_a.is_empty() || !stream_b.is_empty() {
-                        output.push(ChangedTokenStream::Changed {
+                        output.push(Self::Changed {
                             removed: stream_a,
                             inserted: stream_b,
                         });
@@ -225,7 +269,7 @@ impl ChangedTokenStream {
                     if recent_change {
                         stream_b.push(t);
                     } else if !stream_a.is_empty() {
-                        output.push(ChangedTokenStream::Same(stream_a));
+                        output.push(Self::Same(stream_a));
                         stream_a = TokenStream::default();
                         stream_b = t.into();
                         recent_change = true;
@@ -235,7 +279,7 @@ impl ChangedTokenStream {
                     if recent_change {
                         stream_a.push(t);
                     } else if !stream_a.is_empty() {
-                        output.push(ChangedTokenStream::Same(stream_a));
+                        output.push(Self::Same(stream_a));
                         stream_a = t.into();
                         stream_b = TokenStream::default();
                         recent_change = true;
@@ -245,12 +289,12 @@ impl ChangedTokenStream {
         }
         if !stream_a.is_empty() || !stream_b.is_empty() {
             if recent_change {
-                output.push(ChangedTokenStream::Changed {
+                output.push(Self::Changed {
                     removed: stream_a,
                     inserted: stream_b,
                 });
             } else {
-                output.push(ChangedTokenStream::Same(stream_a));
+                output.push(Self::Same(stream_a));
             }
         }
         output

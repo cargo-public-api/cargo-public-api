@@ -4,7 +4,7 @@
 //! additional helpers for that.
 
 use crate::{
-    tokens::{ChangedToken, Token, TokenStream},
+    tokens::{ChangedToken, ChangedTokenStream, Token, TokenStream},
     PublicItem,
 };
 
@@ -20,8 +20,11 @@ pub struct ChangedPublicItem {
 }
 
 impl ChangedPublicItem {
-    pub fn changed_tokens(&self) -> Vec<ChangedToken> {
-        ChangedPublicItem::align_tokens(self.old.tokens(), self.new.tokens())
+    pub fn changed_tokens(&self) -> Vec<ChangedTokenStream> {
+        ChangedTokenStream::new(ChangedPublicItem::align_tokens(
+            self.old.tokens(),
+            self.new.tokens(),
+        ))
     }
 
     /// Calculates the difference between two TokenStreams, the algorithm is the Needleman-Wunsch algorithm

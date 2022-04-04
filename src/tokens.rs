@@ -55,6 +55,22 @@ impl Token {
     pub fn type_(text: impl Into<String>) -> Self {
         Token::Type(text.into())
     }
+    pub fn len(&self) -> usize {
+        match self {
+            Self::Symbol(l)
+            | Self::Qualifier(l)
+            | Self::Kind(l)
+            | Self::Identifier(l)
+            | Self::Self_(l)
+            | Self::Function(l)
+            | Self::Lifetime(l)
+            | Self::Keyword(l)
+            | Self::Generic(l)
+            | Self::Primitive(l)
+            | Self::Type(l) => l.len(),
+            Self::Whitespace => 1,
+        }
+    }
 
     pub(crate) fn align_score(&self, other: &Self) -> isize {
         let cmp = |a, b| if a == b { 1 } else { -2 };
@@ -106,6 +122,10 @@ impl TokenStream {
     pub fn tokens(&self) -> impl Iterator<Item = &Token> + '_ {
         self.tokens.iter()
     }
+
+    pub fn tokens_len(&self) -> usize {
+        self.tokens().map(Token::len).sum()
+    }
 }
 
 //impl<T: Iterator<Item = Token>> From<T> for TokenStream {
@@ -139,8 +159,75 @@ impl From<Token> for TokenStream {
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
-pub enum ChangedToken {
+pub(crate) enum ChangedToken {
     Same(Token),
     Inserted(Token),
     Removed(Token),
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub enum ChangedTokenStream {
+    Same(TokenStream),
+    Changed {
+        removed: TokenStream,
+        inserted: TokenStream,
+    },
+}
+
+impl ChangedTokenStream {
+    pub(crate) fn new(tokens: Vec<ChangedToken>) -> Vec<Self> {
+        let mut output = Vec::new();
+        let mut recent_change = false;
+        let mut stream_a = TokenStream::default();
+        let mut stream_b = TokenStream::default();
+
+        for token in tokens {
+            match token {
+                ChangedToken::Same(t) => {
+                    if !recent_change {
+                        stream_a.push(t);
+                    } else if !stream_a.is_empty() || !stream_b.is_empty() {
+                        output.push(ChangedTokenStream::Changed {
+                            removed: stream_a,
+                            inserted: stream_b,
+                        });
+                        stream_a = t.into();
+                        stream_b = TokenStream::default();
+                        recent_change = false;
+                    }
+                }
+                ChangedToken::Inserted(t) => {
+                    if recent_change {
+                        stream_b.push(t);
+                    } else if !stream_a.is_empty() {
+                        output.push(ChangedTokenStream::Same(stream_a));
+                        stream_a = TokenStream::default();
+                        stream_b = t.into();
+                        recent_change = true;
+                    }
+                }
+                ChangedToken::Removed(t) => {
+                    if recent_change {
+                        stream_a.push(t);
+                    } else if !stream_a.is_empty() {
+                        output.push(ChangedTokenStream::Same(stream_a));
+                        stream_a = t.into();
+                        stream_b = TokenStream::default();
+                        recent_change = true;
+                    }
+                }
+            }
+        }
+        if !stream_a.is_empty() || !stream_b.is_empty() {
+            if recent_change {
+                output.push(ChangedTokenStream::Changed {
+                    removed: stream_a,
+                    inserted: stream_b,
+                });
+            } else {
+                output.push(ChangedTokenStream::Same(stream_a));
+            }
+        }
+        output
+    }
 }

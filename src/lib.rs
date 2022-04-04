@@ -20,7 +20,7 @@
 //!
 //! ## Diff two versions of a public API
 //! ```
-#![doc = include_str!("../examples/public_api_diff.rs")]
+#![doc = include_str!("../examples/diff_public_items.rs")]
 //! ```
 //!
 //! The most comprehensive example code on how to use the library can be found

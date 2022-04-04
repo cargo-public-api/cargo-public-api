@@ -101,7 +101,7 @@ fn colour_diff_token(token: &ChangedTokenStream) -> (String, String) {
 }
 
 fn colour_item(item: &public_items::PublicItem) -> String {
-    colour_token_stream(item.tokens(), None)
+    colour_token_stream(&item.tokens, None)
 }
 
 fn colour_token_stream(tokens: &TokenStream, bg: Option<Colour>) -> String {

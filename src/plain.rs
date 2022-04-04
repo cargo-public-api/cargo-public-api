@@ -2,7 +2,7 @@ use std::io::{Result, Write};
 
 use public_items::{diff::PublicItemsDiff, PublicItem};
 
-use ansi_term::{ANSIString, ANSIStrings, Colour};
+use ansi_term::{ANSIString, ANSIStrings, Colour, Style};
 use public_items::tokens::*;
 
 use crate::{
@@ -31,7 +31,7 @@ impl OutputFormatter for Plain {
             &diff.removed,
             |w, item| {
                 if use_color {
-                    writeln!(w, "{}", colour_item(item))
+                    writeln!(w, "-{}", colour_item(item))
                 } else {
                     writeln!(w, "-{}", item)
                 }
@@ -59,7 +59,7 @@ impl OutputFormatter for Plain {
             &diff.added,
             |w, item| {
                 if use_color {
-                    writeln!(w, "{}", colour_item(item))
+                    writeln!(w, "+{}", colour_item(item))
                 } else {
                     writeln!(w, "+{}", item)
                 }
@@ -72,55 +72,66 @@ impl OutputFormatter for Plain {
 
 fn colour_diff(item: &public_items::diff::ChangedPublicItem) -> String {
     let tokens = item.changed_tokens();
-    let (previous, current): (Vec<ANSIString<'_>>, Vec<ANSIString<'_>>) =
+    let (previous, current): (Vec<String>, Vec<String>) =
         tokens.iter().map(colour_diff_token).unzip();
-    format!("- {}\n+ {}", ANSIStrings(&previous), ANSIStrings(&current))
+    format!("- {}\n+ {}", previous.join(""), current.join(""))
 }
 
-fn colour_diff_token(token: &ChangedToken) -> (ANSIString<'_>, ANSIString<'_>) {
+fn colour_diff_token(token: &ChangedTokenStream) -> (String, String) {
     match token {
-        ChangedToken::Same(token) => {
-            let s = colour_item_token(token);
-            let l = s.len();
-            (s, Colour::White.paint(" ".repeat(l)))
+        ChangedTokenStream::Same(tokens) => {
+            let s = colour_token_stream(tokens, None);
+            (s, " ".repeat(tokens.tokens_len()))
         }
-        ChangedToken::Inserted(token) => {
-            let s = colour_item_token(token);
+        ChangedTokenStream::Changed { removed, inserted } => {
+            let removed_len = removed.tokens_len();
+            let inserted_len = inserted.tokens_len();
+            let l = removed_len.max(inserted_len);
+            let mut removed = removed.clone();
+            let mut inserted = inserted.clone();
+            removed.extend(vec![Token::Whitespace; l - removed_len]);
+            inserted.extend(vec![Token::Whitespace; l - inserted_len]);
+
             (
-                Colour::White.on(Colour::Green).paint(" ".repeat(s.len())),
-                s,
+                colour_token_stream(&removed, Some(Colour::Red)),
+                colour_token_stream(&inserted, Some(Colour::Green)),
             )
-        }
-        ChangedToken::Removed(token) => {
-            let s = colour_item_token(token);
-            let l = s.len();
-            (s, Colour::White.on(Colour::Red).paint(" ".repeat(l)))
         }
     }
 }
 
 fn colour_item(item: &public_items::PublicItem) -> String {
-    let styled = item
+    colour_token_stream(item.tokens(), None)
+}
+
+fn colour_token_stream(tokens: &TokenStream, bg: Option<Colour>) -> String {
+    let styled = tokens
         .tokens()
-        .tokens()
-        .map(colour_item_token)
+        .map(|t| colour_item_token(t, bg))
         .collect::<Vec<_>>();
     ANSIStrings(&styled).to_string()
 }
 
-fn colour_item_token(token: &Token) -> ANSIString<'_> {
+fn colour_item_token(token: &Token, bg: Option<Colour>) -> ANSIString<'_> {
+    let style = |colour: Style, text: &str| {
+        if let Some(overrule) = bg {
+            colour.on(overrule).paint(text.to_string())
+        } else {
+            colour.paint(text.to_string())
+        }
+    };
     match token {
-        Token::Symbol(text) => Colour::White.paint(text),
-        Token::Qualifier(text) => Colour::Blue.paint(text),
-        Token::Kind(text) => Colour::Blue.bold().paint(text),
-        Token::Whitespace => Colour::White.paint(" "),
-        Token::Identifier(text) => Colour::Cyan.paint(text),
-        Token::Self_(text) => Colour::Blue.paint(text),
-        Token::Function(text) => Colour::Yellow.paint(text),
-        Token::Lifetime(text) => Colour::Blue.bold().paint(text),
-        Token::Keyword(text) => Colour::Purple.paint(text),
-        Token::Generic(text) => Colour::Green.bold().paint(text),
-        Token::Primitive(text) => Colour::Yellow.paint(text),
-        Token::Type(text) => Colour::Green.paint(text),
+        Token::Symbol(text) => style(Colour::White.into(), text),
+        Token::Qualifier(text) => style(Colour::Blue.into(), text),
+        Token::Kind(text) => style(Colour::Blue.bold(), text),
+        Token::Whitespace => style(Colour::White.into(), " "),
+        Token::Identifier(text) => style(Colour::Cyan.into(), text),
+        Token::Self_(text) => style(Colour::Blue.into(), text),
+        Token::Function(text) => style(Colour::Yellow.into(), text),
+        Token::Lifetime(text) => style(Colour::Blue.bold(), text),
+        Token::Keyword(text) => style(Colour::Purple.into(), text),
+        Token::Generic(text) => style(Colour::Green.bold(), text),
+        Token::Primitive(text) => style(Colour::Yellow.into(), text),
+        Token::Type(text) => style(Colour::Green.into(), text),
     }
 }

@@ -13,7 +13,9 @@
 //!
 //! # Examples
 //!
-//! ## List all public items of a crate
+//! The two main use cases are listing public items, and diffing public items.
+//!
+//! ## List all public items of a crate (the public API)
 //! ```
 #![doc = include_str!("../examples/list_public_items.rs")]
 //! ```

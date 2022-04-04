@@ -251,7 +251,7 @@ fn render_type(root: &Crate, ty: &Type) -> TokenStream {
         Type::Array { type_, len } => {
             let mut output: TokenStream = Token::symbol("[").into();
             output.extend(render_type(root, type_));
-            output.push(Token::symbol(":"));
+            output.push(Token::symbol(";"));
             output.push(ws!());
             output.push(Token::primitive(len));
             output.push(Token::symbol("]"));
@@ -263,8 +263,8 @@ fn render_type(root: &Crate, ty: &Type) -> TokenStream {
             let mut output: TokenStream = Token::symbol("*").into();
             if *mutable {
                 output.push(Token::keyword("mut"));
+                output.push(ws!());
             }
-            output.push(ws!());
             output.extend(render_type(root, type_));
             output
         }
@@ -360,7 +360,7 @@ fn render_function(
                                 output.extend(vec![Token::lifetime(lt), ws!()]);
                             }
                             if *mutable {
-                                output.extend(vec![Token::symbol("mut"), ws!()]);
+                                output.extend(vec![Token::keyword("mut"), ws!()]);
                             }
                             output.extend(Token::self_("self"));
                             Some(output)
@@ -434,15 +434,14 @@ fn render_generic_args(root: &Crate, args: &GenericArgs) -> TokenStream {
             inputs,
             output: return_ty,
         } => {
-            let mut output: TokenStream = Token::kind("Fn").into();
-            output.extend(render_sequence(
+            let mut output: TokenStream = render_sequence(
                 Token::symbol("("),
                 Token::symbol(")"),
                 vec![Token::symbol(","), ws!()],
                 false,
                 inputs,
                 |ty| render_type(root, ty),
-            ));
+            );
             if let Some(return_ty) = return_ty {
                 output.extend(vec![ws!(), Token::symbol("->"), ws!()]);
                 output.extend(render_type(root, return_ty));
@@ -489,14 +488,18 @@ fn render_generics(root: &Crate, generics: &[GenericParamDef]) -> TokenStream {
                     bounds, synthetic, ..
                 } if bounds.is_empty() || *synthetic => TokenStream::default(),
                 _ => {
-                    let mut output: TokenStream = vec![
-                        Token::identifier(param.name.clone()),
-                        Token::symbol(":"),
-                        ws!(),
-                    ]
-                    .into();
-                    output.extend(render_generic(root, &param.kind));
-                    output
+                    if let GenericParamDefKind::Lifetime { .. } = param.kind {
+                        Token::lifetime(param.name.clone()).into()
+                    } else {
+                        let mut output: TokenStream = vec![
+                            Token::identifier(param.name.clone()),
+                            Token::symbol(":"),
+                            ws!(),
+                        ]
+                        .into();
+                        output.extend(render_generic(root, &param.kind));
+                        output
+                    }
                 }
             },
         ));

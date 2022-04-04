@@ -71,6 +71,25 @@ impl Token {
             Self::Whitespace => 1,
         }
     }
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
+    pub fn text(&self) -> &str {
+        match self {
+            Self::Symbol(l)
+            | Self::Qualifier(l)
+            | Self::Kind(l)
+            | Self::Identifier(l)
+            | Self::Self_(l)
+            | Self::Function(l)
+            | Self::Lifetime(l)
+            | Self::Keyword(l)
+            | Self::Generic(l)
+            | Self::Primitive(l)
+            | Self::Type(l) => l,
+            Self::Whitespace => " ",
+        }
+    }
 
     pub(crate) fn align_score(&self, other: &Self) -> isize {
         let cmp = |a, b| if a == b { 1 } else { -2 };
@@ -125,6 +144,12 @@ impl TokenStream {
 
     pub fn tokens_len(&self) -> usize {
         self.tokens().map(Token::len).sum()
+    }
+}
+
+impl std::fmt::Display for TokenStream {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.tokens().map(Token::text).collect::<String>())
     }
 }
 

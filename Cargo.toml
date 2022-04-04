@@ -17,7 +17,7 @@ cargo_toml = "0.11.4"
 clap = { version = "3.1.2", features = ["derive"] }
 
 [dependencies.public_items]
-# path = "/Users/martin/src/public_items"
+path = "/Users/douwe/Sources/public_items"
 version = "0.7.1"
 
 [dev-dependencies]

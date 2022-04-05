@@ -78,34 +78,30 @@ fn public_items_diff_between_v0_3_0_and_v0_4_0() {
 
 #[test]
 fn comprehensive_api() {
-    build_rustdoc_json("./tests/crates/comprehensive_api/Cargo.toml");
     assert_public_items(
-        &std::fs::read_to_string("./target/doc/comprehensive_api.json").unwrap(),
+        &comprehensive_api_rustdoc_json(),
         include_str!("./expected_output/comprehensive_api.txt"),
     );
 }
-
 /// I confess: this test is mainly to get function code coverage on Ord
 #[test]
 fn public_item_ord() {
-    let public_items = public_items_from_rustdoc_json_str(
-        include_str!("./rustdoc_json/fn_double_fn_triple-v0.1.0.json"),
-        Options::default(),
-    )
-    .unwrap();
+    let public_items =
+        public_items_from_rustdoc_json_str(&comprehensive_api_rustdoc_json(), Options::default())
+            .unwrap();
 
-    let fn_double = public_items
+    let generic_arg = public_items
         .clone()
         .into_iter()
-        .find(|x| format!("{}", x).contains("double"))
+        .find(|x| format!("{}", x).contains("generic_arg"))
         .unwrap();
 
-    let fn_triple = public_items
+    let generic_bound = public_items
         .into_iter()
-        .find(|x| format!("{}", x).contains("triple"))
+        .find(|x| format!("{}", x).contains("generic_bound"))
         .unwrap();
 
-    assert_eq!(fn_double.max(fn_triple.clone()), fn_triple);
+    assert_eq!(generic_arg.max(generic_bound.clone()), generic_bound);
 }
 
 #[test]
@@ -168,6 +164,18 @@ fn build_rustdoc_json<P: AsRef<Path>>(manifest_path: P) {
     command.arg(manifest_path.as_ref());
     command.env("RUSTDOCFLAGS", "-Z unstable-options --output-format json");
     assert!(command.spawn().unwrap().wait().unwrap().success());
+}
+
+/// Helper to get a [String] that contains the rustdoc JSON (freshly built) for
+/// our in-repo `comprehensive_api` test crate.
+///
+/// The easiest way to explore the API for a human is by running
+/// ```bash
+/// cargo doc --manifest-path ./tests/crates/comprehensive_api/Cargo.toml --open
+/// ```
+fn comprehensive_api_rustdoc_json() -> String {
+    build_rustdoc_json("./tests/crates/comprehensive_api/Cargo.toml");
+    std::fs::read_to_string("./target/doc/comprehensive_api.json").unwrap()
 }
 
 fn assert_public_items_diff(old_json: &str, new_json: &str, expected: &ExpectedDiff) {

@@ -6,7 +6,7 @@ homepage = "https://github.com/Enselic/cargo-public-items"
 license = "MIT"
 name = "cargo-public-items"
 repository = "https://github.com/Enselic/cargo-public-items"
-version = "0.7.1"
+version = "0.7.2"
 
 [dependencies]
 ansi_term = "0.12.1"
@@ -18,7 +18,7 @@ clap = { version = "3.1.2", features = ["derive"] }
 
 [dependencies.public_items]
 # path = "/Users/martin/src/public_items"
-version = "0.7.1"
+version = "0.7.2"
 
 [dev-dependencies]
 assert_cmd = "2.0.4"

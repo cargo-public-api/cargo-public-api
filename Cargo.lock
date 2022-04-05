@@ -94,7 +94,7 @@ dependencies = [
 
 [[package]]
 name = "cargo-public-items"
-version = "0.7.1"
+version = "0.7.2"
 dependencies = [
  "ansi_term",
  "anyhow",
@@ -392,9 +392,9 @@ dependencies = [
 
 [[package]]
 name = "public_items"
-version = "0.7.1"
+version = "0.7.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c70151efcce9cee7d73a162c52c16ce696c3450d816d870dc482b863d9f79adc"
+checksum = "fe60389547fe74451e85d97fe99702aa2745c0190a96c49eed7d0e5b908044a9"
 dependencies = [
  "rustdoc-types",
  "serde",

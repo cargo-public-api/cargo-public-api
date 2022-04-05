@@ -4,51 +4,63 @@ You might want the convenient `cargo public-items` wrapper for this library. See
 
 # public_items
 
-List public items (the public API) of a Rust library crate by analyzing the rustdoc JSON of the crate. Enables diffing public API between releases and commits.
+List public items (the public API) of Rust library crates by analyzing the rustdoc JSON of the crates. Also supports diffing the public API between releases and commits.
 
 # Usage
 
-If you prefer not to use the convenient [`cargo public-items`](https://crates.io/crates/cargo-public-items) wrapper you can play around with the thin `public_items` bin wrapper around this library. Do like this:
+The library comes with a thin bin wrapper that can be used to explore the capabilities of this library.
 
 ```bash
-# Install the tool that is a thin wrapper around the `public_items` library
-cargo install public_items
+# Install the thin bin wrapper
+% cargo install public_items
 
-# Generate rustdoc JSON for your own Rust library
-cd ~/src/your_library
-RUSTDOCFLAGS='-Z unstable-options --output-format json' cargo +nightly doc --lib --no-deps
-
-# List all items in the public API of your Rust library
-public_items ./target/doc/your_library.json
+# Install a recent version of nightly so that rustdoc JSON can be generated
+% rustup install nightly
 ```
 
-# Example: List the public items of the `public_items` library itself
+## List public items
 
-```txt
-% git clone https://github.com/Enselic/public_items.git
-% cd public_items
+To list all items that form the public API of your Rust library:
+
+```bash
+# Generate rustdoc JSON for your own Rust library
+% cd ~/src/your_library
 % RUSTDOCFLAGS='-Z unstable-options --output-format json' cargo +nightly doc --lib --no-deps
-% public_items ./target/doc/public_items.json
-pub enum public_items::Error
-pub enum variant public_items::Error::SerdeJsonError(serde_json::Error)
-pub fn public_items::Error::fmt(&self, __formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
-pub fn public_items::Error::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-pub fn public_items::Error::from(source: serde_json::Error) -> Self
-pub fn public_items::Error::source(&self) -> std::option::Option<&std::error::Error + 'static>
+
+# List all items in the public API of your Rust library
+% public_items ./target/doc/your_library.json
+pub mod public_items
 pub fn public_items::Options::clone(&self) -> Options
 pub fn public_items::Options::default() -> Self
-pub fn public_items::Options::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-pub fn public_items::PublicItem::cmp(&self, other: &PublicItem) -> $crate::cmp::Ordering
-pub fn public_items::PublicItem::eq(&self, other: &PublicItem) -> bool
-pub fn public_items::PublicItem::fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
-pub fn public_items::PublicItem::ne(&self, other: &PublicItem) -> bool
-pub fn public_items::PublicItem::partial_cmp(&self, other: &PublicItem) -> $crate::option::Option<$crate::cmp::Ordering>
-pub fn public_items::sorted_public_items_from_rustdoc_json_str(rustdoc_json_str: &str, options: Options) -> Result<Vec<PublicItem>>
-pub mod public_items
+pub fn public_items::PublicItem::clone(&self) -> PublicItem
+pub fn public_items::public_items_from_rustdoc_json_str(rustdoc_json_str: &str, options: Options) -> Result<Vec<PublicItem>>
 pub struct public_items::Options
 pub struct public_items::PublicItem
+pub struct field public_items::Options::sorted: bool
 pub struct field public_items::Options::with_blanket_implementations: bool
-pub type public_items::Result<T> = std::result::Result<T, Error>
+...
+```
+
+## Diff public items
+
+It is frequently of interest to know how the public API of a crate has changed. You can find this out by doing a diff between different versions of the same library. Again, [`cargo public-items`](https://github.com/Enselic/cargo-public-items) makes this more convenient, but it is straightforward enough without it.
+
+```bash
+# Generate two different rustdoc JSON files for two different versions of your library
+# and then pass both files to the bin to make it print the public API diff
+% public_items ./target/doc/your_library.old.json  ./target/doc/your_library.json
+Removed:
+(nothing)
+
+Changed:
+-pub fn public_items::sorted_public_items_from_rustdoc_json_str(rustdoc_json_str: &str) -> Result<Vec<PublicItem>>
++pub fn public_items::sorted_public_items_from_rustdoc_json_str(rustdoc_json_str: &str, options: Options) -> Result<Vec<PublicItem>>
+
+Added:
++pub fn public_items::Options::clone(&self) -> Options
++pub fn public_items::Options::default() -> Self
++pub struct public_items::Options
++pub struct field public_items::Options::with_blanket_implementations: bool
 ```
 
 # Expected output
@@ -75,46 +87,15 @@ pub fn                     input_files<I, P>(&mut self, paths: I) -> &mut Self w
 pub fn bat::PrettyPrinter::input_files<I, P>(&mut self, paths: I) -> &mut Self where I: IntoIterator<Item = P>, P: AsRef<Path>
 ```
 
-# Diffing
-
-It is frequently of interest to know how the public API of a crate has changed. You can find this out by doing a diff between different versions of the same library. Again, `cargo public-items` makes this more convenient, but it is straightforward enough without it. This example does a diff between [public_items v0.2.0](https://docs.rs/public_items/0.2.0/public_items/index.html) and [public_items v0.4.0](https://docs.rs/public_items/0.4.0/public_items/index.html):
-
-```
-% cd ~/src/public_items
-% git checkout v0.4.0
-% RUSTDOCFLAGS='-Z unstable-options --output-format json' cargo +nightly doc --lib --no-deps
-% cp ./target/doc/public_items.json /tmp/public_items-v0.2.0.json
-% git checkout v0.4.0
-% RUSTDOCFLAGS='-Z unstable-options --output-format json' cargo +nightly doc --lib --no-deps
-% cp ./target/doc/public_items.json /tmp/public_items-v0.4.0.json
-% public_items /tmp/public_items-v0.2.0.json /tmp/public_items-v0.4.0.json
-Removed:
-(nothing)
-
-Changed:
--pub fn public_items::sorted_public_items_from_rustdoc_json_str(rustdoc_json_str: &str) -> Result<Vec<PublicItem>>
-+pub fn public_items::sorted_public_items_from_rustdoc_json_str(rustdoc_json_str: &str, options: Options) -> Result<Vec<PublicItem>>
-
-Added:
-+pub fn public_items::Options::clone(&self) -> Options
-+pub fn public_items::Options::default() -> Self
-+pub fn public_items::Options::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-+pub struct public_items::Options
-+pub struct field public_items::Options::with_blanket_implementations: bool
-
-```
-
-# Library documentation and example code
-
-Documentation can be found at [docs.rs](https://docs.rs/public_items/latest/public_items/) as usual.
-
-The most comprehensive example code is the code for the [thin wrapper around the library](https://github.com/Enselic/public_items/blob/main/src/main.rs). There are also some [examples](https://github.com/Enselic/public_items/tree/main/examples).
-
 # Blanket implementations
 
 By default, blanket implementations such as `impl<T> Any for T`, `impl<T> Borrow<T> for T`, and `impl<T, U> Into<U> for T where U: From<T>` are omitted from the list of public items of a crate. For the vast majority of use cases, blanket implementations are not of interest, and just creates noise.
 
 If you want to include items of blanket implementations in the output, set [`Options::with_blanket_implementations`](https://docs.rs/public_items/latest/public_items/struct.Options.html#structfield.with_blanket_implementations) to true if you use the library, or pass `--with-blanket-implementations` to `public_items`.
+
+# Library documentation
+
+Documentation can be found at [docs.rs](https://docs.rs/public_items/latest/public_items/) as usual. There are also some simple [examples](https://github.com/Enselic/public_items/tree/main/examples) on how to use the library. The code for the [thin bin wrapper](https://github.com/Enselic/public_items/blob/main/src/main.rs) might also be of interest.
 
 # Target audience
 

@@ -139,6 +139,20 @@ fn diff_public_items_markdown_no_changes() {
         .success();
 }
 
+#[serial]
+#[test]
+fn diff_public_items_missing_one_arg() {
+    let mut cmd = Command::cargo_bin("cargo-public-items").unwrap();
+    cmd.current_dir(test_crate_path());
+    cmd.arg("--diff-git-checkouts");
+    cmd.arg("v0.2.0");
+    cmd.assert()
+        .stderr(predicates::str::contains(
+            "requires at least 2 values but only 1 was provided",
+        ))
+        .failure();
+}
+
 #[test]
 fn list_public_items_markdown() {
     let mut cmd = Command::cargo_bin("cargo-public-items").unwrap();

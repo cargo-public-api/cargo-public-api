@@ -60,7 +60,7 @@ pub struct Args {
     /// Tip: Make the second commit the same as your current commit, so that
     /// the working tree is restored to your current state after the diff
     /// has been printed.
-    #[clap(long, max_values = 2)]
+    #[clap(long, min_values = 2, max_values = 2)]
     diff_git_checkouts: Option<Vec<String>>,
 
     /// What output format to use. You can select between "plain" and "markdown".

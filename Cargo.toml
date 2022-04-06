@@ -1,11 +1,11 @@
 [package]
 description = "List and diff public items (the public API) of Rust library crates. Requires nightly Rust to be installed."
-documentation = "https://docs.rs/cargo-public-items"
+documentation = "https://docs.rs/cargo-public-api"
 edition = "2021"
-homepage = "https://github.com/Enselic/cargo-public-items"
+homepage = "https://github.com/Enselic/cargo-public-api"
 license = "MIT"
-name = "cargo-public-items"
-repository = "https://github.com/Enselic/cargo-public-items"
+name = "cargo-public-api"
+repository = "https://github.com/Enselic/cargo-public-api"
 version = "0.7.2"
 
 [dependencies]

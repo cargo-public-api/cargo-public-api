@@ -1,11 +1,11 @@
-# cargo-public-items
+# cargo-public-api
 
 List and diff public items (the public API) of different versions of Rust library crates. Relies on and automatically builds rustdoc JSON, for which a recent version of the Rust nighty toolchain must be installed. See [here](https://github.com/Enselic/public_items#compatibility-matrix).
 
 # Installation
 
 ```
-% cargo install cargo-public-items
+% cargo install cargo-public-api
 % rustup install nightly
 ```
 
@@ -17,7 +17,7 @@ This example lists the public items of the library that this cargo subcommand is
 
 ```
 % cd ~/src/public_items
-% cargo public-items
+% cargo public-api
 ```
 
 and the public API will be printed with one line per item:
@@ -48,7 +48,7 @@ The following example prints the public API diff between v0.2.0 and v0.4.0 of th
 
 ```
 % cd ~/src/public_items
-% cargo public-items --diff-git-checkouts v0.2.0 v0.4.0
+% cargo public-api --diff-git-checkouts v0.2.0 v0.4.0
 ## Removed items from the public API
 (none)
 

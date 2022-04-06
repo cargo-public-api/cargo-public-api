@@ -112,11 +112,11 @@ fn print_public_items_diff_between_two_commits(args: &Args, commits: &[String]) 
 /// Get CLI args via `clap` while also handling when we are invoked as a cargo
 /// subcommand
 fn get_args() -> Args {
-    // If we are invoked by cargo as `cargo public-items`, the second arg will
-    // be "public-items". Remove it before passing args on to clap. If we are
+    // If we are invoked by cargo as `cargo public-api`, the second arg will
+    // be "public-api". Remove it before passing args on to clap. If we are
     // not invoked as a cargo subcommand, it will not be part of args at all, so
     // it is safe to filter it out also in that case.
-    let args = std::env::args_os().filter(|x| x != "public-items");
+    let args = std::env::args_os().filter(|x| x != "public-api");
 
     Args::parse_from(args)
 }
@@ -216,9 +216,9 @@ fn collect_public_items(commit: Option<&str>) -> Result<Vec<PublicItem>> {
     public_items_from_rustdoc_json_str(rustdoc_json, options).with_context(|| {
         format!(
             "Failed to parse rustdoc JSON at {:?}.\n\
-            This version of `cargo public-items` requires at least:\n\n    {}\n\n\
-            If you have that, it might be `cargo public-items` that is out of date. Try\n\
-            to install the latest versions with `cargo install cargo-public-items`",
+            This version of `cargo public-api` requires at least:\n\n    {}\n\n\
+            If you have that, it might be `cargo public-api` that is out of date. Try\n\
+            to install the latest versions with `cargo install cargo-public-api`",
             json_path, MINIMUM_RUSTDOC_JSON_VERSION,
         )
     })

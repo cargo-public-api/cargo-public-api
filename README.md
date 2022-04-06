@@ -1,12 +1,15 @@
 # cargo-public-api
 
-List and diff public items (the public API) of different versions of Rust library crates. Relies on and automatically builds rustdoc JSON, for which a recent version of the Rust nighty toolchain must be installed. See [here](https://github.com/Enselic/public_items#compatibility-matrix).
+List and diff the public API of Rust library crates between releases and commits. Allows you to detect breaking changes or semver violations. Relies on and automatically builds rustdoc JSON, for which a recent version of the Rust nighty toolchain must be installed. See [here](https://github.com/Enselic/public_items#compatibility-matrix) for information about exactly how recent.
 
 # Installation
 
 ```
-% cargo install cargo-public-api
-% rustup install nightly
+# Install cargo-public-api, which builds with stable Rust
+cargo install cargo-public-api
+
+# Install a recent version of nightly so that rustdoc JSON can be built automatically by cargo-public-api
+rustup install nightly
 ```
 
 # Usage
@@ -76,4 +79,4 @@ See [development.md](./doc/development.md).
 
 # Implementation details
 
-This utility is a convenient `cargo` wrapper around the [public_items](https://crates.io/crates/public_items) crate (https://github.com/Enselic/public_items).
+This utility is implemented with and adds conveniences on top of the [public_items](https://crates.io/crates/public_items) library (https://github.com/Enselic/public_items).

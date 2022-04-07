@@ -4,7 +4,7 @@
 //! additional helpers for that.
 
 use crate::{
-    tokens::{ChangedToken, ChangedTokenStream, Token, TokenStream},
+    tokens::{Token, TokenStream},
     PublicItem,
 };
 
@@ -17,125 +17,6 @@ pub struct ChangedPublicItem {
 
     /// How the item looks now.
     pub new: PublicItem,
-}
-
-impl ChangedPublicItem {
-    /// The rendering into [`Token`]s of this changed public item.
-    pub fn changed_tokens(&self) -> Vec<ChangedTokenStream> {
-        ChangedTokenStream::new(Self::align_tokens(&self.old.tokens, &self.new.tokens))
-    }
-
-    /// Calculates the difference between two [`TokenStream`]s, the algorithm is the Needleman-Wunsch algorithm
-    fn align_tokens(a: &TokenStream, b: &TokenStream) -> Vec<ChangedToken> {
-        // Reused code from an older project of mine, please go hard with the code refactoring suggestions ;-)
-        // Match between sequences A and B.
-        // First create a matrix of size [A, B].
-        // With A as reference an Removed is something missing in A but present in B.
-        // With A as reference a Inserted is something present in A but missing in B.
-
-        #[derive(Clone)]
-        enum Direction {
-            Match,
-            Removed,
-            Inserted,
-        }
-
-        fn max(
-            (a1, a2): (isize, Direction),
-            (b1, b2): (isize, Direction),
-            (c1, c2): (isize, Direction),
-        ) -> (isize, Direction) {
-            if a1 >= b1 && a1 >= c1 {
-                return (a1, a2);
-            };
-            if b1 >= a1 && b1 >= c1 {
-                return (b1, b2);
-            };
-            if c1 >= a1 && c1 >= b1 {
-                return (c1, c2);
-            };
-            unreachable!();
-        }
-
-        let a: Vec<&Token> = a.tokens().collect();
-        let b: Vec<&Token> = b.tokens().collect();
-
-        let mut matrix: Vec<Vec<(isize, Direction)>> =
-            vec![vec![(0, Direction::Match); a.len() + 1]; b.len() + 1];
-
-        //Build the matrix
-        for x in 0..a.len() {
-            matrix[0][x] = (-(x as isize), Direction::Removed);
-        }
-
-        for x in 0..b.len() {
-            matrix[x][0] = (-(x as isize), Direction::Inserted);
-        }
-
-        for x in 1..a.len() {
-            for y in 1..b.len() {
-                matrix[y][x] = max(
-                    (matrix[y - 1][x].0 - 1, Direction::Inserted),
-                    (matrix[y][x - 1].0 - 1, Direction::Removed),
-                    (
-                        matrix[y - 1][x - 1].0 + Token::align_score(a[x - 1], b[y - 1]),
-                        Direction::Match,
-                    ),
-                );
-            }
-        }
-
-        //Walk the matrix back
-        let mut x: usize = a.len();
-        let mut y: usize = b.len();
-        let mut diffs = Vec::new();
-        let mut diffs_return: Vec<ChangedToken>;
-        loop {
-            if x == 0 {
-                diffs_return = b[0..y]
-                    .iter()
-                    .map(|i| ChangedToken::Removed((*i).clone()))
-                    .collect();
-                diffs.reverse();
-                diffs_return.extend(diffs);
-                break;
-            }
-            if y == 0 {
-                diffs_return = a[0..x]
-                    .iter()
-                    .map(|i| ChangedToken::Inserted((*i).clone()))
-                    .collect();
-                diffs.reverse();
-                diffs_return.extend(diffs);
-                break;
-            }
-            match matrix[y][x].1 {
-                Direction::Match => {
-                    x -= 1;
-                    y -= 1;
-                    if Token::align_score(a[x], b[y]) < 0 {
-                        diffs.push(ChangedToken::Inserted(b[y].clone()));
-                        diffs.push(ChangedToken::Removed(a[x].clone()));
-                    } else {
-                        diffs.push(ChangedToken::Same(a[x].clone()));
-                    }
-                    continue;
-                }
-                Direction::Removed => {
-                    x -= 1;
-                    diffs.push(ChangedToken::Removed(a[x].clone()));
-                    continue;
-                }
-                Direction::Inserted => {
-                    y -= 1;
-                    diffs.push(ChangedToken::Inserted(b[y].clone()));
-                    continue;
-                }
-            }
-        }
-
-        diffs_return
-    }
 }
 
 /// The return value of [`Self::between`]. To quickly get a sense of what it
@@ -302,40 +183,6 @@ mod tests {
             added: vec![],
         };
         assert_eq!(actual, expected);
-    }
-
-    #[test]
-    fn aligned() {
-        let a = vec![
-            Token::identifier("a"),
-            Token::Whitespace,
-            Token::identifier("a"),
-        ]
-        .into();
-        let b = vec![Token::identifier("a"), Token::identifier("a")].into();
-        let aligned = ChangedPublicItem::align_tokens(&a, &b);
-        assert_eq!(
-            aligned,
-            vec![
-                ChangedToken::Same(Token::identifier("a")),
-                ChangedToken::Removed(Token::Whitespace),
-                ChangedToken::Same(Token::identifier("a"))
-            ]
-        );
-    }
-
-    #[test]
-    fn aligned_fn_id_equality() {
-        let a = vec![Token::identifier("a"), Token::identifier("a")].into();
-        let b = vec![Token::function("a"), Token::identifier("a")].into();
-        let aligned = ChangedPublicItem::align_tokens(&a, &b);
-        assert_eq!(
-            aligned,
-            vec![
-                ChangedToken::Same(Token::identifier("a")),
-                ChangedToken::Same(Token::identifier("a"))
-            ]
-        );
     }
 
     fn item_with_path(path: &str) -> PublicItem {

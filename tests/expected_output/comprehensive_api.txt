@@ -1,6 +1,15 @@
 pub const comprehensive_api::constants::CONST: &str
 pub const comprehensive_api::traits::AssociatedConst::CONST: bool
 pub const comprehensive_api::traits::AssociatedConstDefault::CONST_WITH_DEFAULT: bool
+pub enum comprehensive_api::enums::DiverseVariants
+pub enum comprehensive_api::enums::EnumWithGenerics<'a, T, D: Debug> where T: Display
+pub enum comprehensive_api::enums::SingleVariant
+pub enum variant comprehensive_api::enums::DiverseVariants::Recursive
+pub enum variant comprehensive_api::enums::DiverseVariants::Simple
+pub enum variant comprehensive_api::enums::DiverseVariants::Struct
+pub enum variant comprehensive_api::enums::DiverseVariants::Tuple(usize,bool)
+pub enum variant comprehensive_api::enums::EnumWithGenerics::Variant
+pub enum variant comprehensive_api::enums::SingleVariant::Variant
 pub extern crate comprehensive_api::rand
 pub fn comprehensive_api::RngCore::fill_bytes(&mut self, dest: &mut [u8])
 pub fn comprehensive_api::RngCore::next_u32(&mut self) -> u32
@@ -27,16 +36,19 @@ pub fn comprehensive_api::structs::Plain::new() -> Plain
 pub fn comprehensive_api::structs::Plain::s1(self)
 pub fn comprehensive_api::structs::Plain::s2(&self)
 pub fn comprehensive_api::structs::Plain::s3(&mut self)
+pub fn comprehensive_api::structs::WithLifetimeAndGenericParam::new(unit_ref: &'b Unit, t: String) -> Self
 pub fn comprehensive_api::traits::Simple::act()
 pub macro comprehensive_api::simple_macro!
 pub mod comprehensive_api
 pub mod comprehensive_api::constants
+pub mod comprehensive_api::enums
 pub mod comprehensive_api::functions
 pub mod comprehensive_api::impls
 pub mod comprehensive_api::macros
 pub mod comprehensive_api::statics
 pub mod comprehensive_api::structs
 pub mod comprehensive_api::traits
+pub mod comprehensive_api::typedefs
 pub mod comprehensive_api::unions
 pub static comprehensive_api::statics::ANSWER: i8
 pub struct comprehensive_api::StructInPrivateMod
@@ -45,11 +57,17 @@ pub struct comprehensive_api::structs::Plain
 pub struct comprehensive_api::structs::PrivateField
 pub struct comprehensive_api::structs::Tuple
 pub struct comprehensive_api::structs::Unit
-pub struct comprehensive_api::structs::WithLifetime<'a>
+pub struct comprehensive_api::structs::WithLifetimeAndGenericParam<'a, T>
+pub struct field comprehensive_api::enums::DiverseVariants::Recursive::child: Box<DiverseVariants>
+pub struct field comprehensive_api::enums::DiverseVariants::Struct::x: usize
+pub struct field comprehensive_api::enums::DiverseVariants::Struct::y: SingleVariant
+pub struct field comprehensive_api::enums::EnumWithGenerics::Variant::d: D
+pub struct field comprehensive_api::enums::EnumWithGenerics::Variant::t: &'a T
 pub struct field comprehensive_api::structs::ConstArg::items: [T; N]
 pub struct field comprehensive_api::structs::Plain::x: usize
 pub struct field comprehensive_api::structs::Tuple::0: usize
-pub struct field comprehensive_api::structs::WithLifetime::z: &'a Unit
+pub struct field comprehensive_api::structs::WithLifetimeAndGenericParam::t: T
+pub struct field comprehensive_api::structs::WithLifetimeAndGenericParam::unit_ref: &'a Unit
 pub struct field comprehensive_api::unions::Basic::x: usize
 pub struct field comprehensive_api::unions::Basic::y: usize
 pub trait comprehensive_api::RngCore
@@ -59,6 +77,8 @@ pub trait comprehensive_api::traits::AssociatedType
 pub trait comprehensive_api::traits::Empty
 pub trait comprehensive_api::traits::Simple
 pub type comprehensive_api::traits::AssociatedType::Type[]
+pub type comprehensive_api::typedefs::RedefinedResult<T, E> = Result<T, E>
+pub type comprehensive_api::typedefs::TypedefPlain = Plain
 pub union comprehensive_api::unions::Basic
 pub use comprehensive_api::Plain
 pub use comprehensive_api::RenamedPlain

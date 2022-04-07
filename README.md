@@ -4,18 +4,18 @@ You might want the convenient `cargo public-items` wrapper for this library. See
 
 # public_items
 
-List public items (the public API) of Rust library crates by analyzing the rustdoc JSON of the crates. Also supports diffing the public API between releases and commits.
+List public items (the public API) of Rust library crates by analyzing their rustdoc JSON. Also supports diffing the public API between releases and commits to e.g. help find breaking API changes or semver violations.
 
 # Usage
 
 The library comes with a thin bin wrapper that can be used to explore the capabilities of this library.
 
 ```bash
-# Install the thin bin wrapper
-% cargo install public_items
+# Build and install the thin bin wrapper with the regular stable Rust toolchain
+cargo install public_items
 
-# Install a recent version of nightly so that rustdoc JSON can be generated
-% rustup install nightly
+# Install nightly-2022-03-14 or later so you can build up-to-date rustdoc JSON files
+rustup install nightly
 ```
 
 ## List public items

@@ -150,7 +150,7 @@ pub struct TokenStream {
 
 impl TokenStream {
     /// Extend this [`TokenStream`] with extra [`Token`]s.
-    pub(crate) fn extend(&mut self, tokens: impl Into<Self>) {
+    pub fn extend(&mut self, tokens: impl Into<Self>) {
         self.tokens.extend(tokens.into().tokens);
     }
 

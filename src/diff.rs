@@ -3,10 +3,7 @@
 //! public-items`](https://github.com/Enselic/cargo-public-items) contains
 //! additional helpers for that.
 
-use crate::{
-    tokens::{Token, TokenStream},
-    PublicItem,
-};
+use crate::PublicItem;
 
 /// An item has changed in the public API. Two [`PublicItem`]s are considered
 /// the same if their `path` is the same.
@@ -191,7 +188,7 @@ mod tests {
                 .split("::")
                 .map(std::string::ToString::to_string)
                 .collect(),
-            tokens: TokenStream::default(),
+            tokens: crate::tokens::TokenStream::default(),
         }
     }
 }

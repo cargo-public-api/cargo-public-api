@@ -3,7 +3,7 @@
 use crate::item_iterator::PublicItem;
 
 /// A token in a rendered [`PublicItem`], used to apply syntax colouring in downstream applications.
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub enum Token {
     /// A symbol, like `=` or `::<`
     Symbol(String),
@@ -119,30 +119,10 @@ impl Token {
             Self::Whitespace => " ",
         }
     }
-
-    /// Get the score if this Token is aligned to another Token
-    pub(crate) fn align_score(&self, other: &Self) -> isize {
-        let cmp = |a, b| if a == b { 1 } else { -2 };
-        match (self, other) {
-            (Self::Symbol(a), Self::Symbol(b))
-            | (Self::Qualifier(a), Self::Qualifier(b))
-            | (Self::Kind(a), Self::Kind(b))
-            | (Self::Lifetime(a), Self::Lifetime(b))
-            | (Self::Keyword(a), Self::Keyword(b))
-            | (Self::Generic(a), Self::Generic(b))
-            | (Self::Primitive(a), Self::Primitive(b))
-            | (Self::Type(a), Self::Type(b)) => cmp(a, b),
-            (Self::Whitespace, Self::Whitespace) => 0,
-            (Self::Identifier(a) | Self::Function(a), Self::Identifier(b) | Self::Function(b)) => {
-                cmp(a, b)
-            }
-            _ => -2,
-        }
-    }
 }
 
 /// A sequence of Tokens with nice helper functions.
-#[derive(Clone, Debug, Default, PartialEq, Eq)]
+#[derive(Clone, Debug, Default, PartialEq, Eq, Ord, PartialOrd)]
 pub struct TokenStream {
     /// The tokens
     pub tokens: Vec<Token>,

@@ -205,8 +205,10 @@ fn render_type(root: &Crate, ty: &Type) -> TokenStream {
             if name.is_empty() {
                 output.extend(render_id(root, id));
             } else {
-                let len = name.split("::").count();
-                for (index, part) in name.split("::").enumerate() {
+                let split: Vec<_> = name.split("::").collect();
+                let len = split.len();
+                for (index, part) in split.into_iter().enumerate() {
+                    dbg!(index, part, len);
                     if index == 0 && part == "$crate" {
                         output.push(Token::keyword("crate"));
                     } else if index == len - 1 {
@@ -546,4 +548,146 @@ fn render_generic_bounds(root: &Crate, bounds: &[GenericBound]) -> TokenStream {
             },
         )
     }
+}
+
+#[cfg(test)]
+mod test {
+    macro_rules! parameterized_test {
+        [$($name:ident: $function:ident($($values:expr,)*) => $expected:expr => $str:literal);*;] => {
+            $(
+            #[test]
+            fn $name() {
+                let value = $function($($values),*);
+                assert_eq!(value, $expected);
+                assert_eq!(value.to_string(), $str);
+            }
+        )*
+        };
+    }
+
+    macro_rules! s {
+        ($value:literal) => {
+            $value.to_string()
+        };
+    }
+
+    use super::*;
+    use rustdoc_types::{FunctionPointer, Item};
+    use std::collections::HashMap;
+
+    fn get_crate() -> Crate {
+        Crate {
+            root: Id("root".to_string()),
+            crate_version: None,
+            includes_private: false,
+            index: HashMap::from([(
+                Id(s!("id")),
+                Item {
+                    id: Id(s!("id")),
+                    crate_id: 0,
+                    name: Some(s!("item_name")),
+                    span: None,
+                    visibility: rustdoc_types::Visibility::Public,
+                    docs: None,
+                    links: HashMap::new(),
+                    attrs: Vec::new(),
+                    deprecation: None,
+                    inner: ItemEnum::ForeignType,
+                },
+            )]),
+            paths: HashMap::new(),
+            external_crates: HashMap::new(),
+            format_version: 0,
+        }
+    }
+
+    // Tests for the `render_type` function.
+    // Missing:
+    //  * ImplTrait
+    //  * FunctionPointer
+    parameterized_test![
+        test_type_infer:
+        render_type(&get_crate(), &Type::Infer,)
+        => Token::symbol("_").into()
+        => "_";
+        test_type_generic:
+        render_type(&get_crate(), &Type::Generic("name".to_string()),)
+        => Token::generic("name").into()
+        => "name";
+        test_type_primitive:
+        render_type(&get_crate(), &Type::Primitive("name".to_string()),)
+        => Token::primitive("name").into()
+        => "name";
+        test_type_resolved_simple:
+        render_type(&get_crate(), &Type::ResolvedPath{name: "name".to_string(), args: None, id: Id("id".to_string()), param_names: Vec::new()},)
+        => Token::type_("name").into()
+        => "name";
+        test_type_resolved_no_name:
+        render_type(&get_crate(), &Type::ResolvedPath{name: "".to_string(), args: None, id: Id("id".to_string()), param_names: Vec::new()},)
+        => Token::identifier("item_name").into()
+        => "item_name";
+        test_type_resolved_long_name:
+        render_type(&get_crate(), &Type::ResolvedPath{name: "name::with::parts".to_string(), args: None, id: Id("id".to_string()), param_names: Vec::new()},)
+        => vec![Token::identifier("name"), Token::symbol("::"), Token::identifier("with"), Token::symbol("::"), Token::type_("parts")].into()
+        => "name::with::parts";
+        test_type_resolved_crate_name:
+        render_type(&get_crate(), &Type::ResolvedPath{name: "$crate::name".to_string(), args: None, id: Id("id".to_string()), param_names: Vec::new()},)
+        => vec![Token::keyword("crate"), Token::symbol("::"), Token::type_("name")].into()
+        => "crate::name";
+        test_type_resolved_name_crate:
+        render_type(&get_crate(), &Type::ResolvedPath{name: "name::$crate".to_string(), args: None, id: Id("id".to_string()), param_names: Vec::new()},)
+        => vec![Token::identifier("name"), Token::symbol("::"), Token::type_("$crate")].into()
+        => "name::$crate";
+        test_type_tuple_empty:
+        render_type(&get_crate(), &Type::Tuple(Vec::new()),)
+        => vec![Token::symbol("("), Token::symbol(")")].into()
+        => "()";
+        test_type_tuple:
+        render_type(&get_crate(), &Type::Tuple(vec![Type::Infer, Type::Generic(s!("gen"))]),)
+        => vec![Token::symbol("("), Token::symbol("_"), Token::symbol(","), ws!(), Token::generic("gen"), Token::symbol(")")].into()
+        => "(_, gen)";
+        test_type_slice:
+        render_type(&get_crate(), &Type::Slice(Box::new(Type::Infer)),)
+        => vec![Token::symbol("["), Token::symbol("_"), Token::symbol("]")].into()
+        => "[_]";
+        test_type_array:
+        render_type(&get_crate(), &Type::Array{type_:Box::new(Type::Infer), len: s!("20")},)
+        => vec![Token::symbol("["), Token::symbol("_"), Token::symbol(";"), ws!(), Token::primitive("20"), Token::symbol("]")].into()
+        => "[_; 20]";
+        test_type_pointer:
+        render_type(&get_crate(), &Type::RawPointer { mutable: false, type_: Box::new(Type::Infer)},)
+        => vec![Token::symbol("*"), Token::symbol("_")].into()
+        => "*_";
+        test_type_pointer_mut:
+        render_type(&get_crate(), &Type::RawPointer { mutable: true, type_: Box::new(Type::Infer)},)
+        => vec![Token::symbol("*"), Token::keyword("mut"), ws!(), Token::symbol("_")].into()
+        => "*mut _";
+        test_type_ref:
+        render_type(&get_crate(), &Type::BorrowedRef { lifetime: None, mutable: false, type_: Box::new(Type::Infer)},)
+        => vec![Token::symbol("&"), Token::symbol("_")].into()
+        => "&_";
+        test_type_ref_mut:
+        render_type(&get_crate(), &Type::BorrowedRef { lifetime: None, mutable: true, type_: Box::new(Type::Infer)},)
+        => vec![Token::symbol("&"), Token::keyword("mut"), ws!(), Token::symbol("_")].into()
+        => "&mut _";
+        test_type_ref_lt:
+        render_type(&get_crate(), &Type::BorrowedRef { lifetime: Some(s!("'a")), mutable: false, type_: Box::new(Type::Infer)},)
+        => vec![Token::symbol("&"), Token::lifetime("'a"), ws!(), Token::symbol("_")].into()
+        => "&'a _";
+        test_type_ref_lt_mut:
+        render_type(&get_crate(), &Type::BorrowedRef { lifetime: Some(s!("'a")), mutable: true, type_: Box::new(Type::Infer)},)
+        => vec![Token::symbol("&"), Token::lifetime("'a"), ws!(), Token::keyword("mut"), ws!(), Token::symbol("_")].into()
+        => "&'a mut _";
+        test_type_path:
+        render_type(&get_crate(), &Type::QualifiedPath { name: s!("name"), args: Box::new(GenericArgs::AngleBracketed { args: Vec::new(), bindings: Vec::new() }), self_type: Box::new(Type::Generic(s!("type"))), trait_: Box::new(Type::Generic(s!("trait"))) },)
+        => vec![Token::symbol("<"), Token::generic("type"), ws!(), Token::keyword("as"), ws!(), Token::generic("trait"), Token::symbol(">::"), Token::identifier("name")].into()
+        => "<type as trait>::name";
+        //test_type_fn_pointer:
+        //render_type(&get_crate(), &Type::FunctionPointer(Box::new(FunctionPointer{
+        //    decl: FnDecl{inputs: vec![(s!("a"), Type::Infer)], output: None, c_variadic: false},
+        //    generic_params: Vec::new(),
+        //    header: Header{const_:false, unsafe_:false, async_:false, abi: Abi::Rust}})),)
+        //=> vec![Token::symbol("<"), Token::generic("type"), ws!(), Token::keyword("as"), ws!(), Token::generic("trait"), Token::symbol(">::"), Token::identifier("name")].into()
+        //=> "Fn(_)";
+    ];
 }

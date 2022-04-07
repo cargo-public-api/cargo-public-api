@@ -3,7 +3,9 @@ use std::{collections::HashMap, fmt::Display, rc::Rc};
 use rustdoc_types::{Crate, Id, Impl, Item, ItemEnum, Type};
 
 use super::intermediate_public_item::IntermediatePublicItem;
-use crate::{tokens, Options};
+#[cfg(doc)]
+use crate::tokens::Token;
+use crate::{tokens::TokenStream, Options};
 
 type Impls<'a> = HashMap<&'a Id, Vec<&'a Impl>>;
 
@@ -183,7 +185,7 @@ pub struct PublicItem {
     pub(crate) path: Vec<String>,
 
     /// The rendered item into a stream of [`Token`]s
-    pub tokens: tokens::TokenStream,
+    pub tokens: TokenStream,
 }
 
 /// We want pretty-printing (`"{:#?}"`) of [`crate::diff::PublicItemsDiff`] to print

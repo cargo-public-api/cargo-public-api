@@ -1,4 +1,6 @@
 //! The module tp contain all token handling logic.
+#[cfg(doc)]
+use crate::item_iterator::PublicItem;
 
 /// A token in a rendered [`PublicItem`], used to apply syntax colouring in downstream applications.
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -39,47 +41,47 @@ macro_rules! ws {
 
 impl Token {
     /// A symbol, like `=` or `::<`
-    pub fn symbol(text: impl Into<String>) -> Self {
+    pub(crate) fn symbol(text: impl Into<String>) -> Self {
         Self::Symbol(text.into())
     }
     /// A qualifier, like `pub` or `const`
-    pub fn qualifier(text: impl Into<String>) -> Self {
+    pub(crate) fn qualifier(text: impl Into<String>) -> Self {
         Self::Qualifier(text.into())
     }
     /// The kind of an item, like `function` or `trait`
-    pub fn kind(text: impl Into<String>) -> Self {
+    pub(crate) fn kind(text: impl Into<String>) -> Self {
         Self::Kind(text.into())
     }
     /// An identifier, like variable names or parts of the path of an item
-    pub fn identifier(text: impl Into<String>) -> Self {
+    pub(crate) fn identifier(text: impl Into<String>) -> Self {
         Self::Identifier(text.into())
     }
     /// The identifier self, the text can be `self` or `Self`
-    pub fn self_(text: impl Into<String>) -> Self {
+    pub(crate) fn self_(text: impl Into<String>) -> Self {
         Self::Self_(text.into())
     }
     /// The identifier for a function, like `fn_arg` in `comprehensive_api::functions::fn_arg`
-    pub fn function(text: impl Into<String>) -> Self {
+    pub(crate) fn function(text: impl Into<String>) -> Self {
         Self::Function(text.into())
     }
     /// A lifetime including the apostrophe `'`, like `'a`
-    pub fn lifetime(text: impl Into<String>) -> Self {
+    pub(crate) fn lifetime(text: impl Into<String>) -> Self {
         Self::Lifetime(text.into())
     }
     /// A keyword, like `impl`
-    pub fn keyword(text: impl Into<String>) -> Self {
+    pub(crate) fn keyword(text: impl Into<String>) -> Self {
         Self::Keyword(text.into())
     }
     /// A generic, like `T`
-    pub fn generic(text: impl Into<String>) -> Self {
+    pub(crate) fn generic(text: impl Into<String>) -> Self {
         Self::Generic(text.into())
     }
     /// A primitive type, like `usize`
-    pub fn primitive(text: impl Into<String>) -> Self {
+    pub(crate) fn primitive(text: impl Into<String>) -> Self {
         Self::Primitive(text.into())
     }
     /// A type, like `Iterator`
-    pub fn type_(text: impl Into<String>) -> Self {
+    pub(crate) fn type_(text: impl Into<String>) -> Self {
         Self::Type(text.into())
     }
     /// Give the length of the inner text of this token
@@ -148,12 +150,12 @@ pub struct TokenStream {
 
 impl TokenStream {
     /// Extend this [`TokenStream`] with extra [`Token`]s.
-    pub fn extend(&mut self, tokens: impl Into<Self>) {
+    pub(crate) fn extend(&mut self, tokens: impl Into<Self>) {
         self.tokens.extend(tokens.into().tokens);
     }
 
     /// Push a single [`Token`] to the end of this sequence.
-    pub fn push(&mut self, token: Token) {
+    pub(crate) fn push(&mut self, token: Token) {
         self.tokens.push(token);
     }
 
@@ -168,7 +170,7 @@ impl TokenStream {
     }
 
     /// Remove the specified number of [`Token`]s from the end of this sequence.
-    pub fn remove_from_back(&mut self, len: usize) {
+    pub(crate) fn remove_from_back(&mut self, len: usize) {
         self.tokens
             .resize(self.tokens.len() - len, Token::Whitespace);
     }

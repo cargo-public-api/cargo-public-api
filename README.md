@@ -11,11 +11,11 @@ List public items (the public API) of Rust library crates by analyzing their rus
 The library comes with a thin bin wrapper that can be used to explore the capabilities of this library.
 
 ```bash
-# Install the thin bin wrapper
-% cargo install public_items
+# Build and install the thin bin wrapper with the regular stable Rust toolchain
+cargo install public_items
 
-# Install a recent version of nightly so that rustdoc JSON can be generated
-% rustup install nightly
+# Install nightly-2022-03-14 or later so you can build up-to-date rustdoc JSON files
+rustup install nightly
 ```
 
 ## List public items

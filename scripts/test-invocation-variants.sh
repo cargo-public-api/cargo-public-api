@@ -11,13 +11,13 @@ cargo run -- --manifest-path "$(pwd)"/Cargo.toml
 cargo install --debug --path .
 
 # Make sure we can run the tool on the current directory stand-alone
-cargo-public-items
+cargo-public-api
 
 # Make sure we can run the tool on an external directory stand-alone
-cargo-public-items --manifest-path "$(pwd)"/Cargo.toml
+cargo-public-api --manifest-path "$(pwd)"/Cargo.toml
 
 # Make sure we can run the tool on the current directory as a cargo sub-command
-cargo public-items
+cargo public-api
 
 # Make sure we can run the tool on an external directory as a cargo sub-command
-cargo public-items --manifest-path "$(pwd)"/Cargo.toml
+cargo public-api --manifest-path "$(pwd)"/Cargo.toml

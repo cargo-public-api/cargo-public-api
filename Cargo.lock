@@ -93,7 +93,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "cargo-public-items"
+name = "cargo-public-api"
 version = "0.7.2"
 dependencies = [
  "ansi_term",

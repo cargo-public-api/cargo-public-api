@@ -5,13 +5,13 @@ use serial_test::serial;
 
 #[test]
 fn list_public_items() {
-    let cmd = Command::cargo_bin("cargo-public-items").unwrap();
+    let cmd = Command::cargo_bin("cargo-public-api").unwrap();
     assert_presence_of_own_library_items(cmd);
 }
 
 #[test]
 fn list_public_items_explicit_manifest_path() {
-    let mut cmd = Command::cargo_bin("cargo-public-items").unwrap();
+    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
     cmd.arg("--manifest-path");
     cmd.arg(current_dir_and("Cargo.toml"));
     assert_presence_of_own_library_items(cmd);
@@ -24,7 +24,7 @@ fn list_public_items_explicit_manifest_path() {
 fn diff_public_items() {
     ensure_test_crate_is_cloned();
 
-    let mut cmd = Command::cargo_bin("cargo-public-items").unwrap();
+    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
     cmd.current_dir(test_crate_path());
     cmd.arg("--color=never");
     cmd.arg("--diff-git-checkouts");
@@ -54,7 +54,7 @@ fn diff_public_items() {
 fn diff_public_items_with_color() {
     ensure_test_crate_is_cloned();
 
-    let mut cmd = Command::cargo_bin("cargo-public-items").unwrap();
+    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
     cmd.current_dir(test_crate_path());
     cmd.arg("--color=always");
     cmd.arg("--diff-git-checkouts");
@@ -93,7 +93,7 @@ fn diff_public_items_with_color() {
 fn diff_public_items_markdown() {
     ensure_test_crate_is_cloned();
 
-    let mut cmd = Command::cargo_bin("cargo-public-items").unwrap();
+    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
     cmd.current_dir(test_crate_path());
     cmd.arg("--output-format=markdown");
     cmd.arg("--diff-git-checkouts");
@@ -128,7 +128,7 @@ fn diff_public_items_markdown() {
 fn diff_public_items_markdown_no_changes() {
     ensure_test_crate_is_cloned();
 
-    let mut cmd = Command::cargo_bin("cargo-public-items").unwrap();
+    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
     cmd.current_dir(test_crate_path());
     cmd.arg("--output-format=markdown");
     cmd.arg("--diff-git-checkouts");
@@ -142,7 +142,7 @@ fn diff_public_items_markdown_no_changes() {
 #[serial]
 #[test]
 fn diff_public_items_missing_one_arg() {
-    let mut cmd = Command::cargo_bin("cargo-public-items").unwrap();
+    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
     cmd.current_dir(test_crate_path());
     cmd.arg("--diff-git-checkouts");
     cmd.arg("v0.2.0");
@@ -155,13 +155,13 @@ fn diff_public_items_missing_one_arg() {
 
 #[test]
 fn list_public_items_markdown() {
-    let mut cmd = Command::cargo_bin("cargo-public-items").unwrap();
+    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
     cmd.arg("--output-format=markdown");
     cmd.assert()
         .stdout(
             "## Public API\n\
-             * `pub fn cargo_public_items::for_self_testing_purposes_please_ignore()`\n\
-             * `pub mod cargo_public_items`\n\
+             * `pub fn cargo_public_api::for_self_testing_purposes_please_ignore()`\n\
+             * `pub mod cargo_public_api`\n\
              \n\
              ",
         )
@@ -170,14 +170,14 @@ fn list_public_items_markdown() {
 
 #[test]
 fn long_help() {
-    let mut cmd = Command::cargo_bin("cargo-public-items").unwrap();
+    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
     cmd.arg("--help");
     assert_presence_of_args_in_help(cmd);
 }
 
 #[test]
 fn short_help() {
-    let mut cmd = Command::cargo_bin("cargo-public-items").unwrap();
+    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
     cmd.arg("-h");
     assert_presence_of_args_in_help(cmd);
 }
@@ -185,8 +185,8 @@ fn short_help() {
 fn assert_presence_of_own_library_items(mut cmd: Command) {
     cmd.assert()
         .stdout(
-            "pub fn cargo_public_items::for_self_testing_purposes_please_ignore()\n\
-             pub mod cargo_public_items\n\
+            "pub fn cargo_public_api::for_self_testing_purposes_please_ignore()\n\
+             pub mod cargo_public_api\n\
              ",
         )
         .success();
@@ -235,7 +235,7 @@ fn clone_test_crate(dest: &Path) {
 /// Path to the git cloned test crate we use to test the diffing functionality
 fn test_crate_path() -> PathBuf {
     let mut path = get_cache_dir();
-    path.push("cargo-public-items-test-repo");
+    path.push("cargo-public-api-test-repo");
     path
 }
 

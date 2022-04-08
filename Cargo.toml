@@ -1,26 +1,9 @@
 [package]
-description = "List and diff the public API of Rust library crates between releases and commits. Allows you to detect breaking changes or semver violations."
-documentation = "https://docs.rs/cargo-public-api"
+description = "This project has been renamed to `cargo-public-api`, see https://github.com/Enselic/cargo-public-api"
+documentation = "https://github.com/Enselic/cargo-public-api/tree/cargo-public-items"
 edition = "2021"
-homepage = "https://github.com/Enselic/cargo-public-api"
+homepage = "https://github.com/Enselic/cargo-public-api/tree/cargo-public-items"
 license = "MIT"
-name = "cargo-public-api"
+name = "cargo-public-items"
 repository = "https://github.com/Enselic/cargo-public-api"
-version = "0.7.2"
-
-[dependencies]
-ansi_term = "0.12.1"
-anyhow = "1.0.53"
-atty = "0.2.14"
-cargo_metadata = "0.14.2"
-cargo_toml = "0.11.4"
-clap = { version = "3.1.2", features = ["derive"] }
-
-[dependencies.public_items]
-# path = "/Users/martin/src/public_items"
-version = "0.7.2"
-
-[dev-dependencies]
-assert_cmd = "2.0.4"
-predicates = "2.1.1"
-serial_test = "0.6.0"
+version = "0.8.0"

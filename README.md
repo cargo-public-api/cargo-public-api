@@ -1,6 +1,6 @@
-# `cargo public-items` wrapper for this library
+# `cargo public-api` command
 
-You might want the convenient `cargo public-items` wrapper for this library. See https://github.com/Enselic/cargo-public-items.
+You might want the convenient `cargo public-api` wrapper for this library. See https://github.com/Enselic/cargo-public-api.
 
 # public_items
 
@@ -43,7 +43,7 @@ pub struct field public_items::Options::with_blanket_implementations: bool
 
 ## Diff public items
 
-It is frequently of interest to know how the public API of a crate has changed. You can find this out by doing a diff between different versions of the same library. Again, [`cargo public-items`](https://github.com/Enselic/cargo-public-items) makes this more convenient, but it is straightforward enough without it.
+It is frequently of interest to know how the public API of a crate has changed. You can find this out by doing a diff between different versions of the same library. Again, [`cargo public-api`](https://github.com/Enselic/cargo-public-api) makes this more convenient, but it is straightforward enough without it.
 
 ```bash
 # Generate two different rustdoc JSON files for two different versions of your library

@@ -274,20 +274,20 @@ fn render_type(root: &Crate, ty: &Type) -> TokenStream {
         Type::Array { type_, len } => {
             let mut output: TokenStream = Token::symbol("[").into();
             output.extend(render_type(root, type_));
-            output.push(Token::symbol(";"));
-            output.push(ws!());
-            output.push(Token::primitive(len));
-            output.push(Token::symbol("]"));
+            output.extend(vec![
+                Token::symbol(";"),
+                ws!(),
+                Token::primitive(len),
+                Token::symbol("]"),
+            ]);
             output
         }
         Type::ImplTrait(bounds) => render_generic_bounds(root, bounds),
         Type::Infer => Token::symbol("_").into(),
         Type::RawPointer { mutable, type_ } => {
             let mut output: TokenStream = Token::symbol("*").into();
-            if *mutable {
-                output.push(Token::keyword("mut"));
-                output.push(ws!());
-            }
+            output.push(Token::keyword(if *mutable { "mut" } else { "const" }));
+            output.push(ws!());
             output.extend(render_type(root, type_));
             output
         }
@@ -371,7 +371,7 @@ fn render_function(
         |(name, ty)| {
             let simplified_self: Option<TokenStream> = if name == "self" {
                 match ty {
-                    Type::Generic(name) if name == "Self" => Some(Token::self_("Self").into()),
+                    Type::Generic(name) if name == "Self" => Some(Token::self_("self").into()),
                     Type::BorrowedRef {
                         lifetime,
                         mutable,
@@ -496,6 +496,11 @@ fn render_constant(root: &Crate, constant: &Constant) -> TokenStream {
     output
 }
 
+// TODO: Issues to fix:
+//  * `where` clauses are not handled at all
+//  * `impl` is added in the infix trait bound notation `D: impl Debug` instead of `D: Debug`
+//  * Often a type is just missing in the output `<, >` instead of `<T, U>`
+//  * Lifetime bounds are not supported
 fn render_generics(root: &Crate, generics: &[GenericParamDef]) -> TokenStream {
     let mut output = TokenStream::default();
     if !generics.is_empty() {
@@ -590,7 +595,7 @@ mod test {
     }
 
     use super::*;
-    use rustdoc_types::{FunctionPointer, Item};
+    use rustdoc_types::Item;
     use std::collections::HashMap;
 
     fn get_crate() -> Crate {
@@ -674,8 +679,8 @@ mod test {
         => "[_; 20]";
         test_type_pointer:
         render_type(&get_crate(), &Type::RawPointer { mutable: false, type_: Box::new(Type::Infer)},)
-        => vec![Token::symbol("*"), Token::symbol("_")].into()
-        => "*_";
+        => vec![Token::symbol("*"), Token::keyword("const"), ws!(), Token::symbol("_")].into()
+        => "*const _";
         test_type_pointer_mut:
         render_type(&get_crate(), &Type::RawPointer { mutable: true, type_: Box::new(Type::Infer)},)
         => vec![Token::symbol("*"), Token::keyword("mut"), ws!(), Token::symbol("_")].into()

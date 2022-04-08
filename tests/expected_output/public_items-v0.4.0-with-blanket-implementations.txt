@@ -1,21 +1,21 @@
 pub const fn public_items::Error::borrow(&self) -> &T
 pub const fn public_items::Error::borrow_mut(&mut self) -> &mut T
 pub const fn public_items::Error::from(t: T) -> T
-pub const fn public_items::Error::into(Self) -> U
+pub const fn public_items::Error::into(self) -> U
 pub const fn public_items::Error::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub const fn public_items::Error::try_into(Self) -> Result<U, <U as TryFrom<T>>::Error>
+pub const fn public_items::Error::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
 pub const fn public_items::Options::borrow(&self) -> &T
 pub const fn public_items::Options::borrow_mut(&mut self) -> &mut T
 pub const fn public_items::Options::from(t: T) -> T
-pub const fn public_items::Options::into(Self) -> U
+pub const fn public_items::Options::into(self) -> U
 pub const fn public_items::Options::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub const fn public_items::Options::try_into(Self) -> Result<U, <U as TryFrom<T>>::Error>
+pub const fn public_items::Options::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
 pub const fn public_items::PublicItem::borrow(&self) -> &T
 pub const fn public_items::PublicItem::borrow_mut(&mut self) -> &mut T
 pub const fn public_items::PublicItem::from(t: T) -> T
-pub const fn public_items::PublicItem::into(Self) -> U
+pub const fn public_items::PublicItem::into(self) -> U
 pub const fn public_items::PublicItem::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub const fn public_items::PublicItem::try_into(Self) -> Result<U, <U as TryFrom<T>>::Error>
+pub const fn public_items::PublicItem::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
 pub enum public_items::Error
 pub enum variant public_items::Error::SerdeJsonError(serde_json::Error)
 pub fn public_items::Error::fmt(&self, __formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result

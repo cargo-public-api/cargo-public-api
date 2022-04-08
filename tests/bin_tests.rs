@@ -11,7 +11,7 @@ pub enum variant public_items::Error::SerdeJsonError(serde_json::Error)
 pub fn public_items::Error::fmt(&self, __formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
 pub fn public_items::Error::fmt(&self, f: &mut crate::fmt::Formatter<'_>) -> crate::fmt::Result
 pub fn public_items::Error::from(source: serde_json::Error) -> Self
-pub fn public_items::Error::source(&self) -> std::option::Option<&std::error::Error>
+pub fn public_items::Error::source(&self) -> std::option::Option<&std::error::Error + 'static>
 pub fn public_items::Options::clone(&self) -> Options
 pub fn public_items::Options::default() -> Self
 pub fn public_items::Options::fmt(&self, f: &mut crate::fmt::Formatter<'_>) -> crate::fmt::Result
@@ -25,7 +25,7 @@ pub mod public_items
 pub struct field public_items::Options::with_blanket_implementations: bool
 pub struct public_items::Options
 pub struct public_items::PublicItem
-pub type public_items::Result = std::result::Result<T, Error>
+pub type public_items::Result<T> = std::result::Result<T, Error>
 ")
         .stderr("")
         .success();
@@ -41,27 +41,27 @@ fn print_public_items_with_blanket_implementations() {
             "pub const fn public_items::Error::borrow(&self) -> &T
 pub const fn public_items::Error::borrow_mut(&mut self) -> &mut T
 pub const fn public_items::Error::from(t: T) -> T
-pub const fn public_items::Error::into(Self) -> U
+pub const fn public_items::Error::into(self) -> U
 pub const fn public_items::Error::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub const fn public_items::Error::try_into(Self) -> Result<U, <U as TryFrom<T>>::Error>
+pub const fn public_items::Error::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
 pub const fn public_items::Options::borrow(&self) -> &T
 pub const fn public_items::Options::borrow_mut(&mut self) -> &mut T
 pub const fn public_items::Options::from(t: T) -> T
-pub const fn public_items::Options::into(Self) -> U
+pub const fn public_items::Options::into(self) -> U
 pub const fn public_items::Options::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub const fn public_items::Options::try_into(Self) -> Result<U, <U as TryFrom<T>>::Error>
+pub const fn public_items::Options::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
 pub const fn public_items::PublicItem::borrow(&self) -> &T
 pub const fn public_items::PublicItem::borrow_mut(&mut self) -> &mut T
 pub const fn public_items::PublicItem::from(t: T) -> T
-pub const fn public_items::PublicItem::into(Self) -> U
+pub const fn public_items::PublicItem::into(self) -> U
 pub const fn public_items::PublicItem::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub const fn public_items::PublicItem::try_into(Self) -> Result<U, <U as TryFrom<T>>::Error>
+pub const fn public_items::PublicItem::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
 pub enum public_items::Error
 pub enum variant public_items::Error::SerdeJsonError(serde_json::Error)
 pub fn public_items::Error::fmt(&self, __formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
 pub fn public_items::Error::fmt(&self, f: &mut crate::fmt::Formatter<'_>) -> crate::fmt::Result
 pub fn public_items::Error::from(source: serde_json::Error) -> Self
-pub fn public_items::Error::source(&self) -> std::option::Option<&std::error::Error>
+pub fn public_items::Error::source(&self) -> std::option::Option<&std::error::Error + 'static>
 pub fn public_items::Error::to_string(&self) -> String
 pub fn public_items::Error::type_id(&self) -> TypeId
 pub fn public_items::Options::clone(&self) -> Options
@@ -89,7 +89,7 @@ pub type public_items::Options::Error = Infallible
 pub type public_items::Options::Owned = T
 pub type public_items::PublicItem::Error = <U as TryFrom<T>>::Error
 pub type public_items::PublicItem::Error = Infallible
-pub type public_items::Result = std::result::Result<T, Error>
+pub type public_items::Result<T> = std::result::Result<T, Error>
 "
         )
         .stderr("")

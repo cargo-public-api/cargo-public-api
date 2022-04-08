@@ -220,9 +220,6 @@ impl PartialOrd for PublicItem {
 
 impl Ord for PublicItem {
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-        match self.path.cmp(&other.path) {
-            std::cmp::Ordering::Equal => self.tokens.cmp(&other.tokens),
-            ord => ord,
-        }
+        self.to_string().cmp(&other.to_string())
     }
 }

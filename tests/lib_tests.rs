@@ -68,9 +68,9 @@ fn public_items_diff_between_v0_3_0_and_v0_4_0() {
             added: &[
                   "pub fn public_items::Options::clone(&self) -> Options",
                   "pub fn public_items::Options::default() -> Self",
-                  "pub fn public_items::Options::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result",
-                  "pub struct public_items::Options",
+                  "pub fn public_items::Options::fmt(&self, f: &mut crate::fmt::Formatter<'_>) -> crate::fmt::Result",
                   "pub struct field public_items::Options::with_blanket_implementations: bool",
+                  "pub struct public_items::Options",
                 ],
         },
     );
@@ -149,9 +149,9 @@ fn pretty_printed_diff() {
     added: [
         pub fn public_items::Options::clone(&self) -> Options,
         pub fn public_items::Options::default() -> Self,
-        pub fn public_items::Options::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result,
-        pub struct public_items::Options,
+        pub fn public_items::Options::fmt(&self, f: &mut crate::fmt::Formatter<'_>) -> crate::fmt::Result,
         pub struct field public_items::Options::with_blanket_implementations: bool,
+        pub struct public_items::Options,
     ],
 }");
 }

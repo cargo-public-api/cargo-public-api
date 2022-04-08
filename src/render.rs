@@ -7,16 +7,26 @@ use rustdoc_types::{
     Variant,
 };
 
+/// A simple macro to write `Token::Whitespace` in less characters.
+macro_rules! ws {
+    () => {
+        Token::Whitespace
+    };
+}
+
 use crate::tokens::{Token, TokenStream};
-use crate::ws;
 
 pub fn token_stream(item: &IntermediatePublicItem) -> TokenStream {
     match &item.item.inner {
         ItemEnum::Module(_) => render_simple(&["mod"], item.path()),
         ItemEnum::ExternCrate { .. } => render_simple(&["extern", "crate"], item.path()),
-        ItemEnum::Import(_) => render_simple(&["import"], item.path()),
+        ItemEnum::Import(_) => render_simple(&["use"], item.path()),
         ItemEnum::Union(_) => render_simple(&["union"], item.path()),
-        ItemEnum::Struct(_) => render_simple(&["struct"], item.path()),
+        ItemEnum::Struct(s) => {
+            let mut output = render_simple(&["struct"], item.path());
+            output.extend(render_generics(item.root, &s.generics.params));
+            output
+        }
         ItemEnum::StructField(inner) => {
             let mut output = render_simple(&["struct", "field"], item.path());
             output.push(Token::symbol(":"));
@@ -24,7 +34,11 @@ pub fn token_stream(item: &IntermediatePublicItem) -> TokenStream {
             output.extend(render_type(item.root, inner));
             output
         }
-        ItemEnum::Enum(_) => render_simple(&["enum"], item.path()),
+        ItemEnum::Enum(e) => {
+            let mut output = render_simple(&["enum"], item.path());
+            output.extend(render_generics(item.root, &e.generics.params));
+            output
+        }
         ItemEnum::Variant(inner) => {
             let mut output = render_simple(&["enum", "variant"], item.path());
             match inner {
@@ -69,7 +83,6 @@ pub fn token_stream(item: &IntermediatePublicItem) -> TokenStream {
                 vec!["trait"]
             };
             let mut output = render_simple(&tags, item.path());
-            output.extend(render_path(&item.path()));
             output.extend(render_generics(item.root, &inner.generics.params));
             output
         }
@@ -97,8 +110,18 @@ pub fn token_stream(item: &IntermediatePublicItem) -> TokenStream {
             output
         }
         ItemEnum::OpaqueTy(_) => render_simple(&["opaque", "type"], item.path()),
-        ItemEnum::Constant(_) => render_simple(&["const"], item.path()),
-        ItemEnum::AssocConst { .. } => render_simple(&["const"], item.path()),
+        ItemEnum::Constant(con) => {
+            let mut output = render_simple(&["const"], item.path());
+            output.extend(vec![Token::symbol(":"), ws!()]);
+            output.extend(render_constant(item.root, con));
+            output
+        }
+        ItemEnum::AssocConst { type_, .. } => {
+            let mut output = render_simple(&["const"], item.path());
+            output.extend(vec![Token::symbol(":"), ws!()]);
+            output.extend(render_type(item.root, type_));
+            output
+        }
         ItemEnum::Static(inner) => {
             let tags = if inner.mutable {
                 vec!["mut", "static"]
@@ -118,8 +141,8 @@ pub fn token_stream(item: &IntermediatePublicItem) -> TokenStream {
             output
         }
         ItemEnum::ProcMacro(inner) => {
-            let mut output = render_simple(&["macro"], item.path());
-            output.remove_from_back(1); // Remove name of macro\
+            let mut output = render_simple(&["proc", "macro"], item.path());
+            output.remove_from_back(1); // Remove name of macro to possibly wrap it in `#[]`
             let name = Token::identifier(item.item.name.as_ref().unwrap_or(&"".to_string()));
             match inner.kind {
                 MacroKind::Bang => output.extend(vec![name, Token::symbol("!()")]),
@@ -130,7 +153,6 @@ pub fn token_stream(item: &IntermediatePublicItem) -> TokenStream {
                     output.extend(vec![Token::symbol("#[derive("), name, Token::symbol(")]")])
                 }
             }
-            output.push(Token::symbol("!"));
             output
         }
         ItemEnum::PrimitiveType(_) => render_simple(&["primitive", "type"], item.path()),
@@ -208,7 +230,6 @@ fn render_type(root: &Crate, ty: &Type) -> TokenStream {
                 let split: Vec<_> = name.split("::").collect();
                 let len = split.len();
                 for (index, part) in split.into_iter().enumerate() {
-                    dbg!(index, part, len);
                     if index == 0 && part == "$crate" {
                         output.push(Token::keyword("crate"));
                     } else if index == len - 1 {
@@ -538,9 +559,6 @@ fn render_generic_bounds(root: &Crate, bounds: &[GenericBound]) -> TokenStream {
                     ..
                 } => {
                     let mut output = render_type(root, trait_);
-                    if output == Token::type_("Iterator").into() {
-                        dbg!(trait_);
-                    }
                     output.extend(render_generics(root, generic_params));
                     output
                 }

@@ -31,14 +31,6 @@ pub enum Token {
     Type(String),
 }
 
-/// A simple macro to write `Token::Whitespace` in less characters.
-#[macro_export]
-macro_rules! ws {
-    () => {
-        Token::Whitespace
-    };
-}
-
 impl Token {
     /// A symbol, like `=` or `::<`
     pub(crate) fn symbol(text: impl Into<String>) -> Self {

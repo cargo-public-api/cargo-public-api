@@ -1,2 +1,2 @@
 pub mod thiserror
-pub proc macro thiserror::Error!
+pub proc macro thiserror::#[derive(Error)]

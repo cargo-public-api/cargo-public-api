@@ -1,6 +1,6 @@
 //! Contains facilities that allows you diff public APIs between releases and
 //! commits. [`cargo
-//! public-items`](https://github.com/Enselic/cargo-public-items) contains
+//! public-api`](https://github.com/Enselic/cargo-public-api) contains
 //! additional helpers for that.
 
 use crate::PublicItem;

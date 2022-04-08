@@ -53,4 +53,4 @@ jobs:
         profile: minimal
         components: llvm-tools-preview
     - run: cargo install cargo-llvm-cov
-    - run: cargo llvm-cov
+    - run: cargo +nightly llvm-cov

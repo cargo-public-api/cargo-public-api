@@ -180,7 +180,7 @@ fn expected_help_text() -> String {
 
 Requires at least {}.
 
-NOTE: See https://github.com/Enselic/cargo-public-items for a convenient cargo
+NOTE: See https://github.com/Enselic/cargo-public-api for a convenient cargo
 wrapper around this program (or to be precise; library) that does everything
 automatically.
 

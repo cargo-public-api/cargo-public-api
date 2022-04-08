@@ -103,7 +103,7 @@ fn print_usage() -> std::io::Result<()> {
 
 Requires at least {}.
 
-NOTE: See https://github.com/Enselic/cargo-public-items for a convenient cargo
+NOTE: See https://github.com/Enselic/cargo-public-api for a convenient cargo
 wrapper around this program (or to be precise; library) that does everything
 automatically.
 
@@ -138,7 +138,7 @@ To include blanket implementations, pass --with-blanket-implementations.
 /// currently consider it undesirable to for example make this utility depend on
 /// `clap` or `anyhow`.
 ///
-/// The convenient wrapper <https://github.com/Enselic/cargo-public-items>
+/// The convenient wrapper <https://github.com/Enselic/cargo-public-api>
 /// depends on both `clap` and `anyhow` though which is perfectly fine.
 fn args() -> Args {
     let mut args = Args::default();

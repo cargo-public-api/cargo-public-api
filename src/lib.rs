@@ -99,8 +99,8 @@ impl Default for Options {
 /// [`PublicItem`] is one public item of the crate, i.e. part of the crate's
 /// public API.
 ///
-/// There exists a convenient `cargo public-items` subcommand wrapper for this
-/// function found at <https://github.com/Enselic/cargo-public-items> that
+/// There exists a convenient `cargo public-api` subcommand wrapper for this
+/// function found at <https://github.com/Enselic/cargo-public-api> that
 /// builds the rustdoc JSON for you and then invokes this function. If you don't
 /// want to use that wrapper, use
 /// ```bash

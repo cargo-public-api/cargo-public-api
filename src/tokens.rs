@@ -80,20 +80,7 @@ impl Token {
     #[allow(clippy::len_without_is_empty)]
     #[must_use]
     pub fn len(&self) -> usize {
-        match self {
-            Self::Symbol(l)
-            | Self::Qualifier(l)
-            | Self::Kind(l)
-            | Self::Identifier(l)
-            | Self::Self_(l)
-            | Self::Function(l)
-            | Self::Lifetime(l)
-            | Self::Keyword(l)
-            | Self::Generic(l)
-            | Self::Primitive(l)
-            | Self::Type(l) => l.len(),
-            Self::Whitespace => 1,
-        }
+        self.text().len()
     }
     /// Get the inner text of this token
     #[must_use]

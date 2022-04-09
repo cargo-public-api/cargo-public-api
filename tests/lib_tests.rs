@@ -10,14 +10,6 @@ struct ExpectedDiff<'a> {
 }
 
 #[test]
-fn thiserror_v1_0_30() {
-    assert_public_items(
-        include_str!("./rustdoc_json/thiserror-1.0.30.json"),
-        include_str!("./expected_output/thiserror-1.0.30.txt"),
-    );
-}
-
-#[test]
 fn public_items_v0_4_0_with_blanket_implementations() {
     assert_public_items_with_blanket_implementations(
         include_str!("./rustdoc_json/public_items-v0.4.0.json"),
@@ -79,15 +71,24 @@ fn public_items_diff_between_v0_3_0_and_v0_4_0() {
 #[test]
 fn comprehensive_api() {
     assert_public_items(
-        &comprehensive_api_rustdoc_json(),
+        &rustdoc_json("comprehensive_api"),
         include_str!("./expected_output/comprehensive_api.txt"),
     );
 }
+
+#[test]
+fn comprehensive_api_proc_macro() {
+    assert_public_items(
+        &rustdoc_json("comprehensive_api_proc_macro"),
+        include_str!("./expected_output/comprehensive_api_proc_macro.txt"),
+    );
+}
+
 /// I confess: this test is mainly to get function code coverage on Ord
 #[test]
 fn public_item_ord() {
     let public_items =
-        public_items_from_rustdoc_json_str(&comprehensive_api_rustdoc_json(), Options::default())
+        public_items_from_rustdoc_json_str(&rustdoc_json("comprehensive_api"), Options::default())
             .unwrap();
 
     let generic_arg = public_items
@@ -173,9 +174,9 @@ fn build_rustdoc_json<P: AsRef<Path>>(manifest_path: P) {
 /// ```bash
 /// cargo doc --manifest-path ./tests/crates/comprehensive_api/Cargo.toml --open
 /// ```
-fn comprehensive_api_rustdoc_json() -> String {
-    build_rustdoc_json("./tests/crates/comprehensive_api/Cargo.toml");
-    std::fs::read_to_string("./target/doc/comprehensive_api.json").unwrap()
+fn rustdoc_json(test_crate: &str) -> String {
+    build_rustdoc_json(format!("./tests/crates/{}/Cargo.toml", test_crate));
+    std::fs::read_to_string(format!("./target/doc/{}.json", test_crate)).unwrap()
 }
 
 fn assert_public_items_diff(old_json: &str, new_json: &str, expected: &ExpectedDiff) {

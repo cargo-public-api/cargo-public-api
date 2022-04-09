@@ -50,6 +50,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "comprehensive_api_proc_macro"
+version = "0.1.0"
+
+[[package]]
 name = "ctor"
 version = "0.1.21"
 source = "registry+https://github.com/rust-lang/crates.io-index"

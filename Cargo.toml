@@ -21,4 +21,5 @@ pretty_assertions = "1.1.0"
 [workspace]
 members = [
     "tests/crates/comprehensive_api",
+    "tests/crates/comprehensive_api_proc_macro", # proc-macro stuff needs to be in a separate crate, see https://stackoverflow.com/questions/56713877/why-do-proc-macros-have-to-be-defined-in-proc-macro-crate
 ]

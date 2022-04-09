@@ -1,0 +1,8 @@
+[package]
+description = "Systematically defines proc-macro public items of all kinds and variants. For testing."
+name = "comprehensive_api_proc_macro"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+proc-macro = true

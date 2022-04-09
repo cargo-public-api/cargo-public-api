@@ -1,14 +1,14 @@
 # cargo-public-api
 
-List and diff the public API of Rust library crates between releases and commits. Allows you to detect breaking API changes and semver violations. Relies on and automatically builds rustdoc JSON, for which a recent version of the Rust nighty toolchain must be installed. See [here](https://github.com/Enselic/public_items#compatibility-matrix) for information about exactly how recent.
+List and diff the public API of Rust library crates between releases and commits. Allows you to detect breaking API changes and semver violations. Relies on and automatically builds rustdoc JSON, for which a recent version of the Rust nighty toolchain must be installed.
 
 # Installation
 
 ```
-# Install cargo-public-api, which builds with stable Rust
+# Install cargo-public-api with the regular stable Rust toolchain
 cargo install cargo-public-api
 
-# Install a recent version of nightly so that rustdoc JSON can be built automatically by cargo-public-api
+# Install nightly-2022-03-14 or later so that rustdoc JSON can be built automatically by cargo-public-api
 rustup install nightly
 ```
 

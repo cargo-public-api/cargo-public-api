@@ -30,6 +30,7 @@
 //! <https://github.com/Enselic/public_items/blob/main/src/main.rs>.
 
 #![deny(missing_docs)]
+#![deny(clippy::all, clippy::pedantic)]
 
 mod error;
 mod intermediate_public_item;

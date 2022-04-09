@@ -16,31 +16,32 @@ macro_rules! ws {
 
 use crate::tokens::{Token, TokenStream};
 
+#[allow(clippy::too_many_lines)]
 pub fn token_stream(item: &IntermediatePublicItem) -> TokenStream {
     match &item.item.inner {
-        ItemEnum::Module(_) => render_simple(&["mod"], item.path()),
-        ItemEnum::ExternCrate { .. } => render_simple(&["extern", "crate"], item.path()),
-        ItemEnum::Import(_) => render_simple(&["use"], item.path()),
-        ItemEnum::Union(_) => render_simple(&["union"], item.path()),
+        ItemEnum::Module(_) => render_simple(&["mod"], &item.path()),
+        ItemEnum::ExternCrate { .. } => render_simple(&["extern", "crate"], &item.path()),
+        ItemEnum::Import(_) => render_simple(&["use"], &item.path()),
+        ItemEnum::Union(_) => render_simple(&["union"], &item.path()),
         ItemEnum::Struct(s) => {
-            let mut output = render_simple(&["struct"], item.path());
+            let mut output = render_simple(&["struct"], &item.path());
             output.extend(render_generics(item.root, &s.generics.params));
             output
         }
         ItemEnum::StructField(inner) => {
-            let mut output = render_simple(&["struct", "field"], item.path());
+            let mut output = render_simple(&["struct", "field"], &item.path());
             output.push(Token::symbol(":"));
             output.push(ws!());
             output.extend(render_type(item.root, inner));
             output
         }
         ItemEnum::Enum(e) => {
-            let mut output = render_simple(&["enum"], item.path());
+            let mut output = render_simple(&["enum"], &item.path());
             output.extend(render_generics(item.root, &e.generics.params));
             output
         }
         ItemEnum::Variant(inner) => {
-            let mut output = render_simple(&["enum", "variant"], item.path());
+            let mut output = render_simple(&["enum", "variant"], &item.path());
             match inner {
                 Variant::Plain => {}
                 Variant::Tuple(types) => output.extend(render_sequence(
@@ -82,14 +83,14 @@ pub fn token_stream(item: &IntermediatePublicItem) -> TokenStream {
             } else {
                 vec!["trait"]
             };
-            let mut output = render_simple(&tags, item.path());
+            let mut output = render_simple(&tags, &item.path());
             output.extend(render_generics(item.root, &inner.generics.params));
             output
         }
-        ItemEnum::TraitAlias(_) => render_simple(&["trait", "alias"], item.path()),
-        ItemEnum::Impl(_) => render_simple(&["impl"], item.path()),
+        ItemEnum::TraitAlias(_) => render_simple(&["trait", "alias"], &item.path()),
+        ItemEnum::Impl(_) => render_simple(&["impl"], &item.path()),
         ItemEnum::Typedef(inner) => {
-            let mut output = render_simple(&["type"], item.path());
+            let mut output = render_simple(&["type"], &item.path());
             output.extend(render_generics(item.root, &inner.generics.params));
             output.extend(vec![ws!(), Token::symbol("="), ws!()]);
             output.extend(render_type(item.root, &inner.type_));
@@ -100,7 +101,7 @@ pub fn token_stream(item: &IntermediatePublicItem) -> TokenStream {
             bounds,
             default,
         } => {
-            let mut output = render_simple(&["type"], item.path());
+            let mut output = render_simple(&["type"], &item.path());
             output.extend(render_generics(item.root, &generics.params));
             output.extend(render_generic_bounds(item.root, bounds));
             if let Some(ty) = default {
@@ -109,15 +110,15 @@ pub fn token_stream(item: &IntermediatePublicItem) -> TokenStream {
             }
             output
         }
-        ItemEnum::OpaqueTy(_) => render_simple(&["opaque", "type"], item.path()),
+        ItemEnum::OpaqueTy(_) => render_simple(&["opaque", "type"], &item.path()),
         ItemEnum::Constant(con) => {
-            let mut output = render_simple(&["const"], item.path());
+            let mut output = render_simple(&["const"], &item.path());
             output.extend(vec![Token::symbol(":"), ws!()]);
             output.extend(render_constant(item.root, con));
             output
         }
         ItemEnum::AssocConst { type_, .. } => {
-            let mut output = render_simple(&["const"], item.path());
+            let mut output = render_simple(&["const"], &item.path());
             output.extend(vec![Token::symbol(":"), ws!()]);
             output.extend(render_type(item.root, type_));
             output
@@ -128,45 +129,45 @@ pub fn token_stream(item: &IntermediatePublicItem) -> TokenStream {
             } else {
                 vec!["static"]
             };
-            let mut output = render_simple(&tags, item.path());
+            let mut output = render_simple(&tags, &item.path());
             output.extend(vec![Token::symbol(":"), ws!()]);
             output.extend(render_type(item.root, &inner.type_));
             output
         }
-        ItemEnum::ForeignType => render_simple(&["type"], item.path()),
+        ItemEnum::ForeignType => render_simple(&["type"], &item.path()),
         ItemEnum::Macro(_definition) => {
             // TODO: _definition contains the whole definition, it would be really neat to get out all possible ways to invoke it
-            let mut output = render_simple(&["macro"], item.path());
+            let mut output = render_simple(&["macro"], &item.path());
             output.push(Token::symbol("!"));
             output
         }
         ItemEnum::ProcMacro(inner) => {
-            let mut output = render_simple(&["proc", "macro"], item.path());
+            let mut output = render_simple(&["proc", "macro"], &item.path());
             output.remove_from_back(1); // Remove name of macro to possibly wrap it in `#[]`
             let name = Token::identifier(item.item.name.as_ref().unwrap_or(&"".to_string()));
             match inner.kind {
                 MacroKind::Bang => output.extend(vec![name, Token::symbol("!()")]),
                 MacroKind::Attr => {
-                    output.extend(vec![Token::symbol("#["), name, Token::symbol("]")])
+                    output.extend(vec![Token::symbol("#["), name, Token::symbol("]")]);
                 }
                 MacroKind::Derive => {
-                    output.extend(vec![Token::symbol("#[derive("), name, Token::symbol(")]")])
+                    output.extend(vec![Token::symbol("#[derive("), name, Token::symbol(")]")]);
                 }
             }
             output
         }
-        ItemEnum::PrimitiveType(_) => render_simple(&["primitive", "type"], item.path()),
+        ItemEnum::PrimitiveType(_) => render_simple(&["primitive", "type"], &item.path()),
     }
 }
 
-fn render_simple(tags: &[&str], path: Vec<Rc<IntermediatePublicItem<'_>>>) -> TokenStream {
+fn render_simple(tags: &[&str], path: &[Rc<IntermediatePublicItem<'_>>]) -> TokenStream {
     let mut output: TokenStream = vec![Token::qualifier("pub"), ws!()].into();
     output.extend(
         tags.iter()
             .flat_map(|t| [Token::kind(*t), ws!()])
             .collect::<Vec<Token>>(),
     );
-    output.extend(render_path(&path));
+    output.extend(render_path(path));
     output
 }
 
@@ -351,7 +352,7 @@ fn render_function(
             Abi::SysV64 { .. } => Token::qualifier("sysV64"),
             Abi::System { .. } => Token::qualifier("system"),
             Abi::Other(text) => Token::qualifier(text),
-            _ => unreachable!(),
+            Abi::Rust => unreachable!(),
         });
         output.push(ws!());
     }

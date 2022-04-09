@@ -78,6 +78,7 @@ impl Token {
     }
     /// Give the length of the inner text of this token
     #[allow(clippy::len_without_is_empty)]
+    #[must_use]
     pub fn len(&self) -> usize {
         match self {
             Self::Symbol(l)
@@ -95,6 +96,7 @@ impl Token {
         }
     }
     /// Get the inner text of this token
+    #[must_use]
     pub fn text(&self) -> &str {
         match self {
             Self::Symbol(l)
@@ -132,11 +134,13 @@ impl TokenStream {
     }
 
     /// Get the number of tokens in this [`TokenStream`].
+    #[must_use]
     pub fn len(&self) -> usize {
         self.tokens.len()
     }
 
     /// Check if there are no [`Token`]s in this sequence.
+    #[must_use]
     pub fn is_empty(&self) -> bool {
         self.tokens.is_empty()
     }
@@ -153,6 +157,7 @@ impl TokenStream {
     }
 
     /// Get the total length of all [`Token`]s in this sequence, see [`Token::len`].
+    #[must_use]
     pub fn tokens_len(&self) -> usize {
         self.tokens().map(Token::len).sum()
     }

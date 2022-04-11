@@ -1,9 +1,0 @@
-pub enum public_items::Error
-pub enum variant public_items::Error::SerdeJsonError(serde_json::Error)
-pub fn public_items::Error::fmt(&self, __formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
-pub fn public_items::Error::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-pub fn public_items::Error::from(source: serde_json::Error) -> Self
-pub fn public_items::Error::source(&self) -> std::option::Option<&std::error::Error + 'static>
-pub fn public_items::sorted_public_items_from_rustdoc_json_str(rustdoc_json_str: &str) -> Result<Vec<String>>
-pub mod public_items
-pub type public_items::Result<T> = std::result::Result<T, Error>

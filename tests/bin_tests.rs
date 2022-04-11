@@ -1,66 +1,123 @@
 use assert_cmd::Command;
 use public_items::MINIMUM_RUSTDOC_JSON_VERSION;
 
+mod utils;
+use serial_test::serial;
+use utils::rustdoc_json_path_for_crate;
+
 #[test]
+#[serial] // Writing and reading rustdoc JSON to/from file-system; must run one test at a time
 fn print_public_items() {
-    let mut cmd = Command::cargo_bin("public_items").unwrap();
-    cmd.arg("./tests/rustdoc_json/public_items-v0.4.0.json");
-    cmd.assert()
-        .stdout(include_str!("./expected_output/public_items-v0.4.0.txt"))
-        .stderr("")
-        .success();
+    cmd_with_rustdoc_json_args(&["./tests/crates/comprehensive_api"], |mut cmd| {
+        cmd.assert()
+            .stdout(include_str!("./expected-output/comprehensive_api.txt"))
+            .stderr("")
+            .success();
+    });
 }
 
 #[test]
+#[serial]
 fn print_public_items_with_blanket_implementations() {
-    let mut cmd = Command::cargo_bin("public_items").unwrap();
-    cmd.arg("--with-blanket-implementations");
-    cmd.arg("./tests/rustdoc_json/public_items-v0.4.0.json");
-    cmd.assert()
-        .stdout(include_str!(
-            "./expected_output/public_items-v0.4.0-with-blanket-implementations.txt"
-        ))
-        .stderr("")
-        .success();
+    cmd_with_rustdoc_json_args(&["./tests/crates/example_api-v0.2.0"], |mut cmd| {
+        cmd.arg("--with-blanket-implementations");
+        cmd.assert()
+            .stdout(include_str!(
+                "./expected-output/example_api-v0.2.0-with-blanket-implementations.txt"
+            ))
+            .stderr("")
+            .success();
+    });
 }
 
 #[test]
-fn print_diff_with_changed_and_added() {
-    let mut cmd = Command::cargo_bin("public_items").unwrap();
-    cmd.arg("./tests/rustdoc_json/public_items-v0.2.0.json");
-    cmd.arg("./tests/rustdoc_json/public_items-v0.4.0.json");
-    cmd.assert().stdout("Removed:
+#[serial]
+fn print_diff() {
+    cmd_with_rustdoc_json_args(
+        &[
+            "./tests/crates/example_api-v0.1.0",
+            "./tests/crates/example_api-v0.2.0",
+        ],
+        |mut cmd| {
+            cmd.assert()
+                .stdout(
+                    "Removed:
 (nothing)
 
 Changed:
--pub fn public_items::sorted_public_items_from_rustdoc_json_str(rustdoc_json_str: &str) -> Result<Vec<PublicItem>>
-+pub fn public_items::sorted_public_items_from_rustdoc_json_str(rustdoc_json_str: &str, options: Options) -> Result<Vec<PublicItem>>
+-pub fn example_api::function(v1_param: Struct)
++pub fn example_api::function(v1_param: Struct, v2_param: usize)
 
 Added:
-+pub fn public_items::Options::clone(&self) -> Options
-+pub fn public_items::Options::default() -> Self
-+pub fn public_items::Options::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-+pub struct public_items::Options
-+pub struct field public_items::Options::with_blanket_implementations: bool
++pub struct example_api::StructV2
++pub struct field example_api::Struct::v2_field: usize
++pub struct field example_api::StructV2::field: usize
 
-").stderr("").success();
+",
+                )
+                .stderr("")
+                .success();
+        },
+    );
 }
 
 #[test]
-fn print_diff_with_removed_and_added() {
-    let mut cmd = Command::cargo_bin("public_items").unwrap();
-    cmd.arg("./tests/rustdoc_json/public_items-v0.0.4.json");
-    cmd.arg("./tests/rustdoc_json/public_items-v0.0.5.json");
-    cmd.assert().stdout("Removed:
--pub fn public_items::from_rustdoc_json_str(rustdoc_json_str: &str) -> Result<HashSet<String>>
+#[serial]
+fn print_diff_reversed() {
+    cmd_with_rustdoc_json_args(
+        &[
+            "./tests/crates/example_api-v0.2.0",
+            "./tests/crates/example_api-v0.1.0",
+        ],
+        |mut cmd| {
+            cmd.assert()
+                .stdout(
+                    "Removed:
+-pub struct example_api::StructV2
+-pub struct field example_api::Struct::v2_field: usize
+-pub struct field example_api::StructV2::field: usize
+
+Changed:
+-pub fn example_api::function(v1_param: Struct, v2_param: usize)
++pub fn example_api::function(v1_param: Struct)
+
+Added:
+(nothing)
+
+",
+                )
+                .stderr("")
+                .success();
+        },
+    );
+}
+
+#[test]
+#[serial]
+fn print_no_diff() {
+    cmd_with_rustdoc_json_args(
+        &[
+            "./tests/crates/example_api-v0.2.0",
+            "./tests/crates/example_api-v0.2.0",
+        ],
+        |mut cmd| {
+            cmd.assert()
+                .stdout(
+                    "Removed:
+(nothing)
 
 Changed:
 (nothing)
 
 Added:
-+pub fn public_items::sorted_public_items_from_rustdoc_json_str(rustdoc_json_str: &str) -> Result<Vec<String>>
+(nothing)
 
-").stderr("").success();
+",
+                )
+                .stderr("")
+                .success();
+        },
+    );
 }
 
 #[test]
@@ -135,4 +192,17 @@ To include blanket implementations, pass --with-blanket-implementations.
         env!("CARGO_PKG_VERSION"),
         MINIMUM_RUSTDOC_JSON_VERSION,
     )
+}
+
+/// Helper to setup a `public_items` [`Command`] with rustdoc JSON path args
+/// corresponding to the given crates. Use `final_steps` to specify the
+/// remaining steps in the test.
+fn cmd_with_rustdoc_json_args(crates: &[&str], final_steps: impl FnOnce(Command)) {
+    let mut cmd = Command::cargo_bin("public_items").unwrap();
+
+    for crate_ in crates {
+        cmd.arg(rustdoc_json_path_for_crate(crate_));
+    }
+
+    final_steps(cmd);
 }

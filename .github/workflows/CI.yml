@@ -1,10 +1,17 @@
 name: CI
 
 on:
+  workflow_dispatch:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  # The purpose of running every night is to detect when a change to
+  # https://github.com/rust-lang/rust/tree/master/src/rustdoc-json-types
+  # requires that we release a new version of public_items to be compatible with
+  # the latest nightly toolchain
+  schedule:
+    - cron: '33 3 * * *'
 
 env:
   CARGO_TERM_COLOR: always

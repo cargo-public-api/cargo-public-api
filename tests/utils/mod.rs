@@ -19,9 +19,17 @@ fn build_rustdoc_json<P: AsRef<Path>>(manifest_path: P) -> PathBuf {
     // Synchronously invoke cargo doc
     let mut command = std::process::Command::new("cargo");
     command.args(["+nightly", "doc", "--lib", "--no-deps"]);
+
     command.arg("--manifest-path");
     command.arg(manifest_path.as_ref());
+
+    // The test framework is unable to capture output from child processes (see
+    // https://users.rust-lang.org/t/cargo-doesnt-capture-stderr-in-tests/67045/4),
+    // so be quiet to make running tests much less noisy
+    command.arg("--quiet");
+
     command.env("RUSTDOCFLAGS", "-Z unstable-options --output-format json");
+
     assert!(command.spawn().unwrap().wait().unwrap().success());
 
     let mut rustdoc_json_path = get_target_directory(manifest_path.as_ref());

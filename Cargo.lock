@@ -289,7 +289,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "public_items"
+name = "public-api"
 version = "0.8.0"
 dependencies = [
  "assert_cmd",

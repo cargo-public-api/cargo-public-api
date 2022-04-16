@@ -19,7 +19,7 @@ pub struct ChangedPublicItem {
 /// The return value of [`Self::between`]. To quickly get a sense of what it
 /// contains, you can pretty-print it:
 /// ```txt
-/// println!("{:#?}", public_items_diff);
+/// println!("{:#?}", public_api_diff);
 /// ```
 #[allow(clippy::module_name_repetitions)]
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -43,7 +43,7 @@ impl PublicItemsDiff {
     /// Allows you to diff the public API between two arbitrary versions of a
     /// library, e.g. different releases. The input parameters `old` and `new`
     /// is the output of two different invocations of
-    /// [`crate::public_items_from_rustdoc_json_str`].
+    /// [`crate::public_api_from_rustdoc_json_str`].
     #[must_use]
     pub fn between(old_items: Vec<PublicItem>, new_items: Vec<PublicItem>) -> Self {
         let mut old_sorted = old_items;

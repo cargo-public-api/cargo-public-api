@@ -1,33 +1,37 @@
-//! This library gives you a list of all public items (otherwise known as the
-//! public API) of a library crate. As input to the library, a special output
-//! format from `cargo doc` is used, which goes by the name **rustdoc JSON**.
-//! Currently, only `cargo doc` from the Nightly toolchain can produce **rustdoc
-//! JSON** for a library. You build **rustdoc JSON** like this:
+//! This library gives you a the public API of a library crate, in the form of a
+//! list of public items in the crate. Public items are items that other crates
+//! can use.
+//!
+//! As input to the library, a special output format from `cargo doc` is used,
+//! which goes by the name **rustdoc JSON**. Currently, only `cargo doc` from
+//! the Nightly toolchain can produce **rustdoc JSON** for a library. You build
+//! **rustdoc JSON** like this:
 //!
 //! ```bash
 //! RUSTDOCFLAGS='-Z unstable-options --output-format json' cargo +nightly doc --lib --no-deps
 //! ```
 //!
-//! The main entry point to the library is
-//! [`public_items_from_rustdoc_json_str`], so please read its documentation.
+//! The main entry point to the library is [`public_api_from_rustdoc_json_str`],
+//! so please read its documentation.
 //!
 //! # Examples
 //!
-//! The two main use cases are listing public items, and diffing public items.
+//! The two main use cases are listing the public API and diffing different
+//! versions of the same public APIs.
 //!
 //! ## List all public items of a crate (the public API)
 //! ```
-#![doc = include_str!("../examples/list_public_items.rs")]
+#![doc = include_str!("../examples/list_public_api.rs")]
 //! ```
 //!
 //! ## Diff two versions of a public API
 //! ```
-#![doc = include_str!("../examples/diff_public_items.rs")]
+#![doc = include_str!("../examples/diff_public_api.rs")]
 //! ```
 //!
 //! The most comprehensive example code on how to use the library can be found
 //! in the thin binary wrapper around the library, see
-//! <https://github.com/Enselic/public_items/blob/main/src/main.rs>.
+//! <https://github.com/Enselic/public-api/blob/main/src/main.rs>.
 
 #![deny(missing_docs)]
 #![deny(clippy::all, clippy::pedantic)]
@@ -55,7 +59,7 @@ pub use item_iterator::PublicItem;
 /// nightly or later, you should be fine.
 pub const MINIMUM_RUSTDOC_JSON_VERSION: &str = "nightly-2022-03-14";
 
-/// Contains various options that you can pass to [`public_items_from_rustdoc_json_str`].
+/// Contains various options that you can pass to [`public_api_from_rustdoc_json_str`].
 #[derive(Copy, Clone, Debug)]
 #[non_exhaustive] // More options are likely to be added in the future
 pub struct Options {
@@ -82,7 +86,7 @@ pub struct Options {
 /// `#[non_exhaustive]`):
 ///
 /// ```
-/// # use public_items::Options;
+/// # use public_api::Options;
 /// let mut options = Options::default();
 /// options.sorted = true;
 /// // ...
@@ -118,17 +122,17 @@ impl Default for Options {
 /// # Errors
 ///
 /// E.g. if the JSON is invalid.
-pub fn public_items_from_rustdoc_json_str(
+pub fn public_api_from_rustdoc_json_str(
     rustdoc_json_str: &str,
     options: Options,
 ) -> Result<Vec<PublicItem>> {
     let crate_: rustdoc_types::Crate = serde_json::from_str(rustdoc_json_str)?;
 
-    let mut public_items: Vec<_> = item_iterator::public_items_in_crate(&crate_, options).collect();
+    let mut public_api: Vec<_> = item_iterator::public_api_in_crate(&crate_, options).collect();
 
     if options.sorted {
-        public_items.sort();
+        public_api.sort();
     }
 
-    Ok(public_items)
+    Ok(public_api)
 }

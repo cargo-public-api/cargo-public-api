@@ -1,5 +1,5 @@
 use assert_cmd::Command;
-use public_items::MINIMUM_RUSTDOC_JSON_VERSION;
+use public_api::MINIMUM_RUSTDOC_JSON_VERSION;
 
 mod utils;
 use serial_test::serial;
@@ -7,7 +7,7 @@ use utils::rustdoc_json_path_for_crate;
 
 #[test]
 #[serial] // Writing and reading rustdoc JSON to/from file-system; must run one test at a time
-fn print_public_items() {
+fn print_public_api() {
     cmd_with_rustdoc_json_args(&["./tests/crates/comprehensive_api"], |mut cmd| {
         cmd.assert()
             .stdout(include_str!("./expected-output/comprehensive_api.txt"))
@@ -18,7 +18,7 @@ fn print_public_items() {
 
 #[test]
 #[serial]
-fn print_public_items_with_blanket_implementations() {
+fn print_public_api_with_blanket_implementations() {
     cmd_with_rustdoc_json_args(&["./tests/crates/example_api-v0.2.0"], |mut cmd| {
         cmd.arg("--with-blanket-implementations");
         cmd.assert()
@@ -122,7 +122,7 @@ Added:
 
 #[test]
 fn short_help() {
-    let mut cmd = Command::cargo_bin("public_items").unwrap();
+    let mut cmd = Command::cargo_bin("public-api").unwrap();
     cmd.arg("-h");
     cmd.assert()
         .stdout(expected_help_text())
@@ -132,7 +132,7 @@ fn short_help() {
 
 #[test]
 fn long_help() {
-    let mut cmd = Command::cargo_bin("public_items").unwrap();
+    let mut cmd = Command::cargo_bin("public-api").unwrap();
     cmd.arg("--help");
     cmd.assert()
         .stdout(expected_help_text())
@@ -142,7 +142,7 @@ fn long_help() {
 
 #[test]
 fn no_args_shows_help() {
-    let mut cmd = Command::cargo_bin("public_items").unwrap();
+    let mut cmd = Command::cargo_bin("public-api").unwrap();
     cmd.assert()
         .stdout(expected_help_text())
         .stderr("")
@@ -151,7 +151,7 @@ fn no_args_shows_help() {
 
 #[test]
 fn too_many_args_shows_help() {
-    let mut cmd = Command::cargo_bin("public_items").unwrap();
+    let mut cmd = Command::cargo_bin("public-api").unwrap();
     cmd.args(&["too", "many", "args"]);
     cmd.assert()
         .stdout(expected_help_text())
@@ -161,7 +161,7 @@ fn too_many_args_shows_help() {
 
 fn expected_help_text() -> String {
     format!(
-        "public_items v{}
+        "public-api v{}
 
 Requires at least {}.
 
@@ -171,7 +171,7 @@ automatically.
 
 If you insist of using this low-level utility and thin wrapper, you run it like this:
 
-    public_items <RUSTDOC_JSON_FILE>
+    public-api <RUSTDOC_JSON_FILE>
 
 where RUSTDOC_JSON_FILE is the path to the output of
 
@@ -184,7 +184,7 @@ which you can find in
 To diff the public API between two commits, you generate one rustdoc JSON file for each
 commit and then pass the path of both files to this utility:
 
-    public_items <RUSTDOC_JSON_FILE_OLD> <RUSTDOC_JSON_FILE_NEW>
+    public-api <RUSTDOC_JSON_FILE_OLD> <RUSTDOC_JSON_FILE_NEW>
 
 To include blanket implementations, pass --with-blanket-implementations.
 
@@ -194,11 +194,11 @@ To include blanket implementations, pass --with-blanket-implementations.
     )
 }
 
-/// Helper to setup a `public_items` [`Command`] with rustdoc JSON path args
+/// Helper to setup a `public-api` [`Command`] with rustdoc JSON path args
 /// corresponding to the given crates. Use `final_steps` to specify the
 /// remaining steps in the test.
 fn cmd_with_rustdoc_json_args(crates: &[&str], final_steps: impl FnOnce(Command)) {
-    let mut cmd = Command::cargo_bin("public_items").unwrap();
+    let mut cmd = Command::cargo_bin("public-api").unwrap();
 
     for crate_ in crates {
         cmd.arg(rustdoc_json_path_for_crate(crate_));

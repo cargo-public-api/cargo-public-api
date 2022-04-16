@@ -1,7 +1,7 @@
 use std::fmt::Display;
 
 use pretty_assertions::assert_eq;
-use public_items::{public_items_from_rustdoc_json_str, Error, Options};
+use public_api::{public_api_from_rustdoc_json_str, Error, Options};
 
 mod utils;
 use serial_test::serial;
@@ -16,7 +16,7 @@ struct ExpectedDiff<'a> {
 #[test]
 #[serial] // Writing and reading rustdoc JSON to/from file-system; must run one test at a time
 fn with_blanket_implementations() {
-    assert_public_items_with_blanket_implementations(
+    assert_public_api_with_blanket_implementations(
         &rustdoc_json_str_for_crate("./tests/crates/example_api-v0.2.0"),
         include_str!("./expected-output/example_api-v0.2.0-with-blanket-implementations.txt"),
     );
@@ -25,7 +25,7 @@ fn with_blanket_implementations() {
 #[test]
 #[serial]
 fn diff_with_added_items() {
-    assert_public_items_diff(
+    assert_public_api_diff(
         &rustdoc_json_str_for_crate("./tests/crates/example_api-v0.1.0"),
         &rustdoc_json_str_for_crate("./tests/crates/example_api-v0.2.0"),
         &ExpectedDiff {
@@ -47,7 +47,7 @@ fn diff_with_added_items() {
 #[serial]
 fn no_diff() {
     // No change to the public API
-    assert_public_items_diff(
+    assert_public_api_diff(
         &rustdoc_json_str_for_crate("./tests/crates/comprehensive_api"),
         &rustdoc_json_str_for_crate("./tests/crates/comprehensive_api"),
         &ExpectedDiff {
@@ -61,7 +61,7 @@ fn no_diff() {
 #[test]
 #[serial]
 fn diff_with_removed_items() {
-    assert_public_items_diff(
+    assert_public_api_diff(
         &rustdoc_json_str_for_crate("./tests/crates/example_api-v0.2.0"),
         &rustdoc_json_str_for_crate("./tests/crates/example_api-v0.1.0"),
         &ExpectedDiff {
@@ -82,7 +82,7 @@ fn diff_with_removed_items() {
 #[test]
 #[serial]
 fn comprehensive_api() {
-    assert_public_items(
+    assert_public_api(
         &rustdoc_json_str_for_crate("./tests/crates/comprehensive_api"),
         include_str!("./expected-output/comprehensive_api.txt"),
     );
@@ -91,7 +91,7 @@ fn comprehensive_api() {
 #[test]
 #[serial]
 fn comprehensive_api_proc_macro() {
-    assert_public_items(
+    assert_public_api(
         &rustdoc_json_str_for_crate("./tests/crates/comprehensive_api_proc_macro"),
         include_str!("./expected-output/comprehensive_api_proc_macro.txt"),
     );
@@ -101,19 +101,19 @@ fn comprehensive_api_proc_macro() {
 #[test]
 #[serial]
 fn public_item_ord() {
-    let public_items = public_items_from_rustdoc_json_str(
+    let public_api = public_api_from_rustdoc_json_str(
         &rustdoc_json_str_for_crate("./tests/crates/comprehensive_api"),
         Options::default(),
     )
     .unwrap();
 
-    let generic_arg = public_items
+    let generic_arg = public_api
         .clone()
         .into_iter()
         .find(|x| format!("{}", x).contains("generic_arg"))
         .unwrap();
 
-    let generic_bound = public_items
+    let generic_bound = public_api
         .into_iter()
         .find(|x| format!("{}", x).contains("generic_bound"))
         .unwrap();
@@ -124,7 +124,7 @@ fn public_item_ord() {
 #[test]
 #[serial]
 fn invalid_json() {
-    let result = public_items_from_rustdoc_json_str("}}}}}}}}}", Options::default());
+    let result = public_api_from_rustdoc_json_str("}}}}}}}}}", Options::default());
     ensure_impl_debug(&result);
     assert!(matches!(result, Err(Error::SerdeJsonError(_))));
 }
@@ -144,18 +144,18 @@ fn options() {
 #[serial]
 fn pretty_printed_diff() {
     let options = Options::default();
-    let old = public_items_from_rustdoc_json_str(
+    let old = public_api_from_rustdoc_json_str(
         &rustdoc_json_str_for_crate("./tests/crates/example_api-v0.1.0"),
         options,
     )
     .unwrap();
-    let new = public_items_from_rustdoc_json_str(
+    let new = public_api_from_rustdoc_json_str(
         &rustdoc_json_str_for_crate("./tests/crates/example_api-v0.2.0"),
         options,
     )
     .unwrap();
 
-    let diff = public_items::diff::PublicItemsDiff::between(old, new);
+    let diff = public_api::diff::PublicItemsDiff::between(old, new);
     let pretty_printed = format!("{:#?}", diff);
     assert_eq!(
         pretty_printed,
@@ -176,11 +176,11 @@ fn pretty_printed_diff() {
     );
 }
 
-fn assert_public_items_diff(old_json: &str, new_json: &str, expected: &ExpectedDiff) {
-    let old = public_items_from_rustdoc_json_str(old_json, Options::default()).unwrap();
-    let new = public_items_from_rustdoc_json_str(new_json, Options::default()).unwrap();
+fn assert_public_api_diff(old_json: &str, new_json: &str, expected: &ExpectedDiff) {
+    let old = public_api_from_rustdoc_json_str(old_json, Options::default()).unwrap();
+    let new = public_api_from_rustdoc_json_str(new_json, Options::default()).unwrap();
 
-    let diff = public_items::diff::PublicItemsDiff::between(old, new);
+    let diff = public_api::diff::PublicItemsDiff::between(old, new);
 
     assert_eq!(expected.added, into_strings(diff.added));
     assert_eq!(expected.removed, into_strings(diff.removed));
@@ -198,15 +198,15 @@ fn assert_public_items_diff(old_json: &str, new_json: &str, expected: &ExpectedD
     assert_eq!(expected_changed, actual_changed);
 }
 
-fn assert_public_items(json: &str, expected: &str) {
-    assert_public_items_impl(json, expected, false);
+fn assert_public_api(json: &str, expected: &str) {
+    assert_public_api_impl(json, expected, false);
 }
 
-fn assert_public_items_with_blanket_implementations(json: &str, expected: &str) {
-    assert_public_items_impl(json, expected, true);
+fn assert_public_api_with_blanket_implementations(json: &str, expected: &str) {
+    assert_public_api_impl(json, expected, true);
 }
 
-fn assert_public_items_impl(
+fn assert_public_api_impl(
     rustdoc_json_str: &str,
     expected_output: &str,
     with_blanket_implementations: bool,
@@ -215,8 +215,7 @@ fn assert_public_items_impl(
     options.with_blanket_implementations = with_blanket_implementations;
     options.sorted = true;
 
-    let actual =
-        into_strings(public_items_from_rustdoc_json_str(rustdoc_json_str, options).unwrap());
+    let actual = into_strings(public_api_from_rustdoc_json_str(rustdoc_json_str, options).unwrap());
 
     let expected = expected_output_to_string_vec(expected_output);
 

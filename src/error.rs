@@ -11,5 +11,5 @@ pub enum Error {
     SerdeJsonError(#[from] serde_json::Error),
 }
 
-/// Shorthand for [`std::result::Result<T, public_items::Error>`].
+/// Shorthand for [`std::result::Result<T, public_api::Error>`].
 pub type Result<T> = std::result::Result<T, Error>;

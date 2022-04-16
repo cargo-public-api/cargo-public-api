@@ -104,7 +104,7 @@ dependencies = [
  "cargo_toml",
  "clap",
  "predicates",
- "public_items",
+ "public-api",
  "serial_test",
 ]
 
@@ -391,10 +391,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "public_items"
-version = "0.8.0"
+name = "public-api"
+version = "0.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f0f8935068fb52bba0bd678a73785de62844c9b40cac8bcd681b9d285b2a3fe3"
+checksum = "0b20da6988dcc6a078d15fe9c21307fb54619a7e7961a6cdd38c25cfea8c983b"
 dependencies = [
  "rustdoc-types",
  "serde",

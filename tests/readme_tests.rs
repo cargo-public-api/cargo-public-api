@@ -1,4 +1,4 @@
-use public_items::MINIMUM_RUSTDOC_JSON_VERSION;
+use public_api::MINIMUM_RUSTDOC_JSON_VERSION;
 
 #[test]
 fn installation_instructions_mentions_minimum_rustdoc_json_version() {

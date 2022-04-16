@@ -224,7 +224,7 @@ fn current_dir_and<P: AsRef<Path>>(path: P) -> PathBuf {
 fn clone_test_crate(dest: &Path) {
     let mut git = std::process::Command::new("git");
     git.arg("clone");
-    git.arg("https://github.com/Enselic/public_items.git");
+    git.arg("https://github.com/Enselic/public-api.git"); // Tests still use ld name `public_items`
     git.arg("-b");
     git.arg("v0.7.1");
     git.arg("--single-branch");

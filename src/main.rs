@@ -3,8 +3,8 @@ use std::path::{Path, PathBuf};
 
 use anyhow::{anyhow, Context, Result};
 use output_formatter::OutputFormatter;
-use public_items::{
-    public_items_from_rustdoc_json_str, Options, PublicItem, MINIMUM_RUSTDOC_JSON_VERSION,
+use public_api::{
+    public_api_from_rustdoc_json_str, Options, PublicItem, MINIMUM_RUSTDOC_JSON_VERSION,
 };
 
 use clap::Parser;
@@ -40,13 +40,13 @@ pub struct Args {
     ///
     /// 1. Do a literal in-tree, in-place `git checkout` of the first commit
     ///
-    /// 2. Collect public items
+    /// 2. Collect public API
     ///
     /// 3. Do a literal in-tree, in-place `git checkout` of the second commit
     ///
-    /// 4. Collect public items
+    /// 4. Collect public API
     ///
-    /// 5. Print the diff between public items in step 2 and step 4
+    /// 5. Print the diff between public API in step 2 and step 4
     ///
     /// Do not use non-fixed commit references such as `HEAD^` since the meaning
     /// of `HEAD^` is different depending on what commit is the current commit.
@@ -101,7 +101,7 @@ fn print_public_items_diff_between_two_commits(args: &Args, commits: &[String]) 
     let new_commit = commits.get(1).expect("clap makes sure second commit exist");
     let new = collect_public_items(Some(new_commit))?;
 
-    let diff = public_items::diff::PublicItemsDiff::between(old, new);
+    let diff = public_api::diff::PublicItemsDiff::between(old, new);
     args.output_format
         .formatter()
         .print_diff(&mut stdout(), args, &diff)?;
@@ -213,7 +213,7 @@ fn collect_public_items(commit: Option<&str>) -> Result<Vec<PublicItem>> {
     let rustdoc_json = &std::fs::read_to_string(&json_path)
         .with_context(|| format!("Failed to read rustdoc JSON at {:?}", json_path))?;
 
-    public_items_from_rustdoc_json_str(rustdoc_json, options).with_context(|| {
+    public_api_from_rustdoc_json_str(rustdoc_json, options).with_context(|| {
         format!(
             "Failed to parse rustdoc JSON at {:?}.\n\
             This version of `cargo public-api` requires at least:\n\n    {}\n\n\

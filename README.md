@@ -8,7 +8,7 @@ List and diff the public API of Rust library crates between releases and commits
 # Install cargo-public-api with the regular stable Rust toolchain
 cargo install cargo-public-api
 
-# Install nightly-2022-03-14 or later so that rustdoc JSON can be built automatically by cargo-public-api
+# Install nightly-2022-03-14 or later so cargo-public-api can build rustdoc JSON for you
 rustup install nightly
 ```
 
@@ -16,55 +16,64 @@ rustup install nightly
 
 ## List public API
 
-This example lists the public API of the library that this cargo subcommand is implemented with (before it was renamed to `public-api`). The example assumes that the git repository for the library is checked out to `~/src/public_items`. To print all items that make up the public API of your Rust library crate, simply do this:
+This example lists the public API of the ubiquitous `regex` crate. First let's clone the repo:
 
 ```
-% cd ~/src/public_items
+% git clone https://github.com/rust-lang/regex ~/src/regex
+```
+
+Now we can list the public API of `regex` by doing
+
+```
+% cd ~/src/regex
 % cargo public-api
 ```
 
-and the public API will be printed with one line per item:
+which will print the public API of `regex` with one line per public item in the API:
 
 ```
-pub enum public_items::Error
-pub enum variant public_items::Error::SerdeJsonError(serde_json::Error)
-pub fn public_items::Error::fmt(&self, __formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
-pub fn public_items::Error::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-pub fn public_items::Error::from(source: serde_json::Error) -> Self
-pub fn public_items::Error::source(&self) -> std::option::Option<&std::error::Error + 'static>
-pub fn public_items::PublicItem::cmp(&self, other: &PublicItem) -> $crate::cmp::Ordering
-pub fn public_items::PublicItem::eq(&self, other: &PublicItem) -> bool
-pub fn public_items::PublicItem::fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
-pub fn public_items::PublicItem::ne(&self, other: &PublicItem) -> bool
-pub fn public_items::PublicItem::partial_cmp(&self, other: &PublicItem) -> $crate::option::Option<$crate::cmp::Ordering>
-pub fn public_items::sorted_public_items_from_rustdoc_json_str(rustdoc_json_str: &str) -> Result<Vec<PublicItem>>
-pub mod public_items
-pub struct public_items::PublicItem
-pub type public_items::Result<T> = std::result::Result<T, Error>
+pub enum regex::Error
+pub enum variant regex::Error::CompiledTooBig(usize)
+pub enum variant regex::Error::Syntax(String)
+pub fn regex::CaptureLocations::clone(&self) -> CaptureLocations
+pub fn regex::CaptureLocations::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
+pub fn regex::CaptureLocations::get(&self, i: usize) -> Option<(usize, usize)>
+pub fn regex::CaptureLocations::len(&self) -> usize
+pub fn regex::CaptureMatches::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
+pub fn regex::CaptureMatches::next(&mut self) -> Option<Captures<'t>>
+...
 ```
 
-## Diff public API between commits
+## Diff public API
 
-To diff two different versions of your API, use `--diff-git-checkouts` while standing in the git repo of your project.
-
-The following example prints the public API diff between v0.2.0 and v0.4.0 of the `public_items` library:
+To diff the API between say **1.3.0** and **1.4.0** of `regex`, use `--diff-git-checkouts` while standing in the git repo. Like this:
 
 ```
-% cd ~/src/public_items
-% cargo public-api --diff-git-checkouts v0.2.0 v0.4.0
-## Removed items from the public API
+% cd ~/src/regex
+% cargo public-api --diff-git-checkouts 1.3.0 1.4.0
+```
+
+and the API diff will be printed:
+
+```
+Removed items from the public API
+=================================
 (none)
 
-## Changed items in the public API
-* `pub fn public_items::sorted_public_items_from_rustdoc_json_str(rustdoc_json_str: &str) -> Result<Vec<PublicItem>>` changed to
-  `pub fn public_items::sorted_public_items_from_rustdoc_json_str(rustdoc_json_str: &str, options: Options) -> Result<Vec<PublicItem>>`
+Changed items in the public API
+===============================
+(none)
 
-## Added items to the public API
-* `pub fn public_items::Options::clone(&self) -> Options`
-* `pub fn public_items::Options::default() -> Self`
-* `pub fn public_items::Options::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result`
-* `pub struct public_items::Options`
-* `pub struct field public_items::Options::with_blanket_implementations: bool`
+Added items to the public API
+=============================
+pub fn regex::Match::range(&self) -> Range<usize>
+pub fn regex::RegexSet::empty() -> RegexSet
+pub fn regex::RegexSet::is_empty(&self) -> bool
+pub fn regex::SubCaptureMatches::clone(&self) -> SubCaptureMatches<'c, 't>
+pub fn regex::bytes::Match::range(&self) -> Range<usize>
+pub fn regex::bytes::RegexSet::empty() -> RegexSet
+pub fn regex::bytes::RegexSet::is_empty(&self) -> bool
+pub fn regex::bytes::SubCaptureMatches::clone(&self) -> SubCaptureMatches<'c, 't>
 ```
 
 You can also manually do a diff by writing the full list of items to a file for two different versions of your library and then do a regular `diff` between the files.

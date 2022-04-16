@@ -1,7 +1,11 @@
-use std::{fmt::Display, path::Path};
+use std::fmt::Display;
 
 use pretty_assertions::assert_eq;
 use public_items::{public_items_from_rustdoc_json_str, Error, Options};
+
+mod utils;
+use serial_test::serial;
+use utils::rustdoc_json_str_for_crate;
 
 struct ExpectedDiff<'a> {
     removed: &'a [&'a str],
@@ -10,32 +14,42 @@ struct ExpectedDiff<'a> {
 }
 
 #[test]
-fn public_items_v0_4_0_with_blanket_implementations() {
+#[serial] // Writing and reading rustdoc JSON to/from file-system; must run one test at a time
+fn with_blanket_implementations() {
     assert_public_items_with_blanket_implementations(
-        include_str!("./rustdoc_json/public_items-v0.4.0.json"),
-        include_str!("./expected_output/public_items-v0.4.0-with-blanket-implementations.txt"),
+        &rustdoc_json_str_for_crate("./tests/crates/example_api-v0.2.0"),
+        include_str!("./expected-output/example_api-v0.2.0-with-blanket-implementations.txt"),
     );
 }
 
 #[test]
-fn public_items_diff_between_v0_0_4_and_v0_0_5() {
+#[serial]
+fn diff_with_added_items() {
     assert_public_items_diff(
-        include_str!("./rustdoc_json/public_items-v0.0.4.json"),
-        include_str!("./rustdoc_json/public_items-v0.0.5.json"),
+        &rustdoc_json_str_for_crate("./tests/crates/example_api-v0.1.0"),
+        &rustdoc_json_str_for_crate("./tests/crates/example_api-v0.2.0"),
         &ExpectedDiff {
-            removed: &["pub fn public_items::from_rustdoc_json_str(rustdoc_json_str: &str) -> Result<HashSet<String>>"],
-            changed: &[],
-            added: &["pub fn public_items::sorted_public_items_from_rustdoc_json_str(rustdoc_json_str: &str) -> Result<Vec<String>>"],
-        }
+            removed: &[],
+            changed: &[(
+                "pub fn example_api::function(v1_param: Struct)",
+                "pub fn example_api::function(v1_param: Struct, v2_param: usize)",
+            )],
+            added: &[
+                "pub struct example_api::StructV2",
+                "pub struct field example_api::Struct::v2_field: usize",
+                "pub struct field example_api::StructV2::field: usize",
+            ],
+        },
     );
 }
 
 #[test]
-fn public_items_diff_between_v0_2_0_and_v0_3_0() {
+#[serial]
+fn no_diff() {
     // No change to the public API
     assert_public_items_diff(
-        include_str!("./rustdoc_json/public_items-v0.2.0.json"),
-        include_str!("./rustdoc_json/public_items-v0.3.0.json"),
+        &rustdoc_json_str_for_crate("./tests/crates/comprehensive_api"),
+        &rustdoc_json_str_for_crate("./tests/crates/comprehensive_api"),
         &ExpectedDiff {
             removed: &[],
             changed: &[],
@@ -45,51 +59,53 @@ fn public_items_diff_between_v0_2_0_and_v0_3_0() {
 }
 
 #[test]
-fn public_items_diff_between_v0_3_0_and_v0_4_0() {
+#[serial]
+fn diff_with_removed_items() {
     assert_public_items_diff(
-        include_str!("./rustdoc_json/public_items-v0.3.0.json"),
-        include_str!("./rustdoc_json/public_items-v0.4.0.json"),
+        &rustdoc_json_str_for_crate("./tests/crates/example_api-v0.2.0"),
+        &rustdoc_json_str_for_crate("./tests/crates/example_api-v0.1.0"),
         &ExpectedDiff {
-            removed: &[],
-            changed: &[
-                (
-                    "pub fn public_items::sorted_public_items_from_rustdoc_json_str(rustdoc_json_str: &str) -> Result<Vec<PublicItem>>",
-                    "pub fn public_items::sorted_public_items_from_rustdoc_json_str(rustdoc_json_str: &str, options: Options) -> Result<Vec<PublicItem>>",
-                )
+            removed: &[
+                "pub struct example_api::StructV2",
+                "pub struct field example_api::Struct::v2_field: usize",
+                "pub struct field example_api::StructV2::field: usize",
             ],
-            added: &[
-                  "pub fn public_items::Options::clone(&self) -> Options",
-                  "pub fn public_items::Options::default() -> Self",
-                  "pub fn public_items::Options::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result",
-                  "pub struct field public_items::Options::with_blanket_implementations: bool",
-                  "pub struct public_items::Options",
-                ],
+            changed: &[(
+                "pub fn example_api::function(v1_param: Struct, v2_param: usize)",
+                "pub fn example_api::function(v1_param: Struct)",
+            )],
+            added: &[],
         },
     );
 }
 
 #[test]
+#[serial]
 fn comprehensive_api() {
     assert_public_items(
-        &rustdoc_json("comprehensive_api"),
-        include_str!("./expected_output/comprehensive_api.txt"),
+        &rustdoc_json_str_for_crate("./tests/crates/comprehensive_api"),
+        include_str!("./expected-output/comprehensive_api.txt"),
     );
 }
 
 #[test]
+#[serial]
 fn comprehensive_api_proc_macro() {
     assert_public_items(
-        &rustdoc_json("comprehensive_api_proc_macro"),
-        include_str!("./expected_output/comprehensive_api_proc_macro.txt"),
+        &rustdoc_json_str_for_crate("./tests/crates/comprehensive_api_proc_macro"),
+        include_str!("./expected-output/comprehensive_api_proc_macro.txt"),
     );
 }
 
 /// I confess: this test is mainly to get function code coverage on Ord
 #[test]
+#[serial]
 fn public_item_ord() {
-    let public_items =
-        public_items_from_rustdoc_json_str(&rustdoc_json("comprehensive_api"), Options::default())
-            .unwrap();
+    let public_items = public_items_from_rustdoc_json_str(
+        &rustdoc_json_str_for_crate("./tests/crates/comprehensive_api"),
+        Options::default(),
+    )
+    .unwrap();
 
     let generic_arg = public_items
         .clone()
@@ -106,6 +122,7 @@ fn public_item_ord() {
 }
 
 #[test]
+#[serial]
 fn invalid_json() {
     let result = public_items_from_rustdoc_json_str("}}}}}}}}}", Options::default());
     ensure_impl_debug(&result);
@@ -124,59 +141,39 @@ fn options() {
 }
 
 #[test]
+#[serial]
 fn pretty_printed_diff() {
     let options = Options::default();
     let old = public_items_from_rustdoc_json_str(
-        include_str!("./rustdoc_json/public_items-v0.2.0.json"),
+        &rustdoc_json_str_for_crate("./tests/crates/example_api-v0.1.0"),
         options,
     )
     .unwrap();
     let new = public_items_from_rustdoc_json_str(
-        include_str!("./rustdoc_json/public_items-v0.4.0.json"),
+        &rustdoc_json_str_for_crate("./tests/crates/example_api-v0.2.0"),
         options,
     )
     .unwrap();
 
     let diff = public_items::diff::PublicItemsDiff::between(old, new);
     let pretty_printed = format!("{:#?}", diff);
-    assert_eq!(pretty_printed, "PublicItemsDiff {
+    assert_eq!(
+        pretty_printed,
+        "PublicItemsDiff {
     removed: [],
     changed: [
         ChangedPublicItem {
-            old: pub fn public_items::sorted_public_items_from_rustdoc_json_str(rustdoc_json_str: &str) -> Result<Vec<PublicItem>>,
-            new: pub fn public_items::sorted_public_items_from_rustdoc_json_str(rustdoc_json_str: &str, options: Options) -> Result<Vec<PublicItem>>,
+            old: pub fn example_api::function(v1_param: Struct),
+            new: pub fn example_api::function(v1_param: Struct, v2_param: usize),
         },
     ],
     added: [
-        pub fn public_items::Options::clone(&self) -> Options,
-        pub fn public_items::Options::default() -> Self,
-        pub fn public_items::Options::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result,
-        pub struct field public_items::Options::with_blanket_implementations: bool,
-        pub struct public_items::Options,
+        pub struct example_api::StructV2,
+        pub struct field example_api::Struct::v2_field: usize,
+        pub struct field example_api::StructV2::field: usize,
     ],
-}");
-}
-
-/// Synchronously generate the rustdoc JSON for a library crate.
-fn build_rustdoc_json<P: AsRef<Path>>(manifest_path: P) {
-    let mut command = std::process::Command::new("cargo");
-    command.args(["+nightly", "doc", "--lib", "--no-deps"]);
-    command.arg("--manifest-path");
-    command.arg(manifest_path.as_ref());
-    command.env("RUSTDOCFLAGS", "-Z unstable-options --output-format json");
-    assert!(command.spawn().unwrap().wait().unwrap().success());
-}
-
-/// Helper to get a [String] that contains the rustdoc JSON (freshly built) for
-/// our in-repo `comprehensive_api` test crate.
-///
-/// The easiest way to explore the API for a human is by running
-/// ```bash
-/// cargo doc --manifest-path ./tests/crates/comprehensive_api/Cargo.toml --open
-/// ```
-fn rustdoc_json(test_crate: &str) -> String {
-    build_rustdoc_json(format!("./tests/crates/{}/Cargo.toml", test_crate));
-    std::fs::read_to_string(format!("./target/doc/{}.json", test_crate)).unwrap()
+}"
+    );
 }
 
 fn assert_public_items_diff(old_json: &str, new_json: &str, expected: &ExpectedDiff) {

@@ -8,7 +8,7 @@ name = "public-api"
 repository = "https://github.com/Enselic/public-api"
 
 # Also update https://github.com/Enselic/public-api#compatibility-matrix
-version = "0.8.0"
+version = "0.9.0"
 
 [dependencies]
 rustdoc-types = "0.10.0"

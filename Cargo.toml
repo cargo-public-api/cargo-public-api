@@ -1,13 +1,13 @@
 [package]
-description = "List and diff public items (the public API) of Rust library crates. Relies on rustdoc JSON output from the nightly toolchain."
-documentation = "https://docs.rs/public_items"
+description = "List and diff the public API of Rust library crates. Relies on rustdoc JSON output from the nightly toolchain."
+documentation = "https://docs.rs/public-api"
 edition = "2021"
-homepage = "https://github.com/Enselic/public_items"
+homepage = "https://github.com/Enselic/public-api"
 license = "MIT"
-name = "public_items"
-repository = "https://github.com/Enselic/public_items"
+name = "public-api"
+repository = "https://github.com/Enselic/public-api"
 
-# Also update https://github.com/Enselic/public_items#compatibility-matrix
+# Also update https://github.com/Enselic/public-api#compatibility-matrix
 version = "0.8.0"
 
 [dependencies]

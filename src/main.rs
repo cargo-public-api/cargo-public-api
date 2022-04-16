@@ -1,8 +1,8 @@
 use std::io::{stdout, Write};
 use std::path::{Path, PathBuf};
 
-use public_items::diff::PublicItemsDiff;
-use public_items::{public_items_from_rustdoc_json_str, Options, MINIMUM_RUSTDOC_JSON_VERSION};
+use public_api::diff::PublicItemsDiff;
+use public_api::{public_api_from_rustdoc_json_str, Options, MINIMUM_RUSTDOC_JSON_VERSION};
 
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
@@ -25,32 +25,32 @@ fn main() -> Result<()> {
         print_usage()?;
     } else if files.len() == 1 {
         let path = &files[0];
-        print_public_items(path, options)?;
+        print_public_api(path, options)?;
     } else if files.len() == 2 {
         let old = &files[0];
         let new = &files[1];
-        print_public_items_diff(old, new, options)?;
+        print_public_api_diff(old, new, options)?;
     }
 
     Ok(())
 }
 
-fn print_public_items(path: &Path, options: Options) -> Result<()> {
+fn print_public_api(path: &Path, options: Options) -> Result<()> {
     let json = &std::fs::read_to_string(path)?;
 
-    for public_item in public_items_from_rustdoc_json_str(json, options)? {
+    for public_item in public_api_from_rustdoc_json_str(json, options)? {
         writeln!(std::io::stdout(), "{}", public_item)?;
     }
 
     Ok(())
 }
 
-fn print_public_items_diff(old: &Path, new: &Path, options: Options) -> Result<()> {
+fn print_public_api_diff(old: &Path, new: &Path, options: Options) -> Result<()> {
     let old_json = std::fs::read_to_string(old)?;
-    let old_items = public_items_from_rustdoc_json_str(&old_json, options)?;
+    let old_items = public_api_from_rustdoc_json_str(&old_json, options)?;
 
     let new_json = std::fs::read_to_string(new)?;
-    let new_items = public_items_from_rustdoc_json_str(&new_json, options)?;
+    let new_items = public_api_from_rustdoc_json_str(&new_json, options)?;
 
     let diff = PublicItemsDiff::between(old_items, new_items);
     print_diff_with_headers(&diff, &mut stdout(), "Removed:", "Changed:", "Added:")?;
@@ -99,7 +99,7 @@ fn print_items_with_header<W: std::io::Write, T>(
 fn print_usage() -> std::io::Result<()> {
     writeln!(
         stdout(),
-        "public_items v{}
+        "public-api v{}
 
 Requires at least {}.
 
@@ -109,7 +109,7 @@ automatically.
 
 If you insist of using this low-level utility and thin wrapper, you run it like this:
 
-    public_items <RUSTDOC_JSON_FILE>
+    public-api <RUSTDOC_JSON_FILE>
 
 where RUSTDOC_JSON_FILE is the path to the output of
 
@@ -122,7 +122,7 @@ which you can find in
 To diff the public API between two commits, you generate one rustdoc JSON file for each
 commit and then pass the path of both files to this utility:
 
-    public_items <RUSTDOC_JSON_FILE_OLD> <RUSTDOC_JSON_FILE_NEW>
+    public-api <RUSTDOC_JSON_FILE_OLD> <RUSTDOC_JSON_FILE_NEW>
 
 To include blanket implementations, pass --with-blanket-implementations.
 ",

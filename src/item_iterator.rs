@@ -155,7 +155,7 @@ fn items_in_container(item: &Item) -> Option<&Vec<Id>> {
     }
 }
 
-pub fn public_items_in_crate(
+pub fn public_api_in_crate(
     crate_: &Crate,
     options: Options,
 ) -> impl Iterator<Item = PublicItem> + '_ {

@@ -78,6 +78,10 @@ pub fn regex::bytes::SubCaptureMatches::clone(&self) -> SubCaptureMatches<'c, 't
 
 You can also manually do a diff by writing the full list of items to a file for two different versions of your library and then do a regular `diff` between the files.
 
+# Output formats
+
+Currently there are two output formats. You can choose between `--output-format plain` (default) and `--output-format markdown`.
+
 # Target audience
 
 Maintainers of Rust libraries that want to keep track of changes to their public API.

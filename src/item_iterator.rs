@@ -1,9 +1,11 @@
-use std::{collections::HashMap, fmt::Debug, fmt::Display, rc::Rc};
+use std::{collections::HashMap, fmt::Display, rc::Rc};
 
 use rustdoc_types::{Crate, Id, Impl, Item, ItemEnum, Type};
 
 use super::intermediate_public_item::IntermediatePublicItem;
-use crate::{Options, PublicItem};
+#[cfg(doc)]
+use crate::tokens::Token;
+use crate::{tokens::TokenStream, Options};
 
 type Impls<'a> = HashMap<&'a Id, Vec<&'a Impl>>;
 
@@ -86,9 +88,11 @@ impl<'a> ItemIterator<'a> {
                 ..
             }) => (),
 
-            Some(item) => self
-                .items_left
-                .push(Rc::new(IntermediatePublicItem::new(item, parent))),
+            Some(item) => self.items_left.push(Rc::new(IntermediatePublicItem::new(
+                item,
+                self.crate_,
+                parent,
+            ))),
 
             None => self.missing_ids.push(id),
         }
@@ -154,52 +158,68 @@ fn items_in_container(item: &Item) -> Option<&Vec<Id>> {
 pub fn public_items_in_crate(
     crate_: &Crate,
     options: Options,
-) -> impl Iterator<Item = crate::PublicItem> + '_ {
+) -> impl Iterator<Item = PublicItem> + '_ {
     ItemIterator::new(crate_, options).map(|p| intermediate_public_item_to_public_item(&p))
 }
 
 fn intermediate_public_item_to_public_item(
     public_item: &Rc<IntermediatePublicItem<'_>>,
 ) -> PublicItem {
-    PublicItem(PublicItemInner {
-        prefix: public_item.prefix(),
+    PublicItem {
         path: public_item
             .path()
             .iter()
             .map(|i| i.get_effective_name())
-            .collect::<Vec<String>>()
-            .join("::"),
-        suffix: public_item.suffix(),
-    })
-}
-
-/// To hide implementation details as much as possible from people who casually
-/// skims over the code in our lib.rs
-#[derive(Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct PublicItemInner {
-    /// The "pub struct/fn/..." part of an item.
-    pub(crate) prefix: String,
-
-    /// The "your_crate::mod_a::mod_b" part of an item.
-    pub(crate) path: String,
-
-    /// The type info part, e.g. "(param_a: Type, param_b: OtherType)" for a
-    /// `fn`.
-    pub(crate) suffix: String,
-}
-
-/// One of the basic uses cases is printing a sorted `Vec` of `PublicItem`s. So
-/// we implement `Display` for it.
-impl Display for PublicItemInner {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}{}{}", self.prefix, self.path, self.suffix)
+            .collect::<Vec<String>>(),
+        tokens: public_item.render_token_stream(),
     }
+}
+
+/// Represent a public item of an analyzed crate, i.e. an item that forms part
+/// of the public API of a crate. Implements [`Display`] so it can be printed. It
+/// also implements [`Ord`], but how items are ordered are not stable yet, and
+/// will change in later versions.
+#[derive(Clone)]
+pub struct PublicItem {
+    /// The "your_crate::mod_a::mod_b" part of an item. Split by "::"
+    pub(crate) path: Vec<String>,
+
+    /// The rendered item into a stream of [`Token`]s
+    pub tokens: TokenStream,
 }
 
 /// We want pretty-printing (`"{:#?}"`) of [`crate::diff::PublicItemsDiff`] to print
 /// each public item as `Display`, so implement `Debug` with `Display`.
-impl Debug for PublicItem {
+impl std::fmt::Debug for PublicItem {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        Display::fmt(self, f)
+        std::fmt::Display::fmt(self, f)
+    }
+}
+
+/// One of the basic uses cases is printing a sorted `Vec` of `PublicItem`s. So
+/// we implement `Display` for it.
+impl Display for PublicItem {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.tokens)
+    }
+}
+
+impl PartialEq for PublicItem {
+    fn eq(&self, other: &Self) -> bool {
+        self.path == other.path && self.tokens == other.tokens
+    }
+}
+
+impl Eq for PublicItem {}
+
+impl PartialOrd for PublicItem {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl Ord for PublicItem {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        self.to_string().cmp(&other.to_string())
     }
 }

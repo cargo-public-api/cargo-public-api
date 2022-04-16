@@ -3,7 +3,7 @@ use std::io::{Result, Write};
 use public_api::{diff::PublicItemsDiff, PublicItem};
 
 use ansi_term::{ANSIString, ANSIStrings, Color, Style};
-use public_api::tokens::*;
+use public_api::tokens::{Token, TokenStream};
 
 use crate::{
     output_formatter::{print_items_with_header, OutputFormatter},
@@ -103,6 +103,7 @@ fn color_item_token(token: &Token, bg: Option<Color>) -> ANSIString<'_> {
             colour.paint(text.to_string())
         }
     };
+    #[allow(clippy::match-same-arms)]
     match token {
         Token::Symbol(text) => style(Color::White.into(), text),
         Token::Qualifier(text) => style(Color::Blue.into(), text),

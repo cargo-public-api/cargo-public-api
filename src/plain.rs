@@ -103,7 +103,7 @@ fn color_item_token(token: &Token, bg: Option<Color>) -> ANSIString<'_> {
             colour.paint(text.to_string())
         }
     };
-    #[allow(clippy::match-same-arms)]
+    #[allow(clippy::match_same_arms)]
     match token {
         Token::Symbol(text) => style(Color::White.into(), text),
         Token::Qualifier(text) => style(Color::Blue.into(), text),

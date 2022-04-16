@@ -30,12 +30,20 @@
 //! <https://github.com/Enselic/public_items/blob/main/src/main.rs>.
 
 #![deny(missing_docs)]
+#![deny(clippy::all, clippy::pedantic)]
 
 mod error;
 mod intermediate_public_item;
 mod item_iterator;
+mod render;
+pub mod tokens;
 
 pub mod diff;
+
+// Documented at the definition site so cargo doc picks it up
+pub use error::{Error, Result};
+
+pub use item_iterator::PublicItem;
 
 /// This constant defines the minimum version of nightly that is required in
 /// order for the rustdoc JSON output to be parsable by this library. Note that
@@ -46,27 +54,6 @@ pub mod diff;
 /// this library to support the latest format. If you use this version of
 /// nightly or later, you should be fine.
 pub const MINIMUM_RUSTDOC_JSON_VERSION: &str = "nightly-2022-03-14";
-
-// Documented at the definition site so cargo doc picks it up
-pub use error::Error;
-
-// Documented at the definition site so cargo doc picks it up
-pub use error::Result;
-
-/// Represent a public item of an analyzed crate, i.e. an item that forms part
-/// of the public API of a crate. Implements `Display` so it can be printed. It
-/// also implements [`Ord`], but how items are ordered are not stable yet, and
-/// will change in later versions.
-#[derive(Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct PublicItem(item_iterator::PublicItemInner);
-
-/// One of the basic uses cases is printing a sorted `Vec` of `PublicItem`s. So
-/// we implement `Display` for it.
-impl std::fmt::Display for PublicItem {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.0)
-    }
-}
 
 /// Contains various options that you can pass to [`public_items_from_rustdoc_json_str`].
 #[derive(Copy, Clone, Debug)]

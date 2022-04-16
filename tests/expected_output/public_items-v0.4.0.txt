@@ -14,7 +14,7 @@ pub fn public_items::PublicItem::ne(&self, other: &PublicItem) -> bool
 pub fn public_items::PublicItem::partial_cmp(&self, other: &PublicItem) -> $crate::option::Option<$crate::cmp::Ordering>
 pub fn public_items::sorted_public_items_from_rustdoc_json_str(rustdoc_json_str: &str, options: Options) -> Result<Vec<PublicItem>>
 pub mod public_items
+pub struct field public_items::Options::with_blanket_implementations: bool
 pub struct public_items::Options
 pub struct public_items::PublicItem
-pub struct field public_items::Options::with_blanket_implementations: bool
 pub type public_items::Result<T> = std::result::Result<T, Error>

@@ -7,7 +7,7 @@ pub enum comprehensive_api::enums::SingleVariant
 pub enum variant comprehensive_api::enums::DiverseVariants::Recursive
 pub enum variant comprehensive_api::enums::DiverseVariants::Simple
 pub enum variant comprehensive_api::enums::DiverseVariants::Struct
-pub enum variant comprehensive_api::enums::DiverseVariants::Tuple(usize,bool)
+pub enum variant comprehensive_api::enums::DiverseVariants::Tuple(usize, bool)
 pub enum variant comprehensive_api::enums::EnumWithGenerics::Variant
 pub enum variant comprehensive_api::enums::SingleVariant::Variant
 pub extern crate comprehensive_api::rand
@@ -76,7 +76,7 @@ pub trait comprehensive_api::traits::AssociatedConstDefault
 pub trait comprehensive_api::traits::AssociatedType
 pub trait comprehensive_api::traits::Empty
 pub trait comprehensive_api::traits::Simple
-pub type comprehensive_api::traits::AssociatedType::Type[]
+pub type comprehensive_api::traits::AssociatedType::Type
 pub type comprehensive_api::typedefs::RedefinedResult<T, E> = Result<T, E>
 pub type comprehensive_api::typedefs::TypedefPlain = Plain
 pub union comprehensive_api::unions::Basic

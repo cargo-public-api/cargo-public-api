@@ -7,7 +7,7 @@ use crate::PublicItem;
 
 /// An item has changed in the public API. Two [`PublicItem`]s are considered
 /// the same if their `path` is the same.
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct ChangedPublicItem {
     /// How the item used to look.
     pub old: PublicItem,
@@ -22,7 +22,7 @@ pub struct ChangedPublicItem {
 /// println!("{:#?}", public_items_diff);
 /// ```
 #[allow(clippy::module_name_repetitions)]
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct PublicItemsDiff {
     /// Items that have been removed from the public API. A MAJOR change, in
     /// semver terminology. Sorted.
@@ -71,7 +71,7 @@ impl PublicItemsDiff {
                     added.push(new);
                 }
                 (Some(old), Some(new)) => {
-                    if old != new && old.0.path == new.0.path {
+                    if old != new && old.path == new.path {
                         // The same item, but there has been a change in type
                         changed.push(ChangedPublicItem { old, new });
                     } else {
@@ -116,8 +116,6 @@ impl PublicItemsDiff {
 
 #[cfg(test)]
 mod tests {
-    use crate::item_iterator::PublicItemInner;
-
     use super::*;
 
     #[test]
@@ -185,10 +183,12 @@ mod tests {
     }
 
     fn item_with_path(path: &str) -> PublicItem {
-        PublicItem(PublicItemInner {
-            prefix: String::from("prefix "),
-            path: String::from(path),
-            suffix: String::from(" suffix"),
-        })
+        PublicItem {
+            path: path
+                .split("::")
+                .map(std::string::ToString::to_string)
+                .collect(),
+            tokens: crate::tokens::Token::identifier(path).into(),
+        }
     }
 }

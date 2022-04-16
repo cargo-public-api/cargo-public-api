@@ -14,9 +14,9 @@ rustup install nightly
 
 # Usage
 
-## List public items
+## List public API
 
-This example lists the public items of the library that this cargo subcommand is implemented with. The example assumes that the git repository for the library is checked out to `~/src/public_items`. To print all items that make up the public API of your Rust library crate, simply do this:
+This example lists the public API of the library that this cargo subcommand is implemented with (before it was renamed to `public-api`). The example assumes that the git repository for the library is checked out to `~/src/public_items`. To print all items that make up the public API of your Rust library crate, simply do this:
 
 ```
 % cd ~/src/public_items
@@ -43,7 +43,7 @@ pub struct public_items::PublicItem
 pub type public_items::Result<T> = std::result::Result<T, Error>
 ```
 
-## Diff public items between commits
+## Diff public API between commits
 
 To diff two different versions of your API, use `--diff-git-checkouts` while standing in the git repo of your project.
 
@@ -79,4 +79,4 @@ See [development.md](./doc/development.md).
 
 # Implementation details
 
-This utility is implemented with and adds conveniences on top of the [public_items](https://crates.io/crates/public_items) library (https://github.com/Enselic/public_items).
+This utility is implemented with and adds conveniences on top of the [public-api](https://crates.io/crates/public-api) library (https://github.com/Enselic/public-api).

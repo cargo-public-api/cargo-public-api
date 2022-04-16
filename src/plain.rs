@@ -1,6 +1,6 @@
 use std::io::{Result, Write};
 
-use public_items::{diff::PublicItemsDiff, PublicItem};
+use public_api::{diff::PublicItemsDiff, PublicItem};
 
 use ansi_term::Color;
 

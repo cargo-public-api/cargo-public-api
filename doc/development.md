@@ -1,12 +1,12 @@
 ## Tips to work on this tool
 
-This project has kinship with [`public_items`](https://github.com/Enselic/public_items). Here follows some tips on how to make it easier to work with both projects. This guides assumes you have cloned `public_items` to `~/src/public_items` and [`cargo-public-api`](https://github.com/Enselic/cargo-public-api) to `~/src/cargo-public-api`.
+This project shares kinship with [`public-api`](https://github.com/Enselic/public-api). Here follows some tips on how to make it easier to work with both projects. This guides assumes you have cloned `public-api` to `~/src/public-api` and [`cargo-public-api`](https://github.com/Enselic/cargo-public-api) to `~/src/cargo-public-api`.
 
-### Make `cargo public-api` use local changes of `public_items`
+### Make `cargo public-api` use local changes of `public-api`
 
 Uncomment
 ```toml
-# path = "/Users/martin/src/public_items"
+# path = "/Users/martin/src/public-api"
 ```
 in `~/src/cargo-public-api/Cargo.toml` and update the path so it fits your system.
 

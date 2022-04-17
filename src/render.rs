@@ -606,14 +606,7 @@ fn render_where_predicate(root: &Crate, where_predicate: &WherePredicate) -> Tok
         WherePredicate::BoundPredicate { type_, bounds } => {
             output.extend(render_type(root, type_));
             output.extend(colon());
-            output.extend(render_sequence(
-                vec![],
-                vec![],
-                plus(),
-                true,
-                bounds,
-                |bound| render_generic_bound(root, bound),
-            ));
+            output.extend(render_generic_bounds(root, bounds));
         }
         WherePredicate::RegionPredicate {
             lifetime,
@@ -652,29 +645,6 @@ fn render_generic_bounds(root: &Crate, bounds: &[GenericBound]) -> TokenStream {
             },
         )
     }
-}
-
-fn render_generic_bound(root: &Crate, generic_bound: &GenericBound) -> TokenStream {
-    let mut output = TokenStream::default();
-    match generic_bound {
-        GenericBound::TraitBound {
-            trait_,
-            generic_params,
-            ..
-        } => {
-            output.extend(render_type(root, trait_));
-            output.extend(render_sequence(
-                vec![],
-                vec![],
-                plus(),
-                true,
-                generic_params,
-                |generic_param| render_generic_param_def(root, generic_param),
-            ));
-        }
-        GenericBound::Outlives(s) => output.extend(Token::Identifier(s.clone())),
-    }
-    output
 }
 
 fn plus() -> Vec<Token> {

@@ -33,7 +33,7 @@
 //! in the thin binary wrapper around the library, see
 //! <https://github.com/Enselic/public-api/blob/main/src/main.rs>.
 
-#![deny(missing_docs)]
+#![deny(missing_docs, dead_code)]
 #![deny(clippy::all, clippy::pedantic)]
 
 mod error;

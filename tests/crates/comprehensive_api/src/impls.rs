@@ -14,6 +14,10 @@ impl Plain {
     pub fn s3(&mut self) {}
 }
 
+impl<'a> Plain {
+    pub fn s4(&'a self) {}
+}
+
 impl<'b> WithLifetimeAndGenericParam<'b, String> {
     pub fn new(unit_ref: &'b Unit, t: String) -> Self {
         WithLifetimeAndGenericParam { unit_ref, t }

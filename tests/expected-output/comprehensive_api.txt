@@ -1,3 +1,4 @@
+pub async fn comprehensive_api::functions::async_fn() -> impl Future<Output = ()>
 pub const comprehensive_api::constants::CONST: &str
 pub const comprehensive_api::traits::AssociatedConst::CONST: bool
 pub const comprehensive_api::traits::AssociatedConstDefault::CONST_WITH_DEFAULT: bool
@@ -40,6 +41,7 @@ pub fn comprehensive_api::structs::Plain::new() -> Plain
 pub fn comprehensive_api::structs::Plain::s1(self)
 pub fn comprehensive_api::structs::Plain::s2(&self)
 pub fn comprehensive_api::structs::Plain::s3(&mut self)
+pub fn comprehensive_api::structs::Plain::s4(&'a self)
 pub fn comprehensive_api::structs::WithLifetimeAndGenericParam::new(unit_ref: &'b Unit, t: String) -> Self
 pub fn comprehensive_api::traits::Simple::act()
 pub macro comprehensive_api::simple_macro!
@@ -54,6 +56,7 @@ pub mod comprehensive_api::structs
 pub mod comprehensive_api::traits
 pub mod comprehensive_api::typedefs
 pub mod comprehensive_api::unions
+pub mut static comprehensive_api::statics::MUT_ANSWER: i8
 pub static comprehensive_api::statics::ANSWER: i8
 pub struct comprehensive_api::StructInPrivateMod
 pub struct comprehensive_api::structs::ConstArg<T, N: usize>
@@ -85,5 +88,7 @@ pub type comprehensive_api::traits::AssociatedType::Type
 pub type comprehensive_api::typedefs::RedefinedResult<T, E> = Result<T, E>
 pub type comprehensive_api::typedefs::TypedefPlain = Plain
 pub union comprehensive_api::unions::Basic
+pub unsafe fn comprehensive_api::functions::unsafe_fn()
+pub unsafe trait comprehensive_api::traits::UnsafeTrait
 pub use comprehensive_api::Plain
 pub use comprehensive_api::RenamedPlain

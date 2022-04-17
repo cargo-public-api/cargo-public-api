@@ -15,3 +15,11 @@ pub trait AssociatedConstDefault {
 pub trait AssociatedType {
     type Type;
 }
+
+// error[E0658]: associated type defaults are unstable
+// skip for now
+// pub trait AssociatedTypeDefault {
+//     type Type = usize;
+// }
+
+pub unsafe trait UnsafeTrait {}

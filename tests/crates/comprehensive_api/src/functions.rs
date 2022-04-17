@@ -78,3 +78,9 @@ where
 {
     println!("{}, {:?}", t, u);
 }
+
+pub fn multiple_bounds<T>(t: T)
+where
+    T: Debug + Display,
+{
+}

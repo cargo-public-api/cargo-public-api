@@ -19,6 +19,7 @@ pub fn comprehensive_api::functions::fn_arg(f: impl Fn(bool, RenamedPlain) -> bo
 pub fn comprehensive_api::functions::generic_arg<T>(t: T) -> T
 pub fn comprehensive_api::functions::generic_bound<T: Sized>(t: T) -> T
 pub fn comprehensive_api::functions::inferred_lifetime(foo: &usize) -> usize
+pub fn comprehensive_api::functions::multiple_bounds<T>(t: T) where T: Debug + Display
 pub fn comprehensive_api::functions::one_arg(x: usize)
 pub fn comprehensive_api::functions::outlives<'a, 'b: 'a, 'c: 'b + 'a>(x: &'a bool, y: &'b i128, z: &'c Tuple) -> usize
 pub fn comprehensive_api::functions::plain()

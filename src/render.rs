@@ -44,14 +44,7 @@ pub fn token_stream(item: &IntermediatePublicItem) -> TokenStream {
             match inner {
                 Variant::Struct(_) | // Each struct field is printed individually
                 Variant::Plain => {}
-                Variant::Tuple(types) => output.extend(render_sequence(
-                    Token::symbol("("),
-                    Token::symbol(")"),
-                    comma(),
-                    false,
-                    types,
-                    |ty| render_type(item.root, ty),
-                )),
+                Variant::Tuple(types) => output.extend(render_tuple(item.root, types)),
 
             }
             output
@@ -255,14 +248,7 @@ fn render_type(root: &Crate, ty: &Type) -> TokenStream {
         Type::Generic(name) => Token::generic(name).into(),
         Type::Primitive(name) => Token::primitive(name).into(),
         Type::FunctionPointer(ptr) => render_fn_decl(root, &ptr.decl),
-        Type::Tuple(types) => render_sequence(
-            Token::symbol("("),
-            Token::symbol(")"),
-            comma(),
-            false,
-            types,
-            |ty| render_type(root, ty),
-        ),
+        Type::Tuple(types) => render_tuple(root, types),
         Type::Slice(ty) => {
             let mut output: TokenStream = Token::symbol("[").into();
             output.extend(render_type(root, ty));
@@ -425,6 +411,17 @@ fn render_fn_decl(root: &Crate, decl: &FnDecl) -> TokenStream {
         output.extend(render_type(root, ty));
     }
     output
+}
+
+fn render_tuple(root: &Crate, types: &[Type]) -> TokenStream {
+    render_sequence(
+        Token::symbol("("),
+        Token::symbol(")"),
+        comma(),
+        false,
+        types,
+        |ty| render_type(root, ty),
+    )
 }
 
 enum Binding<'a> {

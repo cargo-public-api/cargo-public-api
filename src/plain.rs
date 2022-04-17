@@ -105,10 +105,10 @@ fn color_item_token(token: &Token, bg: Option<Color>) -> ANSIString<'_> {
     };
     #[allow(clippy::match_same_arms)]
     match token {
-        Token::Symbol(text) => style(Color::White.into(), text),
+        Token::Symbol(text) => style(Style::default(), text),
         Token::Qualifier(text) => style(Color::Blue.into(), text),
         Token::Kind(text) => style(Color::Blue.bold(), text),
-        Token::Whitespace => style(Color::White.into(), " "),
+        Token::Whitespace => style(Style::default(), " "),
         Token::Identifier(text) => style(Color::Cyan.into(), text),
         Token::Self_(text) => style(Color::Blue.into(), text),
         Token::Function(text) => style(Color::Yellow.into(), text),

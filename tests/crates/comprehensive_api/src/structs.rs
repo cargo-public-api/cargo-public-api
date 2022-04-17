@@ -1,3 +1,5 @@
+use std::fmt::{Debug, Display};
+
 pub struct Unit;
 
 pub struct Plain {
@@ -17,4 +19,8 @@ pub struct WithLifetimeAndGenericParam<'a, T> {
 
 pub struct ConstArg<T, const N: usize> {
     pub items: [T; N],
+}
+
+pub struct WithTraitBounds<T: Display + Debug> {
+    t: T,
 }

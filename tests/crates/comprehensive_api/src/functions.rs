@@ -86,3 +86,5 @@ where
 }
 
 pub fn multiple_bounds_inline<T: Debug + Display>(t: T) {}
+
+pub fn dyn_arg(d: &(dyn std::io::Write + Send + 'static)) {}

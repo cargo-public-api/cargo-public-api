@@ -15,6 +15,7 @@ pub fn comprehensive_api::RngCore::fill_bytes(&mut self, dest: &mut [u8])
 pub fn comprehensive_api::RngCore::next_u32(&mut self) -> u32
 pub fn comprehensive_api::RngCore::next_u64(&mut self) -> u64
 pub fn comprehensive_api::RngCore::try_fill_bytes(&mut self, dest: &mut [u8]) -> Result<(), Error>
+pub fn comprehensive_api::functions::dyn_arg(d: &std::io::Write + Send + 'static)
 pub fn comprehensive_api::functions::fn_arg(f: impl Fn(bool, RenamedPlain) -> bool, f_mut: impl FnMut())
 pub fn comprehensive_api::functions::generic_arg<T>(t: T) -> T
 pub fn comprehensive_api::functions::generic_bound<T: Sized>(t: T) -> T
@@ -60,6 +61,7 @@ pub struct comprehensive_api::structs::PrivateField
 pub struct comprehensive_api::structs::Tuple
 pub struct comprehensive_api::structs::Unit
 pub struct comprehensive_api::structs::WithLifetimeAndGenericParam<'a, T>
+pub struct comprehensive_api::structs::WithTraitBounds<T: Display + Debug>
 pub struct field comprehensive_api::enums::DiverseVariants::Recursive::child: Box<DiverseVariants>
 pub struct field comprehensive_api::enums::DiverseVariants::Struct::x: usize
 pub struct field comprehensive_api::enums::DiverseVariants::Struct::y: SingleVariant

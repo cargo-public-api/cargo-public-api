@@ -378,8 +378,7 @@ fn render_fn_decl(root: &Crate, decl: &FnDecl, include_names: bool) -> TokenStre
         false,
         &decl.inputs,
         |(name, ty)| {
-            let simplified_self: Option<TokenStream> = simplified_self(name, ty);
-            simplified_self.unwrap_or_else(|| {
+            simplified_self(name, ty).unwrap_or_else(|| {
                 let mut output = TokenStream::default();
                 if include_names {
                     output.extend(vec![Token::identifier(name), Token::symbol(":"), ws!()]);
@@ -397,7 +396,7 @@ fn render_fn_decl(root: &Crate, decl: &FnDecl, include_names: bool) -> TokenStre
     output
 }
 
-fn simplified_self(name: &String, ty: &Type) -> Option<TokenStream> {
+fn simplified_self(name: &str, ty: &Type) -> Option<TokenStream> {
     if name == "self" {
         match ty {
             Type::Generic(name) if name == "Self" => Some(Token::self_("self").into()),

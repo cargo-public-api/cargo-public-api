@@ -14,5 +14,5 @@ for crate in ${crates}; do
     cargo run "./tests/crates/${crate}/target/doc/${crate}.json" > "${dst}/${crate}.txt"
 done
 
-cargo run -- --with-blanket-implementations "./tests/rustdoc-json/example_api-v0.2.0.json" >
+cargo run -- --with-blanket-implementations "./tests/rustdoc-json/example_api-v0.2.0.json" > \
       "${dst}/eample_api-v0.2.0-with-blanket-implementations.txt"

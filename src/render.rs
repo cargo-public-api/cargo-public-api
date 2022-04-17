@@ -570,9 +570,7 @@ fn render_generic_param_def(root: &Crate, generic_param_def: &GenericParamDef) -
             output.push(Token::generic(&generic_param_def.name));
             if !bounds.is_empty() {
                 output.extend(colon());
-                output.extend(render_sequence(vec![], vec![], plus(), true, bounds, |x| {
-                    render_generic_bound(root, x)
-                }));
+                output.extend(render_generic_bounds(root, bounds));
             }
         }
         GenericParamDefKind::Const { type_, .. } => {

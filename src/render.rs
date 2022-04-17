@@ -247,7 +247,14 @@ fn render_type(root: &Crate, ty: &Type) -> TokenStream {
         } //  _serde::__private::Result | standard type
         Type::Generic(name) => Token::generic(name).into(),
         Type::Primitive(name) => Token::primitive(name).into(),
-        Type::FunctionPointer(ptr) => render_fn_decl(root, &ptr.decl),
+        Type::FunctionPointer(ptr) => {
+            let mut output = TokenStream::default();
+            output.push(Token::kind("fn"));
+            output.extend(render_fn_decl(
+                root, &ptr.decl, false, /* include_names */
+            ));
+            output
+        }
         Type::Tuple(types) => render_tuple(root, types),
         Type::Slice(ty) => {
             let mut output: TokenStream = Token::symbol("[").into();
@@ -353,7 +360,7 @@ fn render_function(
     output.extend(render_generic_param_defs(root, &generics.params));
 
     // Regular parameters and return type
-    output.extend(render_fn_decl(root, decl));
+    output.extend(render_fn_decl(root, decl, true /* include_names */));
 
     // Where predicates
     output.extend(render_where_predicates(root, &generics.where_predicates));
@@ -361,7 +368,7 @@ fn render_function(
     output
 }
 
-fn render_fn_decl(root: &Crate, decl: &FnDecl) -> TokenStream {
+fn render_fn_decl(root: &Crate, decl: &FnDecl, include_names: bool) -> TokenStream {
     let mut output = TokenStream::default();
     // Main arguments
     output.extend(render_sequence(
@@ -373,8 +380,10 @@ fn render_fn_decl(root: &Crate, decl: &FnDecl) -> TokenStream {
         |(name, ty)| {
             let simplified_self: Option<TokenStream> = simplified_self(name, ty);
             simplified_self.unwrap_or_else(|| {
-                let mut output: TokenStream =
-                    vec![Token::identifier(name), Token::symbol(":"), ws!()].into();
+                let mut output = TokenStream::default();
+                if include_names {
+                    output.extend(vec![Token::identifier(name), Token::symbol(":"), ws!()]);
+                }
                 output.extend(render_type(root, ty));
                 output
             })

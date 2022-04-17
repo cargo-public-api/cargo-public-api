@@ -247,7 +247,14 @@ fn render_type(root: &Crate, ty: &Type) -> TokenStream {
         } //  _serde::__private::Result | standard type
         Type::Generic(name) => Token::generic(name).into(),
         Type::Primitive(name) => Token::primitive(name).into(),
-        Type::FunctionPointer(ptr) => render_fn_decl(root, &ptr.decl),
+        Type::FunctionPointer(ptr) => {
+            let mut output = TokenStream::default();
+            output.push(Token::kind("fn"));
+            output.extend(render_fn_decl(
+                root, &ptr.decl, false, /* include_names */
+            ));
+            output
+        }
         Type::Tuple(types) => render_tuple(root, types),
         Type::Slice(ty) => {
             let mut output: TokenStream = Token::symbol("[").into();
@@ -353,7 +360,7 @@ fn render_function(
     output.extend(render_generic_param_defs(root, &generics.params));
 
     // Regular parameters and return type
-    output.extend(render_fn_decl(root, decl));
+    output.extend(render_fn_decl(root, decl, true /* include_names */));
 
     // Where predicates
     output.extend(render_where_predicates(root, &generics.where_predicates));
@@ -361,7 +368,7 @@ fn render_function(
     output
 }
 
-fn render_fn_decl(root: &Crate, decl: &FnDecl) -> TokenStream {
+fn render_fn_decl(root: &Crate, decl: &FnDecl, include_names: bool) -> TokenStream {
     let mut output = TokenStream::default();
     // Main arguments
     output.extend(render_sequence(
@@ -371,35 +378,11 @@ fn render_fn_decl(root: &Crate, decl: &FnDecl) -> TokenStream {
         false,
         &decl.inputs,
         |(name, ty)| {
-            let simplified_self: Option<TokenStream> = if name == "self" {
-                match ty {
-                    Type::Generic(name) if name == "Self" => Some(Token::self_("self").into()),
-                    Type::BorrowedRef {
-                        lifetime,
-                        mutable,
-                        type_,
-                    } => match type_.as_ref() {
-                        Type::Generic(name) if name == "Self" => {
-                            let mut output: TokenStream = Token::symbol("&").into();
-                            if let Some(lt) = lifetime {
-                                output.extend(vec![Token::lifetime(lt), ws!()]);
-                            }
-                            if *mutable {
-                                output.extend(vec![Token::keyword("mut"), ws!()]);
-                            }
-                            output.extend(Token::self_("self"));
-                            Some(output)
-                        }
-                        _ => None,
-                    },
-                    _ => None,
+            simplified_self(name, ty).unwrap_or_else(|| {
+                let mut output = TokenStream::default();
+                if include_names {
+                    output.extend(vec![Token::identifier(name), Token::symbol(":"), ws!()]);
                 }
-            } else {
-                None
-            };
-            simplified_self.unwrap_or_else(|| {
-                let mut output: TokenStream =
-                    vec![Token::identifier(name), Token::symbol(":"), ws!()].into();
                 output.extend(render_type(root, ty));
                 output
             })
@@ -411,6 +394,35 @@ fn render_fn_decl(root: &Crate, decl: &FnDecl) -> TokenStream {
         output.extend(render_type(root, ty));
     }
     output
+}
+
+fn simplified_self(name: &str, ty: &Type) -> Option<TokenStream> {
+    if name == "self" {
+        match ty {
+            Type::Generic(name) if name == "Self" => Some(Token::self_("self").into()),
+            Type::BorrowedRef {
+                lifetime,
+                mutable,
+                type_,
+            } => match type_.as_ref() {
+                Type::Generic(name) if name == "Self" => {
+                    let mut output: TokenStream = Token::symbol("&").into();
+                    if let Some(lt) = lifetime {
+                        output.extend(vec![Token::lifetime(lt), ws!()]);
+                    }
+                    if *mutable {
+                        output.extend(vec![Token::keyword("mut"), ws!()]);
+                    }
+                    output.extend(Token::self_("self"));
+                    Some(output)
+                }
+                _ => None,
+            },
+            _ => None,
+        }
+    } else {
+        None
+    }
 }
 
 fn render_tuple(root: &Crate, types: &[Type]) -> TokenStream {

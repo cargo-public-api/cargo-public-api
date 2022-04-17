@@ -58,6 +58,7 @@ pub mod comprehensive_api::typedefs
 pub mod comprehensive_api::unions
 pub mut static comprehensive_api::statics::MUT_ANSWER: i8
 pub static comprehensive_api::statics::ANSWER: i8
+pub static comprehensive_api::statics::FUNCTION_POINTER: Option<fn(usize, i8) -> String>
 pub struct comprehensive_api::StructInPrivateMod
 pub struct comprehensive_api::structs::ConstArg<T, N: usize>
 pub struct comprehensive_api::structs::Plain

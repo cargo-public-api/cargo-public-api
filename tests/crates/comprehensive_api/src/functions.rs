@@ -84,3 +84,5 @@ where
     T: Debug + Display,
 {
 }
+
+pub fn multiple_bounds_inline<T: Debug + Display>(t: T) {}

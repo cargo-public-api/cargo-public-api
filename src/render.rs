@@ -632,14 +632,9 @@ fn render_generic(root: &Crate, generic: &GenericParamDefKind) -> TokenStream {
             let mut output = TokenStream::default();
             if !bounds.is_empty() {
                 output.extend(colon());
-                output.extend(render_sequence(
-                    vec![],
-                    vec![],
-                    colon(),
-                    true,
-                    bounds,
-                    |x| render_generic_bound(root, x),
-                ));
+                output.extend(render_sequence(vec![], vec![], plus(), true, bounds, |x| {
+                    render_generic_bound(root, x)
+                }));
             }
             output
         }

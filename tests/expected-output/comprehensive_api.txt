@@ -19,6 +19,7 @@ pub fn comprehensive_api::functions::dyn_arg(d: &std::io::Write + Send + 'static
 pub fn comprehensive_api::functions::fn_arg(f: impl Fn(bool, RenamedPlain) -> bool, f_mut: impl FnMut())
 pub fn comprehensive_api::functions::generic_arg<T>(t: T) -> T
 pub fn comprehensive_api::functions::generic_bound<T: Sized>(t: T) -> T
+pub fn comprehensive_api::functions::impl_multiple<T>(t: impl Simple + AsRef<T>) -> impl Simple
 pub fn comprehensive_api::functions::inferred_lifetime(foo: &usize) -> usize
 pub fn comprehensive_api::functions::multiple_bounds<T>(t: T) where T: Debug + Display
 pub fn comprehensive_api::functions::multiple_bounds_inline<T: Debug + Display>(t: T)

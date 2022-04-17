@@ -71,6 +71,8 @@ pub fn synthetic_arg(t: impl Simple) -> impl Simple {
     t
 }
 
+pub fn impl_multiple<T>(t: impl Simple + AsRef<T>) -> impl Simple {}
+
 pub fn somewhere<T, U>(t: T, u: U)
 where
     T: Display,

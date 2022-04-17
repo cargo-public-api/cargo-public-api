@@ -283,9 +283,7 @@ fn render_type(root: &Crate, ty: &Type) -> TokenStream {
         Type::ImplTrait(bounds) => {
             let mut output: TokenStream = Token::keyword("impl").into();
             output.push(ws!());
-            output.extend(render_sequence(vec![], vec![], plus(), true, bounds, |x| {
-                render_generic_bound(root, x)
-            }));
+            output.extend(render_generic_bounds(root, bounds));
             output
         }
         Type::Infer => Token::symbol("_").into(),

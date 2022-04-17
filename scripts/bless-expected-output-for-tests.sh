@@ -15,4 +15,4 @@ for crate in ${crates}; do
 done
 
 cargo run -- --with-blanket-implementations "./tests/rustdoc-json/example_api-v0.2.0.json" > \
-      "${dst}/eample_api-v0.2.0-with-blanket-implementations.txt"
+      "${dst}/example_api-v0.2.0-with-blanket-implementations.txt"

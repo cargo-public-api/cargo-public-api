@@ -248,14 +248,7 @@ fn render_type(root: &Crate, ty: &Type) -> TokenStream {
             }
             if !param_names.is_empty() {
                 output.extend(plus());
-                output.extend(render_sequence(
-                    vec![],
-                    vec![],
-                    plus(),
-                    false,
-                    param_names,
-                    |param_name| render_generic_bound(root, param_name),
-                ));
+                output.extend(render_generic_bounds(root, param_names));
             }
             output
         } //  _serde::__private::Result | standard type

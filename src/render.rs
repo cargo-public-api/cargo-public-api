@@ -560,8 +560,36 @@ fn render_generic_param_defs(root: &Crate, params: &[GenericParamDef]) -> TokenS
 
 fn render_generic_param_def(root: &Crate, generic_param_def: &GenericParamDef) -> TokenStream {
     let mut output = TokenStream::default();
-    output.push(Token::Identifier(generic_param_def.name.clone()));
-    output.extend(render_generic(root, &generic_param_def.kind));
+    match &generic_param_def.kind {
+        GenericParamDefKind::Lifetime { outlives } => {
+            output.push(Token::lifetime(&generic_param_def.name));
+            if !outlives.is_empty() {
+                output.extend(colon());
+                output.extend(render_sequence(
+                    vec![],
+                    vec![],
+                    plus(),
+                    true,
+                    outlives,
+                    |s| vec![Token::lifetime(s)].into(),
+                ));
+            }
+        }
+        GenericParamDefKind::Type { bounds, .. } => {
+            output.push(Token::generic(&generic_param_def.name));
+            if !bounds.is_empty() {
+                output.extend(colon());
+                output.extend(render_sequence(vec![], vec![], plus(), true, bounds, |x| {
+                    render_generic_bound(root, x)
+                }));
+            }
+        }
+        GenericParamDefKind::Const { type_, .. } => {
+            output.push(Token::identifier(&generic_param_def.name));
+            output.extend(colon());
+            output.extend(render_type(root, type_));
+        }
+    }
     output
 }
 
@@ -609,42 +637,6 @@ fn render_where_predicate(root: &Crate, where_predicate: &WherePredicate) -> Tok
         }
     }
     output
-}
-
-fn render_generic(root: &Crate, generic: &GenericParamDefKind) -> TokenStream {
-    match generic {
-        GenericParamDefKind::Lifetime { outlives } => {
-            let mut output = TokenStream::default();
-            if !outlives.is_empty() {
-                output.extend(colon());
-                output.extend(render_sequence(
-                    vec![],
-                    vec![],
-                    plus(),
-                    true,
-                    outlives,
-                    |s| vec![Token::lifetime(s)].into(),
-                ));
-            }
-            output
-        }
-        GenericParamDefKind::Type { bounds, .. } => {
-            let mut output = TokenStream::default();
-            if !bounds.is_empty() {
-                output.extend(colon());
-                output.extend(render_sequence(vec![], vec![], plus(), true, bounds, |x| {
-                    render_generic_bound(root, x)
-                }));
-            }
-            output
-        }
-        GenericParamDefKind::Const { type_, .. } => {
-            let mut output = TokenStream::default();
-            output.extend(colon());
-            output.extend(render_type(root, type_));
-            output
-        }
-    }
 }
 
 fn render_generic_bounds(root: &Crate, bounds: &[GenericBound]) -> TokenStream {

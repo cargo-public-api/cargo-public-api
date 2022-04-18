@@ -21,13 +21,13 @@ pub enum Token {
     Function(String),
     /// A lifetime including the apostrophe `'`, like `'a`
     Lifetime(String),
-    /// A keyword, like `impl`
+    /// A keyword, like `impl`, `where`, or `dyn`
     Keyword(String),
-    /// A generic, like `T`
+    /// A generic parameter, like `T`
     Generic(String),
     /// A primitive type, like `usize`
     Primitive(String),
-    /// A type, like `Iterator`
+    /// A non-primitive type, like the name of a struct or a trait
     Type(String),
 }
 

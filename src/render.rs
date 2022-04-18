@@ -167,11 +167,12 @@ fn render_id(root: &Crate, id: &Id) -> TokenStream {
 fn render_path(path: &[Rc<IntermediatePublicItem<'_>>]) -> TokenStream {
     let mut output = TokenStream::default();
     for item in path {
-        if matches!(item.item.inner, ItemEnum::Function(_) | ItemEnum::Method(_)) {
-            output.push(Token::function(item.get_effective_name()));
+        let token_fn = if matches!(item.item.inner, ItemEnum::Function(_) | ItemEnum::Method(_)) {
+            Token::function
         } else {
-            output.push(Token::identifier(item.get_effective_name()));
-        }
+            Token::identifier
+        };
+        output.push(token_fn(item.get_effective_name()));
         output.push(Token::symbol("::"));
     }
     if !path.is_empty() {

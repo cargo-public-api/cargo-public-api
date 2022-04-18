@@ -107,15 +107,15 @@ fn color_item_token(token: &Token, bg: Option<Color>) -> ANSIString<'_> {
     match token {
         Token::Symbol(text) => style(Style::default(), text),
         Token::Qualifier(text) => style(Color::Blue.into(), text),
-        Token::Kind(text) => style(Color::Blue.bold(), text),
+        Token::Kind(text) => style(Color::Blue.into(), text),
         Token::Whitespace => style(Style::default(), " "),
         Token::Identifier(text) => style(Color::Cyan.into(), text),
         Token::Self_(text) => style(Color::Blue.into(), text),
         Token::Function(text) => style(Color::Yellow.into(), text),
-        Token::Lifetime(text) => style(Color::Blue.bold(), text),
+        Token::Lifetime(text) => style(Color::Blue.into(), text),
         Token::Keyword(text) => style(Color::Blue.into(), text),
-        Token::Generic(text) => style(Color::Green.bold(), text),
-        Token::Primitive(text) => style(Color::Yellow.into(), text),
+        Token::Generic(text) => style(Color::Green.into(), text),
+        Token::Primitive(text) => style(Color::Green.into(), text),
         Token::Type(text) => style(Color::Green.into(), text),
     }
 }

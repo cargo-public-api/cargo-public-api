@@ -584,6 +584,8 @@ fn render_generic_param_def(root: &Crate, generic_param_def: &GenericParamDef) -
             }
         }
         GenericParamDefKind::Const { type_, .. } => {
+            output.push(Token::qualifier("const"));
+            output.push(ws!());
             output.push(Token::identifier(&generic_param_def.name));
             output.extend(colon());
             output.extend(render_type(root, type_));

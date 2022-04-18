@@ -47,6 +47,7 @@ pub mod diff;
 // Documented at the definition site so cargo doc picks it up
 pub use error::{Error, Result};
 
+// Documented at the definition site so cargo doc picks it up
 pub use item_iterator::PublicItem;
 
 /// This constant defines the minimum version of nightly that is required in
@@ -74,8 +75,8 @@ pub struct Options {
 
     /// If `true`, items will be sorted before being returned. If you will pass
     /// on the return value to [`diff::PublicItemsDiff::between`], it is
-    /// currently unnecessary to sort first, because the return value will
-    /// internally be converted into a `HashSet`.
+    /// currently unnecessary to sort first, because the sorting will be
+    /// performed/ensured inside of that function.
     ///
     /// The default value is `true`, because usually the performance impact is
     /// negligible, and is is generally more practical to work with sorted data.

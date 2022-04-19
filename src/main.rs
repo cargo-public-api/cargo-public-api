@@ -63,6 +63,12 @@ pub struct Args {
     #[clap(long, min_values = 2, max_values = 2)]
     diff_git_checkouts: Option<Vec<String>>,
 
+    /// Usage: --diff-rustdoc-json <RUSTDOC_JSON_PATH_1> <RUSTDOC_JSON_PATH_2>
+    ///
+    /// Diff the public API across two different rustdoc JSON files.
+    #[clap(long, min_values = 2, max_values = 2)]
+    diff_rustdoc_json: Option<Vec<String>>,
+
     /// What output format to use. You can select between "plain" and "markdown".
     /// Currently "markdown" is only supported when doing an API diff.
     #[clap(long, name = "FORMAT", default_value = "plain")]
@@ -80,6 +86,8 @@ fn main() -> Result<()> {
 
     if let Some(commits) = &args.diff_git_checkouts {
         print_public_items_diff_between_two_commits(&args, commits)
+    } else if let Some(files) = &args.diff_rustdoc_json {
+        print_public_items_diff_between_two_rustdoc_json_files(&args, files)
     } else {
         print_public_items_of_current_commit(&args)
     }
@@ -101,6 +109,25 @@ fn print_public_items_diff_between_two_commits(args: &Args, commits: &[String]) 
     let new_commit = commits.get(1).expect("clap makes sure second commit exist");
     let new = collect_public_items_from_commit(Some(new_commit))?;
 
+    print_diff(args, old, new)
+}
+
+fn print_public_items_diff_between_two_rustdoc_json_files(
+    args: &Args,
+    files: &[String],
+) -> Result<()> {
+    let options = get_options(args);
+
+    let old_file = files.get(0).expect("clap makes sure first file exists");
+    let old = public_api_from_rustdoc_json_path(old_file, options)?;
+
+    let new_file = files.get(1).expect("clap makes sure second file exists");
+    let new = public_api_from_rustdoc_json_path(new_file, options)?;
+
+    print_diff(args, old, new)
+}
+
+fn print_diff(args: &Args, old: Vec<PublicItem>, new: Vec<PublicItem>) -> Result<()> {
     let diff = public_api::diff::PublicItemsDiff::between(old, new);
     args.output_format
         .formatter()

@@ -65,6 +65,12 @@ pub struct Args {
     #[clap(long, min_values = 2, max_values = 2)]
     diff_git_checkouts: Option<Vec<String>>,
 
+    /// Usage: --diff-rustdoc-json <RUSTDOC_JSON_PATH_1> <RUSTDOC_JSON_PATH_2>
+    ///
+    /// Diff the public API across two different rustdoc JSON files.
+    #[clap(long, min_values = 2, max_values = 2)]
+    diff_rustdoc_json: Option<Vec<String>>,
+
     /// What output format to use. You can select between "plain" and "markdown".
     /// Currently "markdown" is only supported when doing an API diff.
     #[clap(long, name = "FORMAT", default_value = "plain")]
@@ -75,20 +81,28 @@ pub struct Args {
     /// the output to a file, colors will be disabled by default.
     #[clap(long, default_value = "auto")]
     color: arg_types::Color,
+
+    /// Do nothing but build the rustdoc JSON. Primarily meant for self-testing.
+    #[clap(long, hide = true)]
+    only_build_rustdoc_json: bool,
 }
 
 fn main() -> Result<()> {
     let args = get_args();
 
-    if let Some(commits) = &args.diff_git_checkouts {
+    if args.only_build_rustdoc_json {
+        build_rustdoc_json(&args.manifest_path)
+    } else if let Some(commits) = &args.diff_git_checkouts {
         print_public_items_diff_between_two_commits(&args, commits)
+    } else if let Some(files) = &args.diff_rustdoc_json {
+        print_public_items_diff_between_two_rustdoc_json_files(&args, files)
     } else {
         print_public_items_of_current_commit(&args)
     }
 }
 
 fn print_public_items_of_current_commit(args: &Args) -> Result<()> {
-    let public_items = collect_public_items(None)?;
+    let public_items = collect_public_items_from_commit(None)?;
     args.output_format
         .formatter()
         .print_items(&mut stdout(), args, public_items)?;
@@ -98,11 +112,30 @@ fn print_public_items_of_current_commit(args: &Args) -> Result<()> {
 
 fn print_public_items_diff_between_two_commits(args: &Args, commits: &[String]) -> Result<()> {
     let old_commit = commits.get(0).expect("clap makes sure first commit exist");
-    let old = collect_public_items(Some(old_commit))?;
+    let old = collect_public_items_from_commit(Some(old_commit))?;
 
     let new_commit = commits.get(1).expect("clap makes sure second commit exist");
-    let new = collect_public_items(Some(new_commit))?;
+    let new = collect_public_items_from_commit(Some(new_commit))?;
 
+    print_diff(args, old, new)
+}
+
+fn print_public_items_diff_between_two_rustdoc_json_files(
+    args: &Args,
+    files: &[String],
+) -> Result<()> {
+    let options = get_options(args);
+
+    let old_file = files.get(0).expect("clap makes sure first file exists");
+    let old = public_api_from_rustdoc_json_path(old_file, options)?;
+
+    let new_file = files.get(1).expect("clap makes sure second file exists");
+    let new = public_api_from_rustdoc_json_path(new_file, options)?;
+
+    print_diff(args, old, new)
+}
+
+fn print_diff(args: &Args, old: Vec<PublicItem>, new: Vec<PublicItem>) -> Result<()> {
     let diff = public_api::diff::PublicItemsDiff::between(old, new);
     args.output_format
         .formatter()
@@ -195,7 +228,7 @@ fn rustdoc_json_path_for_name(target_directory: &Path, lib_name: &str) -> PathBu
 }
 
 /// Collects public items from either the current commit or a given commit.
-fn collect_public_items(commit: Option<&str>) -> Result<Vec<PublicItem>> {
+fn collect_public_items_from_commit(commit: Option<&str>) -> Result<Vec<PublicItem>> {
     let args = get_args();
 
     // Do a git checkout of a specific commit unless we are supposed to simply
@@ -212,8 +245,15 @@ fn collect_public_items(commit: Option<&str>) -> Result<Vec<PublicItem>> {
     let json_path = rustdoc_json_path_for_name(&target_directory, &lib_name);
     let options = get_options(&args);
 
+    public_api_from_rustdoc_json_path(json_path, options)
+}
+
+fn public_api_from_rustdoc_json_path<T: AsRef<Path>>(
+    json_path: T,
+    options: Options,
+) -> Result<Vec<PublicItem>> {
     let rustdoc_json = &std::fs::read_to_string(&json_path)
-        .with_context(|| format!("Failed to read rustdoc JSON at {:?}", json_path))?;
+        .with_context(|| format!("Failed to read rustdoc JSON at {:?}", json_path.as_ref()))?;
 
     public_api_from_rustdoc_json_str(rustdoc_json, options).with_context(|| {
         format!(
@@ -221,7 +261,8 @@ fn collect_public_items(commit: Option<&str>) -> Result<Vec<PublicItem>> {
             This version of `cargo public-api` requires at least:\n\n    {}\n\n\
             If you have that, it might be `cargo public-api` that is out of date. Try\n\
             to install the latest versions with `cargo install cargo-public-api`",
-            json_path, MINIMUM_RUSTDOC_JSON_VERSION,
+            json_path.as_ref(),
+            MINIMUM_RUSTDOC_JSON_VERSION,
         )
     })
 }

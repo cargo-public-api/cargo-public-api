@@ -169,6 +169,15 @@ fn render_path(path: &[Rc<IntermediatePublicItem<'_>>]) -> TokenStream {
     for item in path {
         let token_fn = if matches!(item.item.inner, ItemEnum::Function(_) | ItemEnum::Method(_)) {
             Token::function
+        } else if matches!(
+            item.item.inner,
+            ItemEnum::Trait(_)
+                | ItemEnum::Struct(_)
+                | ItemEnum::Union(_)
+                | ItemEnum::Enum(_)
+                | ItemEnum::Typedef(_)
+        ) {
+            Token::type_
         } else {
             Token::identifier
         };

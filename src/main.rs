@@ -210,8 +210,15 @@ fn collect_public_items_from_commit(commit: Option<&str>) -> Result<Vec<PublicIt
     let json_path = rustdoc_json_path_for_name(&target_directory, &lib_name);
     let options = get_options(&args);
 
+    public_api_from_rustdoc_json_path(json_path, options)
+}
+
+fn public_api_from_rustdoc_json_path<T: AsRef<Path>>(
+    json_path: T,
+    options: Options,
+) -> Result<Vec<PublicItem>> {
     let rustdoc_json = &std::fs::read_to_string(&json_path)
-        .with_context(|| format!("Failed to read rustdoc JSON at {:?}", json_path))?;
+        .with_context(|| format!("Failed to read rustdoc JSON at {:?}", json_path.as_ref()))?;
 
     public_api_from_rustdoc_json_str(rustdoc_json, options).with_context(|| {
         format!(
@@ -219,7 +226,8 @@ fn collect_public_items_from_commit(commit: Option<&str>) -> Result<Vec<PublicIt
             This version of `cargo public-api` requires at least:\n\n    {}\n\n\
             If you have that, it might be `cargo public-api` that is out of date. Try\n\
             to install the latest versions with `cargo install cargo-public-api`",
-            json_path, MINIMUM_RUSTDOC_JSON_VERSION,
+            json_path.as_ref(),
+            MINIMUM_RUSTDOC_JSON_VERSION,
         )
     })
 }

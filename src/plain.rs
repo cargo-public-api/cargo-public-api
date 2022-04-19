@@ -35,7 +35,7 @@ impl OutputFormatter for Plain {
             &diff.removed,
             |w, item| {
                 if use_color {
-                    writeln!(w, "{}", color_item(item))
+                    writeln!(w, "-{}", color_item(item))
                 } else {
                     writeln!(w, "-{}", item)
                 }
@@ -51,7 +51,7 @@ impl OutputFormatter for Plain {
                 if use_color {
                     writeln!(
                         w,
-                        "{}\n{}",
+                        "-{}\n+{}",
                         color_item(&changed_item.old),
                         color_item(&changed_item.new)
                     )
@@ -68,7 +68,7 @@ impl OutputFormatter for Plain {
             &diff.added,
             |w, item| {
                 if use_color {
-                    writeln!(w, "{}", color_item(item))
+                    writeln!(w, "+{}", color_item(item))
                 } else {
                     writeln!(w, "+{}", item)
                 }

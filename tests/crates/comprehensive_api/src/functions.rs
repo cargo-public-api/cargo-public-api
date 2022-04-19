@@ -9,6 +9,8 @@ use crate::{
 
 pub fn plain() {}
 
+pub const fn const_fn() {}
+
 pub fn one_arg(x: usize) {
     println!("{}", x);
 }

@@ -79,12 +79,18 @@ pub struct Args {
     /// the output to a file, colors will be disabled by default.
     #[clap(long, default_value = "auto")]
     color: arg_types::Color,
+
+    /// Do nothing but build the rustdoc JSON. Primarily meant for self-testing.
+    #[clap(long, hide = true)]
+    only_build_rustdoc_json: bool,
 }
 
 fn main() -> Result<()> {
     let args = get_args();
 
-    if let Some(commits) = &args.diff_git_checkouts {
+    if args.only_build_rustdoc_json {
+        build_rustdoc_json(&args.manifest_path)
+    } else if let Some(commits) = &args.diff_git_checkouts {
         print_public_items_diff_between_two_commits(&args, commits)
     } else if let Some(files) = &args.diff_rustdoc_json {
         print_public_items_diff_between_two_rustdoc_json_files(&args, files)

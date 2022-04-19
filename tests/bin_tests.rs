@@ -141,6 +141,38 @@ fn diff_public_items_markdown_no_changes() {
 
 #[serial]
 #[test]
+fn diff_public_items_from_files_no_changes() {
+    // Build ./target/doc/cargo_public_api.json
+    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    cmd.arg("--only-build-rustdoc-json");
+    cmd.assert().success();
+
+    // Just a sanity check that --diff-rustdoc-json works at all
+    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    cmd.arg("--diff-rustdoc-json");
+    cmd.arg("./target/doc/cargo_public_api.json");
+    cmd.arg("./target/doc/cargo_public_api.json");
+    cmd.assert()
+        .stdout(
+            "Removed items from the public API
+=================================
+(none)
+
+Changed items in the public API
+===============================
+(none)
+
+Added items to the public API
+=============================
+(none)
+
+",
+        )
+        .success();
+}
+
+#[serial]
+#[test]
 fn diff_public_items_missing_one_arg() {
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
     cmd.current_dir(test_crate_path());

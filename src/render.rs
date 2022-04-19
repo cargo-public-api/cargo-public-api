@@ -340,10 +340,9 @@ fn render_function(
     if header.unsafe_ {
         output.extend(vec![Token::qualifier("unsafe"), ws!()]);
     };
-    // Marks too many fns as const, so disable for now
-    // if header.const_ {
-    //     output.extend(vec![Token::qualifier("const"), ws!()]);
-    // };
+    if header.const_ {
+        output.extend(vec![Token::qualifier("const"), ws!()]);
+    };
     if header.async_ {
         output.extend(vec![Token::qualifier("async"), ws!()]);
     };

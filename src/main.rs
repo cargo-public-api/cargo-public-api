@@ -86,7 +86,7 @@ fn main() -> Result<()> {
 }
 
 fn print_public_items_of_current_commit(args: &Args) -> Result<()> {
-    let public_items = collect_public_items(None)?;
+    let public_items = collect_public_items_from_commit(None)?;
     args.output_format
         .formatter()
         .print_items(&mut stdout(), args, public_items)?;
@@ -96,10 +96,10 @@ fn print_public_items_of_current_commit(args: &Args) -> Result<()> {
 
 fn print_public_items_diff_between_two_commits(args: &Args, commits: &[String]) -> Result<()> {
     let old_commit = commits.get(0).expect("clap makes sure first commit exist");
-    let old = collect_public_items(Some(old_commit))?;
+    let old = collect_public_items_from_commit(Some(old_commit))?;
 
     let new_commit = commits.get(1).expect("clap makes sure second commit exist");
-    let new = collect_public_items(Some(new_commit))?;
+    let new = collect_public_items_from_commit(Some(new_commit))?;
 
     let diff = public_api::diff::PublicItemsDiff::between(old, new);
     args.output_format
@@ -193,7 +193,7 @@ fn rustdoc_json_path_for_name(target_directory: &Path, lib_name: &str) -> PathBu
 }
 
 /// Collects public items from either the current commit or a given commit.
-fn collect_public_items(commit: Option<&str>) -> Result<Vec<PublicItem>> {
+fn collect_public_items_from_commit(commit: Option<&str>) -> Result<Vec<PublicItem>> {
     let args = get_args();
 
     // Do a git checkout of a specific commit unless we are supposed to simply

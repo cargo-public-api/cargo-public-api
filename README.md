@@ -1,17 +1,17 @@
-# `cargo public-api` command
+# cargo public-api
 
-You might want the convenient `cargo public-api` wrapper for this library. See https://github.com/Enselic/cargo-public-api.
+You probably want to use the convenient `cargo public-api` subcommand rather than this low-level library. The `cargo public-api` subcommand performs syntax highlighting of the output, among other things. See https://github.com/Enselic/cargo-public-api.
 
 # public-api
 
-List and diff the public API of Rust library crates by analyzing their rustdoc JSON. Diffing the public API between releases and commits can help you find breaking API changes and semver violations.
+List and diff the public API of Rust library crates by analyzing rustdoc JSON output files from the nightly toolchain.
 
 # Usage
 
 The library comes with a thin bin wrapper that can be used to explore the capabilities of this library.
 
 ```bash
-# Build and install the thin bin wrapper with the a recent stable Rust toolchain
+# Build and install the thin bin wrapper with a recent stable Rust toolchain
 cargo install public-api
 
 # Install nightly-2022-03-14 or later so you can build up-to-date rustdoc JSON files

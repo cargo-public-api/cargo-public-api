@@ -118,3 +118,8 @@ labeled issues.
 # Development
 
 See [development.md](./doc/development.md).
+
+# Maintainers
+
+- [Enselic](https://github.com/Enselic)
+- [douweschulte](https://github.com/douweschulte)

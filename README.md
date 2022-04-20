@@ -86,10 +86,15 @@ Currently there are two output formats. You can choose between `--output-format 
 
 Maintainers of Rust libraries that want to keep track of changes to their public API.
 
+# Implementation details
+
+This utility is implemented with and adds conveniences on top of the [public-api](https://crates.io/crates/public-api) library (https://github.com/Enselic/public-api).
+
 # Development tips
 
 See [development.md](./doc/development.md).
 
-# Implementation details
+# Maintainers
 
-This utility is implemented with and adds conveniences on top of the [public-api](https://crates.io/crates/public-api) library (https://github.com/Enselic/public-api).
+- [Enselic](https://github.com/Enselic)
+- [douweschulte](https://github.com/douweschulte)

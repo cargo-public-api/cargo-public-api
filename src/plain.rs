@@ -2,7 +2,8 @@ use std::io::{Result, Write};
 
 use public_api::{diff::PublicItemsDiff, PublicItem};
 
-use ansi_term::Color;
+use ansi_term::{ANSIString, ANSIStrings, Color, Style};
+use public_api::tokens::{Token, TokenStream};
 
 use crate::{
     output_formatter::{print_items_with_header, OutputFormatter},
@@ -12,9 +13,13 @@ use crate::{
 pub struct Plain;
 
 impl OutputFormatter for Plain {
-    fn print_items(&self, w: &mut dyn Write, _args: &Args, items: Vec<PublicItem>) -> Result<()> {
+    fn print_items(&self, w: &mut dyn Write, args: &Args, items: Vec<PublicItem>) -> Result<()> {
         for item in items {
-            writeln!(w, "{}", item)?;
+            if args.color.active() {
+                writeln!(w, "{}", color_item(&item))?;
+            } else {
+                writeln!(w, "{}", item)?;
+            }
         }
 
         Ok(())
@@ -30,7 +35,7 @@ impl OutputFormatter for Plain {
             &diff.removed,
             |w, item| {
                 if use_color {
-                    writeln!(w, "{}", Color::Red.paint(item.to_string()))
+                    writeln!(w, "-{}", color_item(item))
                 } else {
                     writeln!(w, "-{}", item)
                 }
@@ -46,9 +51,9 @@ impl OutputFormatter for Plain {
                 if use_color {
                     writeln!(
                         w,
-                        "{}\n{}",
-                        Color::Red.paint(changed_item.old.to_string()),
-                        Color::Green.paint(changed_item.new.to_string())
+                        "-{}\n+{}",
+                        color_item(&changed_item.old),
+                        color_item(&changed_item.new)
                     )
                 } else {
                     writeln!(w, "-{}\n+{}", changed_item.old, changed_item.new)
@@ -63,7 +68,7 @@ impl OutputFormatter for Plain {
             &diff.added,
             |w, item| {
                 if use_color {
-                    writeln!(w, "{}", Color::Green.paint(item.to_string()))
+                    writeln!(w, "+{}", color_item(item))
                 } else {
                     writeln!(w, "+{}", item)
                 }
@@ -71,5 +76,46 @@ impl OutputFormatter for Plain {
         )?;
 
         Ok(())
+    }
+}
+
+fn color_item(item: &public_api::PublicItem) -> String {
+    color_token_stream(&item.tokens, None)
+}
+
+fn color_token_stream(tokens: &TokenStream, bg: Option<Color>) -> String {
+    let styled = tokens
+        .tokens()
+        .map(|t| color_item_token(t, bg))
+        .collect::<Vec<_>>();
+    ANSIStrings(&styled).to_string()
+}
+
+/// Color the given Token to render it with a nice syntax highlighting. The
+/// theme is inspired by dark+ in VS Code and uses the default colors from the
+/// terminal to always provide a readable and consistent color scheme.
+/// An extra color can be provided to be used as background color.
+fn color_item_token(token: &Token, bg: Option<Color>) -> ANSIString<'_> {
+    let style = |colour: Style, text: &str| {
+        if let Some(bg) = bg {
+            colour.on(bg).paint(text.to_string())
+        } else {
+            colour.paint(text.to_string())
+        }
+    };
+    #[allow(clippy::match_same_arms)]
+    match token {
+        Token::Symbol(text) => style(Style::default(), text),
+        Token::Qualifier(text) => style(Color::Blue.into(), text),
+        Token::Kind(text) => style(Color::Blue.into(), text),
+        Token::Whitespace => style(Style::default(), " "),
+        Token::Identifier(text) => style(Color::Cyan.into(), text),
+        Token::Self_(text) => style(Color::Blue.into(), text),
+        Token::Function(text) => style(Color::Yellow.into(), text),
+        Token::Lifetime(text) => style(Color::Blue.into(), text),
+        Token::Keyword(text) => style(Color::Blue.into(), text),
+        Token::Generic(text) => style(Color::Green.into(), text),
+        Token::Primitive(text) => style(Color::Green.into(), text),
+        Token::Type(text) => style(Color::Green.into(), text),
     }
 }

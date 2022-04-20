@@ -60,30 +60,53 @@ fn diff_public_items_with_color() {
     cmd.arg("--diff-git-checkouts");
     cmd.arg("v0.6.0");
     cmd.arg("v0.7.1");
+
+    // To update expected output, run this:
+    //
+    //   cd target/tmp/cargo-public-api-test-repo
+    //   cargo run --manifest-path ../../../Cargo.toml -- --color=always --diff-git-checkouts v0.6.0 v0.7.1 | sed 's/\x1b/\\x1b/g'
     cmd.assert()
-        .stdout(
-            "Removed items from the public API\n\
-             =================================\n\
-             \x1b[31mpub fn public_items::PublicItem::hash<__H: $crate::hash::Hasher>(&self, state: &mut __H) -> ()\x1b[0m\n\
-             \x1b[31mpub fn public_items::diff::PublicItemsDiff::print_with_headers(&self, w: &mut impl std::io::Write, header_removed: &str, header_changed: &str, header_added: &str) -> std::io::Result<()>\x1b[0m\n\
-             \n\
-             Changed items in the public API\n\
-             ===============================\n\
-             \x1b[31mpub fn public_items::PublicItem::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result\x1b[0m\n\
-             \x1b[32mpub fn public_items::PublicItem::fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result\x1b[0m\n\
-             \x1b[31mpub fn public_items::diff::PublicItemsDiff::between(old: Vec<PublicItem>, new: Vec<PublicItem>) -> Self\x1b[0m\n\
-             \x1b[32mpub fn public_items::diff::PublicItemsDiff::between(old_items: Vec<PublicItem>, new_items: Vec<PublicItem>) -> Self\x1b[0m\n\
-             \n\
-             Added items to the public API\n\
-             =============================\n\
-             \x1b[32mpub fn public_items::diff::ChangedPublicItem::cmp(&self, other: &ChangedPublicItem) -> $crate::cmp::Ordering\x1b[0m\n\
-             \x1b[32mpub fn public_items::diff::ChangedPublicItem::eq(&self, other: &ChangedPublicItem) -> bool\x1b[0m\n\
-             \x1b[32mpub fn public_items::diff::ChangedPublicItem::ne(&self, other: &ChangedPublicItem) -> bool\x1b[0m\n\
-             \x1b[32mpub fn public_items::diff::ChangedPublicItem::partial_cmp(&self, other: &ChangedPublicItem) -> $crate::option::Option<$crate::cmp::Ordering>\x1b[0m\n\
-             \x1b[32mpub fn public_items::diff::PublicItemsDiff::eq(&self, other: &PublicItemsDiff) -> bool\x1b[0m\n\
-             \x1b[32mpub fn public_items::diff::PublicItemsDiff::ne(&self, other: &PublicItemsDiff) -> bool\x1b[0m\n\
-            \n\
-            ",
+        .stdout("Removed items from the public API
+=================================
+-\x1b[34mpub\x1b[0m \x1b[34mfn\x1b[0m \x1b[36mpublic_items\x1b[0m::\x1b[32mPublicItem\x1b[0m::\x1b[33mhash\x1b[0m<\x1b[32m__H\x1b[0m: \x1b[36m$crate\x1b[0m::\x1b[36mhash\x1b[0m::\x1b[32mHasher\x1b[0m>(&\x1b[34mself\x1b[0m, \x1b[36mstate\x1b[0m: &\x1b[34mmut\x1b[0m \x1b[32m__H\x1b[0m) -> ()
+-\x1b[34mpub\x1b[0m \x1b[34mfn\x1b[0m \x1b[36mpublic_items\x1b[0m::\x1b[36mdiff\x1b[0m::\x1b[32mPublicItemsDiff\x1b[0m::\x1b[33mprint_with_headers\x1b[0m(&\x1b[34mself\x1b[0m, \x1b[36mw\x1b[0m: &\x1b[34mmut\x1b[0m \x1b[34mimpl\x1b[0m \x1b[36mstd\x1b[0m::\x1b[36mio\x1b[0m::\x1b[32mWrite\x1b[0m, \x1b[36mheader_removed\x1b[0m: &\x1b[32mstr\x1b[0m, \x1b[36mheader_changed\x1b[0m: &\x1b[32mstr\x1b[0m, \x1b[36mheader_added\x1b[0m: &\x1b[32mstr\x1b[0m) -> \x1b[36mstd\x1b[0m::\x1b[36mio\x1b[0m::\x1b[32mResult\x1b[0m<()>
+
+Changed items in the public API
+===============================
+-\x1b[34mpub\x1b[0m \x1b[34mfn\x1b[0m \x1b[36mpublic_items\x1b[0m::\x1b[32mPublicItem\x1b[0m::\x1b[33mfmt\x1b[0m(&\x1b[34mself\x1b[0m, \x1b[36mf\x1b[0m: &\x1b[34mmut\x1b[0m \x1b[36m$crate\x1b[0m::\x1b[36mfmt\x1b[0m::\x1b[32mFormatter\x1b[0m<\x1b[34m'_\x1b[0m>) -> \x1b[36m$crate\x1b[0m::\x1b[36mfmt\x1b[0m::\x1b[32mResult\x1b[0m
++\x1b[34mpub\x1b[0m \x1b[34mfn\x1b[0m \x1b[36mpublic_items\x1b[0m::\x1b[32mPublicItem\x1b[0m::\x1b[33mfmt\x1b[0m(&\x1b[34mself\x1b[0m, \x1b[36mf\x1b[0m: &\x1b[34mmut\x1b[0m \x1b[36mstd\x1b[0m::\x1b[36mfmt\x1b[0m::\x1b[32mFormatter\x1b[0m<\x1b[34m'_\x1b[0m>) -> \x1b[36mstd\x1b[0m::\x1b[36mfmt\x1b[0m::\x1b[32mResult\x1b[0m
+-\x1b[34mpub\x1b[0m \x1b[34mfn\x1b[0m \x1b[36mpublic_items\x1b[0m::\x1b[36mdiff\x1b[0m::\x1b[32mPublicItemsDiff\x1b[0m::\x1b[33mbetween\x1b[0m(\x1b[36mold\x1b[0m: \x1b[32mVec\x1b[0m<\x1b[32mPublicItem\x1b[0m>, \x1b[36mnew\x1b[0m: \x1b[32mVec\x1b[0m<\x1b[32mPublicItem\x1b[0m>) -> \x1b[32mSelf\x1b[0m
++\x1b[34mpub\x1b[0m \x1b[34mfn\x1b[0m \x1b[36mpublic_items\x1b[0m::\x1b[36mdiff\x1b[0m::\x1b[32mPublicItemsDiff\x1b[0m::\x1b[33mbetween\x1b[0m(\x1b[36mold_items\x1b[0m: \x1b[32mVec\x1b[0m<\x1b[32mPublicItem\x1b[0m>, \x1b[36mnew_items\x1b[0m: \x1b[32mVec\x1b[0m<\x1b[32mPublicItem\x1b[0m>) -> \x1b[32mSelf\x1b[0m
+
+Added items to the public API
+=============================
++\x1b[34mpub\x1b[0m \x1b[34mfn\x1b[0m \x1b[36mpublic_items\x1b[0m::\x1b[36mdiff\x1b[0m::\x1b[32mChangedPublicItem\x1b[0m::\x1b[33mcmp\x1b[0m(&\x1b[34mself\x1b[0m, \x1b[36mother\x1b[0m: &\x1b[32mChangedPublicItem\x1b[0m) -> \x1b[36m$crate\x1b[0m::\x1b[36mcmp\x1b[0m::\x1b[32mOrdering\x1b[0m
++\x1b[34mpub\x1b[0m \x1b[34mfn\x1b[0m \x1b[36mpublic_items\x1b[0m::\x1b[36mdiff\x1b[0m::\x1b[32mChangedPublicItem\x1b[0m::\x1b[33meq\x1b[0m(&\x1b[34mself\x1b[0m, \x1b[36mother\x1b[0m: &\x1b[32mChangedPublicItem\x1b[0m) -> \x1b[32mbool\x1b[0m
++\x1b[34mpub\x1b[0m \x1b[34mfn\x1b[0m \x1b[36mpublic_items\x1b[0m::\x1b[36mdiff\x1b[0m::\x1b[32mChangedPublicItem\x1b[0m::\x1b[33mne\x1b[0m(&\x1b[34mself\x1b[0m, \x1b[36mother\x1b[0m: &\x1b[32mChangedPublicItem\x1b[0m) -> \x1b[32mbool\x1b[0m
++\x1b[34mpub\x1b[0m \x1b[34mfn\x1b[0m \x1b[36mpublic_items\x1b[0m::\x1b[36mdiff\x1b[0m::\x1b[32mChangedPublicItem\x1b[0m::\x1b[33mpartial_cmp\x1b[0m(&\x1b[34mself\x1b[0m, \x1b[36mother\x1b[0m: &\x1b[32mChangedPublicItem\x1b[0m) -> \x1b[36m$crate\x1b[0m::\x1b[36moption\x1b[0m::\x1b[32mOption\x1b[0m<\x1b[36m$crate\x1b[0m::\x1b[36mcmp\x1b[0m::\x1b[32mOrdering\x1b[0m>
++\x1b[34mpub\x1b[0m \x1b[34mfn\x1b[0m \x1b[36mpublic_items\x1b[0m::\x1b[36mdiff\x1b[0m::\x1b[32mPublicItemsDiff\x1b[0m::\x1b[33meq\x1b[0m(&\x1b[34mself\x1b[0m, \x1b[36mother\x1b[0m: &\x1b[32mPublicItemsDiff\x1b[0m) -> \x1b[32mbool\x1b[0m
++\x1b[34mpub\x1b[0m \x1b[34mfn\x1b[0m \x1b[36mpublic_items\x1b[0m::\x1b[36mdiff\x1b[0m::\x1b[32mPublicItemsDiff\x1b[0m::\x1b[33mne\x1b[0m(&\x1b[34mself\x1b[0m, \x1b[36mother\x1b[0m: &\x1b[32mPublicItemsDiff\x1b[0m) -> \x1b[32mbool\x1b[0m
+
+",
+        )
+        .success();
+}
+
+#[serial]
+#[test]
+fn list_public_items_with_color() {
+    ensure_test_crate_is_cloned();
+
+    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    cmd.arg("--color=always");
+
+    // To update expected output, run this:
+    //
+    //   cargo run -- --color=always | sed 's/\x1b/\\x1b/g'
+    cmd.assert()
+        .stdout("\x1b[34mpub\x1b[0m \x1b[34mfn\x1b[0m \x1b[36mcargo_public_api\x1b[0m::\x1b[33mfor_self_testing_purposes_please_ignore\x1b[0m()
+\x1b[34mpub\x1b[0m \x1b[34mmod\x1b[0m \x1b[36mcargo_public_api\x1b[0m
+",
         )
         .success();
 }

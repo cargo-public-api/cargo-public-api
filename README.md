@@ -4,7 +4,7 @@ List and diff the public API of Rust library crates between releases and commits
 
 # Installation
 
-```
+```bash
 # Install cargo-public-api with the regular stable Rust toolchain
 cargo install cargo-public-api
 
@@ -14,32 +14,30 @@ rustup install nightly
 
 # Usage
 
-## List public API
+## List the public API
 
 This example lists the public API of the ubiquitous `regex` crate. First let's clone the repo:
 
-```
-% git clone https://github.com/rust-lang/regex ~/src/regex
+```bash
+git clone https://github.com/rust-lang/regex && cd regex
 ```
 
 Now we can list the public API of `regex` by doing
 
-```
-% cd ~/src/regex
-% cargo public-api
+```bash
+cargo public-api
 ```
 
 which will print the public API of `regex` with one line per public item in the API:
 
 <img src="doc/img/list-public-api.jpg" width="550" alt="colored output of listing public api">
 
-## Diff public API
+## Diff the public API
 
 To diff the API between say **1.3.0** and **1.4.0** of `regex`, use `--diff-git-checkouts` while standing in the git repo. Like this:
 
-```
-% cd ~/src/regex
-% cargo public-api --diff-git-checkouts 1.3.0 1.4.0
+```bash
+cargo public-api --diff-git-checkouts 1.3.0 1.4.0
 ```
 
 and the API diff will be printed:

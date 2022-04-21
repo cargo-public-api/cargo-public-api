@@ -7,6 +7,6 @@ set -o nounset -o pipefail -o errexit -o xtrace
 
 # CI.yml
 cargo fmt -- --check
-RUSTDOCFLAGS='-D warnings' cargo doc --no-deps
-cargo clippy --all-targets --all-features -- -D clippy::all -D clippy::pedantic
-cargo test
+RUSTDOCFLAGS='-D warnings' cargo doc  --locked --no-deps
+cargo clippy --locked --all-targets --all-features -- -D clippy::all -D clippy::pedantic
+cargo test --locked

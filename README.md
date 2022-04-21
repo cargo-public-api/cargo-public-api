@@ -31,18 +31,7 @@ Now we can list the public API of `regex` by doing
 
 which will print the public API of `regex` with one line per public item in the API:
 
-```
-pub enum regex::Error
-pub enum variant regex::Error::CompiledTooBig(usize)
-pub enum variant regex::Error::Syntax(String)
-pub fn regex::CaptureLocations::clone(&self) -> CaptureLocations
-pub fn regex::CaptureLocations::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-pub fn regex::CaptureLocations::get(&self, i: usize) -> Option<(usize, usize)>
-pub fn regex::CaptureLocations::len(&self) -> usize
-pub fn regex::CaptureMatches::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-pub fn regex::CaptureMatches::next(&mut self) -> Option<Captures<'t>>
-...
-```
+<img src="doc/img/list-public-api.jpg" width="550" alt="colored output of listing public api">
 
 ## Diff public API
 

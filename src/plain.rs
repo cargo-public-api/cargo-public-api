@@ -3,7 +3,7 @@ use std::io::{Result, Write};
 use public_api::{diff::PublicItemsDiff, PublicItem};
 
 use ansi_term::{ANSIString, ANSIStrings, Color, Style};
-use public_api::tokens::{Token, TokenStream};
+use public_api::tokens::Token;
 
 use crate::{
     output_formatter::{print_items_with_header, OutputFormatter},
@@ -80,14 +80,11 @@ impl OutputFormatter for Plain {
 }
 
 fn color_item(item: &public_api::PublicItem) -> String {
-    color_token_stream(&item.tokens, None)
+    color_token_stream(item.tokens(), None)
 }
 
-fn color_token_stream(tokens: &TokenStream, bg: Option<Color>) -> String {
-    let styled = tokens
-        .tokens()
-        .map(|t| color_item_token(t, bg))
-        .collect::<Vec<_>>();
+fn color_token_stream<'a>(tokens: impl Iterator<Item = &'a Token>, bg: Option<Color>) -> String {
+    let styled = tokens.map(|t| color_item_token(t, bg)).collect::<Vec<_>>();
     ANSIStrings(&styled).to_string()
 }
 

@@ -31,3 +31,7 @@ You can also combine both ways:
 % cd /does/not/matter
 % cargo run --manifest-path ~/src/cargo-public-api/Cargo.toml -- --manifest-path ~/src/arbitrary-crate/Cargo.toml
 ```
+
+## Maintainer guidelines and how to release
+
+See https://github.com/Enselic/public-api/blob/main/doc/development.md#maintainer-guidelines

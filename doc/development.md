@@ -23,8 +23,20 @@ Here are some guidelines if you are a maintainer:
 
 **B.** If a change is low-risk and uncontroversial, it is fine to push directly to main without going through a PR and a CI pipeline. But please run `scripts/run-ci-locally.sh` locally before pushing. And if CI unexpectedly fails after push, please fix it as soon as possible.
 
-**C.** Never manually `cargo publish`. Instead push a git tag on the form `vX.Y.Z` and a CI/CD workflow will take care of the details. **Not yet implemented.**
+**C.** Never manually `cargo publish`. See 'How to release' below.
 
 **D.** Always keep the main branch in a releasable state. This ensures that we can spontaneously and frequently make releases.
 
 **E.** Avoid having large and long-lived branches. That increases the risk of future merge conflicts and sadness. Prefer many, small, incremental, short-lived PRs that is regularly merged to main.
+
+## How to release
+
+0. Bump version in Cargo.toml and push to `main`
+1. Go to https://github.com/Enselic/public-api/actions/workflows/Release.yml
+2. Click the **Run workflow ▼** button to the right
+3. Make sure the `main` branch is selected
+4. Click **Run workflow**
+5. Wait a while
+6. Double-check that the release ends up at https://crates.io/crates/public-api/versions
+7. Double-check that a tag for the release ends up at https://github.com/Enselic/public-api/tags
+8. Done!

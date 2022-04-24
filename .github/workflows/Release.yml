@@ -8,7 +8,7 @@ env:
 
 jobs:
   verify:
-    uses: .github/workflows/CI.yml
+    uses: ./.github/workflows/CI.yml
 
   release:
     needs: verify

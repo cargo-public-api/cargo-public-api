@@ -2,7 +2,7 @@
 set -o nounset -o pipefail -o errexit -o xtrace
 
 # First, deploy
-cargo publish
+cargo publish --dry-run
 
 # If that was successful, push a git tag that matches Cargo.toml version
 pyjq() {

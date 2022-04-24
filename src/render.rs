@@ -695,7 +695,7 @@ mod test {
             fn $name() {
                 let value = $function($($values),*);
                 assert_eq!(value, $expected);
-                assert_eq!(crate::item_iterator::vec_token_to_string(&value), $str);
+                assert_eq!(crate::item_iterator::tokens_to_string(&value), $str);
             }
         )*
         };

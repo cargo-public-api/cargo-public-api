@@ -205,11 +205,11 @@ impl std::fmt::Debug for PublicItem {
 /// we implement `Display` for it.
 impl Display for PublicItem {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", vec_token_to_string(&self.tokens))
+        write!(f, "{}", tokens_to_string(&self.tokens))
     }
 }
 
-pub(crate) fn vec_token_to_string(tokens: &[Token]) -> String {
+pub(crate) fn tokens_to_string(tokens: &[Token]) -> String {
     tokens.iter().map(Token::text).collect()
 }
 

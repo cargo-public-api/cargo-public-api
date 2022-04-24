@@ -188,7 +188,7 @@ mod tests {
                 .split("::")
                 .map(std::string::ToString::to_string)
                 .collect(),
-            tokens: crate::tokens::Token::identifier(path).into(),
+            tokens: vec![crate::tokens::Token::identifier(path)],
         }
     }
 }

@@ -3,9 +3,7 @@ use std::{collections::HashMap, fmt::Display, rc::Rc};
 use rustdoc_types::{Crate, Id, Impl, Item, ItemEnum, Type};
 
 use super::intermediate_public_item::IntermediatePublicItem;
-#[cfg(doc)]
-use crate::tokens::Token;
-use crate::{tokens::TokenStream, Options};
+use crate::{tokens::Token, Options};
 
 type Impls<'a> = HashMap<&'a Id, Vec<&'a Impl>>;
 
@@ -184,8 +182,15 @@ pub struct PublicItem {
     /// The "your_crate::mod_a::mod_b" part of an item. Split by "::"
     pub(crate) path: Vec<String>,
 
-    /// The rendered item into a stream of [`Token`]s
-    pub tokens: TokenStream,
+    /// The rendered item as a stream of [`Token`]s
+    pub(crate) tokens: Vec<Token>,
+}
+
+impl PublicItem {
+    /// The rendered item as a stream of [`Token`]s
+    pub fn tokens(&self) -> impl Iterator<Item = &Token> {
+        self.tokens.iter()
+    }
 }
 
 /// We want pretty-printing (`"{:#?}"`) of [`crate::diff::PublicItemsDiff`] to print
@@ -200,8 +205,12 @@ impl std::fmt::Debug for PublicItem {
 /// we implement `Display` for it.
 impl Display for PublicItem {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.tokens)
+        write!(f, "{}", tokens_to_string(&self.tokens))
     }
+}
+
+pub(crate) fn tokens_to_string(tokens: &[Token]) -> String {
+    tokens.iter().map(Token::text).collect()
 }
 
 impl PartialEq for PublicItem {

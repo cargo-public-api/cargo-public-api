@@ -3,7 +3,7 @@ use std::rc::Rc;
 
 use rustdoc_types::{Crate, Item, ItemEnum};
 
-use crate::tokens::TokenStream;
+use crate::tokens::Token;
 
 /// This struct represents one public item of a crate, but in intermediate form.
 /// It wraps a single [Item] but adds additional calculated values to make it
@@ -61,7 +61,7 @@ impl<'a> IntermediatePublicItem<'a> {
         .to_owned()
     }
 
-    pub fn render_token_stream(&self) -> TokenStream {
+    pub fn render_token_stream(&self) -> Vec<Token> {
         render::token_stream(self)
     }
 }

@@ -3,10 +3,10 @@ set -o errexit -o nounset -o pipefail -o xtrace
 
 cargo fmt -- --check
 
-RUSTDOCFLAGS='-D warnings' cargo doc --no-deps
+RUSTDOCFLAGS='-D warnings' cargo doc --locked --no-deps
 
-cargo clippy --all-targets --all-features -- -D clippy::all -D clippy::pedantic
+cargo clippy --locked --all-targets --all-features -- -D clippy::all -D clippy::pedantic
 
-cargo test
+cargo test --locked
 
 ./scripts/test-invocation-variants.sh

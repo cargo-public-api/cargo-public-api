@@ -12,8 +12,10 @@ jobs:
 
   release:
     needs: verify
-    environment: cargo-publish
+    environment: crates.io
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - run: ./scripts/release.sh
+    - env:
+        CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+      run: ./scripts/release.sh

@@ -18,7 +18,7 @@ clap = { version = "3.1.2", features = ["derive"] }
 
 [dependencies.public-api]
 # path = "/Users/martin/src/public-api"
-version = "0.9.3"
+version = "0.10.0"
 
 [dev-dependencies]
 assert_cmd = "2.0.4"

@@ -23,11 +23,14 @@ jobs:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
 
       # Figure out what tag to use.
-      - id: tag
-        run: echo "::set-output name=NAME::v$(cargo read-manifest | jq .version)"
+      - name: calculate tag
+        id: tag
+        run: |
+          version=$(cargo read-manifest | jq --raw-output .version)
+          echo ::set-output name=NAME::v${version}
 
-      # Push tag to git.
-      - name: git tag
+      # Push the tag to git.
+      - name: push tag
         run: |
           git tag ${{ steps.tag.outputs.NAME }}
           git push origin ${{ steps.tag.outputs.NAME }}

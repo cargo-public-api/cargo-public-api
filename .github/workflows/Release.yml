@@ -7,7 +7,7 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  verify:
+  ci:
     uses: ./.github/workflows/CI.yml
 
   release:
@@ -15,7 +15,25 @@ jobs:
     environment: crates.io
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - env:
-        CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
-      run: ./scripts/release.sh
+      - uses: actions/checkout@v2
+
+      # Try to cargo publish. If this succeeds we will tag the release.
+      - run: cargo publish
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+
+      # Figure out what tag to use.
+      - id: tag
+        run: echo "::set-output name=NAME::v$(cargo read-manifest | jq .version)"
+
+      # Push tag to git.
+      - name: git tag
+        run: |
+          git tag ${{ steps.tag.outputs.NAME }}
+          git push origin ${{ steps.tag.outputs.NAME }}
+
+      # Create a GitHub Release from the tag.
+      - uses: softprops/action-gh-release@1e07f4398721186383de40550babbdf2b84acfc5 # v0.1.14
+        with:
+          tag_name: ${{ steps.tag.outputs.NAME }}
+          generate_release_notes: true

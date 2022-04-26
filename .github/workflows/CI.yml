@@ -22,30 +22,30 @@ jobs:
     name: cargo fmt -- --check
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - run: cargo fmt -- --check
+      - uses: actions/checkout@v2
+      - run: cargo fmt -- --check
 
   cargo-doc:
     name: RUSTDOCFLAGS='-D warnings' cargo doc
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - run: RUSTDOCFLAGS='-D warnings' cargo doc --locked --no-deps
+      - uses: actions/checkout@v2
+      - run: RUSTDOCFLAGS='-D warnings' cargo doc --locked --no-deps
 
   cargo-clippy:
     name: cargo clippy -- -D clippy::all -D clippy::pedantic
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - run: cargo clippy --locked --all-targets --all-features -- -D clippy::all -D clippy::pedantic
+      - uses: actions/checkout@v2
+      - run: cargo clippy --locked --all-targets --all-features -- -D clippy::all -D clippy::pedantic
 
   cargo-test:
     name: cargo test
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions-rs/toolchain@v1
-      with:
-        toolchain: nightly
-        profile: minimal
-    - run: cargo test --locked
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: nightly
+          profile: minimal
+      - run: cargo test --locked

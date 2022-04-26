@@ -11,7 +11,7 @@ jobs:
     uses: ./.github/workflows/CI.yml
 
   release:
-    needs: verify
+    needs: ci
     environment: crates.io
     runs-on: ubuntu-latest
     steps:

@@ -31,12 +31,12 @@ Here are some guidelines if you are a maintainer:
 
 ## How to release
 
-0. Bump version in Cargo.toml and push to `main`
+0. Bump `version` in **Cargo.toml** and push to `main`
 1. Go to https://github.com/Enselic/public-api/actions/workflows/Release.yml
 2. Click the **Run workflow ▼** button to the right
 3. Make sure the `main` branch is selected
 4. Click **Run workflow**
-5. Wait a while
-6. Double-check that the release ends up at https://crates.io/crates/public-api/versions
-7. Double-check that a tag for the release ends up at https://github.com/Enselic/public-api/tags
+5. Wait for the workflow to complete
+6. Double-check that the release ended up at https://crates.io/crates/public-api/versions
+7. Double-check that the auto-generated release notes for the release at https://github.com/Enselic/public-api/releases is not horribly inaccurate
 8. Done!

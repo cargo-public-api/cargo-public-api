@@ -21,7 +21,7 @@ Here are some guidelines if you are a maintainer:
 
 **A.** Prefer creating PRs when making a change to ensure CI passes before merge. Prefer waiting on code review for non-trivial changes.
 
-**B.** If a change is low-risk and uncontroversial, it is fine to push directly to main without going through a PR and a CI pipeline. But please run `scripts/run-ci-locally.sh` locally before pushing. And if CI unexpectedly fails after push, please fix it as soon as possible.
+**B.** If a change is low-risk, uncontroversial, and should not end up in the automatically generated changelog for releases, it is fine to push directly to main without going through a PR, CR, and CI pipeline. But please run `scripts/run-ci-locally.sh` locally before pushing. And if CI unexpectedly fails after push, please fix it as soon as possible.
 
 **C.** Never manually `cargo publish`. See 'How to release' below.
 

@@ -11,10 +11,13 @@ repository = "https://github.com/Enselic/public-api"
 version = "0.10.2"
 
 [dependencies]
-rustdoc-types = "0.10.0"
 serde = { version = "1.0.135", features = ["derive"] }
 serde_json = "1.0.77"
 thiserror = "1.0.29"
+
+[dependencies.rustdoc-types]
+# path = "/Users/martin/src/rustdoc-types"
+version = "0.10.0"
 
 [dev-dependencies]
 assert_cmd = "2.0.4"

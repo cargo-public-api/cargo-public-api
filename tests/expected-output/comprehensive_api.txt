@@ -37,6 +37,7 @@ pub fn comprehensive_api::functions::return_tuple() -> (bool, Basic)
 pub fn comprehensive_api::functions::somewhere<T, U>(t: T, u: U) where T: Display, U: Debug
 pub fn comprehensive_api::functions::struct_arg(s: PrivateField)
 pub fn comprehensive_api::functions::synthetic_arg(t: impl Simple) -> impl Simple
+pub fn comprehensive_api::higher_ranked_trait_bounds::test3<F>() where F: for<'a, 'b> Fn(&'a u8, &'b u8)
 pub fn comprehensive_api::structs::Plain::f()
 pub fn comprehensive_api::structs::Plain::new() -> Plain
 pub fn comprehensive_api::structs::Plain::s1(self)
@@ -50,6 +51,7 @@ pub mod comprehensive_api
 pub mod comprehensive_api::constants
 pub mod comprehensive_api::enums
 pub mod comprehensive_api::functions
+pub mod comprehensive_api::higher_ranked_trait_bounds
 pub mod comprehensive_api::impls
 pub mod comprehensive_api::macros
 pub mod comprehensive_api::statics

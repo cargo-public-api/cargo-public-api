@@ -63,6 +63,7 @@ pub mut static comprehensive_api::statics::MUT_ANSWER: i8
 pub static comprehensive_api::statics::ANSWER: i8
 pub static comprehensive_api::statics::FUNCTION_POINTER: Option<fn(usize, i8) -> String>
 pub struct comprehensive_api::StructInPrivateMod
+pub struct comprehensive_api::higher_ranked_trait_bounds::Foo<'a>
 pub struct comprehensive_api::structs::ConstArg<T, const N: usize>
 pub struct comprehensive_api::structs::Plain
 pub struct comprehensive_api::structs::PrivateField
@@ -75,6 +76,7 @@ pub struct field comprehensive_api::enums::DiverseVariants::Struct::x: usize
 pub struct field comprehensive_api::enums::DiverseVariants::Struct::y: SingleVariant
 pub struct field comprehensive_api::enums::EnumWithGenerics::Variant::d: D
 pub struct field comprehensive_api::enums::EnumWithGenerics::Variant::t: &'a T
+pub struct field comprehensive_api::higher_ranked_trait_bounds::Foo::some_func: for<'c> fn(val: &'c i32) -> i32
 pub struct field comprehensive_api::structs::ConstArg::items: [T; N]
 pub struct field comprehensive_api::structs::Plain::x: usize
 pub struct field comprehensive_api::structs::Tuple::0: usize

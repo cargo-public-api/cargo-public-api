@@ -29,3 +29,10 @@ where
     F: for<'a, 'b> Fn(&'a u8, &'b u8),
 {
 }
+
+// @has foo/struct.Foo.html
+pub struct Foo<'a> {
+    pub some_func: for<'c> fn(val: &'c i32) -> i32,
+}
+
+// @has - '//span[@id="structfield.some_func"]' "some_func: for<'c> fn(val: &'c i32) -> i32"

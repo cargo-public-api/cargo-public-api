@@ -258,10 +258,10 @@ fn render_type(root: &Crate, ty: &Type) -> Vec<Token> {
         Type::Generic(name) => vec![Token::generic(name)],
         Type::Primitive(name) => vec![Token::primitive(name)],
         Type::FunctionPointer(ptr) => {
-            let mut output = vec![Token::kind("fn")];
-            output.extend(render_fn_decl(
-                root, &ptr.decl, false, /* include_names */
-            ));
+            let mut output =
+                render_higher_rank_trait_bounds_generic_params(root, &ptr.generic_params);
+            output.push(Token::kind("fn"));
+            output.extend(render_fn_decl(root, &ptr.decl));
             output
         }
         Type::Tuple(types) => render_tuple(root, types),
@@ -368,7 +368,7 @@ fn render_function(
     output.extend(render_generic_param_defs(root, &generics.params));
 
     // Regular parameters and return type
-    output.extend(render_fn_decl(root, decl, true /* include_names */));
+    output.extend(render_fn_decl(root, decl));
 
     // Where predicates
     output.extend(render_where_predicates(root, &generics.where_predicates));
@@ -376,7 +376,7 @@ fn render_function(
     output
 }
 
-fn render_fn_decl(root: &Crate, decl: &FnDecl, include_names: bool) -> Vec<Token> {
+fn render_fn_decl(root: &Crate, decl: &FnDecl) -> Vec<Token> {
     let mut output = vec![];
     // Main arguments
     output.extend(render_sequence(
@@ -388,7 +388,7 @@ fn render_fn_decl(root: &Crate, decl: &FnDecl, include_names: bool) -> Vec<Token
         |(name, ty)| {
             simplified_self(name, ty).unwrap_or_else(|| {
                 let mut output = vec![];
-                if include_names {
+                if name != "_" {
                     output.extend(vec![Token::identifier(name), Token::symbol(":"), ws!()]);
                 }
                 output.extend(render_type(root, ty));
@@ -657,11 +657,10 @@ fn render_generic_bounds(root: &Crate, bounds: &[GenericBound]) -> Vec<Token> {
                     ..
                 } => {
                     let mut output = vec![];
-                    if !generic_params.is_empty() {
-                        output.push(Token::keyword("for"));
-                        output.extend(render_generic_param_defs(root, generic_params));
-                        output.push(ws!());
-                    }
+                    output.extend(render_higher_rank_trait_bounds_generic_params(
+                        root,
+                        generic_params,
+                    ));
                     output.extend(render_type(root, trait_));
                     output
                 }
@@ -669,6 +668,19 @@ fn render_generic_bounds(root: &Crate, bounds: &[GenericBound]) -> Vec<Token> {
             },
         )
     }
+}
+
+fn render_higher_rank_trait_bounds_generic_params(
+    root: &Crate,
+    generic_params: &[GenericParamDef],
+) -> Vec<Token> {
+    let mut output = vec![];
+    if !generic_params.is_empty() {
+        output.push(Token::keyword("for"));
+        output.extend(render_generic_param_defs(root, generic_params));
+        output.push(ws!());
+    }
+    output
 }
 
 fn plus() -> Vec<Token> {

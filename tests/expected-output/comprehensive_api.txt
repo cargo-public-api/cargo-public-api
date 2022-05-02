@@ -37,6 +37,8 @@ pub fn comprehensive_api::functions::return_tuple() -> (bool, Basic)
 pub fn comprehensive_api::functions::somewhere<T, U>(t: T, u: U) where T: Display, U: Debug
 pub fn comprehensive_api::functions::struct_arg(s: PrivateField)
 pub fn comprehensive_api::functions::synthetic_arg(t: impl Simple) -> impl Simple
+pub fn comprehensive_api::higher_ranked_trait_bounds::test1<T>() where for<'a> &'a T: Iterator
+pub fn comprehensive_api::higher_ranked_trait_bounds::test2<T>() where for<'a, 'b> &'a T: Trait<'b>
 pub fn comprehensive_api::higher_ranked_trait_bounds::test3<F>() where F: for<'a, 'b> Fn(&'a u8, &'b u8)
 pub fn comprehensive_api::structs::Plain::f()
 pub fn comprehensive_api::structs::Plain::new() -> Plain
@@ -85,6 +87,7 @@ pub struct field comprehensive_api::structs::WithLifetimeAndGenericParam::unit_r
 pub struct field comprehensive_api::unions::Basic::x: usize
 pub struct field comprehensive_api::unions::Basic::y: usize
 pub trait comprehensive_api::RngCore
+pub trait comprehensive_api::higher_ranked_trait_bounds::Trait<'x>
 pub trait comprehensive_api::traits::AssociatedConst
 pub trait comprehensive_api::traits::AssociatedConstDefault
 pub trait comprehensive_api::traits::AssociatedType

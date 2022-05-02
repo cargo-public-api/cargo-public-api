@@ -22,6 +22,25 @@
 //   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //   SOFTWARE.
 
+// @has foo/trait.Trait.html
+pub trait Trait<'x> {}
+
+// @has foo/fn.test1.html
+// @has - '//pre' "pub fn test1<T>() where for<'a> &'a T: Iterator,"
+pub fn test1<T>()
+where
+    for<'a> &'a T: Iterator,
+{
+}
+
+// @has foo/fn.test2.html
+// @has - '//pre' "pub fn test2<T>() where for<'a, 'b> &'a T: Trait<'b>,"
+pub fn test2<T>()
+where
+    for<'a, 'b> &'a T: Trait<'b>,
+{
+}
+
 // @has foo/fn.test3.html
 // @has - '//pre' "pub fn test3<F>() where F: for<'a, 'b> Fn(&'a u8, &'b u8),"
 pub fn test3<F>()

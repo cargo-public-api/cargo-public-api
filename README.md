@@ -14,7 +14,7 @@ The library comes with a thin bin wrapper that can be used to explore the capabi
 # Build and install the thin bin wrapper with a recent stable Rust toolchain
 cargo install public-api
 
-# Install nightly-2022-03-14 or later so you can build up-to-date rustdoc JSON files
+# Install nightly-2022-05-19 or later so you can build up-to-date rustdoc JSON files
 rustup install nightly
 ```
 
@@ -110,7 +110,8 @@ labeled issues.
 
 | public-api    | Understands the rustdoc JSON output of  |
 | ------------- | --------------------------------------- |
-| v0.10.x       | nightly-2022-03-14 —                    |
+| v0.11.x       | nightly-2022-05-19                      |
+| v0.10.x       | nightly-2022-03-14 — nightly-2022-05-18 |
 | v0.5.x        | nightly-2022-02-23 — nightly-2022-03-13 |
 | v0.2.x        | nightly-2022-01-19 — nightly-2022-02-22 |
 | v0.0.5        | nightly-2021-10-11 — nightly-2022-01-18 |

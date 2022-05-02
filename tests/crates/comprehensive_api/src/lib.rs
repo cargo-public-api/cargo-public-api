@@ -10,6 +10,7 @@ mod private;
 pub mod constants;
 pub mod enums;
 pub mod functions;
+pub mod higher_ranked_trait_bounds;
 pub mod impls;
 pub mod macros;
 pub mod statics;

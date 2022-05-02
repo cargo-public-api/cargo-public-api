@@ -656,8 +656,13 @@ fn render_generic_bounds(root: &Crate, bounds: &[GenericBound]) -> Vec<Token> {
                     generic_params,
                     ..
                 } => {
-                    let mut output = render_type(root, trait_);
-                    output.extend(render_generic_param_defs(root, generic_params));
+                    let mut output = vec![];
+                    if !generic_params.is_empty() {
+                        output.push(Token::keyword("for"));
+                        output.extend(render_generic_param_defs(root, generic_params));
+                        output.push(ws!());
+                    }
+                    output.extend(render_type(root, trait_));
                     output
                 }
                 GenericBound::Outlives(id) => vec![Token::lifetime(id)],

@@ -20,18 +20,18 @@ jobs:
       - run: cargo fmt -- --check
 
   cargo-doc:
-    name: RUSTDOCFLAGS='-D warnings' cargo doc
+    name: RUSTDOCFLAGS='--deny warnings' cargo doc
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: RUSTDOCFLAGS='-D warnings' cargo doc --locked --no-deps
+      - run: RUSTDOCFLAGS='--deny warnings' cargo doc --locked --no-deps
 
   cargo-clippy:
-    name: cargo clippy -- -D clippy::all -D clippy::pedantic
+    name: cargo clippy -- --deny clippy::all --deny clippy::pedantic
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: cargo clippy --locked --all-targets --all-features -- -D clippy::all -D clippy::pedantic
+      - run: cargo clippy --locked --all-targets --all-features -- --deny clippy::all --deny clippy::pedantic
 
   cargo-test:
     name: cargo test

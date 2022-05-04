@@ -18,7 +18,7 @@ cargo install public-api
 rustup install nightly
 ```
 
-## List public API
+## List the public API
 
 To list all items that form the public API of your Rust library:
 
@@ -41,7 +41,7 @@ pub struct field public_api::Options::with_blanket_implementations: bool
 ...
 ```
 
-## Diff public API
+## Diff the public API
 
 It is frequently of interest to know how the public API of a crate has changed. You can find this out by doing a diff between different versions of the same library. Again, [`cargo public-api`](https://github.com/Enselic/cargo-public-api) makes this more convenient, but it is straightforward enough without it.
 

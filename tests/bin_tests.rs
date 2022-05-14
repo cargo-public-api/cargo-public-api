@@ -1,3 +1,5 @@
+use std::{io::BufRead, str::from_utf8};
+
 use assert_cmd::Command;
 use public_api::MINIMUM_RUSTDOC_JSON_VERSION;
 
@@ -118,6 +120,30 @@ Added:
                 .success();
         },
     );
+}
+
+/// Uses a bash one-liner to test that public-api gracefully handles
+/// `std::io::ErrorKind::BrokenPipe`
+#[test]
+#[serial]
+fn broken_pipe() {
+    // Use the JSON for a somewhat large API so the pipe has time to become closed
+    // before all output has been written to stdout
+    let large_api = rustdoc_json_path_for_crate("./tests/crates/comprehensive_api");
+
+    // Now setup the actual one-liner
+    let mut cmd = std::process::Command::new("bash");
+    cmd.args([
+        "-c",
+        &format!(
+            "./target/debug/public-api {} | head -n 1",
+            large_api.to_string_lossy(),
+        ),
+    ]);
+
+    // Run it and assert on that there was no error printed
+    assert_eq!(cmd.output().unwrap().stdout.lines().count(), 1);
+    assert_eq!(from_utf8(&cmd.output().unwrap().stderr), Ok(""));
 }
 
 #[test]

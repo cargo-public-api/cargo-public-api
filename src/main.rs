@@ -1,10 +1,18 @@
-use std::io::{stdout, Write};
+use std::io::{stdout, ErrorKind, Write};
 use std::path::{Path, PathBuf};
 
 use public_api::diff::PublicItemsDiff;
 use public_api::{public_api_from_rustdoc_json_str, Options, MINIMUM_RUSTDOC_JSON_VERSION};
 
-type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
+#[derive(thiserror::Error, Debug)]
+enum Error {
+    #[error(transparent)]
+    PublicApiError(#[from] public_api::Error),
+    #[error(transparent)]
+    StdIoError(#[from] std::io::Error),
+}
+
+type Result<T> = std::result::Result<T, Error>;
 
 #[derive(Default)]
 struct Args {
@@ -13,7 +21,7 @@ struct Args {
     files: Vec<PathBuf>,
 }
 
-fn main() -> Result<()> {
+fn main_() -> Result<()> {
     let args = args();
 
     let mut options = Options::default();
@@ -154,4 +162,12 @@ fn args() -> Args {
     }
 
     args
+}
+
+/// Wrapper to handle <https://github.com/rust-lang/rust/issues/46016>
+fn main() -> Result<()> {
+    match main_() {
+        Err(Error::StdIoError(e)) if e.kind() == ErrorKind::BrokenPipe => std::process::exit(141),
+        result => result,
+    }
 }

@@ -87,7 +87,7 @@ pub struct Args {
     only_build_rustdoc_json: bool,
 }
 
-fn main() -> Result<()> {
+fn main_() -> Result<()> {
     let args = get_args();
 
     if args.only_build_rustdoc_json {
@@ -265,4 +265,17 @@ fn public_api_from_rustdoc_json_path<T: AsRef<Path>>(
             MINIMUM_RUSTDOC_JSON_VERSION,
         )
     })
+}
+
+/// Wrapper to handle <https://github.com/rust-lang/rust/issues/46016>
+fn main() -> Result<()> {
+    match main_() {
+        Err(e) => match e.root_cause().downcast_ref::<std::io::Error>() {
+            Some(io_error) if io_error.kind() == std::io::ErrorKind::BrokenPipe => {
+                std::process::exit(141)
+            }
+            _ => Err(e),
+        },
+        result => result,
+    }
 }

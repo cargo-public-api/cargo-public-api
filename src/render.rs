@@ -621,7 +621,12 @@ fn render_where_predicates(root: &Crate, where_predicates: &[WherePredicate]) ->
 fn render_where_predicate(root: &Crate, where_predicate: &WherePredicate) -> Vec<Token> {
     let mut output = vec![];
     match where_predicate {
-        WherePredicate::BoundPredicate { type_, bounds } => {
+        WherePredicate::BoundPredicate {
+            type_,
+            bounds,
+            generic_params,
+        } => {
+            output.extend(render_higher_rank_trait_bounds(root, generic_params));
             output.extend(render_type(root, type_));
             output.extend(colon());
             output.extend(render_generic_bounds(root, bounds));

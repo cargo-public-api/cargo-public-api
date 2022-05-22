@@ -6,7 +6,7 @@ homepage = "https://github.com/Enselic/cargo-public-api"
 license = "MIT"
 name = "cargo-public-api"
 repository = "https://github.com/Enselic/cargo-public-api"
-version = "0.11.0"
+version = "0.11.1"
 
 [dependencies]
 ansi_term = "0.12.1"

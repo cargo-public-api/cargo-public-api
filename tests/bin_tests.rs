@@ -17,6 +17,19 @@ fn list_public_items_explicit_manifest_path() {
     assert_presence_of_own_library_items(cmd);
 }
 
+#[test]
+fn virtual_manifest_error() {
+    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    cmd.arg("--manifest-path");
+    cmd.arg(current_dir_and("tests/virtual-manifest/Cargo.toml"));
+    cmd.assert()
+        .stdout("")
+        .stderr(predicates::str::contains(
+            "Listing or diffing the public API of an entire workspace is not supported.",
+        ))
+        .failure();
+}
+
 // We must serially run tests that touch the test crate git repo to prevent
 // ".git/index.lock: File exists"-errors.
 #[serial]

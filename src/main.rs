@@ -180,7 +180,23 @@ fn package_name(path: impl AsRef<Path>) -> Result<String> {
         .with_context(|| format!("Failed to parse manifest at {:?}", path.as_ref()))?;
     Ok(manifest
         .package
-        .expect("[package] is declared in Cargo.toml")
+        .with_context(|| {
+            format!(
+                "No [package] found in {:?}. Is it a virtual manifest?
+
+Listing or diffing the public API of an entire workspace is not supported.
+
+Either do
+
+  cd specific-crate
+  cargo public-api
+
+or
+
+  cargo public-api -- --manifest-path specific-crate/Cargo.toml",
+                path.as_ref()
+            )
+        })?
         .name)
 }
 

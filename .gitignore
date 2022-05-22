@@ -1,1 +1,3 @@
 /target
+/tests/virtual-manifest/Cargo.lock
+/tests/virtual-manifest/target

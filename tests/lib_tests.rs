@@ -17,7 +17,7 @@ struct ExpectedDiff<'a> {
 #[serial] // Writing and reading rustdoc JSON to/from file-system; must run one test at a time
 fn with_blanket_implementations() {
     assert_public_api_with_blanket_implementations(
-        &rustdoc_json_str_for_crate("./tests/crates/example_api-v0.2.0"),
+        &rustdoc_json_str_for_crate("./test-apis/example_api-v0.2.0"),
         include_str!("./expected-output/example_api-v0.2.0-with-blanket-implementations.txt"),
     );
 }
@@ -26,8 +26,8 @@ fn with_blanket_implementations() {
 #[serial]
 fn diff_with_added_items() {
     assert_public_api_diff(
-        &rustdoc_json_str_for_crate("./tests/crates/example_api-v0.1.0"),
-        &rustdoc_json_str_for_crate("./tests/crates/example_api-v0.2.0"),
+        &rustdoc_json_str_for_crate("./test-apis/example_api-v0.1.0"),
+        &rustdoc_json_str_for_crate("./test-apis/example_api-v0.2.0"),
         &ExpectedDiff {
             removed: &[],
             changed: &[(
@@ -48,8 +48,8 @@ fn diff_with_added_items() {
 fn no_diff() {
     // No change to the public API
     assert_public_api_diff(
-        &rustdoc_json_str_for_crate("./tests/crates/comprehensive_api"),
-        &rustdoc_json_str_for_crate("./tests/crates/comprehensive_api"),
+        &rustdoc_json_str_for_crate("./test-apis/comprehensive_api"),
+        &rustdoc_json_str_for_crate("./test-apis/comprehensive_api"),
         &ExpectedDiff {
             removed: &[],
             changed: &[],
@@ -62,8 +62,8 @@ fn no_diff() {
 #[serial]
 fn diff_with_removed_items() {
     assert_public_api_diff(
-        &rustdoc_json_str_for_crate("./tests/crates/example_api-v0.2.0"),
-        &rustdoc_json_str_for_crate("./tests/crates/example_api-v0.1.0"),
+        &rustdoc_json_str_for_crate("./test-apis/example_api-v0.2.0"),
+        &rustdoc_json_str_for_crate("./test-apis/example_api-v0.1.0"),
         &ExpectedDiff {
             removed: &[
                 "pub struct example_api::StructV2",
@@ -83,7 +83,7 @@ fn diff_with_removed_items() {
 #[serial]
 fn comprehensive_api() {
     assert_public_api(
-        &rustdoc_json_str_for_crate("./tests/crates/comprehensive_api"),
+        &rustdoc_json_str_for_crate("./test-apis/comprehensive_api"),
         include_str!("./expected-output/comprehensive_api.txt"),
     );
 }
@@ -92,7 +92,7 @@ fn comprehensive_api() {
 #[serial]
 fn comprehensive_api_proc_macro() {
     assert_public_api(
-        &rustdoc_json_str_for_crate("./tests/crates/comprehensive_api_proc_macro"),
+        &rustdoc_json_str_for_crate("./test-apis/comprehensive_api_proc_macro"),
         include_str!("./expected-output/comprehensive_api_proc_macro.txt"),
     );
 }
@@ -102,7 +102,7 @@ fn comprehensive_api_proc_macro() {
 #[serial]
 fn public_item_ord() {
     let public_api = public_api_from_rustdoc_json_str(
-        &rustdoc_json_str_for_crate("./tests/crates/comprehensive_api"),
+        &rustdoc_json_str_for_crate("./test-apis/comprehensive_api"),
         Options::default(),
     )
     .unwrap();
@@ -145,12 +145,12 @@ fn options() {
 fn pretty_printed_diff() {
     let options = Options::default();
     let old = public_api_from_rustdoc_json_str(
-        &rustdoc_json_str_for_crate("./tests/crates/example_api-v0.1.0"),
+        &rustdoc_json_str_for_crate("./test-apis/example_api-v0.1.0"),
         options,
     )
     .unwrap();
     let new = public_api_from_rustdoc_json_str(
-        &rustdoc_json_str_for_crate("./tests/crates/example_api-v0.2.0"),
+        &rustdoc_json_str_for_crate("./test-apis/example_api-v0.2.0"),
         options,
     )
     .unwrap();

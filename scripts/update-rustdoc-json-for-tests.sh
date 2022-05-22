@@ -18,7 +18,7 @@ for crate in ${crates}; do
     name=${crate_split[0]} # E.g. `example_api`
     version=${crate_split[1]} # E.g. `v0.1.0`
 
-    crate_dir="./tests/crates/${crate}"
+    crate_dir="./test-apis/${crate}"
     RUSTDOCFLAGS='-Z unstable-options --output-format json' cargo +nightly doc --manifest-path "${crate_dir}/Cargo.toml" --lib --no-deps
     cp -v "${crate_dir}/target/doc/${name}.json" "${output_dir}/${name}-${version}.json"
 done

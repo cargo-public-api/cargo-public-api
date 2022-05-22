@@ -1,32 +1,8 @@
-[package]
-description = "List and diff the public API of Rust library crates. Relies on rustdoc JSON output from the nightly toolchain."
-documentation = "https://docs.rs/public-api"
-edition = "2021"
-homepage = "https://github.com/Enselic/public-api"
-license = "MIT"
-name = "public-api"
-repository = "https://github.com/Enselic/public-api"
-
-# Also update https://github.com/Enselic/public-api#compatibility-matrix
-version = "0.11.0"
-
-[dependencies]
-serde = { version = "1.0.135", features = ["derive"] }
-serde_json = "1.0.77"
-thiserror = "1.0.29"
-
-[dependencies.rustdoc-types]
-# path = "/Users/martin/src/rustdoc-types"
-version = "0.11.0"
-
-[dev-dependencies]
-assert_cmd = "2.0.4"
-cargo_metadata = "0.14.2"
-cargo_toml = "0.11.5"
-pretty_assertions = "1.1.0"
-serial_test = "0.6.0"
-
 [workspace]
+members = [
+    "public-api"
+]
+
 # Test-crates can't be part of the workspace because some test crates use
 # different directories but the same name (e.g. `example_api`), which cargo does
 # not allow.

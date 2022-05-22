@@ -10,7 +10,7 @@ use utils::rustdoc_json_path_for_crate;
 #[test]
 #[serial] // Writing and reading rustdoc JSON to/from file-system; must run one test at a time
 fn print_public_api() {
-    cmd_with_rustdoc_json_args(&["./test-apis/comprehensive_api"], |mut cmd| {
+    cmd_with_rustdoc_json_args(&["../test-apis/comprehensive_api"], |mut cmd| {
         cmd.assert()
             .stdout(include_str!("./expected-output/comprehensive_api.txt"))
             .stderr("")
@@ -21,7 +21,7 @@ fn print_public_api() {
 #[test]
 #[serial]
 fn print_public_api_with_blanket_implementations() {
-    cmd_with_rustdoc_json_args(&["./test-apis/example_api-v0.2.0"], |mut cmd| {
+    cmd_with_rustdoc_json_args(&["../test-apis/example_api-v0.2.0"], |mut cmd| {
         cmd.arg("--with-blanket-implementations");
         cmd.assert()
             .stdout(include_str!(
@@ -37,8 +37,8 @@ fn print_public_api_with_blanket_implementations() {
 fn print_diff() {
     cmd_with_rustdoc_json_args(
         &[
-            "./test-apis/example_api-v0.1.0",
-            "./test-apis/example_api-v0.2.0",
+            "../test-apis/example_api-v0.1.0",
+            "../test-apis/example_api-v0.2.0",
         ],
         |mut cmd| {
             cmd.assert()
@@ -68,8 +68,8 @@ Added:
 fn print_diff_reversed() {
     cmd_with_rustdoc_json_args(
         &[
-            "./test-apis/example_api-v0.2.0",
-            "./test-apis/example_api-v0.1.0",
+            "../test-apis/example_api-v0.2.0",
+            "../test-apis/example_api-v0.1.0",
         ],
         |mut cmd| {
             cmd.assert()
@@ -99,8 +99,8 @@ Added:
 fn print_no_diff() {
     cmd_with_rustdoc_json_args(
         &[
-            "./test-apis/example_api-v0.2.0",
-            "./test-apis/example_api-v0.2.0",
+            "../test-apis/example_api-v0.2.0",
+            "../test-apis/example_api-v0.2.0",
         ],
         |mut cmd| {
             cmd.assert()
@@ -129,14 +129,14 @@ Added:
 fn broken_pipe() {
     // Use the JSON for a somewhat large API so the pipe has time to become closed
     // before all output has been written to stdout
-    let large_api = rustdoc_json_path_for_crate("./test-apis/comprehensive_api");
+    let large_api = rustdoc_json_path_for_crate("../test-apis/comprehensive_api");
 
     // Now setup the actual one-liner
     let mut cmd = std::process::Command::new("bash");
     cmd.args([
         "-c",
         &format!(
-            "./target/debug/public-api {} | head -n 1",
+            "../target/debug/public-api {} | head -n 1",
             large_api.to_string_lossy(),
         ),
     ]);

@@ -1,8 +1,27 @@
 [workspace]
 members = [
     "cargo-public-api",
+    "public-api"
 ]
 
+# Test APIs can't be part of the workspace because some test API crates use
+# different directories but the same name (e.g. `example_api`), which cargo does
+# not allow.
 exclude = [
+    # Contains a public API that aim so to contain all public API item and
+    # variants (with and without generics etc etc)
+    "test-apis/comprehensive_api",
+
+    # Same as 'comprehensive_api', but for proc-macro stuff, because those needs
+    # to be in a separate crate, see
+    # https://stackoverflow.com/questions/56713877/why-do-proc-macros-have-to-be-defined-in-proc-macro-crate
+    "test-apis/comprehensive_api_proc_macro",
+
+    # Contains different versions of the same small API. Used mainly to test
+    # test the API-diffing functionality of this library.
+    "test-apis/example_api-v0.1.0",
+    "test-apis/example_api-v0.2.0",
+
+    # git repo used in tests.
     "target/tmp/cargo-public-api-test-repo",
 ]

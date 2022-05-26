@@ -1,0 +1,26 @@
+pub fn example_api::Struct::borrow(&self) -> &T
+pub fn example_api::Struct::borrow_mut(&mut self) -> &mut T
+pub fn example_api::Struct::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
+pub fn example_api::Struct::from(t: T) -> T
+pub fn example_api::Struct::into(self) -> U
+pub fn example_api::Struct::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
+pub fn example_api::Struct::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
+pub fn example_api::Struct::type_id(&self) -> TypeId
+pub fn example_api::StructV2::borrow(&self) -> &T
+pub fn example_api::StructV2::borrow_mut(&mut self) -> &mut T
+pub fn example_api::StructV2::from(t: T) -> T
+pub fn example_api::StructV2::into(self) -> U
+pub fn example_api::StructV2::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
+pub fn example_api::StructV2::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
+pub fn example_api::StructV2::type_id(&self) -> TypeId
+pub fn example_api::function(v1_param: Struct, v2_param: usize)
+pub mod example_api
+pub struct example_api::Struct
+pub struct example_api::StructV2
+pub struct field example_api::Struct::v1_field: usize
+pub struct field example_api::Struct::v2_field: usize
+pub struct field example_api::StructV2::field: usize
+pub type example_api::Struct::Error = <U as TryFrom<T>>::Error
+pub type example_api::Struct::Error = Infallible
+pub type example_api::StructV2::Error = <U as TryFrom<T>>::Error
+pub type example_api::StructV2::Error = Infallible

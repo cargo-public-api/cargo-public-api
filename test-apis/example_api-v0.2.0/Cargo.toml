@@ -1,0 +1,5 @@
+[package]
+description = "v0.2.0 of a small API used to test test the API-diffing functionality of this library."
+name = "example_api"
+version = "0.2.0"
+edition = "2021"

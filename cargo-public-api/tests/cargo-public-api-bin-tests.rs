@@ -3,12 +3,14 @@ use std::path::{Path, PathBuf};
 use assert_cmd::Command;
 use serial_test::serial;
 
+#[serial]
 #[test]
 fn list_public_items() {
     let cmd = Command::cargo_bin("cargo-public-api").unwrap();
     assert_presence_of_own_library_items(cmd);
 }
 
+#[serial]
 #[test]
 fn list_public_items_explicit_manifest_path() {
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
@@ -17,6 +19,7 @@ fn list_public_items_explicit_manifest_path() {
     assert_presence_of_own_library_items(cmd);
 }
 
+#[serial]
 #[test]
 fn virtual_manifest_error() {
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
@@ -221,6 +224,7 @@ fn diff_public_items_missing_one_arg() {
         .failure();
 }
 
+#[serial]
 #[test]
 fn list_public_items_markdown() {
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
@@ -292,7 +296,7 @@ fn current_dir_and<P: AsRef<Path>>(path: P) -> PathBuf {
 fn clone_test_crate(dest: &Path) {
     let mut git = std::process::Command::new("git");
     git.arg("clone");
-    git.arg("https://github.com/Enselic/public-api.git"); // Tests still use ld name `public_items`
+    git.arg("https://github.com/Enselic/public-api.git"); // Tests still use this old git and the old name `public_items`
     git.arg("-b");
     git.arg("v0.7.1");
     git.arg("--single-branch");

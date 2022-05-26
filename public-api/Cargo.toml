@@ -6,7 +6,7 @@ homepage = "https://github.com/Enselic/public-api"
 license = "MIT"
 name = "public-api"
 repository = "https://github.com/Enselic/public-api"
-version = "0.11.2"
+version = "0.11.3"
 
 [dependencies]
 serde = { version = "1.0.135", features = ["derive"] }

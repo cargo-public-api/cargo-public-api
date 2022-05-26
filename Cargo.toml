@@ -1,47 +1,23 @@
-[package]
-description = "List and diff the public API of Rust library crates. Relies on rustdoc JSON output from the nightly toolchain."
-documentation = "https://docs.rs/public-api"
-edition = "2021"
-homepage = "https://github.com/Enselic/public-api"
-license = "MIT"
-name = "public-api"
-repository = "https://github.com/Enselic/public-api"
-
-# Also update https://github.com/Enselic/public-api#compatibility-matrix
-version = "0.11.0"
-
-[dependencies]
-serde = { version = "1.0.135", features = ["derive"] }
-serde_json = "1.0.77"
-thiserror = "1.0.29"
-
-[dependencies.rustdoc-types]
-# path = "/Users/martin/src/rustdoc-types"
-version = "0.11.0"
-
-[dev-dependencies]
-assert_cmd = "2.0.4"
-cargo_metadata = "0.14.2"
-cargo_toml = "0.11.5"
-pretty_assertions = "1.1.0"
-serial_test = "0.6.0"
-
 [workspace]
+members = [
+    "public-api"
+]
+
 # Test-crates can't be part of the workspace because some test crates use
 # different directories but the same name (e.g. `example_api`), which cargo does
 # not allow.
 exclude = [
     # Contains a public API that aim so to contain all public API item and
     # variants (with and without generics etc etc)
-    "tests/crates/comprehensive_api",
+    "test-apis/comprehensive_api",
 
     # Same as 'comprehensive_api', but for proc-macro stuff, because those needs
     # to be in a separate crate, see
     # https://stackoverflow.com/questions/56713877/why-do-proc-macros-have-to-be-defined-in-proc-macro-crate
-    "tests/crates/comprehensive_api_proc_macro",
+    "test-apis/comprehensive_api_proc_macro",
 
     # Contains different versions of the same small API. Used mainly to test
     # test the API-diffing functionality of this library.
-    "tests/crates/example_api-v0.1.0",
-    "tests/crates/example_api-v0.2.0",
+    "test-apis/example_api-v0.1.0",
+    "test-apis/example_api-v0.2.0",
 ]

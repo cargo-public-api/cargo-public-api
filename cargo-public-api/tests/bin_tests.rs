@@ -186,8 +186,8 @@ fn diff_public_items_from_files_no_changes() {
     // Just a sanity check that --diff-rustdoc-json works at all
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
     cmd.arg("--diff-rustdoc-json");
-    cmd.arg("./target/doc/cargo_public_api.json");
-    cmd.arg("./target/doc/cargo_public_api.json");
+    cmd.arg("../target/doc/cargo_public_api.json");
+    cmd.arg("../target/doc/cargo_public_api.json");
     cmd.assert()
         .stdout(
             "Removed items from the public API

@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -o errexit -o nounset -o pipefail -o xtrace
 
+cd cargo-public-api
+
 # Make sure we can conveniently run the tool from the source dir
 cargo run
 

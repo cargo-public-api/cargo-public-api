@@ -22,16 +22,17 @@ jobs:
       # start to cargo publish. Currently cargo publish does not support
       # publishing many crates at once. See
       # https://github.com/rust-lang/cargo/issues/1169.
-      - name: calculate tag
-        id: tag
+      - name: calculate version
+        id: version
         run: |
-          version=$(cargo read-manifest --manifest-path public-api/Cargo.toml | scripts/pyjq.sh version)
-          version2=$(cargo read-manifest --manifest-path cargo-public-api/Cargo.toml | scripts/pyjq.sh version)
+          version=$(cargo read-manifest --manifest-path public-api/Cargo.toml | jq --raw-output .version)
+          version2=$(cargo read-manifest --manifest-path cargo-public-api/Cargo.toml | jq --raw-output .version)
           if [ "$version" != "$version2" ]; then
             echo "Version mismatch! Keep public-api and cargo-public-api versions in sync before you release! $version != $version2"
             exit 42
           fi
-          echo ::set-output name=NAME::v${version}
+          echo ::set-output name=VERSION::${version}
+          echo ::set-output name=GIT_TAG::v${version}
 
       # Try to cargo publish public-api. If this succeeds we will tag the
       # release. This is because we don't want to have a situation where a
@@ -43,8 +44,14 @@ jobs:
       # Push the tag to git.
       - name: push tag
         run: |
-          git tag ${{ steps.tag.outputs.NAME }}
-          git push origin ${{ steps.tag.outputs.NAME }}
+          git tag ${{ steps.version.outputs.GIT_TAG }}
+          git push origin ${{ steps.version.outputs.GIT_TAG }}
+
+      # Wait for the public-api release to appear. Before it appears, we can't
+      # publish cargo-public-api.
+      - name: wait for public-api crate
+        run: |
+          ./scripts/wait-for-crate-version.sh public-api ${{ steps.version.outputs.VERSION }}
 
       # Now before we also create a GitHub Release, also try to cargo publish
       # cargo-public-api.
@@ -56,5 +63,5 @@ jobs:
       # same version. Create a GitHub Release now.
       - uses: softprops/action-gh-release@1e07f4398721186383de40550babbdf2b84acfc5 # v0.1.14
         with:
-          tag_name: ${{ steps.tag.outputs.NAME }}
+          tag_name: ${{ steps.version.outputs.GIT_TAG }}
           generate_release_notes: true

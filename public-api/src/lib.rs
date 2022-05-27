@@ -127,7 +127,7 @@ pub fn public_api_from_rustdoc_json_str(
     rustdoc_json_str: &str,
     options: Options,
 ) -> Result<Vec<PublicItem>> {
-    let crate_: rustdoc_types::Crate = serde_json::from_str(rustdoc_json_str)?;
+    let crate_ = deserialize_without_recursion_limit(rustdoc_json_str)?;
 
     let mut public_api: Vec<_> = item_iterator::public_api_in_crate(&crate_, options).collect();
 
@@ -136,4 +136,13 @@ pub fn public_api_from_rustdoc_json_str(
     }
 
     Ok(public_api)
+}
+
+/// Helper to deserialize the JSON with `serde_json`, but with the recursion
+/// limit disabled. Otherwise we hit the recursion limit on crates such as
+/// `diesel`.
+fn deserialize_without_recursion_limit(rustdoc_json_str: &str) -> Result<rustdoc_types::Crate> {
+    let mut deserializer = serde_json::Deserializer::from_str(rustdoc_json_str);
+    deserializer.disable_recursion_limit();
+    return Ok(serde::de::Deserialize::deserialize(&mut deserializer)?);
 }

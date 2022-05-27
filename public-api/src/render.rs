@@ -3,7 +3,7 @@ use std::rc::Rc;
 
 use rustdoc_types::{
     Abi, Constant, Crate, FnDecl, GenericArg, GenericArgs, GenericBound, GenericParamDef,
-    GenericParamDefKind, Generics, Header, Id, ItemEnum, MacroKind, Term, Type, TypeBinding,
+    GenericParamDefKind, Generics, Header, ItemEnum, MacroKind, Term, Type, TypeBinding,
     TypeBindingKind, Variant, WherePredicate,
 };
 
@@ -157,13 +157,6 @@ fn render_simple(tags: &[&str], path: &[Rc<IntermediatePublicItem<'_>>]) -> Vec<
     output
 }
 
-fn render_id(root: &Crate, id: &Id) -> Vec<Token> {
-    root.index[id]
-        .name
-        .as_ref()
-        .map_or_else(Vec::new, |name| vec![Token::identifier(name)])
-}
-
 fn render_path(path: &[Rc<IntermediatePublicItem<'_>>]) -> Vec<Token> {
     let mut output = vec![];
     for item in path {
@@ -223,13 +216,11 @@ fn render_type(root: &Crate, ty: &Type) -> Vec<Token> {
         Type::ResolvedPath {
             name,
             args,
-            id,
             param_names,
+            ..
         } => {
             let mut output = vec![];
-            if name.is_empty() {
-                output.extend(render_id(root, id));
-            } else {
+            if !name.is_empty() {
                 let split: Vec<_> = name.split("::").collect();
                 let len = split.len();
                 for (index, part) in split.into_iter().enumerate() {
@@ -723,7 +714,7 @@ mod test {
     }
 
     use super::*;
-    use rustdoc_types::Item;
+    use rustdoc_types::{Id, Item};
     use std::collections::HashMap;
 
     fn get_crate() -> Crate {
@@ -773,10 +764,6 @@ mod test {
         render_type(&get_crate(), &Type::ResolvedPath{name: "name".to_string(), args: None, id: Id("id".to_string()), param_names: Vec::new()},)
         => vec![Token::type_("name")]
         => "name";
-        test_type_resolved_no_name:
-        render_type(&get_crate(), &Type::ResolvedPath{name: "".to_string(), args: None, id: Id("id".to_string()), param_names: Vec::new()},)
-        => vec![Token::identifier("item_name")]
-        => "item_name";
         test_type_resolved_long_name:
         render_type(&get_crate(), &Type::ResolvedPath{name: "name::with::parts".to_string(), args: None, id: Id("id".to_string()), param_names: Vec::new()},)
         => vec![Token::identifier("name"), Token::symbol("::"), Token::identifier("with"), Token::symbol("::"), Token::type_("parts")]

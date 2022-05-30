@@ -6,7 +6,7 @@ homepage = "https://github.com/Enselic/public-api"
 license = "MIT"
 name = "public-api"
 repository = "https://github.com/Enselic/public-api"
-version = "0.11.3"
+version = "0.11.4"
 
 [dependencies]
 thiserror = "1.0.29"

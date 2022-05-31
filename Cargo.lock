@@ -103,6 +103,8 @@ dependencies = [
  "cargo_metadata",
  "cargo_toml",
  "clap",
+ "diff",
+ "itertools",
  "predicates",
  "public-api",
  "serial_test",

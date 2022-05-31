@@ -47,14 +47,16 @@ impl OutputFormatter for Plain {
             &diff.changed,
             |w, changed_item| {
                 if use_color {
-                    let diff_chars =
-                        diff::chars(&changed_item.old.to_string(), &changed_item.new.to_string());
-
+                    let old_tokens: Vec<&str> =
+                        changed_item.old.tokens().map(Token::text).collect();
+                    let new_tokens: Vec<&str> =
+                        changed_item.new.tokens().map(Token::text).collect();
+                    let diff_slice = diff::slice(old_tokens.as_slice(), new_tokens.as_slice());
                     writeln!(
                         w,
                         "-{}\n+{}",
-                        color_item_with_diff(&changed_item.old, &diff_chars, true),
-                        color_item_with_diff(&changed_item.new, &diff_chars, false),
+                        color_item_with_diff(&changed_item.old, &diff_slice, true),
+                        color_item_with_diff(&changed_item.new, &diff_slice, false),
                     )
                 } else {
                     writeln!(w, "-{}\n+{}", changed_item.old, changed_item.new)
@@ -122,20 +124,36 @@ fn color_item_token(token: &Token, bg: Option<Color>) -> ANSIString<'_> {
 /// they contain a difference.
 fn color_item_with_diff(
     item: &PublicItem,
-    diff_chars: &[diff::Result<char>],
+    diff_slice: &[diff::Result<&&str>],
     is_old_item: bool,
 ) -> String {
-    let diff_style = if is_old_item {
-        Color::Fixed(9).on(Color::Fixed(52)).bold()
-    } else {
-        Color::Fixed(10).on(Color::Fixed(22)).bold()
-    };
-
-    let mut diff_chars_iter = diff_chars.iter();
+    let diff_iter = diff_slice
+        .iter()
+        .filter_map(|diff_result| match diff_result {
+            diff::Result::Left(&string) => {
+                if is_old_item {
+                    let style = Some(Color::Fixed(9).on(Color::Fixed(52)).bold());
+                    Some((style, string))
+                } else {
+                    None
+                }
+            }
+            diff::Result::Both(&string, _) => Some((None, string)),
+            diff::Result::Right(&string) => {
+                if is_old_item {
+                    None
+                } else {
+                    let style = Some(Color::Fixed(10).on(Color::Fixed(22)).bold());
+                    Some((style, string))
+                }
+            }
+        });
     let styled_strings = item
         .tokens()
-        .map(|token| {
-            if contains_diff(&mut diff_chars_iter, token, is_old_item) {
+        .zip(diff_iter)
+        .map(|(token, (maybe_diff_style, diff_string))| {
+            debug_assert_eq!(token.text(), diff_string);
+            if let Some(diff_style) = maybe_diff_style {
                 diff_style.paint(token.text())
             } else {
                 color_item_token(token, None)
@@ -144,94 +162,4 @@ fn color_item_with_diff(
         .collect::<Vec<_>>();
 
     ANSIStrings(&styled_strings).to_string()
-}
-
-/// Returns `true` if any of the iterator values indicates a diff is present.  Old items equate to
-/// the left side of the diff, and new items to the right.
-fn contains_diff<'a>(
-    diff_chars_iter: &mut impl Iterator<Item = &'a diff::Result<char>>,
-    token: &Token,
-    is_old_item: bool,
-) -> bool {
-    let mut has_difference = false;
-    // We need to ensure we consume all `token.len()` entries to have the mutable iterator aligned
-    // to the start of the next token when finished here, e.g. we can't use `Iterator::any`.
-    let diff_string: String = diff_chars_iter
-        .filter_map(|diff_char| match diff_char {
-            diff::Result::Left(char) => {
-                if is_old_item {
-                    has_difference = true;
-                    Some(char)
-                } else {
-                    None
-                }
-            }
-            diff::Result::Both(char, _) => Some(char),
-            diff::Result::Right(char) => {
-                if is_old_item {
-                    None
-                } else {
-                    has_difference = true;
-                    Some(char)
-                }
-            }
-        })
-        .take(token.len())
-        .collect();
-    debug_assert_eq!(token.text(), diff_string);
-    // If `has_difference` is still `false`, we need to check that we didn't skip all iterations due
-    // to having an empty token.
-    has_difference || (diff_string.is_empty() && token.text().is_empty())
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn should_identify_diff() {
-        fn assert_different(different: &str) {
-            let initial_string = String::from("first string");
-            let old_token = Token::Identifier(initial_string.clone());
-            let new_token = Token::Identifier(different.to_string());
-            let diff_chars = diff::chars(&initial_string, different);
-            assert!(
-                contains_diff(&mut diff_chars.iter(), &old_token, true),
-                "contains_diff should return true for '{}' vs '{}'",
-                initial_string,
-                different
-            );
-            assert!(
-                contains_diff(&mut diff_chars.iter(), &new_token, false),
-                "contains_diff should return true for '{}' vs '{}'",
-                initial_string,
-                different
-            );
-        }
-
-        assert_different("girst string");
-        assert_different("first strinh");
-        assert_different("first-string");
-        assert_different("");
-        assert_different("aaa");
-    }
-
-    #[test]
-    fn should_identify_no_diff() {
-        let initial_string = String::from("first string");
-        let token = Token::Identifier(initial_string.clone());
-        let diff_chars = diff::chars(&initial_string, &initial_string);
-        assert!(
-            !contains_diff(&mut diff_chars.iter(), &token, true),
-            "contains_diff should return false for '{}' vs '{}'",
-            initial_string,
-            initial_string,
-        );
-        assert!(
-            !contains_diff(&mut diff_chars.iter(), &token, false),
-            "contains_diff should return false for '{}' vs '{}'",
-            initial_string,
-            initial_string,
-        );
-    }
 }

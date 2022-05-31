@@ -54,7 +54,7 @@ impl PublicItemsDiff {
 
         // We can't implement this with sets, because different items might have
         // the same representations (e.g. because of limitations or bugs), so if
-        // we used a Set, we would lose one of them.
+        // we used a Set, we would lose one or more of them.
         //
         // Our strategy is to only move items around, to reduce the risk of
         // duplicates and lost items.

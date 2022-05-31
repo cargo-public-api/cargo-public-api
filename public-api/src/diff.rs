@@ -52,6 +52,8 @@ impl PublicItemsDiff {
         let mut new_sorted = new_items;
         new_sorted.sort();
 
+        (old_sorted, new_sorted) = Self::remove_pure_duplicates(old_sorted, new_sorted);
+
         // We can't implement this with sets, because different items might have
         // the same representations (e.g. because of limitations or bugs), so if
         // we used a Set, we would lose one of them.
@@ -111,6 +113,70 @@ impl PublicItemsDiff {
             changed,
             added,
         }
+    }
+
+    /// Removes all pairs of exact duplicates. This prevents a "off-by-one" diff
+    /// error where a series of changed items is shown, when they are in fact
+    /// equal, but just not detected as such.
+    fn remove_pure_duplicates(
+        mut old_sorted: Vec<PublicItem>,
+        mut new_sorted: Vec<PublicItem>,
+    ) -> (Vec<PublicItem>, Vec<PublicItem>) {
+        let mut old_reduced = Vec::with_capacity(old_sorted.len());
+        let mut new_reduced = Vec::with_capacity(new_sorted.len());
+
+        loop {
+            match (old_sorted.pop(), new_sorted.pop()) {
+                // There are no items left to process. This means we are done.
+                (None, None) => break,
+
+                // If there is only old items or only new items left, they
+                // should all be part of the upcoming "real" diff. So just add
+                // them to the result
+                (Some(old), None) => {
+                    old_reduced.push(old);
+                }
+                (None, Some(new)) => {
+                    new_reduced.push(new);
+                }
+
+                (Some(old), Some(new)) => {
+                    match old.cmp(&new) {
+                        std::cmp::Ordering::Less => {
+                            // The last new item is "further down" than last old
+                            // item. This means there can be no new item that is
+                            // exactly equal to any equal to this old item. So
+                            // move the new item to the next stage.
+                            new_reduced.push(new);
+
+                            // There will now be a new new item to compare
+                            // against. It might be equal to ths current old
+                            // item. So add the old item back so we can compare
+                            // again with the next new item.
+                            old_sorted.push(old);
+                        }
+                        std::cmp::Ordering::Equal => {
+                            // The items are exactly the same. There is no need
+                            // to include them in the next diff step. So don't
+                            // add them to any vec.
+                        }
+                        std::cmp::Ordering::Greater => {
+                            // Same as Ordering::Less above but reversed.
+                            old_reduced.push(old);
+                            new_sorted.push(new);
+                        }
+                    }
+                }
+            }
+        }
+
+        // The order has now been reversed from before. Reverse back. We could
+        // probably do it with .reverse(). But be extra safe and do it with
+        // .sort().
+        old_reduced.sort();
+        new_reduced.sort();
+
+        (old_reduced, new_reduced)
     }
 }
 

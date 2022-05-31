@@ -1,7 +1,6 @@
 use std::io::{Result, Write};
 
 use ansi_term::{ANSIString, ANSIStrings, Color, Style};
-use itertools::Itertools;
 use public_api::{diff::PublicItemsDiff, tokens::Token, PublicItem};
 
 use crate::{
@@ -119,6 +118,8 @@ fn color_item_token(token: &Token, bg: Option<Color>) -> ANSIString<'_> {
     }
 }
 
+/// Returns a styled string similar to `color_item_token`, but where whole tokens are highlighted if
+/// they contain a difference.
 fn color_item_with_diff(
     item: &PublicItem,
     diff_chars: &[diff::Result<char>],
@@ -130,48 +131,107 @@ fn color_item_with_diff(
         Color::Fixed(10).on(Color::Fixed(22)).bold()
     };
 
-    // Create a series of batches of `Some(style)` or `None` depending on whether each given char
-    // should be styled as a diff.
-    let mut diff_sequences = vec![];
-    diff_chars.iter().for_each(|result| match result {
-        diff::Result::Left(_) => {
-            if is_old_item {
-                diff_sequences.push(Some(diff_style));
-            }
-        }
-        diff::Result::Both(..) => {
-            diff_sequences.push(None);
-        }
-        diff::Result::Right(_) => {
-            if !is_old_item {
-                diff_sequences.push(Some(diff_style));
-            }
-        }
-    });
-
-    // Create the default coloured strings for this collection of tokens.
-    let default_coloured_strings = item
+    let mut diff_chars_iter = diff_chars.iter();
+    let styled_strings = item
         .tokens()
-        .map(|t| color_item_token(t, None))
-        .collect::<Vec<_>>();
-    let ansi_strings = ANSIStrings(&default_coloured_strings);
-
-    // Collect the modified and unmodified substrings.
-    let mut diff_strings = vec![];
-    let mut seq_start_index = 0;
-    // Turn the batches of optional styles into an iterator of tuples of (num of consecutive
-    // identical, optional style).
-    for (len, maybe_style) in diff_sequences.into_iter().dedup_with_count() {
-        let mut sub_strings = ansi_term::sub_string(seq_start_index, len, &ansi_strings);
-        // If this batch of chars should have a diff style, apply it to the sub-strings.
-        if let Some(style) = maybe_style {
-            for sub_string in &mut sub_strings {
-                *sub_string.style_ref_mut() = style;
+        .map(|token| {
+            if contains_diff(&mut diff_chars_iter, token, is_old_item) {
+                diff_style.paint(token.text())
+            } else {
+                color_item_token(token, None)
             }
+        })
+        .collect::<Vec<_>>();
+
+    ANSIStrings(&styled_strings).to_string()
+}
+
+/// Returns `true` if any of the iterator values indicates a diff is present.  Old items equate to
+/// the left side of the diff, and new items to the right.
+fn contains_diff<'a>(
+    diff_chars_iter: &mut impl Iterator<Item = &'a diff::Result<char>>,
+    token: &Token,
+    is_old_item: bool,
+) -> bool {
+    let mut has_difference = false;
+    // We need to ensure we consume all `token.len()` entries to have the mutable iterator aligned
+    // to the start of the next token when finished here, e.g. we can't use `Iterator::any`.
+    let diff_string: String = diff_chars_iter
+        .filter_map(|diff_char| match diff_char {
+            diff::Result::Left(char) => {
+                if is_old_item {
+                    has_difference = true;
+                    Some(char)
+                } else {
+                    None
+                }
+            }
+            diff::Result::Both(char, _) => Some(char),
+            diff::Result::Right(char) => {
+                if is_old_item {
+                    None
+                } else {
+                    has_difference = true;
+                    Some(char)
+                }
+            }
+        })
+        .take(token.len())
+        .collect();
+    debug_assert_eq!(token.text(), diff_string);
+    // If `has_difference` is still `false`, we need to check that we didn't skip all iterations due
+    // to having an empty token.
+    has_difference || (diff_string.is_empty() && token.text().is_empty())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn should_identify_diff() {
+        fn assert_different(different: &str) {
+            let initial_string = String::from("first string");
+            let old_token = Token::Identifier(initial_string.clone());
+            let new_token = Token::Identifier(different.to_string());
+            let diff_chars = diff::chars(&initial_string, different);
+            assert!(
+                contains_diff(&mut diff_chars.iter(), &old_token, true),
+                "contains_diff should return true for '{}' vs '{}'",
+                initial_string,
+                different
+            );
+            assert!(
+                contains_diff(&mut diff_chars.iter(), &new_token, false),
+                "contains_diff should return true for '{}' vs '{}'",
+                initial_string,
+                different
+            );
         }
-        diff_strings.extend(sub_strings);
-        seq_start_index += len;
+
+        assert_different("girst string");
+        assert_different("first strinh");
+        assert_different("first-string");
+        assert_different("");
+        assert_different("aaa");
     }
 
-    ANSIStrings(&diff_strings).to_string()
+    #[test]
+    fn should_identify_no_diff() {
+        let initial_string = String::from("first string");
+        let token = Token::Identifier(initial_string.clone());
+        let diff_chars = diff::chars(&initial_string, &initial_string);
+        assert!(
+            !contains_diff(&mut diff_chars.iter(), &token, true),
+            "contains_diff should return false for '{}' vs '{}'",
+            initial_string,
+            initial_string,
+        );
+        assert!(
+            !contains_diff(&mut diff_chars.iter(), &token, false),
+            "contains_diff should return false for '{}' vs '{}'",
+            initial_string,
+            initial_string,
+        );
+    }
 }

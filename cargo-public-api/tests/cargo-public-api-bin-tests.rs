@@ -89,10 +89,10 @@ fn diff_public_items_with_color() {
 
 Changed items in the public API
 ===============================
--\x1b[34mpub\x1b[0m \x1b[34mfn\x1b[0m \x1b[36mpublic_items\x1b[0m::\x1b[32mPublicItem\x1b[0m::\x1b[33mfmt\x1b[0m(&\x1b[34mself\x1b[0m, \x1b[36mf\x1b[0m: &\x1b[34mmut\x1b[0m \x1b[1;48;5;52;38;5;9m$cra\x1b[0m\x1b[36mt\x1b[1;48;5;52;38;5;9me\x1b[0m::\x1b[36mfmt\x1b[0m::\x1b[32mFormatter\x1b[0m<\x1b[34m'_\x1b[0m>) -> \x1b[1;48;5;52;38;5;9m$cra\x1b[0m\x1b[36mt\x1b[1;48;5;52;38;5;9me\x1b[0m::\x1b[36mfmt\x1b[0m::\x1b[32mResult\x1b[0m
-+\x1b[34mpub\x1b[0m \x1b[34mfn\x1b[0m \x1b[36mpublic_items\x1b[0m::\x1b[32mPublicItem\x1b[0m::\x1b[33mfmt\x1b[0m(&\x1b[34mself\x1b[0m, \x1b[36mf\x1b[0m: &\x1b[34mmut\x1b[0m \x1b[1;48;5;22;38;5;10ms\x1b[0m\x1b[36mt\x1b[1;48;5;22;38;5;10md\x1b[0m::\x1b[36mfmt\x1b[0m::\x1b[32mFormatter\x1b[0m<\x1b[34m'_\x1b[0m>) -> \x1b[1;48;5;22;38;5;10ms\x1b[0m\x1b[36mt\x1b[1;48;5;22;38;5;10md\x1b[0m::\x1b[36mfmt\x1b[0m::\x1b[32mResult\x1b[0m
+-\x1b[34mpub\x1b[0m \x1b[34mfn\x1b[0m \x1b[36mpublic_items\x1b[0m::\x1b[32mPublicItem\x1b[0m::\x1b[33mfmt\x1b[0m(&\x1b[34mself\x1b[0m, \x1b[36mf\x1b[0m: &\x1b[34mmut\x1b[0m \x1b[1;48;5;52;38;5;9m$crate\x1b[0m::\x1b[36mfmt\x1b[0m::\x1b[32mFormatter\x1b[0m<\x1b[34m'_\x1b[0m>) -> \x1b[1;48;5;52;38;5;9m$crate\x1b[0m::\x1b[36mfmt\x1b[0m::\x1b[32mResult\x1b[0m
++\x1b[34mpub\x1b[0m \x1b[34mfn\x1b[0m \x1b[36mpublic_items\x1b[0m::\x1b[32mPublicItem\x1b[0m::\x1b[33mfmt\x1b[0m(&\x1b[34mself\x1b[0m, \x1b[36mf\x1b[0m: &\x1b[34mmut\x1b[0m \x1b[1;48;5;22;38;5;10mstd\x1b[0m::\x1b[36mfmt\x1b[0m::\x1b[32mFormatter\x1b[0m<\x1b[34m'_\x1b[0m>) -> \x1b[1;48;5;22;38;5;10mstd\x1b[0m::\x1b[36mfmt\x1b[0m::\x1b[32mResult\x1b[0m
 -\x1b[34mpub\x1b[0m \x1b[34mfn\x1b[0m \x1b[36mpublic_items\x1b[0m::\x1b[36mdiff\x1b[0m::\x1b[32mPublicItemsDiff\x1b[0m::\x1b[33mbetween\x1b[0m(\x1b[36mold\x1b[0m: \x1b[32mVec\x1b[0m<\x1b[32mPublicItem\x1b[0m>, \x1b[36mnew\x1b[0m: \x1b[32mVec\x1b[0m<\x1b[32mPublicItem\x1b[0m>) -> \x1b[32mSelf\x1b[0m
-+\x1b[34mpub\x1b[0m \x1b[34mfn\x1b[0m \x1b[36mpublic_items\x1b[0m::\x1b[36mdiff\x1b[0m::\x1b[32mPublicItemsDiff\x1b[0m::\x1b[33mbetween\x1b[0m(\x1b[36mold\x1b[1;48;5;22;38;5;10m_items\x1b[0m: \x1b[32mVec\x1b[0m<\x1b[32mPublicItem\x1b[0m>, \x1b[36mnew\x1b[1;48;5;22;38;5;10m_items\x1b[0m: \x1b[32mVec\x1b[0m<\x1b[32mPublicItem\x1b[0m>) -> \x1b[32mSelf\x1b[0m
++\x1b[34mpub\x1b[0m \x1b[34mfn\x1b[0m \x1b[36mpublic_items\x1b[0m::\x1b[36mdiff\x1b[0m::\x1b[32mPublicItemsDiff\x1b[0m::\x1b[33mbetween\x1b[0m(\x1b[1;48;5;22;38;5;10mold_items\x1b[0m: \x1b[32mVec\x1b[0m<\x1b[32mPublicItem\x1b[0m>, \x1b[1;48;5;22;38;5;10mnew_items\x1b[0m: \x1b[32mVec\x1b[0m<\x1b[32mPublicItem\x1b[0m>) -> \x1b[32mSelf\x1b[0m
 
 Added items to the public API
 =============================

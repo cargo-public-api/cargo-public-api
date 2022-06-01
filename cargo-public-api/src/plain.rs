@@ -47,10 +47,8 @@ impl OutputFormatter for Plain {
             &diff.changed,
             |w, changed_item| {
                 if use_color {
-                    let old_tokens: Vec<&str> =
-                        changed_item.old.tokens().map(Token::text).collect();
-                    let new_tokens: Vec<&str> =
-                        changed_item.new.tokens().map(Token::text).collect();
+                    let old_tokens: Vec<&Token> = changed_item.old.tokens().collect();
+                    let new_tokens: Vec<&Token> = changed_item.new.tokens().collect();
                     let diff_slice = diff::slice(old_tokens.as_slice(), new_tokens.as_slice());
                     writeln!(
                         w,
@@ -124,35 +122,35 @@ fn color_item_token(token: &Token, bg: Option<Color>) -> ANSIString<'_> {
 /// they contain a difference.
 fn color_item_with_diff(
     item: &PublicItem,
-    diff_slice: &[diff::Result<&&str>],
+    diff_slice: &[diff::Result<&&Token>],
     is_old_item: bool,
 ) -> String {
     let diff_iter = diff_slice
         .iter()
         .filter_map(|diff_result| match diff_result {
-            diff::Result::Left(&string) => {
+            diff::Result::Left(&token) => {
                 if is_old_item {
                     let style = Some(Color::Fixed(9).on(Color::Fixed(52)).bold());
-                    Some((style, string))
+                    Some((style, token))
                 } else {
                     None
                 }
             }
-            diff::Result::Both(&string, _) => Some((None, string)),
-            diff::Result::Right(&string) => {
+            diff::Result::Both(&token, _) => Some((None, token)),
+            diff::Result::Right(&token) => {
                 if is_old_item {
                     None
                 } else {
                     let style = Some(Color::Fixed(10).on(Color::Fixed(22)).bold());
-                    Some((style, string))
+                    Some((style, token))
                 }
             }
         });
     let styled_strings = item
         .tokens()
         .zip(diff_iter)
-        .map(|(token, (maybe_diff_style, diff_string))| {
-            debug_assert_eq!(token.text(), diff_string);
+        .map(|(token, (maybe_diff_style, diff_token))| {
+            debug_assert_eq!(token, diff_token);
             if let Some(diff_style) = maybe_diff_style {
                 diff_style.paint(token.text())
             } else {

@@ -53,8 +53,8 @@ impl OutputFormatter for Plain {
                     writeln!(
                         w,
                         "-{}\n+{}",
-                        color_item_with_diff(&changed_item.old, &diff_slice, true),
-                        color_item_with_diff(&changed_item.new, &diff_slice, false),
+                        color_item_with_diff(&diff_slice, true),
+                        color_item_with_diff(&diff_slice, false),
                     )
                 } else {
                     writeln!(w, "-{}\n+{}", changed_item.old, changed_item.new)
@@ -120,42 +120,23 @@ fn color_item_token(token: &Token, bg: Option<Color>) -> ANSIString<'_> {
 
 /// Returns a styled string similar to `color_item_token`, but where whole tokens are highlighted if
 /// they contain a difference.
-fn color_item_with_diff(
-    item: &PublicItem,
-    diff_slice: &[diff::Result<&&Token>],
-    is_old_item: bool,
-) -> String {
-    let diff_iter = diff_slice
+fn color_item_with_diff(diff_slice: &[diff::Result<&&Token>], is_old_item: bool) -> String {
+    let styled_strings = diff_slice
         .iter()
         .filter_map(|diff_result| match diff_result {
-            diff::Result::Left(&token) => {
-                if is_old_item {
-                    let style = Some(Color::Fixed(9).on(Color::Fixed(52)).bold());
-                    Some((style, token))
-                } else {
-                    None
-                }
-            }
-            diff::Result::Both(&token, _) => Some((None, token)),
-            diff::Result::Right(&token) => {
-                if is_old_item {
-                    None
-                } else {
-                    let style = Some(Color::Fixed(10).on(Color::Fixed(22)).bold());
-                    Some((style, token))
-                }
-            }
-        });
-    let styled_strings = item
-        .tokens()
-        .zip(diff_iter)
-        .map(|(token, (maybe_diff_style, diff_token))| {
-            debug_assert_eq!(token, diff_token);
-            if let Some(diff_style) = maybe_diff_style {
-                diff_style.paint(token.text())
-            } else {
-                color_item_token(token, None)
-            }
+            diff::Result::Left(&token) => is_old_item.then(|| {
+                Color::Fixed(9)
+                    .on(Color::Fixed(52))
+                    .bold()
+                    .paint(token.text())
+            }),
+            diff::Result::Both(&token, _) => Some(color_item_token(token, None)),
+            diff::Result::Right(&token) => (!is_old_item).then(|| {
+                Color::Fixed(10)
+                    .on(Color::Fixed(22))
+                    .bold()
+                    .paint(token.text())
+            }),
         })
         .collect::<Vec<_>>();
 

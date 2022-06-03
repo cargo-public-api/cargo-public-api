@@ -1,9 +1,7 @@
 use std::io::{Result, Write};
 
-use public_api::{diff::PublicItemsDiff, PublicItem};
-
 use ansi_term::{ANSIString, ANSIStrings, Color, Style};
-use public_api::tokens::Token;
+use public_api::{diff::PublicItemsDiff, tokens::Token, PublicItem};
 
 use crate::{
     output_formatter::{print_items_with_header, OutputFormatter},
@@ -49,11 +47,14 @@ impl OutputFormatter for Plain {
             &diff.changed,
             |w, changed_item| {
                 if use_color {
+                    let old_tokens: Vec<&Token> = changed_item.old.tokens().collect();
+                    let new_tokens: Vec<&Token> = changed_item.new.tokens().collect();
+                    let diff_slice = diff::slice(old_tokens.as_slice(), new_tokens.as_slice());
                     writeln!(
                         w,
                         "-{}\n+{}",
-                        color_item(&changed_item.old),
-                        color_item(&changed_item.new)
+                        color_item_with_diff(&diff_slice, true),
+                        color_item_with_diff(&diff_slice, false),
                     )
                 } else {
                     writeln!(w, "-{}\n+{}", changed_item.old, changed_item.new)
@@ -115,4 +116,29 @@ fn color_item_token(token: &Token, bg: Option<Color>) -> ANSIString<'_> {
         Token::Primitive(text) => style(Color::Green.into(), text),
         Token::Type(text) => style(Color::Green.into(), text),
     }
+}
+
+/// Returns a styled string similar to `color_item_token`, but where whole tokens are highlighted if
+/// they contain a difference.
+fn color_item_with_diff(diff_slice: &[diff::Result<&&Token>], is_old_item: bool) -> String {
+    let styled_strings = diff_slice
+        .iter()
+        .filter_map(|diff_result| match diff_result {
+            diff::Result::Left(&token) => is_old_item.then(|| {
+                Color::Fixed(9)
+                    .on(Color::Fixed(52))
+                    .bold()
+                    .paint(token.text())
+            }),
+            diff::Result::Both(&token, _) => Some(color_item_token(token, None)),
+            diff::Result::Right(&token) => (!is_old_item).then(|| {
+                Color::Fixed(10)
+                    .on(Color::Fixed(22))
+                    .bold()
+                    .paint(token.text())
+            }),
+        })
+        .collect::<Vec<_>>();
+
+    ANSIStrings(&styled_strings).to_string()
 }

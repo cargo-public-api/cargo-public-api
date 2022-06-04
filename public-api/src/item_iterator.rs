@@ -177,7 +177,7 @@ fn intermediate_public_item_to_public_item(
 /// of the public API of a crate. Implements [`Display`] so it can be printed. It
 /// also implements [`Ord`], but how items are ordered are not stable yet, and
 /// will change in later versions.
-#[derive(Clone)]
+#[derive(Clone, Eq, PartialEq)]
 pub struct PublicItem {
     /// The "your_crate::mod_a::mod_b" part of an item. Split by "::"
     pub(crate) path: Vec<String>,
@@ -212,14 +212,6 @@ impl Display for PublicItem {
 pub(crate) fn tokens_to_string(tokens: &[Token]) -> String {
     tokens.iter().map(Token::text).collect()
 }
-
-impl PartialEq for PublicItem {
-    fn eq(&self, other: &Self) -> bool {
-        self.path == other.path && self.tokens == other.tokens
-    }
-}
-
-impl Eq for PublicItem {}
 
 impl PartialOrd for PublicItem {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {

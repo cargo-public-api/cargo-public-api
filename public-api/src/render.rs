@@ -196,12 +196,11 @@ fn render_sequence<T>(
         return vec![];
     }
     let mut output = start;
-    for seq in sequence {
+    for (index, seq) in sequence.iter().enumerate() {
         output.extend(render(seq));
-        output.extend(between.clone());
-    }
-    if output.len() >= between.len() {
-        output.truncate(output.len() - between.len());
+        if index < sequence.len() - 1 {
+            output.extend(between.clone());
+        }
     }
     output.extend(end);
     output

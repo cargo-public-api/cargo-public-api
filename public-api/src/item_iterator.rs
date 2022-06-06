@@ -183,7 +183,7 @@ fn intermediate_public_item_to_public_item(
 /// of the public API of a crate. Implements [`Display`] so it can be printed. It
 /// also implements [`Ord`], but how items are ordered are not stable yet, and
 /// will change in later versions.
-#[derive(Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq, Hash)]
 pub struct PublicItem {
     /// The "your_crate::mod_a::mod_b" part of an item. Split by "::"
     pub(crate) path: PublicItemPath,

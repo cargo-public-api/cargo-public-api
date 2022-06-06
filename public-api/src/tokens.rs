@@ -3,7 +3,7 @@
 use crate::item_iterator::PublicItem;
 
 /// A token in a rendered [`PublicItem`], used to apply syntax colouring in downstream applications.
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum Token {
     /// A symbol, like `=` or `::<`
     Symbol(String),

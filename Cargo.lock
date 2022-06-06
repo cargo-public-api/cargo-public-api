@@ -213,6 +213,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "hashbag"
+version = "0.1.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "021a178f0e7e9ff6f9312759b849f0fbadf22ee8666ac163d502a8496691c01a"
+
+[[package]]
 name = "hashbrown"
 version = "0.11.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -435,6 +441,8 @@ dependencies = [
  "assert_cmd",
  "cargo_metadata",
  "cargo_toml",
+ "hashbag",
+ "itertools",
  "pretty_assertions",
  "rustdoc-types",
  "serde",

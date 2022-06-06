@@ -3,7 +3,14 @@
 //! public-api`](https://github.com/Enselic/cargo-public-api) contains
 //! additional helpers for that.
 
-use crate::PublicItem;
+use self::hashbag_utils::DifferenceAddon;
+use crate::{item_iterator::PublicItemPath, PublicItem};
+use hashbag::HashBag;
+use std::collections::HashMap;
+
+mod hashbag_utils;
+
+type ItemsWithPath = HashMap<PublicItemPath, Vec<PublicItem>>;
 
 /// An item has changed in the public API. Two [`PublicItem`]s are considered
 /// the same if their `path` is the same.
@@ -46,57 +53,47 @@ impl PublicItemsDiff {
     /// [`crate::public_api_from_rustdoc_json_str`].
     #[must_use]
     pub fn between(old_items: Vec<PublicItem>, new_items: Vec<PublicItem>) -> Self {
-        let mut old_sorted = old_items;
-        old_sorted.sort();
+        // We must use a HashBag, because with a HashSet we would lose public
+        // items that happen to have the same representation due to limitations
+        // or bugs
+        let old = old_items.into_iter().collect::<HashBag<_>>();
+        let new = new_items.into_iter().collect::<HashBag<_>>();
 
-        let mut new_sorted = new_items;
-        new_sorted.sort();
+        // First figure out what items have been removed and what have been
+        // added. Later we will match added and removed items with the same path
+        // and construct a list of changed items. A changed item is an item with
+        // the same path that has been both removed and added.
+        let all_removed = old.difference(&new);
+        let all_added = new.difference(&old);
 
-        // We can't implement this with sets, because different items might have
-        // the same representations (e.g. because of limitations or bugs), so if
-        // we used a Set, we would lose one or more of them.
-        //
-        // Our strategy is to only move items around, to reduce the risk of
-        // duplicates and lost items.
+        // Convert the data to make it easier to work with
+        let mut removed_paths: ItemsWithPath = bag_to_path_map(all_removed);
+        let mut added_paths: ItemsWithPath = bag_to_path_map(all_added);
+
+        // The result we return from this function will be put in these vectors
         let mut removed: Vec<PublicItem> = vec![];
         let mut changed: Vec<ChangedPublicItem> = vec![];
         let mut added: Vec<PublicItem> = vec![];
-        loop {
-            match (old_sorted.pop(), new_sorted.pop()) {
-                (None, None) => break,
-                (Some(old), None) => {
-                    removed.push(old);
-                }
-                (None, Some(new)) => {
-                    added.push(new);
-                }
-                (Some(old), Some(new)) => {
-                    if old != new && old.path == new.path {
-                        // The same item, but there has been a change in type
-                        changed.push(ChangedPublicItem { old, new });
-                    } else {
-                        match old.cmp(&new) {
-                            std::cmp::Ordering::Less => {
-                                added.push(new);
 
-                                // Add it back and compare it again next
-                                // iteration
-                                old_sorted.push(old);
-                            }
-                            std::cmp::Ordering::Equal => {
-                                // This is the same item, so just continue to
-                                // the next pair
-                                continue;
-                            }
-                            std::cmp::Ordering::Greater => {
-                                removed.push(old);
+        // Figure out all paths of items that are either removed or added. Later
+        // we will match paths that have been both removed and added (i.e.
+        // changed)
+        let mut touched_paths: Vec<PublicItemPath> = vec![];
+        touched_paths.extend::<Vec<_>>(removed_paths.keys().cloned().collect());
+        touched_paths.extend::<Vec<_>>(added_paths.keys().cloned().collect());
 
-                                // Add it back and compare it again next
-                                // iteration
-                                new_sorted.push(new);
-                            }
-                        }
-                    }
+        // OK, we are ready to do some actual heavy lifting. Go through all
+        // paths and look for changed items. The remaining items are either
+        // purely removed or purely added.
+        for path in touched_paths {
+            let mut removed_items = removed_paths.remove(&path).unwrap_or_default();
+            let mut added_items = added_paths.remove(&path).unwrap_or_default();
+            loop {
+                match (removed_items.pop(), added_items.pop()) {
+                    (Some(old), Some(new)) => changed.push(ChangedPublicItem { old, new }),
+                    (Some(old), None) => removed.push(old),
+                    (None, Some(new)) => added.push(new),
+                    (None, None) => break,
                 }
             }
         }
@@ -114,8 +111,21 @@ impl PublicItemsDiff {
     }
 }
 
+/// Converts a set (read: bag) of public items into a hash map that maps a given
+/// path to a vec of public items with that path.
+fn bag_to_path_map<'a>(hashbag: impl Iterator<Item = &'a PublicItem>) -> ItemsWithPath {
+    let mut map: ItemsWithPath = HashMap::new();
+    for item in hashbag {
+        let items = map.entry(item.path.clone()).or_default();
+        items.push(item.clone());
+    }
+    map
+}
+
 #[cfg(test)]
 mod tests {
+    use crate::tokens::Token;
+
     use super::*;
 
     #[test]
@@ -182,6 +192,77 @@ mod tests {
         assert_eq!(actual, expected);
     }
 
+    #[test]
+    fn many_identical_items() {
+        let old = vec![
+            item_with_path("1"),
+            item_with_path("2"),
+            item_with_path("2"),
+            item_with_path("3"),
+            item_with_path("3"),
+            item_with_path("3"),
+            fn_with_param_type(&["a", "b"], "i32"),
+            fn_with_param_type(&["a", "b"], "i32"),
+        ];
+        let new = vec![
+            item_with_path("1"),
+            item_with_path("2"),
+            item_with_path("3"),
+            item_with_path("4"),
+            item_with_path("4"),
+            fn_with_param_type(&["a", "b"], "i64"),
+            fn_with_param_type(&["a", "b"], "i64"),
+        ];
+
+        let actual = PublicItemsDiff::between(old, new);
+        let expected = PublicItemsDiff {
+            removed: vec![
+                item_with_path("2"),
+                item_with_path("3"),
+                item_with_path("3"),
+            ],
+            changed: vec![
+                ChangedPublicItem {
+                    old: fn_with_param_type(&["a", "b"], "i32"),
+                    new: fn_with_param_type(&["a", "b"], "i64"),
+                },
+                ChangedPublicItem {
+                    old: fn_with_param_type(&["a", "b"], "i32"),
+                    new: fn_with_param_type(&["a", "b"], "i64"),
+                },
+            ],
+            added: vec![item_with_path("4"), item_with_path("4")],
+        };
+        assert_eq!(actual, expected);
+    }
+
+    /// Regression test for
+    /// <https://github.com/Enselic/cargo-public-api/issues/50>
+    #[test]
+    fn no_off_by_one_diff_skewing() {
+        let old = vec![
+            fn_with_param_type(&["a", "b"], "i8"),
+            fn_with_param_type(&["a", "b"], "i32"),
+            fn_with_param_type(&["a", "b"], "i64"),
+        ];
+        // Same as `old` but with a new item with the same path added on top.
+        // The diffing algorithm needs to figure out that only one item has been
+        // added, rather than showing that of three items changed.
+        let new = vec![
+            fn_with_param_type(&["a", "b"], "u8"), // The only new item!
+            fn_with_param_type(&["a", "b"], "i8"),
+            fn_with_param_type(&["a", "b"], "i32"),
+            fn_with_param_type(&["a", "b"], "i64"),
+        ];
+        let expected = PublicItemsDiff {
+            removed: vec![],
+            changed: vec![],
+            added: vec![fn_with_param_type(&["a", "b"], "u8")],
+        };
+        let actual = PublicItemsDiff::between(old, new);
+        assert_eq!(actual, expected);
+    }
+
     fn item_with_path(path: &str) -> PublicItem {
         PublicItem {
             path: path
@@ -190,5 +271,51 @@ mod tests {
                 .collect(),
             tokens: vec![crate::tokens::Token::identifier(path)],
         }
+    }
+
+    fn fn_with_param_type(path_str: &[&str], type_: &str) -> PublicItem {
+        let path: Vec<_> = path_str
+            .iter()
+            .map(std::string::ToString::to_string)
+            .collect();
+
+        // Begin with "pub fn "
+        let mut tokens = vec![q("pub"), w(), k("fn"), w()];
+
+        // Add path e.g. "a::b"
+        tokens.extend(itertools::intersperse(
+            path.iter().cloned().map(Token::identifier),
+            Token::symbol("::"),
+        ));
+
+        // Append function "(x: usize)"
+        tokens.extend(vec![q("("), i("x"), s(":"), w(), t(type_), q(")")]);
+
+        // End result is e.g. "pub fn a::b(x: usize)"
+        PublicItem { path, tokens }
+    }
+
+    fn s(s: &str) -> Token {
+        Token::symbol(s)
+    }
+
+    fn t(s: &str) -> Token {
+        Token::type_(s)
+    }
+
+    fn q(s: &str) -> Token {
+        Token::qualifier(s)
+    }
+
+    fn k(s: &str) -> Token {
+        Token::kind(s)
+    }
+
+    fn i(s: &str) -> Token {
+        Token::identifier(s)
+    }
+
+    fn w() -> Token {
+        Token::Whitespace
     }
 }

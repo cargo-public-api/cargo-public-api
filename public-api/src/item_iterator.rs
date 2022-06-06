@@ -7,6 +7,12 @@ use crate::{tokens::Token, Options};
 
 type Impls<'a> = HashMap<&'a Id, Vec<&'a Impl>>;
 
+/// Each public item has a path that is displayed like `first::second::third`.
+/// Internally we represent that with a `vec!["first", "second", "third"]`. This
+/// is a type alias for that internal representation to make the code easier to
+/// read.
+pub(crate) type PublicItemPath = Vec<String>;
+
 /// Iterates over all items in a crate. Iterating over items has the benefit of
 /// behaving properly when:
 /// 1. A single item is imported several times.
@@ -168,7 +174,7 @@ fn intermediate_public_item_to_public_item(
             .path()
             .iter()
             .map(|i| i.get_effective_name())
-            .collect::<Vec<String>>(),
+            .collect::<PublicItemPath>(),
         tokens: public_item.render_token_stream(),
     }
 }
@@ -177,10 +183,10 @@ fn intermediate_public_item_to_public_item(
 /// of the public API of a crate. Implements [`Display`] so it can be printed. It
 /// also implements [`Ord`], but how items are ordered are not stable yet, and
 /// will change in later versions.
-#[derive(Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq, Hash)]
 pub struct PublicItem {
     /// The "your_crate::mod_a::mod_b" part of an item. Split by "::"
-    pub(crate) path: Vec<String>,
+    pub(crate) path: PublicItemPath,
 
     /// The rendered item as a stream of [`Token`]s
     pub(crate) tokens: Vec<Token>,

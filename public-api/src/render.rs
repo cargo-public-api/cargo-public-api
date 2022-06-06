@@ -188,6 +188,28 @@ fn render_sequence<T>(
     start: Vec<Token>,
     end: Vec<Token>,
     between: Vec<Token>,
+    sequence: &[T],
+    render: impl Fn(&T) -> Vec<Token>,
+) -> Vec<Token> {
+    render_sequence_impl(start, end, between, false, sequence, render)
+}
+
+#[allow(clippy::needless_pass_by_value)]
+fn render_sequence_if_not_empty<T>(
+    start: Vec<Token>,
+    end: Vec<Token>,
+    between: Vec<Token>,
+    sequence: &[T],
+    render: impl Fn(&T) -> Vec<Token>,
+) -> Vec<Token> {
+    render_sequence_impl(start, end, between, true, sequence, render)
+}
+
+#[allow(clippy::needless_pass_by_value)]
+fn render_sequence_impl<T>(
+    start: Vec<Token>,
+    end: Vec<Token>,
+    between: Vec<Token>,
     return_nothing_if_empty: bool,
     sequence: &[T],
     render: impl Fn(&T) -> Vec<Token>,
@@ -369,7 +391,6 @@ fn render_fn_decl(root: &Crate, decl: &FnDecl) -> Vec<Token> {
         vec![Token::symbol("(")],
         vec![Token::symbol(")")],
         comma(),
-        false,
         &decl.inputs,
         |(name, ty)| {
             simplified_self(name, ty).unwrap_or_else(|| {
@@ -424,7 +445,6 @@ fn render_tuple(root: &Crate, types: &[Type]) -> Vec<Token> {
         vec![Token::symbol("(")],
         vec![Token::symbol(")")],
         comma(),
-        false,
         types,
         |ty| render_type(root, ty),
     )
@@ -437,11 +457,10 @@ enum Binding<'a> {
 
 fn render_generic_args(root: &Crate, args: &GenericArgs) -> Vec<Token> {
     match args {
-        GenericArgs::AngleBracketed { args, bindings } => render_sequence(
+        GenericArgs::AngleBracketed { args, bindings } => render_sequence_if_not_empty(
             vec![Token::symbol("<")],
             vec![Token::symbol(">")],
             comma(),
-            true,
             &args
                 .iter()
                 .map(Binding::GenericArg)
@@ -460,7 +479,6 @@ fn render_generic_args(root: &Crate, args: &GenericArgs) -> Vec<Token> {
                 vec![Token::symbol("(")],
                 vec![Token::symbol(")")],
                 comma(),
-                false,
                 inputs,
                 |ty| render_type(root, ty),
             );
@@ -525,7 +543,6 @@ fn render_generics(root: &Crate, generics: &Generics) -> Vec<Token> {
 }
 
 fn render_generic_param_defs(root: &Crate, params: &[GenericParamDef]) -> Vec<Token> {
-    let mut output = vec![];
     let params_without_synthetics: Vec<_> = params
         .iter()
         .filter(|p| {
@@ -537,17 +554,13 @@ fn render_generic_param_defs(root: &Crate, params: &[GenericParamDef]) -> Vec<To
         })
         .collect();
 
-    if !params_without_synthetics.is_empty() {
-        output.extend(render_sequence(
-            vec![Token::symbol("<")],
-            vec![Token::symbol(">")],
-            comma(),
-            true,
-            &params_without_synthetics,
-            |param| render_generic_param_def(root, param),
-        ));
-    }
-    output
+    render_sequence_if_not_empty(
+        vec![Token::symbol("<")],
+        vec![Token::symbol(">")],
+        comma(),
+        &params_without_synthetics,
+        |param| render_generic_param_def(root, param),
+    )
 }
 
 fn render_generic_param_def(root: &Crate, generic_param_def: &GenericParamDef) -> Vec<Token> {
@@ -557,14 +570,9 @@ fn render_generic_param_def(root: &Crate, generic_param_def: &GenericParamDef) -
             output.push(Token::lifetime(&generic_param_def.name));
             if !outlives.is_empty() {
                 output.extend(colon());
-                output.extend(render_sequence(
-                    vec![],
-                    vec![],
-                    plus(),
-                    true,
-                    outlives,
-                    |s| vec![Token::lifetime(s)],
-                ));
+                output.extend(render_sequence(vec![], vec![], plus(), outlives, |s| {
+                    vec![Token::lifetime(s)]
+                }));
             }
         }
         GenericParamDefKind::Type { bounds, .. } => {
@@ -595,7 +603,6 @@ fn render_where_predicates(root: &Crate, where_predicates: &[WherePredicate]) ->
             vec![],
             vec![],
             comma(),
-            true,
             where_predicates,
             |predicate| render_where_predicate(root, predicate),
         ));
@@ -630,23 +637,19 @@ fn render_where_predicate(root: &Crate, where_predicate: &WherePredicate) -> Vec
 }
 
 fn render_generic_bounds(root: &Crate, bounds: &[GenericBound]) -> Vec<Token> {
-    if bounds.is_empty() {
-        vec![]
-    } else {
-        render_sequence(vec![], vec![], plus(), true, bounds, |bound| match bound {
-            GenericBound::TraitBound {
-                trait_,
-                generic_params,
-                ..
-            } => {
-                let mut output = vec![];
-                output.extend(render_higher_rank_trait_bounds(root, generic_params));
-                output.extend(render_type(root, trait_));
-                output
-            }
-            GenericBound::Outlives(id) => vec![Token::lifetime(id)],
-        })
-    }
+    render_sequence_if_not_empty(vec![], vec![], plus(), bounds, |bound| match bound {
+        GenericBound::TraitBound {
+            trait_,
+            generic_params,
+            ..
+        } => {
+            let mut output = vec![];
+            output.extend(render_higher_rank_trait_bounds(root, generic_params));
+            output.extend(render_type(root, trait_));
+            output
+        }
+        GenericBound::Outlives(id) => vec![Token::lifetime(id)],
+    })
 }
 
 fn render_higher_rank_trait_bounds(root: &Crate, generic_params: &[GenericParamDef]) -> Vec<Token> {

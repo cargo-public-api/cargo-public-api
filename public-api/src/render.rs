@@ -637,26 +637,19 @@ fn render_generic_bounds(root: &Crate, bounds: &[GenericBound]) -> Vec<Token> {
     if bounds.is_empty() {
         vec![]
     } else {
-        render_sequence(
-            Vec::new(),
-            Vec::new(),
-            plus(),
-            true,
-            bounds,
-            |bound| match bound {
-                GenericBound::TraitBound {
-                    trait_,
-                    generic_params,
-                    ..
-                } => {
-                    let mut output = vec![];
-                    output.extend(render_higher_rank_trait_bounds(root, generic_params));
-                    output.extend(render_type(root, trait_));
-                    output
-                }
-                GenericBound::Outlives(id) => vec![Token::lifetime(id)],
-            },
-        )
+        render_sequence(vec![], vec![], plus(), true, bounds, |bound| match bound {
+            GenericBound::TraitBound {
+                trait_,
+                generic_params,
+                ..
+            } => {
+                let mut output = vec![];
+                output.extend(render_higher_rank_trait_bounds(root, generic_params));
+                output.extend(render_type(root, trait_));
+                output
+            }
+            GenericBound::Outlives(id) => vec![Token::lifetime(id)],
+        })
     }
 }
 
@@ -730,7 +723,7 @@ mod test {
                     visibility: rustdoc_types::Visibility::Public,
                     docs: None,
                     links: HashMap::new(),
-                    attrs: Vec::new(),
+                    attrs: vec![],
                     deprecation: None,
                     inner: ItemEnum::ForeignType,
                 },
@@ -759,23 +752,23 @@ mod test {
         => vec![Token::primitive("name")]
         => "name";
         test_type_resolved_simple:
-        render_type(&get_crate(), &Type::ResolvedPath{name: "name".to_string(), args: None, id: Id("id".to_string()), param_names: Vec::new()},)
+        render_type(&get_crate(), &Type::ResolvedPath{name: "name".to_string(), args: None, id: Id("id".to_string()), param_names: vec![]},)
         => vec![Token::type_("name")]
         => "name";
         test_type_resolved_long_name:
-        render_type(&get_crate(), &Type::ResolvedPath{name: "name::with::parts".to_string(), args: None, id: Id("id".to_string()), param_names: Vec::new()},)
+        render_type(&get_crate(), &Type::ResolvedPath{name: "name::with::parts".to_string(), args: None, id: Id("id".to_string()), param_names: vec![]},)
         => vec![Token::identifier("name"), Token::symbol("::"), Token::identifier("with"), Token::symbol("::"), Token::type_("parts")]
         => "name::with::parts";
         test_type_resolved_crate_name:
-        render_type(&get_crate(), &Type::ResolvedPath{name: "$crate::name".to_string(), args: None, id: Id("id".to_string()), param_names: Vec::new()},)
+        render_type(&get_crate(), &Type::ResolvedPath{name: "$crate::name".to_string(), args: None, id: Id("id".to_string()), param_names: vec![]},)
         => vec![Token::identifier("$crate"), Token::symbol("::"), Token::type_("name")]
         => "$crate::name";
         test_type_resolved_name_crate:
-        render_type(&get_crate(), &Type::ResolvedPath{name: "name::$crate".to_string(), args: None, id: Id("id".to_string()), param_names: Vec::new()},)
+        render_type(&get_crate(), &Type::ResolvedPath{name: "name::$crate".to_string(), args: None, id: Id("id".to_string()), param_names: vec![]},)
         => vec![Token::identifier("name"), Token::symbol("::"), Token::type_("$crate")]
         => "name::$crate";
         test_type_tuple_empty:
-        render_type(&get_crate(), &Type::Tuple(Vec::new()),)
+        render_type(&get_crate(), &Type::Tuple(vec![]),)
         => vec![Token::symbol("("), Token::symbol(")")]
         => "()";
         test_type_tuple:
@@ -815,13 +808,13 @@ mod test {
         => vec![Token::symbol("&"), Token::lifetime("'a"), ws!(), Token::keyword("mut"), ws!(), Token::symbol("_")]
         => "&'a mut _";
         test_type_path:
-        render_type(&get_crate(), &Type::QualifiedPath { name: s!("name"), args: Box::new(GenericArgs::AngleBracketed { args: Vec::new(), bindings: Vec::new() }), self_type: Box::new(Type::Generic(s!("type"))), trait_: Box::new(Type::Generic(s!("trait"))) },)
+        render_type(&get_crate(), &Type::QualifiedPath { name: s!("name"), args: Box::new(GenericArgs::AngleBracketed { args: vec![], bindings: vec![] }), self_type: Box::new(Type::Generic(s!("type"))), trait_: Box::new(Type::Generic(s!("trait"))) },)
         => vec![Token::symbol("<"), Token::generic("type"), ws!(), Token::keyword("as"), ws!(), Token::generic("trait"), Token::symbol(">::"), Token::identifier("name")]
         => "<type as trait>::name";
         //test_type_fn_pointer:
         //render_type(&get_crate(), &Type::FunctionPointer(Box::new(FunctionPointer{
         //    decl: FnDecl{inputs: vec![(s!("a"), Type::Infer)], output: None, c_variadic: false},
-        //    generic_params: Vec::new(),
+        //    generic_params: vec![],
         //    header: Header{const_:false, unsafe_:false, async_:false, abi: Abi::Rust}})),)
         //=> vec![Token::symbol("<"), Token::generic("type"), ws!(), Token::keyword("as"), ws!(), Token::generic("trait"), Token::symbol(">::"), Token::identifier("name")].into()
         //=> "Fn(_)";

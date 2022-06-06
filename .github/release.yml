@@ -1,0 +1,9 @@
+# See https://docs.github.com/en/repositories/releasing-projects-on-github/automatically-generated-release-notes#configuring-automatically-generated-release-notes
+changelog:
+  exclude:
+    labels:
+      - exclude-from-release-notes
+  categories:
+    - title: Noteworthy changes in this release
+      labels:
+        - "*"

@@ -192,7 +192,9 @@ fn render_sequence<T>(
     sequence: &[T],
     render: impl Fn(&T) -> Vec<Token>,
 ) -> Vec<Token> {
-    let start_len = start.len();
+    if return_nothing_if_empty && sequence.is_empty() {
+        return vec![];
+    }
     let mut output = start;
     for seq in sequence {
         output.extend(render(seq));
@@ -200,11 +202,6 @@ fn render_sequence<T>(
     }
     if output.len() >= between.len() {
         output.truncate(output.len() - between.len());
-    } else if return_nothing_if_empty {
-        return vec![];
-    }
-    if output.len() == start_len && return_nothing_if_empty {
-        return vec![];
     }
     output.extend(end);
     output

@@ -453,24 +453,7 @@ fn render_generic_args(root: &Crate, args: &GenericArgs) -> Vec<Token> {
                 .collect::<Vec<_>>(),
             |arg| match arg {
                 Binding::GenericArg(arg) => render_generic_arg(root, arg),
-                Binding::TypeBinding(TypeBinding {
-                    name,
-                    args,
-                    binding,
-                }) => {
-                    let mut output = vec![Token::identifier(name)];
-                    output.extend(render_generic_args(root, args));
-                    match binding {
-                        TypeBindingKind::Equality(term) => {
-                            output.extend(equals());
-                            output.extend(render_term(root, term));
-                        }
-                        TypeBindingKind::Constraint(bounds) => {
-                            output.extend(render_generic_bounds(root, bounds));
-                        }
-                    }
-                    output
-                }
+                Binding::TypeBinding(binding) => render_type_binding(root, binding),
             },
         ),
         GenericArgs::Parenthesized {
@@ -508,6 +491,21 @@ fn render_generic_arg(root: &Crate, arg: &GenericArg) -> Vec<Token> {
         GenericArg::Const(c) => render_constant(root, c),
         GenericArg::Infer => vec![Token::symbol("_")],
     }
+}
+
+fn render_type_binding(root: &Crate, binding: &TypeBinding) -> Vec<Token> {
+    let mut output = vec![Token::identifier(&binding.name)];
+    output.extend(render_generic_args(root, &binding.args));
+    match &binding.binding {
+        TypeBindingKind::Equality(term) => {
+            output.extend(equals());
+            output.extend(render_term(root, term));
+        }
+        TypeBindingKind::Constraint(bounds) => {
+            output.extend(render_generic_bounds(root, bounds));
+        }
+    }
+    output
 }
 
 fn render_constant(root: &Crate, constant: &Constant) -> Vec<Token> {

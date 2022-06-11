@@ -85,13 +85,18 @@ pub struct Args {
     /// Do nothing but build the rustdoc JSON. Primarily meant for self-testing.
     #[clap(long, hide = true)]
     only_build_rustdoc_json: bool,
+
+    /// Allows you to build rustdoc JSON with a toolchain other than `+nightly`.
+    /// Useful if you have built a toolchain from source for example.
+    #[clap(long, hide = true, default_value = "+nightly")]
+    rustdoc_json_toolchain: String,
 }
 
 fn main_() -> Result<()> {
     let args = get_args();
 
     if args.only_build_rustdoc_json {
-        build_rustdoc_json(&args.manifest_path)
+        build_rustdoc_json(&args)
     } else if let Some(commits) = &args.diff_git_checkouts {
         print_public_items_diff_between_two_commits(&args, commits)
     } else if let Some(files) = &args.diff_rustdoc_json {
@@ -158,11 +163,11 @@ fn get_args() -> Args {
 
 /// Synchronously generate the rustdoc JSON for the library crate in the current
 /// directory.
-fn build_rustdoc_json(crate_root: &Path) -> Result<()> {
+fn build_rustdoc_json(args: &Args) -> Result<()> {
     let mut command = std::process::Command::new("cargo");
-    command.args(["+nightly", "doc", "--lib", "--no-deps"]);
+    command.args([&args.rustdoc_json_toolchain, "doc", "--lib", "--no-deps"]);
     command.arg("--manifest-path");
-    command.arg(crate_root);
+    command.arg(&args.manifest_path);
     command.env("RUSTDOCFLAGS", "-Z unstable-options --output-format json");
     if command.spawn()?.wait()?.success() {
         Ok(())
@@ -254,7 +259,7 @@ fn collect_public_items_from_commit(commit: Option<&str>) -> Result<Vec<PublicIt
     }
 
     // Invoke `cargo doc` to build rustdoc JSON
-    build_rustdoc_json(&args.manifest_path)?;
+    build_rustdoc_json(&args)?;
 
     let target_directory = get_target_directory(&args.manifest_path)?;
     let lib_name = package_name(&args.manifest_path)?;

@@ -28,6 +28,14 @@ You can also combine both ways:
 % cargo run --manifest-path ~/src/cargo-public-api/cargo-public-api/Cargo.toml -- --manifest-path ~/src/arbitrary-crate/Cargo.toml
 ```
 
+## Use custom rustdoc JSON toolchain
+
+If you have built rustdoc yourself to try some rustdoc JSON fix, you can run `cargo public-api` with your custom toolchain like this:
+
+```
+cargo public-api --rustdoc-json-toolchain +custom
+```
+
 ## Code coverage
 
 Exploring code coverage is a good way to ensure we have broad enough tests. This is the command I use personally to get started:

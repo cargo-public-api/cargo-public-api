@@ -11,12 +11,12 @@ Note that the toolchain required to build this library is distinct from the tool
 There are two ways. You can either do:
 ```
 % cd ~/src/arbitrary-crate
-% cargo run --manifest-path ~/src/cargo-public-api/Cargo.toml
+% cargo run --manifest-path ~/src/cargo-public-api/cargo-public-api/Cargo.toml
 ```
 or you can do
 ```
 % cd ~/src/cargo-public-api
-% cargo run -- --manifest-path ~/src/arbitrary-crate/Cargo.toml
+% cargo run --bin cargo-public-api -- --manifest-path ~/src/arbitrary-crate/Cargo.toml
 ```
 In the first case `--manifest-path` is interpreted by `cargo` itself, and in the second case `--manifest-path` is interpreted by `cargo-public-api`.
 
@@ -25,7 +25,7 @@ NOTE: The second way does not work with `--diff-git-checkouts` yet.
 You can also combine both ways:
 ```
 % cd /does/not/matter
-% cargo run --manifest-path ~/src/cargo-public-api/Cargo.toml -- --manifest-path ~/src/arbitrary-crate/Cargo.toml
+% cargo run --manifest-path ~/src/cargo-public-api/cargo-public-api/Cargo.toml -- --manifest-path ~/src/arbitrary-crate/Cargo.toml
 ```
 
 ## Code coverage
@@ -33,7 +33,8 @@ You can also combine both ways:
 Exploring code coverage is a good way to ensure we have broad enough tests. This is the command I use personally to get started:
 
 ```bash
-cargo llvm-cov --html && open target/llvm-cov/html/index.html
+cd public-api
+cargo llvm-cov --html && open ../target/llvm-cov/html/index.html
 ```
 
 Which obviously requires you to have done `cargo install cargo-llvm-cov` first.

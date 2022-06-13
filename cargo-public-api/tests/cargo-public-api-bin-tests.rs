@@ -12,6 +12,14 @@ fn list_public_items() {
 
 #[serial]
 #[test]
+fn custom_toolchain() {
+    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    cmd.args(["--rustdoc-json-toolchain", "+nightly"]);
+    assert_presence_of_own_library_items(cmd);
+}
+
+#[serial]
+#[test]
 fn list_public_items_explicit_manifest_path() {
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
     cmd.arg("--manifest-path");

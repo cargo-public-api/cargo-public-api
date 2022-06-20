@@ -1,3 +1,4 @@
+#[non_exhaustive] pub struct example_api::Struct
 pub fn example_api::Struct::borrow(&self) -> &T
 pub fn example_api::Struct::borrow_mut(&mut self) -> &mut T
 pub fn example_api::Struct::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
@@ -15,7 +16,6 @@ pub fn example_api::StructV2::try_into(self) -> Result<U, <U as TryFrom<T>>::Err
 pub fn example_api::StructV2::type_id(&self) -> TypeId
 pub fn example_api::function(v1_param: Struct, v2_param: usize)
 pub mod example_api
-pub struct example_api::Struct
 pub struct example_api::StructV2
 pub struct field example_api::Struct::v1_field: usize
 pub struct field example_api::Struct::v2_field: usize

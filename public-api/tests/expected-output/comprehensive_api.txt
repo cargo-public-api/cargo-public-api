@@ -1,3 +1,7 @@
+#[export_name = "something_arbitrary"] pub fn comprehensive_api::attributes::export_name()
+#[no_mangle] #[link_section = ".custom"] pub static comprehensive_api::attributes::NO_MANGLE_WITH_CUSTOM_LINK_SECTION: usize
+#[non_exhaustive] pub enum comprehensive_api::attributes::NonExhaustive
+#[repr(C)] pub struct comprehensive_api::attributes::C
 pub async fn comprehensive_api::functions::async_fn() -> impl Future<Output = ()>
 pub const comprehensive_api::constants::CONST: &str
 pub const comprehensive_api::traits::AssociatedConst::CONST: bool
@@ -6,6 +10,7 @@ pub const fn comprehensive_api::functions::const_fn()
 pub enum comprehensive_api::enums::DiverseVariants
 pub enum comprehensive_api::enums::EnumWithGenerics<'a, T, D: Debug> where T: Display
 pub enum comprehensive_api::enums::SingleVariant
+pub enum variant comprehensive_api::attributes::NonExhaustive::MoreToCome
 pub enum variant comprehensive_api::enums::DiverseVariants::Recursive
 pub enum variant comprehensive_api::enums::DiverseVariants::Simple
 pub enum variant comprehensive_api::enums::DiverseVariants::Struct
@@ -17,6 +22,7 @@ pub fn comprehensive_api::RngCore::fill_bytes(&mut self, dest: &mut [u8])
 pub fn comprehensive_api::RngCore::next_u32(&mut self) -> u32
 pub fn comprehensive_api::RngCore::next_u64(&mut self) -> u64
 pub fn comprehensive_api::RngCore::try_fill_bytes(&mut self, dest: &mut [u8]) -> Result<(), Error>
+pub fn comprehensive_api::attributes::must_use() -> usize
 pub fn comprehensive_api::functions::dyn_arg(d: &std::io::Write + Send + 'static)
 pub fn comprehensive_api::functions::fn_arg(f: impl Fn(bool, RenamedPlain) -> bool, f_mut: impl FnMut())
 pub fn comprehensive_api::functions::generic_arg<T>(t: T) -> T
@@ -50,6 +56,7 @@ pub fn comprehensive_api::structs::WithLifetimeAndGenericParam::new(unit_ref: &'
 pub fn comprehensive_api::traits::Simple::act()
 pub macro comprehensive_api::simple_macro!
 pub mod comprehensive_api
+pub mod comprehensive_api::attributes
 pub mod comprehensive_api::constants
 pub mod comprehensive_api::enums
 pub mod comprehensive_api::functions
@@ -73,6 +80,7 @@ pub struct comprehensive_api::structs::Tuple
 pub struct comprehensive_api::structs::Unit
 pub struct comprehensive_api::structs::WithLifetimeAndGenericParam<'a, T>
 pub struct comprehensive_api::structs::WithTraitBounds<T: Display + Debug>
+pub struct field comprehensive_api::attributes::C::b: bool
 pub struct field comprehensive_api::enums::DiverseVariants::Recursive::child: Box<DiverseVariants>
 pub struct field comprehensive_api::enums::DiverseVariants::Struct::x: usize
 pub struct field comprehensive_api::enums::DiverseVariants::Struct::y: SingleVariant

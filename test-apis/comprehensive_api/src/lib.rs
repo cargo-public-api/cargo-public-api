@@ -7,6 +7,7 @@ pub use structs::Plain as RenamedPlain;
 
 mod private;
 
+pub mod attributes;
 pub mod constants;
 pub mod enums;
 pub mod functions;

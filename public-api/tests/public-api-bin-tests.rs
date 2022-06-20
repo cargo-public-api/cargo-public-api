@@ -49,6 +49,8 @@ fn print_diff() {
 Changed:
 -pub fn example_api::function(v1_param: Struct)
 +pub fn example_api::function(v1_param: Struct, v2_param: usize)
+-pub struct example_api::Struct
++#[non_exhaustive] pub struct example_api::Struct
 
 Added:
 +pub struct example_api::StructV2
@@ -80,6 +82,8 @@ fn print_diff_reversed() {
 -pub struct field example_api::StructV2::field: usize
 
 Changed:
+-#[non_exhaustive] pub struct example_api::Struct
++pub struct example_api::Struct
 -pub fn example_api::function(v1_param: Struct, v2_param: usize)
 +pub fn example_api::function(v1_param: Struct)
 

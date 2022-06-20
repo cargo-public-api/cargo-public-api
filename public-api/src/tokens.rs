@@ -15,6 +15,8 @@ pub enum Token {
     Whitespace,
     /// An identifier, like variable names or parts of the path of an item
     Identifier(String),
+    /// An annotation, used e.g. for Rust attributes.
+    Annotation(String),
     /// The identifier self, the text can be `self` or `Self`
     Self_(String),
     /// The identifier for a function, like `fn_arg` in `comprehensive_api::functions::fn_arg`
@@ -90,6 +92,7 @@ impl Token {
             | Self::Qualifier(l)
             | Self::Kind(l)
             | Self::Identifier(l)
+            | Self::Annotation(l)
             | Self::Self_(l)
             | Self::Function(l)
             | Self::Lifetime(l)

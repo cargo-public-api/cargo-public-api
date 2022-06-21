@@ -97,7 +97,7 @@ labeled issues.
 
 | cargo-public-api | Understands the rustdoc JSON output of  |
 | ---------------- | --------------------------------------- |
-| v0.11.x          | nightly-2022-05-19                      |
+| v0.12.x          | nightly-2022-05-19 —                    |
 | v0.10.x          | nightly-2022-03-14 — nightly-2022-05-18 |
 | v0.5.x           | nightly-2022-02-23 — nightly-2022-03-13 |
 | v0.2.x           | nightly-2022-01-19 — nightly-2022-02-22 |

@@ -30,10 +30,16 @@ fn diff_with_added_items() {
         &rustdoc_json_str_for_crate("../test-apis/example_api-v0.2.0"),
         &ExpectedDiff {
             removed: &[],
-            changed: &[(
-                "pub fn example_api::function(v1_param: Struct)",
-                "pub fn example_api::function(v1_param: Struct, v2_param: usize)",
-            )],
+            changed: &[
+                (
+                    "pub fn example_api::function(v1_param: Struct)",
+                    "pub fn example_api::function(v1_param: Struct, v2_param: usize)",
+                ),
+                (
+                    "pub struct example_api::Struct",
+                    "#[non_exhaustive] pub struct example_api::Struct",
+                ),
+            ],
             added: &[
                 "pub struct example_api::StructV2",
                 "pub struct field example_api::Struct::v2_field: usize",
@@ -70,10 +76,16 @@ fn diff_with_removed_items() {
                 "pub struct field example_api::Struct::v2_field: usize",
                 "pub struct field example_api::StructV2::field: usize",
             ],
-            changed: &[(
-                "pub fn example_api::function(v1_param: Struct, v2_param: usize)",
-                "pub fn example_api::function(v1_param: Struct)",
-            )],
+            changed: &[
+                (
+                    "#[non_exhaustive] pub struct example_api::Struct",
+                    "pub struct example_api::Struct",
+                ),
+                (
+                    "pub fn example_api::function(v1_param: Struct, v2_param: usize)",
+                    "pub fn example_api::function(v1_param: Struct)",
+                ),
+            ],
             added: &[],
         },
     );
@@ -165,6 +177,10 @@ fn pretty_printed_diff() {
         ChangedPublicItem {
             old: pub fn example_api::function(v1_param: Struct),
             new: pub fn example_api::function(v1_param: Struct, v2_param: usize),
+        },
+        ChangedPublicItem {
+            old: pub struct example_api::Struct,
+            new: #[non_exhaustive] pub struct example_api::Struct,
         },
     ],
     added: [

@@ -108,6 +108,7 @@ fn color_item_token(token: &Token, bg: Option<Color>) -> ANSIString<'_> {
         Token::Kind(text) => style(Color::Blue.into(), text),
         Token::Whitespace => style(Style::default(), " "),
         Token::Identifier(text) => style(Color::Cyan.into(), text),
+        Token::Annotation(text) => style(Style::default(), text),
         Token::Self_(text) => style(Color::Blue.into(), text),
         Token::Function(text) => style(Color::Yellow.into(), text),
         Token::Lifetime(text) => style(Color::Blue.into(), text),

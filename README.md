@@ -31,38 +31,19 @@ cargo public-api
 
 which will print the public API of `regex` with one line per public item in the API:
 
-<img src="doc/img/list-public-api.jpg" width="550" alt="colored output of listing public api">
+<img src="doc/img/list.jpg" width="550" alt="colored output of listing a public api">
 
 ## Diff the public API
 
-To diff the API between say **1.3.0** and **1.4.0** of `regex`, use `--diff-git-checkouts` while standing in the git repo. Like this:
+To diff the API between say **0.2.2** and **0.2.3** of `regex`, use `--diff-git-checkouts` while standing in the git repo. Like this:
 
 ```bash
-cargo public-api --diff-git-checkouts 1.3.0 1.4.0
+cargo public-api --diff-git-checkouts 0.2.2 0.2.3
 ```
 
 and the API diff will be printed:
 
-```
-Removed items from the public API
-=================================
-(none)
-
-Changed items in the public API
-===============================
-(none)
-
-Added items to the public API
-=============================
-pub fn regex::Match::range(&self) -> Range<usize>
-pub fn regex::RegexSet::empty() -> RegexSet
-pub fn regex::RegexSet::is_empty(&self) -> bool
-pub fn regex::SubCaptureMatches::clone(&self) -> SubCaptureMatches<'c, 't>
-pub fn regex::bytes::Match::range(&self) -> Range<usize>
-pub fn regex::bytes::RegexSet::empty() -> RegexSet
-pub fn regex::bytes::RegexSet::is_empty(&self) -> bool
-pub fn regex::bytes::SubCaptureMatches::clone(&self) -> SubCaptureMatches<'c, 't>
-```
+<img src="doc/img/diff.jpg" width="550" alt="colored output of diffing a public api">
 
 You can also manually do a diff by writing the full list of items to a file for two different versions of your library and then do a regular `diff` between the files.
 

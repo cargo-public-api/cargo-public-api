@@ -8,6 +8,7 @@ name = "cargo-public-api"
 readme = "../README.md"
 repository = "https://github.com/Enselic/cargo-public-api"
 version = "0.11.5"
+default-run = "cargo-public-api"
 
 [dependencies]
 ansi_term = "0.12.1"

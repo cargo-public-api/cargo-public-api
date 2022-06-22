@@ -214,9 +214,9 @@ dependencies = [
 
 [[package]]
 name = "hashbag"
-version = "0.1.5"
+version = "0.1.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "021a178f0e7e9ff6f9312759b849f0fbadf22ee8666ac163d502a8496691c01a"
+checksum = "ad2f2cbe74e4752ee67218458df9c8c1c9e534cb514f6725079dc758395b98b3"
 
 [[package]]
 name = "hashbrown"

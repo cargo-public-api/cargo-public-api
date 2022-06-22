@@ -3,12 +3,9 @@
 //! public-api`](https://github.com/Enselic/cargo-public-api) contains
 //! additional helpers for that.
 
-use self::hashbag_utils::DifferenceAddon;
 use crate::{item_iterator::PublicItemPath, PublicItem};
 use hashbag::HashBag;
 use std::collections::HashMap;
-
-mod hashbag_utils;
 
 type ItemsWithPath = HashMap<PublicItemPath, Vec<PublicItem>>;
 
@@ -113,11 +110,13 @@ impl PublicItemsDiff {
 
 /// Converts a set (read: bag) of public items into a hash map that maps a given
 /// path to a vec of public items with that path.
-fn bag_to_path_map<'a>(hashbag: impl Iterator<Item = &'a PublicItem>) -> ItemsWithPath {
+fn bag_to_path_map<'a>(difference: impl Iterator<Item = (&'a PublicItem, usize)>) -> ItemsWithPath {
     let mut map: ItemsWithPath = HashMap::new();
-    for item in hashbag {
+    for (item, occurrences) in difference {
         let items = map.entry(item.path.clone()).or_default();
-        items.push(item.clone());
+        for _ in 0..occurrences {
+            items.push(item.clone());
+        }
     }
     map
 }

@@ -7,7 +7,7 @@ license = "MIT"
 name = "cargo-public-api"
 readme = "../README.md"
 repository = "https://github.com/Enselic/cargo-public-api"
-version = "0.12.0"
+version = "0.12.1"
 default-run = "cargo-public-api"
 
 [dependencies]
@@ -21,7 +21,7 @@ diff = "0.1.12"
 
 [dependencies.public-api]
 path = "../public-api"
-version = "0.12.0"
+version = "0.12.1"
 
 [dev-dependencies]
 assert_cmd = "2.0.4"

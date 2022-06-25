@@ -6,7 +6,7 @@ homepage = "https://github.com/Enselic/public-api"
 license = "MIT"
 name = "public-api"
 repository = "https://github.com/Enselic/public-api"
-version = "0.12.0"
+version = "0.12.1"
 
 [dependencies]
 hashbag = { version = "0.1.6", default-features = false }

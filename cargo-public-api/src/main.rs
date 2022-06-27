@@ -1,5 +1,3 @@
-#![deny(clippy::all, clippy::pedantic)]
-
 use std::io::stdout;
 use std::path::{Path, PathBuf};
 

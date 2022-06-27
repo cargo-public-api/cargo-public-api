@@ -168,7 +168,10 @@ fn build_rustdoc_json(args: &Args) -> Result<()> {
     command.args([&args.rustdoc_json_toolchain, "doc", "--lib", "--no-deps"]);
     command.arg("--manifest-path");
     command.arg(&args.manifest_path);
-    command.env("RUSTDOCFLAGS", "-Z unstable-options --output-format json");
+    command.env(
+        "RUSTDOCFLAGS",
+        "-Z unstable-options --output-format json --cap-lints warn",
+    );
     if command.spawn()?.wait()?.success() {
         Ok(())
     } else {

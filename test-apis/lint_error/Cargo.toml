@@ -1,0 +1,5 @@
+[package]
+description = "To test that we pass --cap-lints when building rustdoc JSON"
+name = "lint_error"
+version = "0.1.0"
+edition = "2021"

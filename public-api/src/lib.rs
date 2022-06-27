@@ -1,6 +1,9 @@
 //! This library gives you a the public API of a library crate, in the form of a
 //! list of public items in the crate. Public items are items that other crates
-//! can use.
+//! can use. Diffing is also supported.
+//!
+//! If you want a convenient CLI for this library, you should use [cargo
+//! public-api](https://github.com/Enselic/cargo-public-api).
 //!
 //! As input to the library, a special output format from `cargo doc` is used,
 //! which goes by the name **rustdoc JSON**. Currently, only `cargo doc` from
@@ -31,7 +34,7 @@
 //!
 //! The most comprehensive example code on how to use the library can be found
 //! in the thin binary wrapper around the library, see
-//! <https://github.com/Enselic/public-api/blob/main/src/main.rs>.
+//! <https://github.com/Enselic/cargo-public-api/blob/main/public-api/src/main.rs>.
 
 #![deny(missing_docs)]
 

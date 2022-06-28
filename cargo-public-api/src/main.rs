@@ -1,4 +1,5 @@
-#![deny(clippy::all, clippy::pedantic)]
+//! Simple wrapper around the library. For a much more sophisticated CLI, see
+//! <https://github.com/Enselic/cargo-public-api/blob/main/cargo-public-api/src/main.rs>.
 
 use std::io::stdout;
 use std::path::{Path, PathBuf};

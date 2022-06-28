@@ -35,10 +35,12 @@
 				"--all-targets",
 				"--all-features",
 				"--",
-				"-D",
+				"--deny",
 				"clippy::all",
-				"-D",
-				"clippy::pedantic"
+				"--deny",
+				"clippy::pedantic",
+				"--deny",
+				"dead_code"
 			],
 			"problemMatcher": [
 				"$rustc"

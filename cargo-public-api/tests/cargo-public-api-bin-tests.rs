@@ -12,6 +12,20 @@ fn list_public_items() {
 
 #[serial]
 #[test]
+fn list_public_items_with_lint_error() {
+    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    cmd.args(["--manifest-path", "../test-apis/lint_error/Cargo.toml"]);
+    cmd.assert()
+        .stdout(
+            "pub mod lint_error\n\
+            pub struct lint_error::MissingDocs\n\
+            ",
+        )
+        .success();
+}
+
+#[serial]
+#[test]
 fn custom_toolchain() {
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
     cmd.args(["--rustdoc-json-toolchain", "+nightly"]);

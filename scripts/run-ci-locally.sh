@@ -9,7 +9,7 @@ cargo fmt -- --check
 
 RUSTDOCFLAGS='--deny warnings' cargo doc --locked --no-deps
 
-cargo clippy --locked --all-targets --all-features -- --deny clippy::all --deny clippy::pedantic --deny dead_code
+cargo clippy --locked --all-targets --all-features -- --deny clippy::all --deny clippy::pedantic --deny warnings
 
 cargo test --locked
 

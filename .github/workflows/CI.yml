@@ -37,7 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: cargo clippy --locked --all-targets --all-features -- --deny clippy::all --deny clippy::pedantic --deny dead_code
+      - run: cargo clippy --locked --all-targets --all-features -- --deny clippy::all --deny clippy::pedantic --deny warnings
 
   cargo-test:
     name: cargo test

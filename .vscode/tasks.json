@@ -40,7 +40,7 @@
 				"--deny",
 				"clippy::pedantic",
 				"--deny",
-				"dead_code"
+				"warnings"
 			],
 			"problemMatcher": [
 				"$rustc"

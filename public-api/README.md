@@ -1,8 +1,12 @@
+# You probably want the CLI
+
+This is a low level Rust library. You probably want to use this high level and convenient CLI: [`cargo public-api`](https://github.com/Enselic/cargo-public-api).
+
 # public-api
 
 List and diff the public API of Rust library crates by analyzing rustdoc JSON output files from the nightly toolchain.
 
-This library is the backbone of [`cargo public-api`](https://github.com/Enselic/cargo-public-api/tree/main/cargo-public-api).
+This library is the backbone of [`cargo public-api`](https://github.com/Enselic/cargo-public-api).
 
 # Usage
 

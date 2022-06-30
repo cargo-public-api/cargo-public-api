@@ -83,10 +83,6 @@ pub struct Args {
     #[clap(long, default_value = "auto")]
     color: arg_types::Color,
 
-    /// Do nothing but build the rustdoc JSON. Primarily meant for self-testing.
-    #[clap(long, hide = true)]
-    only_build_rustdoc_json: bool,
-
     /// Allows you to build rustdoc JSON with a toolchain other than `+nightly`.
     /// Useful if you have built a toolchain from source for example.
     #[clap(long, hide = true, default_value = "+nightly")]
@@ -96,9 +92,7 @@ pub struct Args {
 fn main_() -> Result<()> {
     let args = get_args();
 
-    if args.only_build_rustdoc_json {
-        build_rustdoc_json(&args)
-    } else if let Some(commits) = &args.diff_git_checkouts {
+    if let Some(commits) = &args.diff_git_checkouts {
         print_public_items_diff_between_two_commits(&args, commits)
     } else if let Some(files) = &args.diff_rustdoc_json {
         print_public_items_diff_between_two_rustdoc_json_files(&args, files)

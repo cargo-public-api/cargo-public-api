@@ -202,17 +202,11 @@ fn diff_public_items_markdown_no_changes() {
 
 #[serial]
 #[test]
-fn diff_public_items_from_files_no_changes() {
-    // Build ./target/doc/cargo_public_api.json
-    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
-    cmd.arg("--only-build-rustdoc-json");
-    cmd.assert().success();
-
-    // Just a sanity check that --diff-rustdoc-json works at all
+fn diff_public_items_from_files() {
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
     cmd.arg("--diff-rustdoc-json");
-    cmd.arg("../target/doc/cargo_public_api.json");
-    cmd.arg("../target/doc/cargo_public_api.json");
+    cmd.arg("../public-api/tests/rustdoc-json/example_api-v0.1.0.json");
+    cmd.arg("../public-api/tests/rustdoc-json/example_api-v0.2.0.json");
     cmd.assert()
         .stdout(
             "Removed items from the public API
@@ -221,11 +215,16 @@ fn diff_public_items_from_files_no_changes() {
 
 Changed items in the public API
 ===============================
-(none)
+-pub fn example_api::function(v1_param: Struct)
++pub fn example_api::function(v1_param: Struct, v2_param: usize)
+-pub struct example_api::Struct
++#[non_exhaustive] pub struct example_api::Struct
 
 Added items to the public API
 =============================
-(none)
++pub struct example_api::StructV2
++pub struct field example_api::Struct::v2_field: usize
++pub struct field example_api::StructV2::field: usize
 
 ",
         )

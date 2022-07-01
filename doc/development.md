@@ -20,8 +20,6 @@ or you can do
 ```
 In the first case `--manifest-path` is interpreted by `cargo` itself, and in the second case `--manifest-path` is interpreted by `cargo-public-api`.
 
-NOTE: The second way does not work with `--diff-git-checkouts` yet.
-
 You can also combine both ways:
 ```
 % cd /does/not/matter

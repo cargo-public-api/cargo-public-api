@@ -13,6 +13,7 @@ use public_api::{
 use clap::Parser;
 
 mod arg_types;
+mod git_utils;
 mod markdown;
 mod output_formatter;
 mod plain;
@@ -156,8 +157,7 @@ fn get_args() -> Args {
     Args::parse_from(args)
 }
 
-/// Synchronously generate the rustdoc JSON for the library crate in the current
-/// directory.
+/// Synchronously generate rustdoc JSON.
 fn build_rustdoc_json(args: &Args) -> Result<()> {
     let mut command = std::process::Command::new("cargo");
     command.args([&args.rustdoc_json_toolchain, "doc", "--lib", "--no-deps"]);
@@ -221,21 +221,6 @@ fn get_options(args: &Args) -> Options {
     options
 }
 
-/// Synchronously do a `git checkout` of `commit`. Maybe we should use `git2`
-/// crate instead at some point?
-fn git_checkout(commit: &str) -> Result<()> {
-    let mut command = std::process::Command::new("git");
-    command.args(["checkout", commit]);
-    if command.spawn()?.wait()?.success() {
-        Ok(())
-    } else {
-        Err(anyhow!(
-            "Failed to git checkout {}, see error message on stdout/stderr.",
-            commit,
-        ))
-    }
-}
-
 /// Returns `./target/doc/crate_name.json`. Also takes care of transforming
 /// `crate-name` to `crate_name`.
 fn rustdoc_json_path_for_name(target_directory: &Path, lib_name: &str) -> PathBuf {
@@ -253,7 +238,8 @@ fn collect_public_items_from_commit(commit: Option<&str>) -> Result<Vec<PublicIt
     // Do a git checkout of a specific commit unless we are supposed to simply
     // use the current commit
     if let Some(commit) = commit {
-        git_checkout(commit)?;
+        let git_root = git_utils::git_root_from_manifest_path(args.manifest_path.as_path())?;
+        git_utils::git_checkout(commit, &git_root)?;
     }
 
     // Invoke `cargo doc` to build rustdoc JSON

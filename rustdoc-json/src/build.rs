@@ -78,8 +78,8 @@ fn target_directory(manifest_path: impl AsRef<Path>) -> Result<PathBuf, BuildErr
     Ok(metadata.target_directory.as_std_path().to_owned())
 }
 
-/// Figures out the name of the library crate in the current directory by
-/// looking inside `Cargo.toml`
+/// Figures out the name of the library crate corresponding to the given
+/// `Cargo.toml` manifest path.
 fn package_name(manifest_path: impl AsRef<Path>) -> Result<String, BuildError> {
     let manifest = cargo_toml::Manifest::from_path(&manifest_path)?;
     Ok(manifest

@@ -8,6 +8,7 @@ use public_api::{
 };
 
 use clap::Parser;
+use rustdoc_json::BuildError;
 
 mod arg_types;
 mod git_utils;
@@ -154,61 +155,6 @@ fn get_args() -> Args {
     Args::parse_from(args)
 }
 
-/// Synchronously generate rustdoc JSON.
-fn build_rustdoc_json(args: &Args) -> Result<()> {
-    let mut command = std::process::Command::new("cargo");
-    command.args([&args.rustdoc_json_toolchain, "doc", "--lib", "--no-deps"]);
-    command.arg("--manifest-path");
-    command.arg(&args.manifest_path);
-    command.env(
-        "RUSTDOCFLAGS",
-        "-Z unstable-options --output-format json --cap-lints warn",
-    );
-    if command.spawn()?.wait()?.success() {
-        Ok(())
-    } else {
-        Err(anyhow!(
-            "Failed to build rustdoc JSON, see error message on stdout/stderr."
-        ))
-    }
-}
-
-/// Figures out the name of the library crate in the current directory by
-/// looking inside `Cargo.toml`
-fn package_name(path: impl AsRef<Path>) -> Result<String> {
-    let manifest = cargo_toml::Manifest::from_path(&path)
-        .with_context(|| format!("Failed to parse manifest at {:?}", path.as_ref()))?;
-    Ok(manifest
-        .package
-        .with_context(|| {
-            format!(
-                "No [package] found in {:?}. Is it a virtual manifest?
-
-Listing or diffing the public API of an entire workspace is not supported.
-
-Either do
-
-  cd specific-crate
-  cargo public-api
-
-or
-
-  cargo public-api -- --manifest-path specific-crate/Cargo.toml",
-                path.as_ref()
-            )
-        })?
-        .name)
-}
-
-/// Typically returns the absolute path to the regular cargo `./target` directory.
-fn get_target_directory(manifest_path: &Path) -> Result<PathBuf> {
-    let mut metadata_cmd = cargo_metadata::MetadataCommand::new();
-    metadata_cmd.manifest_path(&manifest_path);
-    let metadata = metadata_cmd.exec()?;
-
-    Ok(metadata.target_directory.as_std_path().to_owned())
-}
-
 /// Figure out what [`Options`] to pass to
 /// [`public_items::sorted_public_items_from_rustdoc_json_str`] based on our
 /// [`Args`]
@@ -216,16 +162,6 @@ fn get_options(args: &Args) -> Options {
     let mut options = Options::default();
     options.with_blanket_implementations = args.with_blanket_implementations;
     options
-}
-
-/// Returns `./target/doc/crate_name.json`. Also takes care of transforming
-/// `crate-name` to `crate_name`.
-fn rustdoc_json_path_for_name(target_directory: &Path, lib_name: &str) -> PathBuf {
-    let mut rustdoc_json_path = target_directory.to_owned();
-    rustdoc_json_path.push("doc");
-    rustdoc_json_path.push(lib_name.replace('-', "_"));
-    rustdoc_json_path.set_extension("json");
-    rustdoc_json_path
 }
 
 /// Collects public items from either the current commit or a given commit.
@@ -239,12 +175,10 @@ fn collect_public_items_from_commit(commit: Option<&str>) -> Result<Vec<PublicIt
         git_utils::git_checkout(commit, &git_root)?;
     }
 
-    // Invoke `cargo doc` to build rustdoc JSON
-    build_rustdoc_json(&args)?;
-
-    let target_directory = get_target_directory(&args.manifest_path)?;
-    let lib_name = package_name(&args.manifest_path)?;
-    let json_path = rustdoc_json_path_for_name(&target_directory, &lib_name);
+    let json_path = match rustdoc_json::build(&args.rustdoc_json_toolchain, &args.manifest_path) {
+        Err(BuildError::VirtualManifest(manifest_path)) => virtual_manifest_error(&manifest_path)?,
+        res => res?,
+    };
     let options = get_options(&args);
 
     public_api_from_rustdoc_json_path(json_path, options)
@@ -267,6 +201,25 @@ fn public_api_from_rustdoc_json_path<T: AsRef<Path>>(
             MINIMUM_RUSTDOC_JSON_VERSION,
         )
     })
+}
+
+fn virtual_manifest_error(manifest_path: &Path) -> Result<PathBuf> {
+    Err(anyhow!(
+        "`{:?}` is a virtual manifest.
+
+Listing or diffing the public API of an entire workspace is not supported.
+
+Either do
+
+    cd specific-crate
+    cargo public-api
+
+or
+
+    cargo public-api --manifest-path specific-crate/Cargo.toml
+",
+        manifest_path
+    ))
 }
 
 /// Wrapper to handle <https://github.com/rust-lang/rust/issues/46016>

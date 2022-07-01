@@ -1,0 +1,15 @@
+[package]
+description = "Utilities for working with rustdoc JSON."
+documentation = "https://docs.rs/rustdoc-json"
+edition = "2021"
+homepage = "https://github.com/Enselic/cargo-public-api/tree/main/rustdoc-json"
+license = "MIT"
+name = "rustdoc-json"
+readme = "README.md"
+repository = "https://github.com/Enselic/cargo-public-api/tree/main/rustdoc-json"
+version = "0.2.0"
+
+[dependencies]
+cargo_metadata = "0.14.2"
+cargo_toml = "0.11.4"
+thiserror = "1.0.29"

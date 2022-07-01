@@ -1,7 +1,8 @@
 [workspace]
 members = [
+    "rustdoc-json",
+    "public-api",
     "cargo-public-api",
-    "public-api"
 ]
 
 # Test APIs can't be part of the workspace because some test API crates use

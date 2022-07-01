@@ -19,7 +19,7 @@ diff = "0.1.12"
 
 [dependencies.rustdoc-json]
 path = "../rustdoc-json"
-version = "0.2.0"
+version = "0.2.1"
 
 [dependencies.public-api]
 path = "../public-api"

@@ -100,12 +100,11 @@ dependencies = [
  "anyhow",
  "assert_cmd",
  "atty",
- "cargo_metadata",
- "cargo_toml",
  "clap",
  "diff",
  "predicates",
  "public-api",
+ "rustdoc-json",
  "serial_test",
 ]
 
@@ -439,11 +438,10 @@ name = "public-api"
 version = "0.12.1"
 dependencies = [
  "assert_cmd",
- "cargo_metadata",
- "cargo_toml",
  "hashbag",
  "itertools",
  "pretty_assertions",
+ "rustdoc-json",
  "rustdoc-types",
  "serde",
  "serde_json",
@@ -491,6 +489,15 @@ name = "regex-syntax"
 version = "0.6.25"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f497285884f3fcff424ffc933e56d7cbca511def0c9831a7f9b5f6153e3cc89b"
+
+[[package]]
+name = "rustdoc-json"
+version = "0.2.0"
+dependencies = [
+ "cargo_metadata",
+ "cargo_toml",
+ "thiserror",
+]
 
 [[package]]
 name = "rustdoc-types"

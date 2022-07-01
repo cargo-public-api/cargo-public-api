@@ -1,0 +1,42 @@
+name: Release rustdoc-json
+
+on:
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  ci:
+    uses: ./.github/workflows/CI.yml
+
+  release:
+    needs: ci
+    environment: crates.io
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      # Figure out what tag to use
+      - name: calculate version
+        id: version
+        run: |
+          version=$(cargo read-manifest --manifest-path rustdoc-json/Cargo.toml | jq --raw-output .version)
+          echo ::set-output name=VERSION::${version}
+          echo ::set-output name=GIT_TAG::rustdoc-json-v${version}
+
+      # Try to cargo publish rustdoc-json. If this succeeds we will tag the
+      # release. This is because we don't want to have a situation where a
+      # version exists at crates.io but not as a git tag.
+      - run: cargo publish -p rustdoc-json
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+
+      # Push the tag to git.
+      - name: push tag
+        run: |
+          git tag ${{ steps.version.outputs.GIT_TAG }}
+          git push origin ${{ steps.version.outputs.GIT_TAG }}
+
+      # Do not create a GitHub release. That is only done for public-api and
+      # cargo-public-api. A git tag is sufficient for rustdoc-json.

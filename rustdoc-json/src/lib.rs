@@ -3,8 +3,6 @@
 //! Currently only [`build()`] and [`build_quietly()`]. Please see their docs
 //! for more info.
 
-#![deny(missing_docs)]
-
 mod build;
 
 use std::{

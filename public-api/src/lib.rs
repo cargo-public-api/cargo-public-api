@@ -36,8 +36,6 @@
 //! in the thin binary wrapper around the library, see
 //! <https://github.com/Enselic/cargo-public-api/blob/main/public-api/src/main.rs>.
 
-#![deny(missing_docs)]
-
 mod error;
 mod intermediate_public_item;
 mod item_iterator;

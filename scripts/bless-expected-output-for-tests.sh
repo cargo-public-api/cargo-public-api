@@ -9,8 +9,7 @@ crates="
 "
 
 for crate in ${crates}; do
-    RUSTDOCFLAGS='-Z unstable-options --output-format json' cargo +nightly doc \
-            --manifest-path "./test-apis/${crate}/Cargo.toml" --lib --no-deps
+    cargo +nightly rustdoc --lib --manifest-path "./test-apis/${crate}/Cargo.toml" -- -Z unstable-options --output-format json
     cargo run -p public-api -- "./test-apis/${crate}/target/doc/${crate}.json" > "${dst}/${crate}.txt"
 done
 

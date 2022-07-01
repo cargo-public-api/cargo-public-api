@@ -27,7 +27,7 @@ To list all items that form the public API of your Rust library:
 ```bash
 # Generate rustdoc JSON for your own Rust library
 % cd ~/src/your_library
-% RUSTDOCFLAGS='-Z unstable-options --output-format json' cargo +nightly doc --lib --no-deps
+% cargo +nightly rustdoc --lib -- -Z unstable-options --output-format json
 
 # List all items in the public API of your Rust library
 % public-api ./target/doc/your_library.json

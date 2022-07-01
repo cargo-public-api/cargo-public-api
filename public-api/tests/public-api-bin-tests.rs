@@ -205,7 +205,7 @@ If you insist of using this low-level utility and thin wrapper, you run it like 
 
 where RUSTDOC_JSON_FILE is the path to the output of
 
-    RUSTDOCFLAGS='-Z unstable-options --output-format json' cargo +nightly doc --lib --no-deps
+    cargo +nightly rustdoc --lib -- -Z unstable-options --output-format json
 
 which you can find in
 

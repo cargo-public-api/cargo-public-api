@@ -11,7 +11,7 @@
 //! **rustdoc JSON** like this:
 //!
 //! ```bash
-//! RUSTDOCFLAGS='-Z unstable-options --output-format json' cargo +nightly doc --lib --no-deps
+//! cargo +nightly rustdoc --lib -- -Z unstable-options --output-format json
 //! ```
 //!
 //! The main entry point to the library is [`public_api_from_rustdoc_json_str`],
@@ -112,7 +112,7 @@ impl Default for Options {
 /// builds the rustdoc JSON for you and then invokes this function. If you don't
 /// want to use that wrapper, use
 /// ```bash
-/// RUSTDOCFLAGS='-Z unstable-options --output-format json' cargo +nightly doc --lib --no-deps
+/// cargo +nightly rustdoc --lib -- -Z unstable-options --output-format json
 /// ```
 /// to generate the rustdoc JSON that this function takes as input. The output
 /// is put in `./target/doc/your_library.json`.

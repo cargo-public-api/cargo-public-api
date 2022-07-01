@@ -29,19 +29,8 @@
 			"label": "rust: cargo check"
 		},
 		{
-			"type": "cargo",
-			"command": "clippy",
-			"args": [
-				"--all-targets",
-				"--all-features",
-				"--",
-				"--deny",
-				"clippy::all",
-				"--deny",
-				"clippy::pedantic",
-				"--deny",
-				"warnings"
-			],
+			"type": "shell",
+			"command": "./scripts/cargo-clippy.sh",
 			"problemMatcher": [
 				"$rustc"
 			],

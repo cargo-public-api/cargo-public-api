@@ -1,14 +1,14 @@
 [package]
-description = "List and diff the public API of Rust library crates between releases and commits. Detect breaking API changes and semver violations."
-documentation = "https://docs.rs/cargo-public-api"
 edition = "2021"
-homepage = "https://github.com/Enselic/cargo-public-api"
-license = "MIT"
 name = "cargo-public-api"
-readme = "../README.md"
-repository = "https://github.com/Enselic/cargo-public-api"
 version = "0.12.2"
 default-run = "cargo-public-api"
+description = "List and diff the public API of Rust library crates between releases and commits. Detect breaking API changes and semver violations."
+homepage = "https://github.com/Enselic/cargo-public-api"
+documentation = "https://docs.rs/cargo-public-api"
+readme = "../README.md"
+license = "MIT"
+repository = "https://github.com/Enselic/cargo-public-api"
 
 [dependencies]
 ansi_term = "0.12.1"

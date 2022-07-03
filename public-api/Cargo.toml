@@ -1,12 +1,13 @@
 [package]
-description = "List and diff the public API of Rust library crates. Relies on rustdoc JSON output from the nightly toolchain."
-documentation = "https://docs.rs/public-api"
 edition = "2021"
-homepage = "https://github.com/Enselic/cargo-public-api/tree/main/rustdoc-json"
-license = "MIT"
 name = "public-api"
-repository = "https://github.com/Enselic/cargo-public-api/tree/main/rustdoc-json"
 version = "0.12.2"
+description = "List and diff the public API of Rust library crates. Relies on rustdoc JSON output from the nightly toolchain."
+homepage = "https://github.com/Enselic/cargo-public-api/tree/main/rustdoc-json"
+documentation = "https://docs.rs/public-api"
+readme = "README.md"
+license = "MIT"
+repository = "https://github.com/Enselic/cargo-public-api/tree/main/rustdoc-json"
 
 [dependencies]
 hashbag = { version = "0.1.6", default-features = false }

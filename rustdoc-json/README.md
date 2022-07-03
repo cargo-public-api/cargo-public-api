@@ -8,4 +8,4 @@ Originally developed for use by [`public-api`](https://crates.io/crates/public-a
 
 ## Testing
 
-This library is indirectly tested through the [`public-api`](https://crates.io/crates/public-api) and [`cargo-public-api`](https://crates.io/crates/cargo-public-api) test suites. Their tests heavily depend on this library, so if all of their tests pass, then this library works as it should.
+This library is indirectly tested through the [`public-api`](https://crates.io/crates/public-api) and [`cargo-public-api`](https://crates.io/crates/cargo-public-api) test suites. Their tests heavily depend on this library, so if all of their tests pass, then this library works as it should. All tests are of course ensured to pass before a new release is made.

@@ -72,7 +72,6 @@ pub struct Args {
     diff_rustdoc_json: Option<Vec<String>>,
 
     /// What output format to use. You can select between "plain" and "markdown".
-    /// Currently "markdown" is only supported when doing an API diff.
     #[clap(long, name = "FORMAT", default_value = "plain")]
     output_format: arg_types::OutputFormat,
 

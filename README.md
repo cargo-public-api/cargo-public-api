@@ -49,7 +49,7 @@ You can also manually do a diff by writing the full list of items to a file for 
 
 # Expected output
 
-In general, output aims to be character-by-character identical to the textual parts of the regular `cargo doc` HTML output. For example, [this item](https://docs.rs/bat/0.20.0/bat/struct.PrettyPrinter.html#method.input_files) has the following textual representation in the rendered HTML:
+Output aims to be character-by-character identical to the textual parts of the regular `cargo doc` HTML output. For example, [this item](https://docs.rs/bat/0.20.0/bat/struct.PrettyPrinter.html#method.input_files) has the following textual representation in the rendered HTML:
 
 ```
 pub fn input_files<I, P>(&mut self, paths: I) -> &mut Self

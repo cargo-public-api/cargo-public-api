@@ -28,7 +28,7 @@ You can also combine both ways:
 
 ## Use custom rustdoc JSON toolchain
 
-If you have built rustdoc yourself to try some rustdoc JSON fix, you can run `cargo public-api` with your custom toolchain like this:
+If you have built rustdoc yourself to try some rustdoc JSON fix, you can run `cargo public-api` with your [custom toolchain](https://rustc-dev-guide.rust-lang.org/building/how-to-build-and-run.html#creating-a-rustup-toolchain) like this:
 
 ```
 cargo public-api --rustdoc-json-toolchain +custom

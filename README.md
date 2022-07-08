@@ -80,10 +80,6 @@ Use `--with-blanket-implementations` if you want to include items of blanket imp
 cargo public-api --with-blanket-implementations
 ```
 
-# Output formats
-
-Currently there are two output formats. You can choose between `--output-format plain` (default, supports syntax highlighting) and `--output-format markdown`.
-
 # Target audience
 
 Maintainers of Rust libraries that want to keep track of changes to their public API.

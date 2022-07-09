@@ -35,7 +35,7 @@ which will print the public API of `regex` with one line per public item in the 
 
 ## Diff the public API
 
-To diff the API between say **0.2.2** and **0.2.3** of `regex`, use `--diff-git-checkouts` while standing in the git repo. Like this:
+To diff the API between say **0.2.2** and **0.2.3** of `regex`, use `--diff-git-checkouts 0.2.2 0.2.3` while standing in the git repo. Like this:
 
 ```bash
 cargo public-api --diff-git-checkouts 0.2.2 0.2.3

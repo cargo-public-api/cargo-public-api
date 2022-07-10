@@ -106,6 +106,12 @@ impl PublicItemsDiff {
             added,
         }
     }
+
+    /// Check whether the diff is empty
+    #[must_use]
+    pub fn is_empty(&self) -> bool {
+        self.removed.is_empty() && self.changed.is_empty() && self.added.is_empty()
+    }
 }
 
 /// Converts a set (read: bag) of public items into a hash map that maps a given
@@ -139,6 +145,7 @@ mod tests {
             added: vec![],
         };
         assert_eq!(actual, expected);
+        assert!(!actual.is_empty());
     }
 
     #[test]
@@ -153,6 +160,7 @@ mod tests {
             added: vec![item_with_path("foo")],
         };
         assert_eq!(actual, expected);
+        assert!(!actual.is_empty());
     }
 
     #[test]
@@ -171,6 +179,7 @@ mod tests {
             added: vec![item_with_path("2")],
         };
         assert_eq!(actual, expected);
+        assert!(!actual.is_empty());
     }
 
     #[test]
@@ -189,6 +198,7 @@ mod tests {
             added: vec![],
         };
         assert_eq!(actual, expected);
+        assert!(!actual.is_empty());
     }
 
     #[test]
@@ -233,6 +243,7 @@ mod tests {
             added: vec![item_with_path("4"), item_with_path("4")],
         };
         assert_eq!(actual, expected);
+        assert!(!actual.is_empty());
     }
 
     /// Regression test for
@@ -260,6 +271,7 @@ mod tests {
         };
         let actual = PublicItemsDiff::between(old, new);
         assert_eq!(actual, expected);
+        assert!(!actual.is_empty());
     }
 
     fn item_with_path(path: &str) -> PublicItem {

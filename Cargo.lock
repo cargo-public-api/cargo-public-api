@@ -106,6 +106,7 @@ dependencies = [
  "public-api",
  "rustdoc-json",
  "serial_test",
+ "thiserror",
 ]
 
 [[package]]

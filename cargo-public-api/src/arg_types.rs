@@ -4,6 +4,13 @@ use std::str::FromStr;
 
 use crate::{markdown::Markdown, output_formatter::OutputFormatter, plain::Plain};
 
+#[derive(Copy, Clone, Debug, Eq, PartialEq, clap::ArgEnum)]
+#[clap(rename_all = "lower")]
+pub enum DenyMethod {
+    /// All forms of API diffs are denied: additions, changes, deletions.
+    All,
+}
+
 #[derive(Debug)]
 pub enum OutputFormat {
     Plain,

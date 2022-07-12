@@ -39,6 +39,11 @@ fn cargo_rustdoc_command(
     quiet: bool,
 ) -> Command {
     let mut command = Command::new("cargo");
+
+    // These can override our `+nightly` with `+stable` unless we clear them
+    command.env_remove("RUSTDOC");
+    command.env_remove("RUSTC");
+
     command.arg(toolchain.as_ref());
     command.arg("rustdoc");
     command.arg("--lib");

@@ -82,6 +82,21 @@ fn diff_public_items() {
 
 #[serial]
 #[test]
+fn deny_when_not_diffing() {
+    ensure_test_crate_is_cloned(); // Because we still list the API
+
+    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    cmd.arg("--deny=all");
+    cmd.assert()
+        .stdout("")
+        .stderr(predicates::str::contains(
+            "`--deny` can only be used with `--diff-git-checkouts`",
+        ))
+        .failure();
+}
+
+#[serial]
+#[test]
 fn diff_public_items_with_manifest_path() {
     ensure_test_crate_is_cloned();
 

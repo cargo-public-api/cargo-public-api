@@ -1,0 +1,21 @@
+Removed items from the public API
+=================================
+-[34mpub[0m [34mfn[0m [36mpublic_items[0m::[32mPublicItem[0m::[33mhash[0m<[32m__H[0m: [36m$crate[0m::[36mhash[0m::[32mHasher[0m>(&[34mself[0m, [36mstate[0m: &[34mmut[0m [32m__H[0m) -> ()
+-[34mpub[0m [34mfn[0m [36mpublic_items[0m::[36mdiff[0m::[32mPublicItemsDiff[0m::[33mprint_with_headers[0m(&[34mself[0m, [36mw[0m: &[34mmut[0m [34mimpl[0m [36mstd[0m::[36mio[0m::[32mWrite[0m, [36mheader_removed[0m: &[32mstr[0m, [36mheader_changed[0m: &[32mstr[0m, [36mheader_added[0m: &[32mstr[0m) -> [36mstd[0m::[36mio[0m::[32mResult[0m<()>
+
+Changed items in the public API
+===============================
+-[34mpub[0m [34mfn[0m [36mpublic_items[0m::[32mPublicItem[0m::[33mfmt[0m(&[34mself[0m, [36mf[0m: &[34mmut[0m [1;48;5;52;38;5;9m$crate[0m::[36mfmt[0m::[32mFormatter[0m<[34m'_[0m>) -> [1;48;5;52;38;5;9m$crate[0m::[36mfmt[0m::[32mResult[0m
++[34mpub[0m [34mfn[0m [36mpublic_items[0m::[32mPublicItem[0m::[33mfmt[0m(&[34mself[0m, [36mf[0m: &[34mmut[0m [1;48;5;22;38;5;10mstd[0m::[36mfmt[0m::[32mFormatter[0m<[34m'_[0m>) -> [1;48;5;22;38;5;10mstd[0m::[36mfmt[0m::[32mResult[0m
+-[34mpub[0m [34mfn[0m [36mpublic_items[0m::[36mdiff[0m::[32mPublicItemsDiff[0m::[33mbetween[0m([1;48;5;52;38;5;9mold[0m: [32mVec[0m<[32mPublicItem[0m>, [1;48;5;52;38;5;9mnew[0m: [32mVec[0m<[32mPublicItem[0m>) -> [32mSelf[0m
++[34mpub[0m [34mfn[0m [36mpublic_items[0m::[36mdiff[0m::[32mPublicItemsDiff[0m::[33mbetween[0m([1;48;5;22;38;5;10mold_items[0m: [32mVec[0m<[32mPublicItem[0m>, [1;48;5;22;38;5;10mnew_items[0m: [32mVec[0m<[32mPublicItem[0m>) -> [32mSelf[0m
+
+Added items to the public API
+=============================
++[34mpub[0m [34mfn[0m [36mpublic_items[0m::[36mdiff[0m::[32mChangedPublicItem[0m::[33mcmp[0m(&[34mself[0m, [36mother[0m: &[32mChangedPublicItem[0m) -> [36m$crate[0m::[36mcmp[0m::[32mOrdering[0m
++[34mpub[0m [34mfn[0m [36mpublic_items[0m::[36mdiff[0m::[32mChangedPublicItem[0m::[33meq[0m(&[34mself[0m, [36mother[0m: &[32mChangedPublicItem[0m) -> [32mbool[0m
++[34mpub[0m [34mfn[0m [36mpublic_items[0m::[36mdiff[0m::[32mChangedPublicItem[0m::[33mne[0m(&[34mself[0m, [36mother[0m: &[32mChangedPublicItem[0m) -> [32mbool[0m
++[34mpub[0m [34mfn[0m [36mpublic_items[0m::[36mdiff[0m::[32mChangedPublicItem[0m::[33mpartial_cmp[0m(&[34mself[0m, [36mother[0m: &[32mChangedPublicItem[0m) -> [36m$crate[0m::[36moption[0m::[32mOption[0m<[36m$crate[0m::[36mcmp[0m::[32mOrdering[0m>
++[34mpub[0m [34mfn[0m [36mpublic_items[0m::[36mdiff[0m::[32mPublicItemsDiff[0m::[33meq[0m(&[34mself[0m, [36mother[0m: &[32mPublicItemsDiff[0m) -> [32mbool[0m
++[34mpub[0m [34mfn[0m [36mpublic_items[0m::[36mdiff[0m::[32mPublicItemsDiff[0m::[33mne[0m(&[34mself[0m, [36mother[0m: &[32mPublicItemsDiff[0m) -> [32mbool[0m
+

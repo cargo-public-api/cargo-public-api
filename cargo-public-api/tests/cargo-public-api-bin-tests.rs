@@ -1,3 +1,8 @@
+//! To update expected output it is in many cases sufficient to run
+//! ```bash
+//! ./scripts/bless-expected-output-for-tests.sh
+//! ```
+
 use std::path::{Path, PathBuf};
 
 use assert_cmd::Command;
@@ -124,54 +129,22 @@ fn diff_public_items_with_color() {
     cmd.arg("--diff-git-checkouts");
     cmd.arg("v0.6.0");
     cmd.arg("v0.7.1");
-
-    // To update expected output, run this:
-    //
-    //   cd target/tmp/cargo-public-api-test-repo
-    //   cargo run --bin cargo-public-api --manifest-path ../../../Cargo.toml -- --color=always --diff-git-checkouts v0.6.0 v0.7.1 | sed 's/\x1b/\\x1b/g'
     cmd.assert()
-        .stdout("Removed items from the public API
-=================================
--\x1b[34mpub\x1b[0m \x1b[34mfn\x1b[0m \x1b[36mpublic_items\x1b[0m::\x1b[32mPublicItem\x1b[0m::\x1b[33mhash\x1b[0m<\x1b[32m__H\x1b[0m: \x1b[36m$crate\x1b[0m::\x1b[36mhash\x1b[0m::\x1b[32mHasher\x1b[0m>(&\x1b[34mself\x1b[0m, \x1b[36mstate\x1b[0m: &\x1b[34mmut\x1b[0m \x1b[32m__H\x1b[0m) -> ()
--\x1b[34mpub\x1b[0m \x1b[34mfn\x1b[0m \x1b[36mpublic_items\x1b[0m::\x1b[36mdiff\x1b[0m::\x1b[32mPublicItemsDiff\x1b[0m::\x1b[33mprint_with_headers\x1b[0m(&\x1b[34mself\x1b[0m, \x1b[36mw\x1b[0m: &\x1b[34mmut\x1b[0m \x1b[34mimpl\x1b[0m \x1b[36mstd\x1b[0m::\x1b[36mio\x1b[0m::\x1b[32mWrite\x1b[0m, \x1b[36mheader_removed\x1b[0m: &\x1b[32mstr\x1b[0m, \x1b[36mheader_changed\x1b[0m: &\x1b[32mstr\x1b[0m, \x1b[36mheader_added\x1b[0m: &\x1b[32mstr\x1b[0m) -> \x1b[36mstd\x1b[0m::\x1b[36mio\x1b[0m::\x1b[32mResult\x1b[0m<()>
-
-Changed items in the public API
-===============================
--\x1b[34mpub\x1b[0m \x1b[34mfn\x1b[0m \x1b[36mpublic_items\x1b[0m::\x1b[32mPublicItem\x1b[0m::\x1b[33mfmt\x1b[0m(&\x1b[34mself\x1b[0m, \x1b[36mf\x1b[0m: &\x1b[34mmut\x1b[0m \x1b[1;48;5;52;38;5;9m$crate\x1b[0m::\x1b[36mfmt\x1b[0m::\x1b[32mFormatter\x1b[0m<\x1b[34m'_\x1b[0m>) -> \x1b[1;48;5;52;38;5;9m$crate\x1b[0m::\x1b[36mfmt\x1b[0m::\x1b[32mResult\x1b[0m
-+\x1b[34mpub\x1b[0m \x1b[34mfn\x1b[0m \x1b[36mpublic_items\x1b[0m::\x1b[32mPublicItem\x1b[0m::\x1b[33mfmt\x1b[0m(&\x1b[34mself\x1b[0m, \x1b[36mf\x1b[0m: &\x1b[34mmut\x1b[0m \x1b[1;48;5;22;38;5;10mstd\x1b[0m::\x1b[36mfmt\x1b[0m::\x1b[32mFormatter\x1b[0m<\x1b[34m'_\x1b[0m>) -> \x1b[1;48;5;22;38;5;10mstd\x1b[0m::\x1b[36mfmt\x1b[0m::\x1b[32mResult\x1b[0m
--\x1b[34mpub\x1b[0m \x1b[34mfn\x1b[0m \x1b[36mpublic_items\x1b[0m::\x1b[36mdiff\x1b[0m::\x1b[32mPublicItemsDiff\x1b[0m::\x1b[33mbetween\x1b[0m(\x1b[1;48;5;52;38;5;9mold\x1b[0m: \x1b[32mVec\x1b[0m<\x1b[32mPublicItem\x1b[0m>, \x1b[1;48;5;52;38;5;9mnew\x1b[0m: \x1b[32mVec\x1b[0m<\x1b[32mPublicItem\x1b[0m>) -> \x1b[32mSelf\x1b[0m
-+\x1b[34mpub\x1b[0m \x1b[34mfn\x1b[0m \x1b[36mpublic_items\x1b[0m::\x1b[36mdiff\x1b[0m::\x1b[32mPublicItemsDiff\x1b[0m::\x1b[33mbetween\x1b[0m(\x1b[1;48;5;22;38;5;10mold_items\x1b[0m: \x1b[32mVec\x1b[0m<\x1b[32mPublicItem\x1b[0m>, \x1b[1;48;5;22;38;5;10mnew_items\x1b[0m: \x1b[32mVec\x1b[0m<\x1b[32mPublicItem\x1b[0m>) -> \x1b[32mSelf\x1b[0m
-
-Added items to the public API
-=============================
-+\x1b[34mpub\x1b[0m \x1b[34mfn\x1b[0m \x1b[36mpublic_items\x1b[0m::\x1b[36mdiff\x1b[0m::\x1b[32mChangedPublicItem\x1b[0m::\x1b[33mcmp\x1b[0m(&\x1b[34mself\x1b[0m, \x1b[36mother\x1b[0m: &\x1b[32mChangedPublicItem\x1b[0m) -> \x1b[36m$crate\x1b[0m::\x1b[36mcmp\x1b[0m::\x1b[32mOrdering\x1b[0m
-+\x1b[34mpub\x1b[0m \x1b[34mfn\x1b[0m \x1b[36mpublic_items\x1b[0m::\x1b[36mdiff\x1b[0m::\x1b[32mChangedPublicItem\x1b[0m::\x1b[33meq\x1b[0m(&\x1b[34mself\x1b[0m, \x1b[36mother\x1b[0m: &\x1b[32mChangedPublicItem\x1b[0m) -> \x1b[32mbool\x1b[0m
-+\x1b[34mpub\x1b[0m \x1b[34mfn\x1b[0m \x1b[36mpublic_items\x1b[0m::\x1b[36mdiff\x1b[0m::\x1b[32mChangedPublicItem\x1b[0m::\x1b[33mne\x1b[0m(&\x1b[34mself\x1b[0m, \x1b[36mother\x1b[0m: &\x1b[32mChangedPublicItem\x1b[0m) -> \x1b[32mbool\x1b[0m
-+\x1b[34mpub\x1b[0m \x1b[34mfn\x1b[0m \x1b[36mpublic_items\x1b[0m::\x1b[36mdiff\x1b[0m::\x1b[32mChangedPublicItem\x1b[0m::\x1b[33mpartial_cmp\x1b[0m(&\x1b[34mself\x1b[0m, \x1b[36mother\x1b[0m: &\x1b[32mChangedPublicItem\x1b[0m) -> \x1b[36m$crate\x1b[0m::\x1b[36moption\x1b[0m::\x1b[32mOption\x1b[0m<\x1b[36m$crate\x1b[0m::\x1b[36mcmp\x1b[0m::\x1b[32mOrdering\x1b[0m>
-+\x1b[34mpub\x1b[0m \x1b[34mfn\x1b[0m \x1b[36mpublic_items\x1b[0m::\x1b[36mdiff\x1b[0m::\x1b[32mPublicItemsDiff\x1b[0m::\x1b[33meq\x1b[0m(&\x1b[34mself\x1b[0m, \x1b[36mother\x1b[0m: &\x1b[32mPublicItemsDiff\x1b[0m) -> \x1b[32mbool\x1b[0m
-+\x1b[34mpub\x1b[0m \x1b[34mfn\x1b[0m \x1b[36mpublic_items\x1b[0m::\x1b[36mdiff\x1b[0m::\x1b[32mPublicItemsDiff\x1b[0m::\x1b[33mne\x1b[0m(&\x1b[34mself\x1b[0m, \x1b[36mother\x1b[0m: &\x1b[32mPublicItemsDiff\x1b[0m) -> \x1b[32mbool\x1b[0m
-
-",
-        )
+        .stdout(include_str!(
+            "./expected-output/test_crate_diff_v0.6.0_to_v0.7.1_colored.txt"
+        ))
         .success();
 }
 
 #[serial]
 #[test]
 fn list_public_items_with_color() {
-    ensure_test_crate_is_cloned();
-
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
     cmd.arg("--color=always");
-
-    // To update expected output, run this:
-    //
-    //   cargo run -- --color=always | sed 's/\x1b/\\x1b/g'
     cmd.assert()
-        .stdout("\x1b[34mpub\x1b[0m \x1b[34mfn\x1b[0m \x1b[36mcargo_public_api\x1b[0m::\x1b[33mfor_self_testing_purposes_please_ignore\x1b[0m()
-\x1b[34mpub\x1b[0m \x1b[34mmod\x1b[0m \x1b[36mcargo_public_api\x1b[0m
-",
-        )
+        .stdout(include_str!(
+            "./expected-output/list_self_test_lib_items_colored.txt"
+        ))
         .success();
 }
 

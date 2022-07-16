@@ -260,6 +260,16 @@ fn list_public_items_markdown() {
         .success();
 }
 
+#[serial]
+#[test]
+fn verbose() {
+    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    cmd.arg("--verbose");
+    cmd.assert()
+        .stdout(predicates::str::contains("Processing \""))
+        .success();
+}
+
 #[test]
 fn long_help() {
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();

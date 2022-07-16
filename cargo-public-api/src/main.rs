@@ -81,6 +81,11 @@ pub struct Args {
     #[clap(long, default_value = "auto")]
     color: arg_types::Color,
 
+    /// Show detailed info about processing. For debugging purposes. The output
+    /// is not stable and can change across patch versions.
+    #[clap(long, hide = true)]
+    verbose: bool,
+
     /// Allows you to build rustdoc JSON with a toolchain other than `+nightly`.
     /// Useful if you have built a toolchain from source for example.
     #[clap(long, hide = true, default_value = "+nightly")]
@@ -178,6 +183,9 @@ fn collect_public_items_from_commit(commit: Option<&str>) -> Result<Vec<PublicIt
         Err(BuildError::VirtualManifest(manifest_path)) => virtual_manifest_error(&manifest_path)?,
         res => res?,
     };
+    if args.verbose {
+        println!("Processing {:?}", json_path);
+    }
     let options = get_options(&args);
 
     public_api_from_rustdoc_json_path(json_path, options)

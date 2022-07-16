@@ -69,21 +69,9 @@ fn diff_public_items() {
     cmd.arg("v0.0.4");
     cmd.arg("v0.0.5");
     cmd.assert()
-        .stdout(
-            "Removed items from the public API\n\
-             =================================\n\
-             -pub fn public_items::from_rustdoc_json_str(rustdoc_json_str: &str) -> Result<HashSet<String>>\n\
-             \n\
-             Changed items in the public API\n\
-             ===============================\n\
-             (none)\n\
-             \n\
-             Added items to the public API\n\
-             =============================\n\
-             +pub fn public_items::sorted_public_items_from_rustdoc_json_str(rustdoc_json_str: &str) -> Result<Vec<String>>\n\
-             \n\
-            ",
-        )
+        .stdout(include_str!(
+            "./expected-output/test_crate_diff_v0.0.4_to_v0.0.5.txt"
+        ))
         .success();
 }
 
@@ -103,21 +91,9 @@ fn diff_public_items_with_manifest_path() {
     cmd.arg("v0.0.4");
     cmd.arg("v0.0.5");
     cmd.assert()
-        .stdout(
-            "Removed items from the public API\n\
-             =================================\n\
-             -pub fn public_items::from_rustdoc_json_str(rustdoc_json_str: &str) -> Result<HashSet<String>>\n\
-             \n\
-             Changed items in the public API\n\
-             ===============================\n\
-             (none)\n\
-             \n\
-             Added items to the public API\n\
-             =============================\n\
-             +pub fn public_items::sorted_public_items_from_rustdoc_json_str(rustdoc_json_str: &str) -> Result<Vec<String>>\n\
-             \n\
-            ",
-        )
+        .stdout(include_str!(
+            "./expected-output/test_crate_diff_v0.0.4_to_v0.0.5.txt"
+        ))
         .success();
 }
 

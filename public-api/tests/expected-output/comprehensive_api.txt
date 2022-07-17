@@ -18,10 +18,18 @@ pub enum variant comprehensive_api::enums::DiverseVariants::Tuple(usize, bool)
 pub enum variant comprehensive_api::enums::EnumWithGenerics::Variant
 pub enum variant comprehensive_api::enums::SingleVariant::Variant
 pub extern crate comprehensive_api::rand
-pub fn comprehensive_api::RngCore::fill_bytes(&mut self, dest: &mut [u8])
-pub fn comprehensive_api::RngCore::next_u32(&mut self) -> u32
-pub fn comprehensive_api::RngCore::next_u64(&mut self) -> u64
-pub fn comprehensive_api::RngCore::try_fill_bytes(&mut self, dest: &mut [u8]) -> Result<(), Error>
+pub fn comprehensive_api::Plain::f()
+pub fn comprehensive_api::Plain::new() -> Plain
+pub fn comprehensive_api::Plain::s1(self)
+pub fn comprehensive_api::Plain::s2(&self)
+pub fn comprehensive_api::Plain::s3(&mut self)
+pub fn comprehensive_api::Plain::s4(&'a self)
+pub fn comprehensive_api::RenamedPlain::f()
+pub fn comprehensive_api::RenamedPlain::new() -> Plain
+pub fn comprehensive_api::RenamedPlain::s1(self)
+pub fn comprehensive_api::RenamedPlain::s2(&self)
+pub fn comprehensive_api::RenamedPlain::s3(&mut self)
+pub fn comprehensive_api::RenamedPlain::s4(&'a self)
 pub fn comprehensive_api::attributes::must_use() -> usize
 pub fn comprehensive_api::functions::dyn_arg(d: &std::io::Write + Send + 'static)
 pub fn comprehensive_api::functions::fn_arg(f: impl Fn(bool, RenamedPlain) -> bool, f_mut: impl FnMut())
@@ -71,6 +79,8 @@ pub mod comprehensive_api::unions
 pub mut static comprehensive_api::statics::MUT_ANSWER: i8
 pub static comprehensive_api::statics::ANSWER: i8
 pub static comprehensive_api::statics::FUNCTION_POINTER: Option<fn(usize, i8) -> String>
+pub struct comprehensive_api::Plain
+pub struct comprehensive_api::RenamedPlain
 pub struct comprehensive_api::StructInPrivateMod
 pub struct comprehensive_api::higher_ranked_trait_bounds::Foo<'a>
 pub struct comprehensive_api::structs::ConstArg<T, const N: usize>
@@ -80,6 +90,8 @@ pub struct comprehensive_api::structs::Tuple
 pub struct comprehensive_api::structs::Unit
 pub struct comprehensive_api::structs::WithLifetimeAndGenericParam<'a, T>
 pub struct comprehensive_api::structs::WithTraitBounds<T: Display + Debug>
+pub struct field comprehensive_api::Plain::x: usize
+pub struct field comprehensive_api::RenamedPlain::x: usize
 pub struct field comprehensive_api::attributes::C::b: bool
 pub struct field comprehensive_api::enums::DiverseVariants::Recursive::child: Box<DiverseVariants>
 pub struct field comprehensive_api::enums::DiverseVariants::Struct::x: usize
@@ -107,5 +119,3 @@ pub type comprehensive_api::typedefs::TypedefPlain = Plain
 pub union comprehensive_api::unions::Basic
 pub unsafe fn comprehensive_api::functions::unsafe_fn()
 pub unsafe trait comprehensive_api::traits::UnsafeTrait
-pub use comprehensive_api::Plain
-pub use comprehensive_api::RenamedPlain

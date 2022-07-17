@@ -1,7 +1,7 @@
 use crate::render;
 use std::rc::Rc;
 
-use rustdoc_types::{Crate, Item};
+use rustdoc_types::Item;
 
 use crate::tokens::Token;
 
@@ -9,7 +9,7 @@ use crate::tokens::Token;
 /// It wraps a single [Item] but adds additional calculated values to make it
 /// easier to work with. Later, one [`Self`] will be converted to exactly one
 /// [`crate::PublicItem`].
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct IntermediatePublicItem<'a> {
     /// The item we are effectively wrapping.
     pub item: &'a Item,
@@ -17,8 +17,6 @@ pub struct IntermediatePublicItem<'a> {
     /// The name of the item. Normally this is [Item::name]. But in the case of
     /// renamed imports (`pub use other::item as foo;`) it is the new name.
     pub name: &'a str,
-
-    pub root: &'a Crate,
 
     /// The parent item. If [Self::item] is e.g. an enum variant, then the
     /// parent is an enum. We follow the chain of parents to be able to know the
@@ -31,15 +29,9 @@ impl<'a> IntermediatePublicItem<'a> {
     pub fn new(
         item: &'a Item,
         name: &'a str,
-        root: &'a Crate,
         parent: Option<Rc<IntermediatePublicItem<'a>>>,
     ) -> Self {
-        Self {
-            item,
-            name,
-            root,
-            parent,
-        }
+        Self { item, name, parent }
     }
 
     #[must_use]

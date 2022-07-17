@@ -131,12 +131,8 @@ impl<'a> ItemIterator<'a> {
         name: &'a str,
         parent: Option<Rc<IntermediatePublicItem<'a>>>,
     ) {
-        self.items_left.push(Rc::new(IntermediatePublicItem::new(
-            item,
-            name,
-            self.crate_,
-            parent,
-        )));
+        let public_item = Rc::new(IntermediatePublicItem::new(item, name, parent));
+        self.items_left.push(public_item);
     }
 
     fn add_missing_id(&mut self, id: &'a Id) {

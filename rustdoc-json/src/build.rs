@@ -6,6 +6,11 @@ use std::{
     process::Command,
 };
 
+/// For development purposes only. Sometimes when you work on this project you
+/// want to quickly use a different toolchain to build rustdoc JSON. You can
+/// specify what toolchain, by temporarily changing this.
+const OVERRIDDEN_TOOLCHAIN: Option<&str> = None; // Some("+nightly-2022-07-16");
+
 /// Run `cargo rustdoc` to produce rustdoc JSON and return the path to the built
 /// file.
 pub(crate) fn run_cargo_rustdoc(
@@ -44,7 +49,7 @@ fn cargo_rustdoc_command(
     command.env_remove("RUSTDOC");
     command.env_remove("RUSTC");
 
-    command.arg(toolchain.as_ref());
+    command.arg(OVERRIDDEN_TOOLCHAIN.map_or_else(|| toolchain.as_ref(), OsStr::new));
     command.arg("rustdoc");
     command.arg("--lib");
     if quiet {

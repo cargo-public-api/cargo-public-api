@@ -92,7 +92,34 @@ impl<'a> ItemIterator<'a> {
                 ..
             }) => (),
 
-            Some(item) => self.add_item_to_visit(item, parent),
+            // Since public imports are part of the public API, we inline them
+            // in the output as much as we can. If we didn't do inlining of
+            // imports, items would just show up as
+            // ```
+            // pub use ...
+            // ```
+            // which is not sufficient for the use cases of this tool. We want
+            // to show the actual API, not an abstract version of it!
+            //
+            // Note that only partial rustdoc JSON for re-exported items from
+            // other crates are available to us in certain cases. See
+            // <https://github.com/rust-lang/rust/pull/99287#issuecomment-1186586518>.
+            Some(Item {
+                inner: ItemEnum::Import(import),
+                ..
+            }) => {
+                if let Some(imported_id) = &import.id {
+                    if let Some(imported_item) = self.crate_.index.get(imported_id) {
+                        self.add_item_to_visit(imported_item, &import.name, parent);
+                    } else {
+                        self.add_missing_id(imported_id);
+                    }
+                }
+            }
+
+            Some(item) => {
+                self.add_item_to_visit(item, item.name.as_deref().unwrap_or("<<no_name>>"), parent);
+            }
 
             None => self.add_missing_id(id),
         }
@@ -101,10 +128,12 @@ impl<'a> ItemIterator<'a> {
     fn add_item_to_visit(
         &mut self,
         item: &'a Item,
+        name: &'a str,
         parent: Option<Rc<IntermediatePublicItem<'a>>>,
     ) {
         self.items_left.push(Rc::new(IntermediatePublicItem::new(
             item,
+            name,
             self.crate_,
             parent,
         )));
@@ -185,7 +214,7 @@ fn intermediate_public_item_to_public_item(
         path: public_item
             .path()
             .iter()
-            .map(|i| i.get_effective_name())
+            .map(|i| i.name.to_owned())
             .collect::<PublicItemPath>(),
         tokens: public_item.render_token_stream(),
     }

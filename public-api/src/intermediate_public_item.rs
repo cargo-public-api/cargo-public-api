@@ -1,7 +1,7 @@
 use crate::render;
 use std::rc::Rc;
 
-use rustdoc_types::{Crate, Item, ItemEnum};
+use rustdoc_types::{Crate, Item};
 
 use crate::tokens::Token;
 
@@ -13,6 +13,11 @@ use crate::tokens::Token;
 pub struct IntermediatePublicItem<'a> {
     /// The item we are effectively wrapping.
     pub item: &'a Item,
+
+    /// The name of the item. Normally this is [Item::name]. But in the case of
+    /// renamed imports (`pub use other::item as foo;`) it is the new name.
+    pub name: &'a str,
+
     pub root: &'a Crate,
 
     /// The parent item. If [Self::item] is e.g. an enum variant, then the
@@ -25,10 +30,16 @@ impl<'a> IntermediatePublicItem<'a> {
     #[must_use]
     pub fn new(
         item: &'a Item,
+        name: &'a str,
         root: &'a Crate,
         parent: Option<Rc<IntermediatePublicItem<'a>>>,
     ) -> Self {
-        Self { item, root, parent }
+        Self {
+            item,
+            name,
+            root,
+            parent,
+        }
     }
 
     #[must_use]
@@ -46,19 +57,6 @@ impl<'a> IntermediatePublicItem<'a> {
         }
 
         path
-    }
-
-    /// Some items do not use item.name. Handle that.
-    #[must_use]
-    pub fn get_effective_name(&'a self) -> String {
-        match &self.item.inner {
-            // An import uses its own name (which can be different from the name of
-            // the imported item)
-            ItemEnum::Import(i) => &i.name,
-
-            _ => self.item.name.as_deref().unwrap_or("<<no_name>>"),
-        }
-        .to_owned()
     }
 
     pub fn render_token_stream(&self) -> Vec<Token> {

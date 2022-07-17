@@ -92,14 +92,22 @@ impl<'a> ItemIterator<'a> {
                 ..
             }) => (),
 
-            Some(item) => self.items_left.push(Rc::new(IntermediatePublicItem::new(
-                item,
-                self.crate_,
-                parent,
-            ))),
+            Some(item) => self.add_item_to_visit(item, parent),
 
             None => self.missing_ids.push(id),
         }
+    }
+
+    fn add_item_to_visit(
+        &mut self,
+        item: &'a Item,
+        parent: Option<Rc<IntermediatePublicItem<'a>>>,
+    ) {
+        self.items_left.push(Rc::new(IntermediatePublicItem::new(
+            item,
+            self.crate_,
+            parent,
+        )));
     }
 }
 

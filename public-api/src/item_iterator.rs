@@ -94,7 +94,7 @@ impl<'a> ItemIterator<'a> {
 
             Some(item) => self.add_item_to_visit(item, parent),
 
-            None => self.missing_ids.push(id),
+            None => self.add_missing_id(id),
         }
     }
 
@@ -108,6 +108,10 @@ impl<'a> ItemIterator<'a> {
             self.crate_,
             parent,
         )));
+    }
+
+    fn add_missing_id(&mut self, id: &'a Id) {
+        self.missing_ids.push(id);
     }
 }
 

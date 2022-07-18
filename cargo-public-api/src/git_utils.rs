@@ -2,8 +2,7 @@ use std::path::{Path, PathBuf};
 
 use anyhow::{anyhow, Context, Result};
 
-/// Synchronously do a `git checkout` of `commit`. Maybe we should use `git2`
-/// crate instead at some point?
+/// Synchronously do a `git checkout` of `commit`.
 pub(crate) fn git_checkout(commit: &str, git_root: &Path) -> Result<()> {
     let mut command = std::process::Command::new("git");
     command.current_dir(git_root);

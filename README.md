@@ -1,6 +1,6 @@
 # cargo-public-api
 
-List and diff the public API of Rust library crates between releases and commits. Detect breaking API changes and semver violations. Relies on and automatically builds rustdoc JSON, for which a recent version of the Rust nightly toolchain must be installed.
+List and diff the public API of Rust library crates between releases and commits. Detect breaking API changes and semver violations. Relies on and automatically builds [rustdoc JSON](https://github.com/rust-lang/rust/issues/76578), for which a recent version of the Rust nightly toolchain must be installed.
 
 # Installation
 
@@ -47,7 +47,7 @@ and the API diff will be printed:
 
 You can also manually do a diff by writing the full list of items to a file for two different versions of your library and then do a regular `diff` between the files.
 
-# Expected output
+## Expected output
 
 Output aims to be character-by-character identical to the textual parts of the regular `cargo doc` HTML output. For example, [this item](https://docs.rs/bat/0.20.0/bat/struct.PrettyPrinter.html#method.input_files) has the following textual representation in the rendered HTML:
 
@@ -71,7 +71,7 @@ pub fn                     input_files<I, P>(&mut self, paths: I) -> &mut Self w
 pub fn bat::PrettyPrinter::input_files<I, P>(&mut self, paths: I) -> &mut Self where I: IntoIterator<Item = P>, P: AsRef<Path>
 ```
 
-# Blanket implementations
+## Blanket implementations
 
 By default, blanket implementations such as `impl<T> Any for T`, `impl<T> Borrow<T> for T`, and `impl<T, U> Into<U> for T where U: From<T>` are omitted from the list of public items of a crate. For the vast majority of use cases, blanket implementations are not of interest, and just creates noise.
 
@@ -80,16 +80,16 @@ Use `--with-blanket-implementations` if you want to include items of blanket imp
 cargo public-api --with-blanket-implementations
 ```
 
-# Target audience
+## Target audience
 
 Maintainers of Rust libraries that want to keep track of changes to their public API.
 
-# Limitations
+## Limitations
 
 See [`[limitation]`](https://github.com/Enselic/cargo-public-api/labels/limitation)
 labeled issues.
 
-# Compatibility matrix
+## Compatibility matrix
 
 | cargo-public-api | Understands the rustdoc JSON output of  |
 | ---------------- | --------------------------------------- |
@@ -99,15 +99,11 @@ labeled issues.
 | v0.2.x           | nightly-2022-01-19 — nightly-2022-02-22 |
 | v0.0.5           | nightly-2021-10-11 — nightly-2022-01-18 |
 
-# Implementation details
-
-This utility is implemented with and adds conveniences on top of the [public-api](https://crates.io/crates/public-api) library (https://github.com/Enselic/cargo-public-api/tree/main/public-api).
-
 # Development
 
 See [development.md](./doc/development.md).
 
-# Maintainers
+## Maintainers
 
 - [Enselic](https://github.com/Enselic)
 - [douweschulte](https://github.com/douweschulte)

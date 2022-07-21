@@ -274,6 +274,21 @@ mod tests {
         assert!(!actual.is_empty());
     }
 
+    #[test]
+    fn no_diff_means_empty_diff() {
+        let old = vec![item_with_path("foo")];
+        let new = vec![item_with_path("foo")];
+
+        let actual = PublicItemsDiff::between(old, new);
+        let expected = PublicItemsDiff {
+            removed: vec![],
+            changed: vec![],
+            added: vec![],
+        };
+        assert_eq!(actual, expected);
+        assert!(actual.is_empty());
+    }
+
     fn item_with_path(path: &str) -> PublicItem {
         PublicItem {
             path: path

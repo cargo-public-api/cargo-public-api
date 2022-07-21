@@ -111,6 +111,20 @@ fn deny_without_diff() {
 
 #[serial]
 #[test]
+fn deny_with_diff() {
+    ensure_test_crate_is_cloned();
+
+    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    cmd.current_dir(test_crate_path());
+    cmd.arg("--diff-git-checkouts");
+    cmd.arg("v0.0.4");
+    cmd.arg("v0.0.5");
+    cmd.arg("--deny=all");
+    cmd.assert().stderr("").failure();
+}
+
+#[serial]
+#[test]
 fn diff_public_items_with_manifest_path() {
     ensure_test_crate_is_cloned();
 

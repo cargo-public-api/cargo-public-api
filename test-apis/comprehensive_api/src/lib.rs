@@ -19,3 +19,6 @@ pub mod structs;
 pub mod traits;
 pub mod typedefs;
 pub mod unions;
+
+pub use u32;
+pub use i32 as my_i32;

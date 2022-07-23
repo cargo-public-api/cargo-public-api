@@ -125,6 +125,22 @@ fn deny_with_diff() {
 
 #[serial]
 #[test]
+fn deny_with_invalid_arg() {
+    ensure_test_crate_is_cloned();
+
+    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    cmd.current_dir(test_crate_path());
+    cmd.arg("--diff-git-checkouts");
+    cmd.arg("v0.0.4");
+    cmd.arg("v0.0.5");
+    cmd.arg("--deny=invalid");
+    cmd.assert()
+        .stderr(contains("\"invalid\" isn't a valid value"))
+        .failure();
+}
+
+#[serial]
+#[test]
 fn diff_public_items_with_manifest_path() {
     ensure_test_crate_is_cloned();
 

@@ -6,6 +6,7 @@
 use std::path::{Path, PathBuf};
 
 use assert_cmd::Command;
+use predicates::str::contains;
 use serial_test::serial;
 
 #[serial]
@@ -54,7 +55,7 @@ fn virtual_manifest_error() {
     cmd.arg(current_dir_and("tests/virtual-manifest/Cargo.toml"));
     cmd.assert()
         .stdout("")
-        .stderr(predicates::str::contains(
+        .stderr(contains(
             "Listing or diffing the public API of an entire workspace is not supported.",
         ))
         .failure();
@@ -78,6 +79,64 @@ fn diff_public_items() {
             "./expected-output/test_crate_diff_v0.0.4_to_v0.0.5.txt"
         ))
         .success();
+}
+
+#[serial]
+#[test]
+fn deny_when_not_diffing() {
+    ensure_test_crate_is_cloned(); // Because we still list the API
+
+    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    cmd.arg("--deny=all");
+    cmd.assert()
+        .stderr(contains("`--deny` can only be used when diffing"))
+        .failure();
+}
+
+#[serial]
+#[test]
+fn deny_without_diff() {
+    ensure_test_crate_is_cloned();
+
+    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    cmd.current_dir(test_crate_path());
+    cmd.arg("--diff-git-checkouts");
+    cmd.arg("v0.2.0");
+    cmd.arg("v0.3.0");
+    cmd.arg("--deny=all");
+    cmd.assert().success();
+}
+
+#[serial]
+#[test]
+fn deny_with_diff() {
+    ensure_test_crate_is_cloned();
+
+    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    cmd.current_dir(test_crate_path());
+    cmd.arg("--diff-git-checkouts");
+    cmd.arg("v0.0.4");
+    cmd.arg("v0.0.5");
+    cmd.arg("--deny=all");
+    cmd.assert()
+        .stderr(contains("The API diff is not allowed as per --deny"))
+        .failure();
+}
+
+#[serial]
+#[test]
+fn deny_with_invalid_arg() {
+    ensure_test_crate_is_cloned();
+
+    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    cmd.current_dir(test_crate_path());
+    cmd.arg("--diff-git-checkouts");
+    cmd.arg("v0.0.4");
+    cmd.arg("v0.0.5");
+    cmd.arg("--deny=invalid");
+    cmd.assert()
+        .stderr(contains("\"invalid\" isn't a valid value"))
+        .failure();
 }
 
 #[serial]
@@ -238,7 +297,7 @@ fn diff_public_items_missing_one_arg() {
     cmd.arg("--diff-git-checkouts");
     cmd.arg("v0.2.0");
     cmd.assert()
-        .stderr(predicates::str::contains(
+        .stderr(contains(
             "requires at least 2 values but only 1 was provided",
         ))
         .failure();
@@ -265,9 +324,7 @@ fn list_public_items_markdown() {
 fn verbose() {
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
     cmd.arg("--verbose");
-    cmd.assert()
-        .stdout(predicates::str::contains("Processing \""))
-        .success();
+    cmd.assert().stdout(contains("Processing \"")).success();
 }
 
 #[test]
@@ -296,9 +353,9 @@ fn assert_presence_of_own_library_items(mut cmd: Command) {
 
 fn assert_presence_of_args_in_help(mut cmd: Command) {
     cmd.assert()
-        .stdout(predicates::str::contains("--with-blanket-implementations"))
-        .stdout(predicates::str::contains("--manifest-path"))
-        .stdout(predicates::str::contains("--diff-git-checkouts"))
+        .stdout(contains("--with-blanket-implementations"))
+        .stdout(contains("--manifest-path"))
+        .stdout(contains("--diff-git-checkouts"))
         .success();
 }
 

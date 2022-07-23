@@ -2,7 +2,9 @@ use std::io::stdout;
 use std::path::{Path, PathBuf};
 
 use anyhow::{anyhow, Context, Result};
+use arg_types::{Color, DenyMethod, OutputFormat};
 use output_formatter::OutputFormatter;
+use public_api::diff::PublicItemsDiff;
 use public_api::{
     public_api_from_rustdoc_json_str, Options, PublicItem, MINIMUM_RUSTDOC_JSON_VERSION,
 };
@@ -11,6 +13,7 @@ use clap::Parser;
 use rustdoc_json::BuildError;
 
 mod arg_types;
+mod error;
 mod git_utils;
 mod markdown;
 mod output_formatter;
@@ -71,15 +74,20 @@ pub struct Args {
     #[clap(long, min_values = 2, max_values = 2)]
     diff_rustdoc_json: Option<Vec<String>>,
 
+    /// Exit with failure if the specified API diff is detected. all = deny
+    /// additions, changes, and removals of public items in the API
+    #[clap(long, arg_enum)]
+    deny: Option<Vec<DenyMethod>>,
+
     /// What output format to use. You can select between "plain" and "markdown".
     #[clap(long, name = "FORMAT", default_value = "plain")]
-    output_format: arg_types::OutputFormat,
+    output_format: OutputFormat,
 
     /// Whether or not to use colors. You can select between "auto", "never", "always".
     /// If "auto" (the default), colors will be used if stdout is a terminal. If you pipe
     /// the output to a file, colors will be disabled by default.
     #[clap(long, default_value = "auto")]
-    color: arg_types::Color,
+    color: Color,
 
     /// Show detailed info about processing. For debugging purposes. The output
     /// is not stable and can change across patch versions.
@@ -95,12 +103,34 @@ pub struct Args {
 fn main_() -> Result<()> {
     let args = get_args();
 
-    if let Some(commits) = &args.diff_git_checkouts {
-        print_public_items_diff_between_two_commits(&args, commits)
+    let diff = if let Some(commits) = &args.diff_git_checkouts {
+        Some(print_diff_between_two_commits(&args, commits)?)
     } else if let Some(files) = &args.diff_rustdoc_json {
-        print_public_items_diff_between_two_rustdoc_json_files(&args, files)
+        Some(print_diff_between_two_rustdoc_json_files(&args, files)?)
     } else {
-        print_public_items_of_current_commit(&args)
+        print_public_items_of_current_commit(&args)?;
+        None
+    };
+
+    check_diff(&args, diff)
+}
+
+fn check_diff(args: &Args, diff: Option<PublicItemsDiff>) -> Result<()> {
+    match (&args.deny, diff) {
+        // We were requested to deny diffs, so make sure there is no diff
+        (Some(_deny), Some(diff)) => {
+            if diff.is_empty() {
+                Ok(())
+            } else {
+                Err(anyhow!(error::Error::DiffDenied))
+            }
+        }
+
+        // We were requested to deny diffs, but we did not calculate a diff!
+        (Some(_), None) => Err(anyhow!("`--deny` can only be used when diffing")),
+
+        // No diff related stuff to care about, all is Ok
+        _ => Ok(()),
     }
 }
 
@@ -113,7 +143,7 @@ fn print_public_items_of_current_commit(args: &Args) -> Result<()> {
     Ok(())
 }
 
-fn print_public_items_diff_between_two_commits(args: &Args, commits: &[String]) -> Result<()> {
+fn print_diff_between_two_commits(args: &Args, commits: &[String]) -> Result<PublicItemsDiff> {
     let old_commit = commits.get(0).expect("clap makes sure first commit exist");
     let old = collect_public_items_from_commit(Some(old_commit))?;
 
@@ -123,10 +153,10 @@ fn print_public_items_diff_between_two_commits(args: &Args, commits: &[String]) 
     print_diff(args, old, new)
 }
 
-fn print_public_items_diff_between_two_rustdoc_json_files(
+fn print_diff_between_two_rustdoc_json_files(
     args: &Args,
     files: &[String],
-) -> Result<()> {
+) -> Result<PublicItemsDiff> {
     let options = get_options(args);
 
     let old_file = files.get(0).expect("clap makes sure first file exists");
@@ -138,13 +168,13 @@ fn print_public_items_diff_between_two_rustdoc_json_files(
     print_diff(args, old, new)
 }
 
-fn print_diff(args: &Args, old: Vec<PublicItem>, new: Vec<PublicItem>) -> Result<()> {
-    let diff = public_api::diff::PublicItemsDiff::between(old, new);
+fn print_diff(args: &Args, old: Vec<PublicItem>, new: Vec<PublicItem>) -> Result<PublicItemsDiff> {
+    let diff = PublicItemsDiff::between(old, new);
     args.output_format
         .formatter()
         .print_diff(&mut stdout(), args, &diff)?;
 
-    Ok(())
+    Ok(diff)
 }
 
 /// Get CLI args via `clap` while also handling when we are invoked as a cargo

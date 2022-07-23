@@ -11,6 +11,15 @@
 			"label": "rust: cargo build"
 		},
 		{
+			"type": "shell",
+			"command": "./scripts/run-ci-locally.sh",
+			"problemMatcher": [
+				"$rustc"
+			],
+			"group": "build",
+			"label": "./scripts/run-ci-locally.sh"
+		},
+		{
 			"type": "cargo",
 			"command": "test",
 			"problemMatcher": [

@@ -29,10 +29,12 @@ pub struct ItemIterator<'a> {
     /// What items left to visit (and possibly add more items from)
     items_left: Vec<Rc<IntermediatePublicItem<'a>>>,
 
-    /// Normally, a reference in the rustdoc JSON exists. If
-    /// [Self::crate_.index] is missing an id (e.g. if it is for a dependency
-    /// but the rustdoc JSON was built with `--no-deps`) then we track that in
-    /// this field.
+    /// Normally, an item referenced by item Id is present in the rustdoc JSON.
+    /// If [`Self::crate_.index`] is missing an Id, then we add it here, to aid
+    /// with debugging. It will typically be missing because of bugs (or
+    /// borderline bug such as re-exports of foreign items like discussed in
+    /// <https://github.com/rust-lang/rust/pull/99287#issuecomment-1186586518>)
+    /// We do not report it to users, because they can't do anything about it.
     missing_ids: Vec<&'a Id>,
 
     /// `impl`s are a bit special. They do not need to be reachable by the crate
@@ -85,40 +87,13 @@ impl<'a> ItemIterator<'a> {
         parent: Option<Rc<IntermediatePublicItem<'a>>>,
     ) {
         match self.crate_.index.get(id) {
-            // We handle `impl`s specially, and we don't want to process `impl`
-            // items directly. See [`ItemIterator::impls`] docs for more info.
-            Some(Item {
-                inner: ItemEnum::Impl { .. },
-                ..
-            }) => (),
-
-            // Since public imports are part of the public API, we inline them
-            // in the output as much as we can. If we didn't do inlining of
-            // imports, items would just show up as
-            // ```
-            // pub use ...
-            // ```
-            // which is not sufficient for the use cases of this tool. We want
-            // to show the actual API, not an abstract version of it!
-            //
-            // Note that only partial rustdoc JSON for re-exported items from
-            // other crates are available to us in certain cases. See
-            // <https://github.com/rust-lang/rust/pull/99287#issuecomment-1186586518>.
-            Some(Item {
-                inner: ItemEnum::Import(import),
-                ..
-            }) => {
-                if let Some(imported_id) = &import.id {
-                    if let Some(imported_item) = self.crate_.index.get(imported_id) {
-                        self.add_item_to_visit(imported_item, &import.name, parent);
-                    } else {
-                        self.add_missing_id(imported_id);
-                    }
-                }
-            }
-
             Some(item) => {
-                self.add_item_to_visit(item, item.name.as_deref().unwrap_or("<<no_name>>"), parent);
+                // We handle `impl`s specially, and we don't want to process `impl`
+                // items directly. See [`ItemIterator::impls`] docs for more info.
+                // All other items we can go ahead and add.
+                if !matches!(item.inner, ItemEnum::Impl { .. }) {
+                    self.add_item_to_visit(item, parent);
+                }
             }
 
             None => self.add_missing_id(id),
@@ -127,11 +102,35 @@ impl<'a> ItemIterator<'a> {
 
     fn add_item_to_visit(
         &mut self,
-        item: &'a Item,
-        name: &'a str,
+        mut item: &'a Item,
         parent: Option<Rc<IntermediatePublicItem<'a>>>,
     ) {
-        let public_item = Rc::new(IntermediatePublicItem::new(item, name, parent));
+        let mut name = item.name.as_deref();
+
+        // Since public imports are part of the public API, we inline them, i.e.
+        // replace the item corresponding to an import with the item that is
+        // imported. If we didn't do this, publicly imported items would show up
+        // as just e.g. `pub use some::function`, which is not sufficient for
+        // the use cases of this tool. We want to show the actual API, and thus
+        // also show type information! There is one exception; for re-exports of
+        // primitive types, there is no item Id to inline with, so they remain
+        // as e.g. `pub use my_i32` in the output.
+        if let ItemEnum::Import(import) = &item.inner {
+            name = Some(&import.name);
+            if let Some(imported_id) = &import.id {
+                match self.crate_.index.get(imported_id) {
+                    Some(imported_item) => item = imported_item,
+                    None => self.add_missing_id(imported_id),
+                }
+            }
+        }
+
+        let public_item = Rc::new(IntermediatePublicItem::new(
+            item,
+            name.unwrap_or("<<no_name>>"),
+            parent,
+        ));
+
         self.items_left.push(public_item);
     }
 

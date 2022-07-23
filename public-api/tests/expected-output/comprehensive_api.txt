@@ -119,3 +119,5 @@ pub type comprehensive_api::typedefs::TypedefPlain = Plain
 pub union comprehensive_api::unions::Basic
 pub unsafe fn comprehensive_api::functions::unsafe_fn()
 pub unsafe trait comprehensive_api::traits::UnsafeTrait
+pub use comprehensive_api::my_i32
+pub use comprehensive_api::u32

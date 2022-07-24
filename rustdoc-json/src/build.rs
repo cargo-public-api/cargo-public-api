@@ -97,3 +97,14 @@ fn package_name(manifest_path: impl AsRef<Path>) -> Result<String, BuildError> {
         .ok_or_else(|| BuildError::VirtualManifest(manifest_path.as_ref().to_owned()))?
         .name)
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn ensure_toolchain_not_overridden() {
+        // The override is only meant to be changed locally, do not git commit!
+        assert!(OVERRIDDEN_TOOLCHAIN.is_none());
+    }
+}

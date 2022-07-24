@@ -1,17 +1,28 @@
 //! Utilities for working with rustdoc JSON.
 //!
-//! Currently only [`build()`] and [`build_quietly()`]. Please see their docs
-//! for more info.
+//! # Building
+//!
+//! Use [`build()`] to build rustdoc JSON. Like this:
+//! ```
+//!    use rustdoc_json::BuildOptions as Options;
+//!
+//!    let json_path = rustdoc_json::build(
+//!        Options::default()
+//!            .toolchain("+nightly")
+//!            .manifest_path("Cargo.toml"),
+//!    ).unwrap();
+//!
+//!    println!("Built and wrote rustdoc JSON to {:?}", &json_path);
+//! ```
+//!
+//! A compilable example can be found
+//! [here](https://github.com/Enselic/cargo-public-api/blob/main/rustdoc-json/examples/build-rustdoc-json.rs)
+
+use std::{ffi::OsString, path::PathBuf};
 
 mod build;
 
-use std::{
-    ffi::OsStr,
-    path::{Path, PathBuf},
-};
-
-/// Represent all errors that can occur when using [`build()`] and
-/// [`build_quietly()`].
+/// Represents all errors that can occur when using [`crate::build()`].
 #[derive(thiserror::Error, Debug)]
 pub enum BuildError {
     /// You tried to generate rustdoc JSON for a virtual manifest. That does not
@@ -36,26 +47,25 @@ pub enum BuildError {
     IoError(#[from] std::io::Error),
 }
 
+/// Contains all options for [`crate::build()`].
+///
+/// See [crate] for an example on how to use it.
+#[derive(Debug)]
+pub struct BuildOptions {
+    toolchain: Option<OsString>,
+    manifest_path: std::path::PathBuf,
+    quiet: bool,
+}
+
 /// Generate rustdoc JSON for a library crate. Returns the path to the freshly
-/// built rustdoc JSON file. `toolchain` is the toolchain, e.g. `"+nightly"`.
-/// `manifest_path` is the relative or absolute path to `Cargo.toml`.
+/// built rustdoc JSON file.
+///
+/// See [crate] for an example on how to use it.
 ///
 /// # Errors
 ///
-/// E.g. if building the JSON fails or of the manifest path does not exist or is
+/// E.g. if building the JSON fails or if the manifest path does not exist or is
 /// invalid.
-pub fn build(
-    toolchain: impl AsRef<OsStr>,
-    manifest_path: impl AsRef<Path>,
-) -> Result<PathBuf, BuildError> {
-    build::run_cargo_rustdoc(toolchain, manifest_path, false)
-}
-
-/// Same as [`build()`] but also passes `--quiet` to `cargo`.
-#[allow(clippy::missing_errors_doc)]
-pub fn build_quietly(
-    toolchain: impl AsRef<OsStr>,
-    manifest_path: impl AsRef<Path>,
-) -> Result<PathBuf, BuildError> {
-    build::run_cargo_rustdoc(toolchain, manifest_path, true)
+pub fn build(options: BuildOptions) -> Result<PathBuf, BuildError> {
+    build::run_cargo_rustdoc(options)
 }

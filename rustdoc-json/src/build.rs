@@ -1,4 +1,5 @@
 use super::BuildError;
+use super::BuildOptions;
 
 use std::{
     ffi::OsStr,
@@ -13,19 +14,20 @@ const OVERRIDDEN_TOOLCHAIN: Option<&str> = None; // Some("+nightly-2022-07-16");
 
 /// Run `cargo rustdoc` to produce rustdoc JSON and return the path to the built
 /// file.
-pub(crate) fn run_cargo_rustdoc(
-    toolchain: impl AsRef<OsStr>,
-    manifest_path: impl AsRef<Path>,
-    quiet: bool,
-) -> Result<PathBuf, BuildError> {
-    let output = cargo_rustdoc_command(toolchain, &manifest_path, quiet).output()?;
+pub(crate) fn run_cargo_rustdoc(options: BuildOptions) -> Result<PathBuf, BuildError> {
+    let output = cargo_rustdoc_command(
+        options.toolchain.as_deref(),
+        &options.manifest_path,
+        options.quiet,
+    )
+    .output()?;
     if output.status.success() {
-        rustdoc_json_path_for_manifest_path(manifest_path)
+        rustdoc_json_path_for_manifest_path(options.manifest_path)
     } else {
         let stderr = String::from_utf8_lossy(&output.stderr).to_string();
         if stderr.contains("is a virtual manifest, but this command requires running against an actual package in this workspace") {
             Err(BuildError::VirtualManifest(
-                manifest_path.as_ref().to_owned(),
+                options.manifest_path,
             ))
         } else {
             Err(BuildError::General(stderr))
@@ -39,7 +41,7 @@ pub(crate) fn run_cargo_rustdoc(
 /// cargo +nightly rustdoc --lib --manifest-path Cargo.toml -- -Z unstable-options --output-format json --cap-lints warn
 /// ```
 fn cargo_rustdoc_command(
-    toolchain: impl AsRef<OsStr>,
+    requested_toolchain: Option<&OsStr>,
     manifest_path: impl AsRef<Path>,
     quiet: bool,
 ) -> Command {
@@ -49,7 +51,11 @@ fn cargo_rustdoc_command(
     command.env_remove("RUSTDOC");
     command.env_remove("RUSTC");
 
-    command.arg(OVERRIDDEN_TOOLCHAIN.map_or_else(|| toolchain.as_ref(), OsStr::new));
+    let overridden_toolchain = OVERRIDDEN_TOOLCHAIN.map(OsStr::new);
+    if let Some(toolchain) = overridden_toolchain.or(requested_toolchain) {
+        command.arg(toolchain);
+    }
+
     command.arg("rustdoc");
     command.arg("--lib");
     if quiet {
@@ -96,6 +102,41 @@ fn package_name(manifest_path: impl AsRef<Path>) -> Result<String, BuildError> {
         .package
         .ok_or_else(|| BuildError::VirtualManifest(manifest_path.as_ref().to_owned()))?
         .name)
+}
+
+impl Default for BuildOptions {
+    fn default() -> Self {
+        Self {
+            toolchain: None,
+            manifest_path: PathBuf::from("Cargo.toml"),
+            quiet: false,
+        }
+    }
+}
+
+impl BuildOptions {
+    /// Set the toolchain. Default: `None`, which in practice means `"+stable"`.
+    /// Until rustdoc JSON has stabilized, you will want to set this to
+    /// `"+nightly"` or similar.
+    #[must_use]
+    pub fn toolchain(mut self, toolchain: impl AsRef<OsStr>) -> Self {
+        self.toolchain = Some(toolchain.as_ref().to_owned());
+        self
+    }
+
+    /// Set the relative or absolute path to `Cargo.toml`. Default: `Cargo.toml`
+    #[must_use]
+    pub fn manifest_path(mut self, manifest_path: impl AsRef<Path>) -> Self {
+        self.manifest_path = manifest_path.as_ref().to_owned();
+        self
+    }
+
+    /// Whether or not to pass `--quiet` to `cargo rustdoc`. Default: `false`
+    #[must_use]
+    pub fn quiet(mut self, quiet: bool) -> Self {
+        self.quiet = quiet;
+        self
+    }
 }
 
 #[cfg(test)]

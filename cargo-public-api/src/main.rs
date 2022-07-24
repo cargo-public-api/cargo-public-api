@@ -10,7 +10,7 @@ use public_api::{
 };
 
 use clap::Parser;
-use rustdoc_json::BuildError;
+use rustdoc_json::{BuildError, BuildOptions};
 
 mod arg_types;
 mod error;
@@ -209,7 +209,11 @@ fn collect_public_items_from_commit(commit: Option<&str>) -> Result<Vec<PublicIt
         git_utils::git_checkout(commit, &git_root)?;
     }
 
-    let json_path = match rustdoc_json::build(&args.rustdoc_json_toolchain, &args.manifest_path) {
+    let json_path = match rustdoc_json::build(
+        BuildOptions::default()
+            .toolchain(&args.rustdoc_json_toolchain)
+            .manifest_path(&args.manifest_path),
+    ) {
         Err(BuildError::VirtualManifest(manifest_path)) => virtual_manifest_error(&manifest_path)?,
         res => res?,
     };

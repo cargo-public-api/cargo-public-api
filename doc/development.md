@@ -66,7 +66,7 @@ Here are some guidelines if you are a maintainer:
 1. First release `rustdoc-json` if needed. See below.
 1. Bump to the same `version` in **public-api/Cargo.toml** and **cargo-public-api/Cargo.toml** (including the dependency on `public-api`), and push to `main`. If you bump 0.x.0 version, also update the [compatibility matrix](https://github.com/Enselic/cargo-public-api#compatibility-matrix).
 1. If `MINIMUM_RUSTDOC_JSON_VERSION` must be bumped, bump it. If you bump it, also bump it in [installation instruction](https://github.com/Enselic/cargo-public-api#installation) and the [compatibility matrix](https://github.com/Enselic/cargo-public-api#compatibility-matrix).
-1. Label PRs that should not be mentioned in the release notes with `[exclude-from-release-notes]`
+1. Label PRs that should not be mentioned in the release notes with `[exclude-from-release-notes]`. You can preview release notes by triggering [this](https://github.com/Enselic/cargo-public-api/actions/workflows/Peek-release-notes.yml).
 1. Run https://github.com/Enselic/cargo-public-api/actions/workflows/Release.yml workflow from `main` ([instructions](https://github.com/Enselic/cargo-public-api/blob/main/doc/development.md#how-to-trigger-main-branch-workflow))
 1. Double-check that the release ended up at https://crates.io/crates/public-api/versions and https://crates.io/crates/cargo-public-api/versions
 1. Double-check that the auto-generated release notes for the release at https://github.com/Enselic/cargo-public-api/releases is not horribly inaccurate. If so, please edit.

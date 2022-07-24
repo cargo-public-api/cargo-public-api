@@ -85,7 +85,7 @@ cargo public-api --with-blanket-implementations
 See [`[limitation]`](https://github.com/Enselic/cargo-public-api/labels/limitation)
 labeled issues.
 
-## Compatibility matrix
+# Compatibility matrix
 
 | cargo-public-api | Understands the rustdoc JSON output of  |
 | ---------------- | --------------------------------------- |

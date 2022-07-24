@@ -18,5 +18,4 @@ jobs:
         --data '{
           "tag_name":"TBD",
           "target_commitish":"main"
-          }'
-        | jq --raw-output .body | sed s/\\n/\n/g
+          }' | jq --raw-output .body | sed s/\\n/\n/g

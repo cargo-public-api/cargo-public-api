@@ -1,0 +1,22 @@
+# Allows you to easily see how release notes will look if you make a release
+# now. To be triggered manually from GitHub web UI.
+
+name: Peek release notes
+
+on:
+  workflow_dispatch:
+
+jobs:
+  show-release-notes:
+    runs-on: ubuntu-latest
+    steps:
+    - run: |
+        curl --request POST \
+        --url https://api.github.com/repos/${{ github.repository }}/releases/generate-notes \
+        --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+        --header 'content-type: application/json' \
+        --data '{
+          "tag_name":"TBD",
+          "target_commitish":"main"
+          }'
+        | jq --raw-output .body | sed s/\\n/\n/g

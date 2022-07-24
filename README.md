@@ -80,10 +80,6 @@ Use `--with-blanket-implementations` if you want to include items of blanket imp
 cargo public-api --with-blanket-implementations
 ```
 
-## Target audience
-
-Maintainers of Rust libraries that want to keep track of changes to their public API.
-
 ## Limitations
 
 See [`[limitation]`](https://github.com/Enselic/cargo-public-api/labels/limitation)

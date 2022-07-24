@@ -4,6 +4,9 @@ changelog:
     labels:
       - exclude-from-release-notes
   categories:
-    - title: Noteworthy changes in this release
+    - title: New Features
+      labels:
+        - enhancement
+    - title: Other Changes and Fixes
       labels:
         - "*"

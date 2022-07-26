@@ -9,6 +9,15 @@ use crate::{markdown::Markdown, output_formatter::OutputFormatter, plain::Plain}
 pub enum DenyMethod {
     /// All forms of API diffs are denied: additions, changes, deletions.
     All,
+
+    /// Deny added things in API diffs
+    Added,
+
+    /// Deny changed things in API diffs
+    Changed,
+
+    /// Deny removed things in API diffs
+    Removed,
 }
 
 #[derive(Debug)]

@@ -130,12 +130,36 @@ fn main_() -> Result<()> {
 fn check_diff(args: &Args, diff: &Option<PublicItemsDiff>) -> Result<()> {
     match (&args.deny, diff) {
         // We were requested to deny diffs, so make sure there is no diff
-        (Some(_deny), Some(diff)) => {
-            if diff.is_empty() {
-                Ok(())
-            } else {
-                Err(anyhow!(error::Error::DiffDenied))
+        (Some(deny), Some(diff)) => {
+            for d in deny {
+                match d {
+                    DenyMethod::All => {
+                        if !diff.is_empty() {
+                            anyhow::bail!(error::Error::DiffDenied)
+                        }
+                    }
+
+                    DenyMethod::Added => {
+                        if !diff.added.is_empty() {
+                            anyhow::bail!(error::Error::DiffAddedDenied)
+                        }
+                    }
+
+                    DenyMethod::Changed => {
+                        if !diff.changed.is_empty() {
+                            anyhow::bail!(error::Error::DiffChangedDenied)
+                        }
+                    }
+
+                    DenyMethod::Removed => {
+                        if !diff.removed.is_empty() {
+                            anyhow::bail!(error::Error::DiffRemoveDenied)
+                        }
+                    }
+                }
             }
+
+            Ok(())
         }
 
         // We were requested to deny diffs, but we did not calculate a diff!

@@ -31,7 +31,7 @@ cargo public-api
 
 which will print the public API of `regex` with one line per public item in the API:
 
-<img src="doc/img/list.jpg" alt="colored output of listing a public api">
+<img src="docs/img/list.jpg" alt="colored output of listing a public api">
 
 ## Diff the public API
 
@@ -43,7 +43,7 @@ cargo public-api --diff-git-checkouts 0.2.2 0.2.3
 
 and the API diff will be printed:
 
-<img src="doc/img/diff.jpg" alt="colored output of diffing a public api">
+<img src="docs/img/diff.jpg" alt="colored output of diffing a public api">
 
 You can also manually do a diff by writing the full list of items to a file for two different versions of your library and then do a regular `diff` between the files.
 
@@ -95,9 +95,9 @@ labeled issues.
 | v0.2.x           | nightly-2022-01-19 — nightly-2022-02-22 |
 | v0.0.5           | nightly-2021-10-11 — nightly-2022-01-18 |
 
-# Development
+# Contributing
 
-See [development.md](./doc/development.md).
+See [CONTRIBUTING.md](./docs/CONTRIBUTING.md).
 
 ## Maintainers
 

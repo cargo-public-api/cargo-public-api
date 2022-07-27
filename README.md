@@ -95,9 +95,9 @@ labeled issues.
 | v0.2.x           | nightly-2022-01-19 — nightly-2022-02-22 |
 | v0.0.5           | nightly-2021-10-11 — nightly-2022-01-18 |
 
-# Development
+# Contributing
 
-See [development.md](./docs/development.md).
+See [CONTRIBUTING.md](./docs/CONTRIBUTING.md).
 
 ## Maintainers
 

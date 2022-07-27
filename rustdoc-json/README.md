@@ -1,8 +1,6 @@
 # rustdoc-json
 
-Utilities for working with [rustdoc JSON](https://github.com/rust-lang/rust/issues/76578).
-
-Right now the only utilities are helper functions to build rustdoc JSON. Please refer to the [`docs`](https://docs.rs/rustdoc-json) for more info.
+Utilities for working with [rustdoc JSON](https://github.com/rust-lang/rust/issues/76578). Please refer to the [`docs`](https://docs.rs/rustdoc-json) for more info and example code.
 
 Originally developed for use by [`public-api`](https://crates.io/crates/public-api) and [`cargo-public-api`](https://crates.io/crates/cargo-public-api), but should be useful for any Rust code that wants to build rustdoc JSON.
 

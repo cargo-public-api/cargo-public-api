@@ -4,10 +4,10 @@
 //!
 //! Use [`build()`] to build rustdoc JSON. Like this:
 //! ```
-//!    use rustdoc_json::BuildOptions as Options;
+//!    use rustdoc_json::BuildOptions;
 //!
 //!    let json_path = rustdoc_json::build(
-//!        Options::default()
+//!        BuildOptions::default()
 //!            .toolchain("+nightly")
 //!            .manifest_path("Cargo.toml"),
 //!    ).unwrap();

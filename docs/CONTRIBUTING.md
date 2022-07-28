@@ -42,6 +42,11 @@ If you have built rustdoc yourself to try some rustdoc JSON fix, you can run `ca
 cargo public-api --rustdoc-json-toolchain +custom
 ```
 
+Another option is the `RUSTDOC_JSON_OVERRIDDEN_TOOLCHAIN_HACK` env var. Use it like this:
+```
+RUSTDOC_JSON_OVERRIDDEN_TOOLCHAIN_HACK=+custom ./scripts/run-ci-locally.sh
+```
+
 ## Code coverage
 
 Exploring code coverage is a good way to ensure we have broad enough tests. This is the command I use personally to get started:

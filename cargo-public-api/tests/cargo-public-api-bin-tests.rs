@@ -143,8 +143,61 @@ fn diff_public_items_with_dirty_tree_fails() {
 
 #[test]
 fn deny_when_not_diffing() {
+    let test_repo = TestRepo::new();
+
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    cmd.current_dir(&test_repo.path);
     cmd.arg("--deny=all");
+    cmd.assert()
+        .stderr(contains("`--deny` can only be used when diffing"))
+        .failure();
+}
+
+#[test]
+fn deny_added_when_not_diffing() {
+    let test_repo = TestRepo::new();
+
+    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    cmd.current_dir(&test_repo.path);
+    cmd.arg("--deny=added");
+    cmd.assert()
+        .stderr(contains("`--deny` can only be used when diffing"))
+        .failure();
+}
+
+#[test]
+fn deny_changed_when_not_diffing() {
+    let test_repo = TestRepo::new();
+
+    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    cmd.current_dir(&test_repo.path);
+    cmd.arg("--deny=changed");
+    cmd.assert()
+        .stderr(contains("`--deny` can only be used when diffing"))
+        .failure();
+}
+
+#[test]
+fn deny_removed_when_not_diffing() {
+    let test_repo = TestRepo::new();
+
+    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    cmd.current_dir(&test_repo.path);
+    cmd.arg("--deny=removed");
+    cmd.assert()
+        .stderr(contains("`--deny` can only be used when diffing"))
+        .failure();
+}
+
+#[test]
+fn deny_combination_when_not_diffing() {
+    let test_repo = TestRepo::new();
+
+    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    cmd.current_dir(&test_repo.path);
+    cmd.arg("--deny=added");
+    cmd.arg("--deny=changed");
+    cmd.arg("--deny=removed");
     cmd.assert()
         .stderr(contains("`--deny` can only be used when diffing"))
         .failure();

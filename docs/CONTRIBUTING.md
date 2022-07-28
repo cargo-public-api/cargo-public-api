@@ -14,6 +14,10 @@ Our CI runs every night, so any problems are generally detected quickly. If `car
 
 # Tips to work on this tool
 
+## Running CI steps locally
+
+Run `./scripts/run-ci-locally.sh`.
+
 ## Run local copy of `cargo-public-api` on an arbitrary crate
 
 There are two ways. You can either do:

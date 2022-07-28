@@ -1,4 +1,4 @@
-// The contents of this file is a partial copy of
+// The contents of this file is a copy of
 // https://github.com/rust-lang/rust/blob/508e0584e384556b7e66f57b62e4feeba864b6da/src/test/rustdoc/higher-ranked-trait-bounds.rs
 // which is licensed under
 // https://github.com/rust-lang/rust/blob/master/LICENSE-MIT. The license is as
@@ -51,7 +51,33 @@ where
 
 // @has foo/struct.Foo.html
 pub struct Foo<'a> {
+    _x: &'a u8,
+    pub some_trait: &'a dyn for<'b> Trait<'b>,
     pub some_func: for<'c> fn(val: &'c i32) -> i32,
 }
 
 // @has - '//span[@id="structfield.some_func"]' "some_func: for<'c> fn(val: &'c i32) -> i32"
+// @has - '//span[@id="structfield.some_trait"]' "some_trait: &'a dyn for<'b> Trait<'b>"
+
+impl<'a> Foo<'a> {
+    // @has - '//h4[@class="code-header"]' "pub fn bar<T>() where T: Trait<'a>,"
+    pub fn bar<T>()
+    where
+        T: Trait<'a>,
+    {
+    }
+}
+
+// @has foo/trait.B.html
+pub trait B<'x> {}
+
+// @has - '//h3[@class="code-header in-band"]' "impl<'a> B<'a> for dyn for<'b> Trait<'b>"
+impl<'a> B<'a> for dyn for<'b> Trait<'b> {}
+
+// @has foo/struct.Bar.html
+// @has - '//span[@id="structfield.bar"]' "bar: &'a (dyn for<'b> Trait<'b> + Unpin)"
+// @has - '//span[@id="structfield.baz"]' "baz: &'a (dyn Unpin + for<'b> Trait<'b>)"
+pub struct Bar<'a> {
+    pub bar: &'a (dyn for<'b> Trait<'b> + Unpin),
+    pub baz: &'a (dyn Unpin + for<'b> Trait<'b>),
+}

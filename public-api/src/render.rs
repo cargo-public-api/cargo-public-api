@@ -3,7 +3,7 @@ use std::rc::Rc;
 
 use rustdoc_types::{
     Abi, Constant, FnDecl, FunctionPointer, GenericArg, GenericArgs, GenericBound, GenericParamDef,
-    GenericParamDefKind, Generics, Header, ItemEnum, MacroKind, Term, Type, TypeBinding,
+    GenericParamDefKind, Generics, Header, ItemEnum, MacroKind, PolyTrait, Term, Type, TypeBinding,
     TypeBindingKind, Variant, WherePredicate,
 };
 
@@ -267,6 +267,7 @@ fn render_type(ty: &Type) -> Vec<Token> {
             args,
             param_names,
         } => render_resolved_path(name, args.as_deref(), param_names),
+        Type::DynTrait(dyn_trait) => render_dyn_trait(dyn_trait),
         Type::Generic(name) => vec![Token::generic(name)],
         Type::Primitive(name) => vec![Token::primitive(name)],
         Type::FunctionPointer(ptr) => render_function_pointer(ptr),
@@ -288,6 +289,34 @@ fn render_type(ty: &Type) -> Vec<Token> {
             trait_,
         } => render_qualified_path(self_type, trait_, name),
     }
+}
+
+fn render_dyn_trait(dyn_trait: &rustdoc_types::DynTrait) -> Vec<Token> {
+    let mut output = vec![];
+
+    let more_than_one = dyn_trait.traits.len() > 1 || dyn_trait.lifetime.is_some();
+    if more_than_one {
+        output.push(Token::symbol("("));
+    }
+
+    output.extend(render_sequence_if_not_empty(
+        vec![Token::keyword("dyn"), ws!()],
+        vec![],
+        plus(),
+        &dyn_trait.traits,
+        render_poly_trait,
+    ));
+
+    if let Some(lt) = &dyn_trait.lifetime {
+        output.extend(plus());
+        output.extend(vec![Token::lifetime(lt)]);
+    }
+
+    if more_than_one {
+        output.push(Token::symbol(")"));
+    }
+
+    output
 }
 
 fn render_function(
@@ -545,6 +574,12 @@ fn render_term(term: &Term) -> Vec<Token> {
         Term::Type(ty) => render_type(ty),
         Term::Constant(c) => render_constant(c),
     }
+}
+
+fn render_poly_trait(poly_trait: &PolyTrait) -> Vec<Token> {
+    let mut output = render_higher_rank_trait_bounds(&poly_trait.generic_params);
+    output.extend(render_type(&poly_trait.trait_));
+    output
 }
 
 fn render_generic_arg(arg: &GenericArg) -> Vec<Token> {

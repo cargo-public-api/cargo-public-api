@@ -10,7 +10,7 @@ use std::{
 /// For development purposes only. Sometimes when you work on this project you
 /// want to quickly use a different toolchain to build rustdoc JSON. You can
 /// specify what toolchain, by temporarily changing this.
-const OVERRIDDEN_TOOLCHAIN: Option<&str> = None; // Some("+nightly-2022-07-16");
+const OVERRIDDEN_TOOLCHAIN: Option<&str> = option_env!("RUSTDOC_JSON_OVERRIDDEN_TOOLCHAIN_HACK"); // Some("+nightly-2022-07-16");
 
 /// Run `cargo rustdoc` to produce rustdoc JSON and return the path to the built
 /// file.

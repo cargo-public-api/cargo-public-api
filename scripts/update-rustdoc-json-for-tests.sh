@@ -13,12 +13,15 @@ crates="
     example_api-v0.2.0
 "
 
+# `:-+nightly` means "if unset, use +nightly"
+toolchain=${RUSTDOC_JSON_OVERRIDDEN_TOOLCHAIN_HACK:-+nightly}
+
 for crate in ${crates}; do
     crate_split=(${crate//-/ })
     name=${crate_split[0]} # E.g. `example_api`
     version=${crate_split[1]} # E.g. `v0.1.0`
 
     crate_dir="./test-apis/${crate}"
-    cargo +nightly rustdoc --lib --manifest-path "${crate_dir}/Cargo.toml" -- -Z unstable-options --output-format json
+    cargo ${toolchain} rustdoc --lib --manifest-path "${crate_dir}/Cargo.toml" -- -Z unstable-options --output-format json
     cp -v "${crate_dir}/target/doc/${name}.json" "${output_dir}/${name}-${version}.json"
 done

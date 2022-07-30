@@ -2,7 +2,7 @@ use crate::intermediate_public_item::IntermediatePublicItem;
 use std::rc::Rc;
 
 use rustdoc_types::{
-    Abi, Constant, FnDecl, GenericArg, GenericArgs, GenericBound, GenericParamDef,
+    Abi, Constant, FnDecl, FunctionPointer, GenericArg, GenericArgs, GenericBound, GenericParamDef,
     GenericParamDefKind, Generics, Header, ItemEnum, MacroKind, Term, Type, TypeBinding,
     TypeBindingKind, Variant, WherePredicate,
 };
@@ -259,111 +259,34 @@ fn render_sequence_impl<T>(
     output
 }
 
-#[allow(clippy::too_many_lines)]
 fn render_type(ty: &Type) -> Vec<Token> {
     match ty {
         Type::ResolvedPath {
             name,
+            id: _,
             args,
             param_names,
-            ..
-        } => {
-            let mut output = vec![];
-            if !name.is_empty() {
-                let split: Vec<_> = name.split("::").collect();
-                let len = split.len();
-                for (index, part) in split.into_iter().enumerate() {
-                    if index == 0 && part == "$crate" {
-                        output.push(Token::identifier("$crate"));
-                    } else if index == len - 1 {
-                        output.push(Token::type_(part));
-                    } else {
-                        output.push(Token::identifier(part));
-                    }
-                    output.push(Token::symbol("::"));
-                }
-                if len > 0 {
-                    output.pop();
-                }
-                if let Some(args) = args {
-                    output.extend(render_generic_args(args));
-                }
-            }
-            if !param_names.is_empty() {
-                output.extend(plus());
-                output.extend(render_generic_bounds(param_names));
-            }
-            output
-        } //  _serde::__private::Result | standard type
+        } => render_resolved_path(name, args.as_deref(), param_names),
         Type::Generic(name) => vec![Token::generic(name)],
         Type::Primitive(name) => vec![Token::primitive(name)],
-        Type::FunctionPointer(ptr) => {
-            let mut output = render_higher_rank_trait_bounds(&ptr.generic_params);
-            output.push(Token::kind("fn"));
-            output.extend(render_fn_decl(&ptr.decl));
-            output
-        }
+        Type::FunctionPointer(ptr) => render_function_pointer(ptr),
         Type::Tuple(types) => render_tuple(types),
-        Type::Slice(ty) => {
-            let mut output = vec![Token::symbol("[")];
-            output.extend(render_type(ty));
-            output.push(Token::symbol("]"));
-            output
-        }
-        Type::Array { type_, len } => {
-            let mut output = vec![Token::symbol("[")];
-            output.extend(render_type(type_));
-            output.extend(vec![
-                Token::symbol(";"),
-                ws!(),
-                Token::primitive(len),
-                Token::symbol("]"),
-            ]);
-            output
-        }
-        Type::ImplTrait(bounds) => {
-            let mut output = vec![Token::keyword("impl")];
-            output.push(ws!());
-            output.extend(render_generic_bounds(bounds));
-            output
-        }
+        Type::Slice(ty) => render_slice(ty),
+        Type::Array { type_, len } => render_array(type_, len),
+        Type::ImplTrait(bounds) => render_impl_trait(bounds),
         Type::Infer => vec![Token::symbol("_")],
-        Type::RawPointer { mutable, type_ } => {
-            let mut output = vec![Token::symbol("*")];
-            output.push(Token::keyword(if *mutable { "mut" } else { "const" }));
-            output.push(ws!());
-            output.extend(render_type(type_));
-            output
-        }
+        Type::RawPointer { mutable, type_ } => render_raw_pointer(*mutable, type_),
         Type::BorrowedRef {
             lifetime,
             mutable,
             type_,
-        } => {
-            let mut output = vec![Token::symbol("&")];
-            if let Some(lt) = lifetime {
-                output.extend(vec![Token::lifetime(lt), ws!()]);
-            }
-            if *mutable {
-                output.extend(vec![Token::keyword("mut"), ws!()]);
-            }
-            output.extend(render_type(type_));
-            output
-        }
+        } => render_borrowed_ref(lifetime.as_deref(), *mutable, type_),
         Type::QualifiedPath {
             name,
             args: _,
             self_type,
             trait_,
-        } => {
-            let mut output = vec![Token::symbol("<")];
-            output.extend(render_type(self_type));
-            output.extend(vec![ws!(), Token::keyword("as"), ws!()]);
-            output.extend(render_type(trait_));
-            output.push(Token::symbol(">::"));
-            output.push(Token::identifier(name));
-            output
-        }
+        } => render_qualified_path(self_type, trait_, name),
     }
 }
 
@@ -470,6 +393,46 @@ fn simplified_self(name: &str, ty: &Type) -> Option<Vec<Token>> {
     }
 }
 
+fn render_resolved_path(
+    name: &str,
+    args: Option<&GenericArgs>,
+    param_names: &[GenericBound],
+) -> Vec<Token> {
+    let mut output = vec![];
+    if !name.is_empty() {
+        let split: Vec<_> = name.split("::").collect();
+        let len = split.len();
+        for (index, part) in split.into_iter().enumerate() {
+            if index == 0 && part == "$crate" {
+                output.push(Token::identifier("$crate"));
+            } else if index == len - 1 {
+                output.push(Token::type_(part));
+            } else {
+                output.push(Token::identifier(part));
+            }
+            output.push(Token::symbol("::"));
+        }
+        if len > 0 {
+            output.pop();
+        }
+        if let Some(args) = args {
+            output.extend(render_generic_args(args));
+        }
+    }
+    if !param_names.is_empty() {
+        output.extend(plus());
+        output.extend(render_generic_bounds(param_names));
+    }
+    output
+}
+
+fn render_function_pointer(ptr: &FunctionPointer) -> Vec<Token> {
+    let mut output = render_higher_rank_trait_bounds(&ptr.generic_params);
+    output.push(Token::kind("fn"));
+    output.extend(render_fn_decl(&ptr.decl));
+    output
+}
+
 fn render_tuple(types: &[Type]) -> Vec<Token> {
     render_sequence(
         vec![Token::symbol("(")],
@@ -478,6 +441,62 @@ fn render_tuple(types: &[Type]) -> Vec<Token> {
         types,
         render_type,
     )
+}
+
+fn render_slice(ty: &Type) -> Vec<Token> {
+    let mut output = vec![Token::symbol("[")];
+    output.extend(render_type(ty));
+    output.push(Token::symbol("]"));
+    output
+}
+
+fn render_array(type_: &Type, len: &str) -> Vec<Token> {
+    let mut output = vec![Token::symbol("[")];
+    output.extend(render_type(type_));
+    output.extend(vec![
+        Token::symbol(";"),
+        ws!(),
+        Token::primitive(len),
+        Token::symbol("]"),
+    ]);
+    output
+}
+
+fn render_impl_trait(bounds: &[GenericBound]) -> Vec<Token> {
+    let mut output = vec![Token::keyword("impl")];
+    output.push(ws!());
+    output.extend(render_generic_bounds(bounds));
+    output
+}
+
+fn render_raw_pointer(mutable: bool, type_: &Type) -> Vec<Token> {
+    let mut output = vec![Token::symbol("*")];
+    output.push(Token::keyword(if mutable { "mut" } else { "const" }));
+    output.push(ws!());
+    output.extend(render_type(type_));
+    output
+}
+
+fn render_borrowed_ref(lifetime: Option<&str>, mutable: bool, type_: &Type) -> Vec<Token> {
+    let mut output = vec![Token::symbol("&")];
+    if let Some(lt) = lifetime {
+        output.extend(vec![Token::lifetime(lt), ws!()]);
+    }
+    if mutable {
+        output.extend(vec![Token::keyword("mut"), ws!()]);
+    }
+    output.extend(render_type(type_));
+    output
+}
+
+fn render_qualified_path(type_: &Type, trait_: &Type, name: &str) -> Vec<Token> {
+    let mut output = vec![Token::symbol("<")];
+    output.extend(render_type(type_));
+    output.extend(vec![ws!(), Token::keyword("as"), ws!()]);
+    output.extend(render_type(trait_));
+    output.push(Token::symbol(">::"));
+    output.push(Token::identifier(name));
+    output
 }
 
 enum Binding<'a> {

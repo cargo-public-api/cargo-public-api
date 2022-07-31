@@ -72,11 +72,11 @@ fn diff_public_items() {
     cmd.current_dir(test_crate_path());
     cmd.arg("--color=never");
     cmd.arg("--diff-git-checkouts");
-    cmd.arg("v0.0.4");
-    cmd.arg("v0.0.5");
+    cmd.arg("v0.2.0");
+    cmd.arg("v0.3.0");
     cmd.assert()
         .stdout(include_str!(
-            "./expected-output/test_crate_diff_v0.0.4_to_v0.0.5.txt"
+            "./expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt"
         ))
         .success();
 }
@@ -101,8 +101,8 @@ fn deny_without_diff() {
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
     cmd.current_dir(test_crate_path());
     cmd.arg("--diff-git-checkouts");
-    cmd.arg("v0.2.0");
-    cmd.arg("v0.3.0");
+    cmd.arg("v0.1.0");
+    cmd.arg("v0.1.1");
     cmd.arg("--deny=all");
     cmd.assert().success();
 }
@@ -115,8 +115,8 @@ fn deny_with_diff() {
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
     cmd.current_dir(test_crate_path());
     cmd.arg("--diff-git-checkouts");
-    cmd.arg("v0.0.4");
-    cmd.arg("v0.0.5");
+    cmd.arg("v0.1.0");
+    cmd.arg("v0.2.0");
     cmd.arg("--deny=all");
     cmd.assert()
         .stderr(contains("The API diff is not allowed as per --deny"))
@@ -152,11 +152,11 @@ fn diff_public_items_with_manifest_path() {
     ));
     cmd.arg("--color=never");
     cmd.arg("--diff-git-checkouts");
-    cmd.arg("v0.0.4");
-    cmd.arg("v0.0.5");
+    cmd.arg("v0.2.0");
+    cmd.arg("v0.3.0");
     cmd.assert()
         .stdout(include_str!(
-            "./expected-output/test_crate_diff_v0.0.4_to_v0.0.5.txt"
+            "./expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt"
         ))
         .success();
 }
@@ -186,11 +186,11 @@ fn diff_public_items_with_color() {
     cmd.current_dir(test_crate_path());
     cmd.arg("--color=always");
     cmd.arg("--diff-git-checkouts");
-    cmd.arg("v0.6.0");
-    cmd.arg("v0.7.1");
+    cmd.arg("v0.1.0");
+    cmd.arg("v0.2.0");
     cmd.assert()
         .stdout(include_str!(
-            "./expected-output/test_crate_diff_v0.6.0_to_v0.7.1_colored.txt"
+            "./expected-output/example_api_diff_v0.1.0_to_v0.2.0_colored.txt"
         ))
         .success();
 }
@@ -216,26 +216,23 @@ fn diff_public_items_markdown() {
     cmd.current_dir(test_crate_path());
     cmd.arg("--output-format=markdown");
     cmd.arg("--diff-git-checkouts");
-    cmd.arg("v0.6.0");
-    cmd.arg("v0.7.1");
+    cmd.arg("v0.1.0");
+    cmd.arg("v0.2.0");
     cmd.assert()
-        .stdout(r"## Removed items from the public API
-* `pub fn public_items::PublicItem::hash<__H: $crate::hash::Hasher>(&self, state: &mut __H) -> ()`
-* `pub fn public_items::diff::PublicItemsDiff::print_with_headers(&self, w: &mut impl std::io::Write, header_removed: &str, header_changed: &str, header_added: &str) -> std::io::Result<()>`
+        .stdout(
+            r"## Removed items from the public API
+(none)
 
 ## Changed items in the public API
-* `pub fn public_items::PublicItem::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result` changed to
-  `pub fn public_items::PublicItem::fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result`
-* `pub fn public_items::diff::PublicItemsDiff::between(old: Vec<PublicItem>, new: Vec<PublicItem>) -> Self` changed to
-  `pub fn public_items::diff::PublicItemsDiff::between(old_items: Vec<PublicItem>, new_items: Vec<PublicItem>) -> Self`
+* `pub fn example_api::function(v1_param: Struct)` changed to
+  `pub fn example_api::function(v1_param: Struct, v2_param: usize)`
+* `pub struct example_api::Struct` changed to
+  `#[non_exhaustive] pub struct example_api::Struct`
 
 ## Added items to the public API
-* `pub fn public_items::diff::ChangedPublicItem::cmp(&self, other: &ChangedPublicItem) -> $crate::cmp::Ordering`
-* `pub fn public_items::diff::ChangedPublicItem::eq(&self, other: &ChangedPublicItem) -> bool`
-* `pub fn public_items::diff::ChangedPublicItem::ne(&self, other: &ChangedPublicItem) -> bool`
-* `pub fn public_items::diff::ChangedPublicItem::partial_cmp(&self, other: &ChangedPublicItem) -> $crate::option::Option<$crate::cmp::Ordering>`
-* `pub fn public_items::diff::PublicItemsDiff::eq(&self, other: &PublicItemsDiff) -> bool`
-* `pub fn public_items::diff::PublicItemsDiff::ne(&self, other: &PublicItemsDiff) -> bool`
+* `pub struct example_api::StructV2`
+* `pub struct field example_api::Struct::v2_field: usize`
+* `pub struct field example_api::StructV2::field: usize`
 
 ",
         )
@@ -251,8 +248,8 @@ fn diff_public_items_markdown_no_changes() {
     cmd.current_dir(test_crate_path());
     cmd.arg("--output-format=markdown");
     cmd.arg("--diff-git-checkouts");
-    cmd.arg("v0.2.0");
-    cmd.arg("v0.3.0");
+    cmd.arg("v0.1.0");
+    cmd.arg("v0.1.1");
     cmd.assert()
         .stdout("(No changes to the public API)\n")
         .success();
@@ -365,7 +362,7 @@ fn ensure_test_crate_is_cloned() {
         print!("INFO: using ");
     } else {
         print!("INFO: cloning into ");
-        clone_test_crate(&path);
+        initialize_test_repo(&path);
     }
     // Print info about repo when running like this: cargo test -- --nocapture
     println!("'{}'", &path.to_string_lossy());
@@ -380,21 +377,16 @@ fn current_dir_and<P: AsRef<Path>>(path: P) -> PathBuf {
 }
 
 /// Helper to clone the test crate git repo to the proper place
-fn clone_test_crate(dest: &Path) {
-    let mut git = std::process::Command::new("git");
-    git.arg("clone");
-    git.arg("https://github.com/Enselic/public-api.git"); // Tests still use this old git and the old name `public_items`
-    git.arg("-b");
-    git.arg("v0.7.1");
-    git.arg("--single-branch");
-    git.arg(dest);
-    assert!(git.spawn().unwrap().wait().unwrap().success());
+fn initialize_test_repo(dest: &Path) {
+    let mut cmd = std::process::Command::new("../scripts/create-test-git-repo.sh");
+    cmd.arg(dest);
+    assert!(cmd.spawn().unwrap().wait().unwrap().success());
 }
 
 /// Path to the git cloned test crate we use to test the diffing functionality
 fn test_crate_path() -> PathBuf {
     let mut path = get_cache_dir();
-    path.push("cargo-public-api-test-repo");
+    path.push("cargo-public-api-example-api-repo");
     path
 }
 

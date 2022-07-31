@@ -14,13 +14,13 @@ cargo run -p public-api -- --with-blanket-implementations "./public-api/tests/ru
 
 cargo run -p cargo-public-api -- \
       --manifest-path "target/tmp/cargo-public-api-test-repo/Cargo.toml" \
-      --color=never --diff-git-checkouts "v0.0.4" "v0.0.5" > \
-      "cargo-public-api/tests/expected-output/test_crate_diff_v0.0.4_to_v0.0.5.txt"
+      --color=never --diff-git-checkouts "v0.2.0" "v0.3.0" > \
+      "cargo-public-api/tests/expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt"
 
 cargo run -p cargo-public-api -- \
       --manifest-path "target/tmp/cargo-public-api-test-repo/Cargo.toml" \
-      --color=always --diff-git-checkouts "v0.6.0" "v0.7.1" > \
-      "cargo-public-api/tests/expected-output/test_crate_diff_v0.6.0_to_v0.7.1_colored.txt"
+      --color=always --diff-git-checkouts "v0.1.0" "v0.2.0" > \
+      "cargo-public-api/tests/expected-output/example_api_diff_v0.1.0_to_v0.2.0_colored.txt"
 
 cargo run -p cargo-public-api -- \
       --manifest-path "cargo-public-api/Cargo.toml" \

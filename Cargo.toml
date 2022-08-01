@@ -27,7 +27,4 @@ exclude = [
 
     # To test that we pass --cap-lints when building rustdoc JSON
     "test-apis/lint_error",
-
-    # git repo used in tests.
-    "target/tmp/cargo-public-api-example-api-repo",
 ]

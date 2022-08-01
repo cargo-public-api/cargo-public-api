@@ -7,16 +7,13 @@ use std::path::{Path, PathBuf};
 
 use assert_cmd::Command;
 use predicates::str::contains;
-use serial_test::serial;
 
-#[serial]
 #[test]
 fn list_public_items() {
     let cmd = Command::cargo_bin("cargo-public-api").unwrap();
     assert_presence_of_own_library_items(cmd);
 }
 
-#[serial]
 #[test]
 fn list_public_items_with_lint_error() {
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
@@ -30,7 +27,6 @@ fn list_public_items_with_lint_error() {
         .success();
 }
 
-#[serial]
 #[test]
 fn custom_toolchain() {
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
@@ -38,7 +34,6 @@ fn custom_toolchain() {
     assert_presence_of_own_library_items(cmd);
 }
 
-#[serial]
 #[test]
 fn list_public_items_explicit_manifest_path() {
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
@@ -47,7 +42,6 @@ fn list_public_items_explicit_manifest_path() {
     assert_presence_of_own_library_items(cmd);
 }
 
-#[serial]
 #[test]
 fn virtual_manifest_error() {
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
@@ -63,13 +57,11 @@ fn virtual_manifest_error() {
 
 // We must serially run tests that touch the test crate git repo to prevent
 // ".git/index.lock: File exists"-errors.
-#[serial]
 #[test]
 fn diff_public_items() {
-    ensure_test_crate_is_cloned();
-
+    let test_repo = TestRepo::new();
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
-    cmd.current_dir(test_crate_path());
+    cmd.current_dir(&test_repo.path);
     cmd.arg("--color=never");
     cmd.arg("--diff-git-checkouts");
     cmd.arg("v0.2.0");
@@ -81,11 +73,8 @@ fn diff_public_items() {
         .success();
 }
 
-#[serial]
 #[test]
 fn deny_when_not_diffing() {
-    ensure_test_crate_is_cloned(); // Because we still list the API
-
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
     cmd.arg("--deny=all");
     cmd.assert()
@@ -93,13 +82,11 @@ fn deny_when_not_diffing() {
         .failure();
 }
 
-#[serial]
 #[test]
 fn deny_without_diff() {
-    ensure_test_crate_is_cloned();
-
+    let test_repo = TestRepo::new();
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
-    cmd.current_dir(test_crate_path());
+    cmd.current_dir(&test_repo.path);
     cmd.arg("--diff-git-checkouts");
     cmd.arg("v0.1.0");
     cmd.arg("v0.1.1");
@@ -107,13 +94,11 @@ fn deny_without_diff() {
     cmd.assert().success();
 }
 
-#[serial]
 #[test]
 fn deny_with_diff() {
-    ensure_test_crate_is_cloned();
-
+    let test_repo = TestRepo::new();
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
-    cmd.current_dir(test_crate_path());
+    cmd.current_dir(&test_repo.path);
     cmd.arg("--diff-git-checkouts");
     cmd.arg("v0.1.0");
     cmd.arg("v0.2.0");
@@ -123,13 +108,11 @@ fn deny_with_diff() {
         .failure();
 }
 
-#[serial]
 #[test]
 fn deny_with_invalid_arg() {
-    ensure_test_crate_is_cloned();
-
+    let test_repo = TestRepo::new();
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
-    cmd.current_dir(test_crate_path());
+    cmd.current_dir(&test_repo.path);
     cmd.arg("--diff-git-checkouts");
     cmd.arg("v0.0.4");
     cmd.arg("v0.0.5");
@@ -139,16 +122,14 @@ fn deny_with_invalid_arg() {
         .failure();
 }
 
-#[serial]
 #[test]
 fn diff_public_items_with_manifest_path() {
-    ensure_test_crate_is_cloned();
-
+    let test_repo = TestRepo::new();
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
     cmd.arg("--manifest-path");
     cmd.arg(format!(
         "{}/Cargo.toml",
-        &test_crate_path().to_string_lossy()
+        &test_repo.path.path().to_string_lossy()
     ));
     cmd.arg("--color=never");
     cmd.arg("--diff-git-checkouts");
@@ -177,13 +158,11 @@ fn diff_public_items_without_git_root() {
         .failure();
 }
 
-#[serial]
 #[test]
 fn diff_public_items_with_color() {
-    ensure_test_crate_is_cloned();
-
+    let test_repo = TestRepo::new();
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
-    cmd.current_dir(test_crate_path());
+    cmd.current_dir(&test_repo.path);
     cmd.arg("--color=always");
     cmd.arg("--diff-git-checkouts");
     cmd.arg("v0.1.0");
@@ -195,7 +174,6 @@ fn diff_public_items_with_color() {
         .success();
 }
 
-#[serial]
 #[test]
 fn list_public_items_with_color() {
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
@@ -207,13 +185,11 @@ fn list_public_items_with_color() {
         .success();
 }
 
-#[serial]
 #[test]
 fn diff_public_items_markdown() {
-    ensure_test_crate_is_cloned();
-
+    let test_repo = TestRepo::new();
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
-    cmd.current_dir(test_crate_path());
+    cmd.current_dir(&test_repo.path);
     cmd.arg("--output-format=markdown");
     cmd.arg("--diff-git-checkouts");
     cmd.arg("v0.1.0");
@@ -239,13 +215,11 @@ fn diff_public_items_markdown() {
         .success();
 }
 
-#[serial]
 #[test]
 fn diff_public_items_markdown_no_changes() {
-    ensure_test_crate_is_cloned();
-
+    let test_repo = TestRepo::new();
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
-    cmd.current_dir(test_crate_path());
+    cmd.current_dir(&test_repo.path);
     cmd.arg("--output-format=markdown");
     cmd.arg("--diff-git-checkouts");
     cmd.arg("v0.1.0");
@@ -255,7 +229,6 @@ fn diff_public_items_markdown_no_changes() {
         .success();
 }
 
-#[serial]
 #[test]
 fn diff_public_items_from_files() {
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
@@ -286,11 +259,11 @@ Added items to the public API
         .success();
 }
 
-#[serial]
 #[test]
 fn diff_public_items_missing_one_arg() {
+    let test_repo = TestRepo::new();
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
-    cmd.current_dir(test_crate_path());
+    cmd.current_dir(&test_repo.path);
     cmd.arg("--diff-git-checkouts");
     cmd.arg("v0.2.0");
     cmd.assert()
@@ -300,7 +273,6 @@ fn diff_public_items_missing_one_arg() {
         .failure();
 }
 
-#[serial]
 #[test]
 fn list_public_items_markdown() {
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
@@ -316,7 +288,6 @@ fn list_public_items_markdown() {
         .success();
 }
 
-#[serial]
 #[test]
 fn verbose() {
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
@@ -356,18 +327,6 @@ fn assert_presence_of_args_in_help(mut cmd: Command) {
         .success();
 }
 
-fn ensure_test_crate_is_cloned() {
-    let path = test_crate_path();
-    if path.exists() {
-        print!("INFO: using ");
-    } else {
-        print!("INFO: cloning into ");
-        initialize_test_repo(&path);
-    }
-    // Print info about repo when running like this: cargo test -- --nocapture
-    println!("'{}'", &path.to_string_lossy());
-}
-
 /// Helper to get the absolute path to a given path, relative to the current
 /// path
 fn current_dir_and<P: AsRef<Path>>(path: P) -> PathBuf {
@@ -376,25 +335,25 @@ fn current_dir_and<P: AsRef<Path>>(path: P) -> PathBuf {
     cur_dir
 }
 
-/// Helper to clone the test crate git repo to the proper place
+/// Helper to initialize a test crate git repo. Each test gets its own git repo
+/// to use so that tests can run in parallel.
 fn initialize_test_repo(dest: &Path) {
     let mut cmd = std::process::Command::new("../scripts/create-test-git-repo.sh");
     cmd.arg(dest);
     assert!(cmd.spawn().unwrap().wait().unwrap().success());
 }
 
-/// Path to the git cloned test crate we use to test the diffing functionality
-fn test_crate_path() -> PathBuf {
-    let mut path = get_cache_dir();
-    path.push("cargo-public-api-example-api-repo");
-    path
+/// A git repository that lives during the duration of a test. Having each test
+/// have its own git repository to test with makes tests runnable concurrently.
+struct TestRepo {
+    path: tempfile::TempDir,
 }
 
-/// Where to put things that survives across test runs. For example a git cloned
-/// test crate. We don't want to clone it every time we run tests.
-fn get_cache_dir() -> PathBuf {
-    // See https://doc.rust-lang.org/cargo/reference/environment-variables.html#environment-variables-cargo-sets-for-crates
-    option_env!("CARGO_TARGET_TMPDIR")
-        .map(PathBuf::from)
-        .unwrap_or_else(std::env::temp_dir)
+impl TestRepo {
+    fn new() -> Self {
+        let tempdir = tempfile::tempdir().unwrap();
+        initialize_test_repo(tempdir.path());
+
+        Self { path: tempdir }
+    }
 }

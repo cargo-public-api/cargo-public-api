@@ -4,7 +4,6 @@ use pretty_assertions::assert_eq;
 use public_api::{public_api_from_rustdoc_json_str, Error, Options};
 
 mod utils;
-use serial_test::serial;
 use utils::rustdoc_json_str_for_crate;
 
 struct ExpectedDiff<'a> {
@@ -14,7 +13,6 @@ struct ExpectedDiff<'a> {
 }
 
 #[test]
-#[serial] // Writing and reading rustdoc JSON to/from file-system; must run one test at a time
 fn with_blanket_implementations() {
     assert_public_api_with_blanket_implementations(
         &rustdoc_json_str_for_crate("../test-apis/example_api-v0.2.0"),
@@ -23,7 +21,6 @@ fn with_blanket_implementations() {
 }
 
 #[test]
-#[serial]
 fn diff_with_added_items() {
     assert_public_api_diff(
         &rustdoc_json_str_for_crate("../test-apis/example_api-v0.1.0"),
@@ -50,7 +47,6 @@ fn diff_with_added_items() {
 }
 
 #[test]
-#[serial]
 fn no_diff() {
     // No change to the public API
     assert_public_api_diff(
@@ -65,7 +61,6 @@ fn no_diff() {
 }
 
 #[test]
-#[serial]
 fn diff_with_removed_items() {
     assert_public_api_diff(
         &rustdoc_json_str_for_crate("../test-apis/example_api-v0.2.0"),
@@ -92,7 +87,6 @@ fn diff_with_removed_items() {
 }
 
 #[test]
-#[serial]
 fn comprehensive_api() {
     assert_public_api(
         &rustdoc_json_str_for_crate("../test-apis/comprehensive_api"),
@@ -101,7 +95,6 @@ fn comprehensive_api() {
 }
 
 #[test]
-#[serial]
 fn comprehensive_api_proc_macro() {
     assert_public_api(
         &rustdoc_json_str_for_crate("../test-apis/comprehensive_api_proc_macro"),
@@ -111,7 +104,6 @@ fn comprehensive_api_proc_macro() {
 
 /// I confess: this test is mainly to get function code coverage on Ord
 #[test]
-#[serial]
 fn public_item_ord() {
     let public_api = public_api_from_rustdoc_json_str(
         &rustdoc_json_str_for_crate("../test-apis/comprehensive_api"),
@@ -134,7 +126,6 @@ fn public_item_ord() {
 }
 
 #[test]
-#[serial]
 fn invalid_json() {
     let result = public_api_from_rustdoc_json_str("}}}}}}}}}", Options::default());
     ensure_impl_debug(&result);
@@ -153,7 +144,6 @@ fn options() {
 }
 
 #[test]
-#[serial]
 fn pretty_printed_diff() {
     let options = Options::default();
     let old = public_api_from_rustdoc_json_str(

@@ -4,11 +4,9 @@ use assert_cmd::Command;
 use public_api::MINIMUM_RUSTDOC_JSON_VERSION;
 
 mod utils;
-use serial_test::serial;
 use utils::rustdoc_json_path_for_crate;
 
 #[test]
-#[serial] // Writing and reading rustdoc JSON to/from file-system; must run one test at a time
 fn print_public_api() {
     cmd_with_rustdoc_json_args(&["../test-apis/comprehensive_api"], |mut cmd| {
         cmd.assert()
@@ -19,7 +17,6 @@ fn print_public_api() {
 }
 
 #[test]
-#[serial]
 fn print_public_api_with_blanket_implementations() {
     cmd_with_rustdoc_json_args(&["../test-apis/example_api-v0.2.0"], |mut cmd| {
         cmd.arg("--with-blanket-implementations");
@@ -33,7 +30,6 @@ fn print_public_api_with_blanket_implementations() {
 }
 
 #[test]
-#[serial]
 fn print_diff() {
     cmd_with_rustdoc_json_args(
         &[
@@ -66,7 +62,6 @@ Added:
 }
 
 #[test]
-#[serial]
 fn print_diff_reversed() {
     cmd_with_rustdoc_json_args(
         &[
@@ -99,7 +94,6 @@ Added:
 }
 
 #[test]
-#[serial]
 fn print_no_diff() {
     cmd_with_rustdoc_json_args(
         &[
@@ -129,7 +123,6 @@ Added:
 /// Uses a bash one-liner to test that public-api gracefully handles
 /// `std::io::ErrorKind::BrokenPipe`
 #[test]
-#[serial]
 fn broken_pipe() {
     // Use the JSON for a somewhat large API so the pipe has time to become closed
     // before all output has been written to stdout

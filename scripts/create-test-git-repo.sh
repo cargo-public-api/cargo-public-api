@@ -25,8 +25,12 @@ mkdir -p "${dest}"
 # we want to use regular git commands, but git should pretend we are in ${dest}
 git_cmd="git -C ${dest}"
 
+# We don't want noise when running tests normally, so be quiet by default.
+# Temporarily change to empty string to stop being quiet.
+quiet="--quiet"
+
 # First step: git init
-${git_cmd} init --initial-branch main "${dest}"
+${git_cmd} init $quiet --initial-branch main "${dest}"
 
 # Needed to prevent errors in CI
 ${git_cmd} config user.email "cargo-public-api@example.com"
@@ -40,6 +44,6 @@ for v in v0.1.0 v0.1.1 v0.2.0 v0.3.0; do
     cp "${test_apis_dir}/example_api-${v}/src/lib.rs" "${dest}/src/lib.rs"
 
     ${git_cmd} add .
-    ${git_cmd} commit -m "example_api ${v}"
+    ${git_cmd} commit $quiet -m "example_api ${v}"
     ${git_cmd} tag "${v}"
 done

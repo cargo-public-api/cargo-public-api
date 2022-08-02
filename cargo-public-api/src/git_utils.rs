@@ -4,12 +4,15 @@ use anyhow::{anyhow, Context, Result};
 
 /// Synchronously do a `git checkout` of `commit`.
 /// Returns the name of the original branch.
-pub(crate) fn git_checkout(commit: &str, git_root: impl AsRef<Path>) -> Result<String> {
+pub(crate) fn git_checkout(commit: &str, git_root: &Path, quiet: bool) -> Result<String> {
     let original_branch = current_branch(&git_root)?;
 
     let mut command = std::process::Command::new("git");
     command.current_dir(git_root);
-    command.args(["checkout", "--quiet", commit]);
+    command.args(["checkout", commit]);
+    if quiet {
+        command.arg("--quiet");
+    }
     if command.spawn()?.wait()?.success() {
         Ok(original_branch)
     } else {
@@ -22,7 +25,7 @@ pub(crate) fn git_checkout(commit: &str, git_root: impl AsRef<Path>) -> Result<S
 
 /// Goes up the chain of parents and looks for a `.git` dir.
 #[allow(unused)] // It IS used!
-pub fn git_root_from_manifest_path(manifest_path: &Path) -> Result<PathBuf> {
+pub(crate) fn git_root_from_manifest_path(manifest_path: &Path) -> Result<PathBuf> {
     let err_fn = || anyhow!("No `.git` dir when starting from `{:?}`.", &manifest_path);
     let start = std::fs::canonicalize(manifest_path).with_context(err_fn)?;
     let mut candidate_opt = start.parent();

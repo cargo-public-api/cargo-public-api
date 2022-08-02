@@ -91,7 +91,7 @@ fn diff_public_items_detached_head() {
     let test_repo = TestRepo::new();
 
     // Detach HEAD
-    git_utils::git_checkout("HEAD^", &test_repo.path).unwrap();
+    git_utils::git_checkout("HEAD^", test_repo.path(), true).unwrap();
 
     // Make sure diffing still works and does not explode
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
@@ -421,5 +421,9 @@ impl TestRepo {
         initialize_test_repo(tempdir.path());
 
         Self { path: tempdir }
+    }
+
+    fn path(&self) -> &Path {
+        self.path.path()
     }
 }

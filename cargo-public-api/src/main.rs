@@ -100,29 +100,34 @@ pub struct Args {
     rustdoc_json_toolchain: String,
 }
 
+/// After listing or diffing, we might want to do some extra work. This struct
+/// keeps track of what to do.
+struct PostProcessing {
+    /// The `--deny` arg allows the user to disallow the occurrence of API
+    /// changes. If this field is set, we are to check that the diff is allowed.
+    diff_to_check: Option<PublicItemsDiff>,
+
+    /// Doing a `--diff-git-checkouts` involves doing `git checkout`s.
+    /// Afterwards, we want to restore the original branch the user was on, to
+    /// not mess up their work tree.
+    branch_to_restore: Option<String>,
+}
+
 fn main_() -> Result<()> {
     let args = get_args();
 
-    let (diff, original_branch): (Option<PublicItemsDiff>, Option<String>) =
-        if let Some(commits) = &args.diff_git_checkouts {
-            print_diff_between_two_commits(&args, commits)?
-        } else if let Some(files) = &args.diff_rustdoc_json {
-            print_diff_between_two_rustdoc_json_files(&args, files)?
-        } else {
-            print_public_items_of_current_commit(&args)?;
-            (None, None)
-        };
+    let post_processing = if let Some(commits) = &args.diff_git_checkouts {
+        print_diff_between_two_commits(&args, commits)?
+    } else if let Some(files) = &args.diff_rustdoc_json {
+        print_diff_between_two_rustdoc_json_files(&args, files)?
+    } else {
+        print_public_items_of_current_commit(&args)?
+    };
 
-    // If we have changed branch we have a record of that. Restore the original
-    // branch to minimize user disruption.
-    if let Some(original_branch) = original_branch {
-        git_utils::git_checkout(&original_branch, &args.git_root()?)?;
-    }
-
-    check_diff(&args, diff)
+    post_processing.perform(&args)
 }
 
-fn check_diff(args: &Args, diff: Option<PublicItemsDiff>) -> Result<()> {
+fn check_diff(args: &Args, diff: &Option<PublicItemsDiff>) -> Result<()> {
     match (&args.deny, diff) {
         // We were requested to deny diffs, so make sure there is no diff
         (Some(_deny), Some(diff)) => {
@@ -141,32 +146,37 @@ fn check_diff(args: &Args, diff: Option<PublicItemsDiff>) -> Result<()> {
     }
 }
 
-fn print_public_items_of_current_commit(args: &Args) -> Result<()> {
-    let (public_items, _) = collect_public_items_from_commit(None)?;
+fn print_public_items_of_current_commit(args: &Args) -> Result<PostProcessing> {
+    let (public_items, branch_to_restore) = collect_public_items_from_commit(None)?;
     args.output_format
         .formatter()
         .print_items(&mut stdout(), args, public_items)?;
 
-    Ok(())
+    Ok(PostProcessing {
+        diff_to_check: None,
+        branch_to_restore,
+    })
 }
 
-fn print_diff_between_two_commits(
-    args: &Args,
-    commits: &[String],
-) -> Result<(Option<PublicItemsDiff>, Option<String>)> {
+fn print_diff_between_two_commits(args: &Args, commits: &[String]) -> Result<PostProcessing> {
     let old_commit = commits.get(0).expect("clap makes sure first commit exist");
-    let (old, original_branch) = collect_public_items_from_commit(Some(old_commit))?;
+    let (old, branch_to_restore) = collect_public_items_from_commit(Some(old_commit))?;
 
     let new_commit = commits.get(1).expect("clap makes sure second commit exist");
     let (new, _) = collect_public_items_from_commit(Some(new_commit))?;
 
-    Ok((Some(print_diff(args, old, new)?), original_branch))
+    let diff_to_check = Some(print_diff(args, old, new)?);
+
+    Ok(PostProcessing {
+        diff_to_check,
+        branch_to_restore,
+    })
 }
 
 fn print_diff_between_two_rustdoc_json_files(
     args: &Args,
     files: &[String],
-) -> Result<(Option<PublicItemsDiff>, Option<String>)> {
+) -> Result<PostProcessing> {
     let options = get_options(args);
 
     let old_file = files.get(0).expect("clap makes sure first file exists");
@@ -175,7 +185,12 @@ fn print_diff_between_two_rustdoc_json_files(
     let new_file = files.get(1).expect("clap makes sure second file exists");
     let new = public_api_from_rustdoc_json_path(new_file, options)?;
 
-    Ok((Some(print_diff(args, old, new)?), None))
+    let diff_to_check = Some(print_diff(args, old, new)?);
+
+    Ok(PostProcessing {
+        diff_to_check,
+        branch_to_restore: None,
+    })
 }
 
 fn print_diff(args: &Args, old: Vec<PublicItem>, new: Vec<PublicItem>) -> Result<PublicItemsDiff> {
@@ -185,6 +200,22 @@ fn print_diff(args: &Args, old: Vec<PublicItem>, new: Vec<PublicItem>) -> Result
         .print_diff(&mut stdout(), args, &diff)?;
 
     Ok(diff)
+}
+
+impl PostProcessing {
+    fn perform(&self, args: &Args) -> Result<()> {
+        if let Some(branch_to_restore) = &self.branch_to_restore {
+            git_utils::git_checkout(branch_to_restore, &args.git_root()?, !args.verbose)?;
+        }
+
+        check_diff(args, &self.diff_to_check)
+    }
+}
+
+impl Args {
+    fn git_root(&self) -> Result<PathBuf> {
+        git_utils::git_root_from_manifest_path(self.manifest_path.as_path())
+    }
 }
 
 /// Get CLI args via `clap` while also handling when we are invoked as a cargo
@@ -217,7 +248,11 @@ fn collect_public_items_from_commit(
     // Do a git checkout of a specific commit unless we are supposed to simply
     // use the current commit
     let original_branch = if let Some(commit) = commit {
-        Some(git_utils::git_checkout(commit, &args.git_root()?)?)
+        Some(git_utils::git_checkout(
+            commit,
+            &args.git_root()?,
+            !args.verbose,
+        )?)
     } else {
         None
     };

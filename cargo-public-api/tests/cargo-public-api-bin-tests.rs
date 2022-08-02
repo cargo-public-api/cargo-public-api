@@ -55,8 +55,6 @@ fn virtual_manifest_error() {
         .failure();
 }
 
-// We must serially run tests that touch the test crate git repo to prevent
-// ".git/index.lock: File exists"-errors.
 #[test]
 fn diff_public_items() {
     let test_repo = TestRepo::new();

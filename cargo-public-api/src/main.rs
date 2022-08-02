@@ -103,14 +103,21 @@ pub struct Args {
 fn main_() -> Result<()> {
     let args = get_args();
 
-    let diff = if let Some(commits) = &args.diff_git_checkouts {
-        Some(print_diff_between_two_commits(&args, commits)?)
-    } else if let Some(files) = &args.diff_rustdoc_json {
-        Some(print_diff_between_two_rustdoc_json_files(&args, files)?)
-    } else {
-        print_public_items_of_current_commit(&args)?;
-        None
-    };
+    let (diff, original_branch): (Option<PublicItemsDiff>, Option<String>) =
+        if let Some(commits) = &args.diff_git_checkouts {
+            print_diff_between_two_commits(&args, commits)?
+        } else if let Some(files) = &args.diff_rustdoc_json {
+            print_diff_between_two_rustdoc_json_files(&args, files)?
+        } else {
+            print_public_items_of_current_commit(&args)?;
+            (None, None)
+        };
+
+    // If we have changed branch we have a record of that. Restore the original
+    // branch to minimize user disruption.
+    if let Some(original_branch) = original_branch {
+        git_utils::git_checkout(&original_branch, &args.git_root()?)?;
+    }
 
     check_diff(&args, diff)
 }
@@ -135,7 +142,7 @@ fn check_diff(args: &Args, diff: Option<PublicItemsDiff>) -> Result<()> {
 }
 
 fn print_public_items_of_current_commit(args: &Args) -> Result<()> {
-    let public_items = collect_public_items_from_commit(None)?;
+    let (public_items, _) = collect_public_items_from_commit(None)?;
     args.output_format
         .formatter()
         .print_items(&mut stdout(), args, public_items)?;
@@ -143,20 +150,23 @@ fn print_public_items_of_current_commit(args: &Args) -> Result<()> {
     Ok(())
 }
 
-fn print_diff_between_two_commits(args: &Args, commits: &[String]) -> Result<PublicItemsDiff> {
+fn print_diff_between_two_commits(
+    args: &Args,
+    commits: &[String],
+) -> Result<(Option<PublicItemsDiff>, Option<String>)> {
     let old_commit = commits.get(0).expect("clap makes sure first commit exist");
-    let old = collect_public_items_from_commit(Some(old_commit))?;
+    let (old, original_branch) = collect_public_items_from_commit(Some(old_commit))?;
 
     let new_commit = commits.get(1).expect("clap makes sure second commit exist");
-    let new = collect_public_items_from_commit(Some(new_commit))?;
+    let (new, _) = collect_public_items_from_commit(Some(new_commit))?;
 
-    print_diff(args, old, new)
+    Ok((Some(print_diff(args, old, new)?), original_branch))
 }
 
 fn print_diff_between_two_rustdoc_json_files(
     args: &Args,
     files: &[String],
-) -> Result<PublicItemsDiff> {
+) -> Result<(Option<PublicItemsDiff>, Option<String>)> {
     let options = get_options(args);
 
     let old_file = files.get(0).expect("clap makes sure first file exists");
@@ -165,7 +175,7 @@ fn print_diff_between_two_rustdoc_json_files(
     let new_file = files.get(1).expect("clap makes sure second file exists");
     let new = public_api_from_rustdoc_json_path(new_file, options)?;
 
-    print_diff(args, old, new)
+    Ok((Some(print_diff(args, old, new)?), None))
 }
 
 fn print_diff(args: &Args, old: Vec<PublicItem>, new: Vec<PublicItem>) -> Result<PublicItemsDiff> {
@@ -199,15 +209,18 @@ fn get_options(args: &Args) -> Options {
 }
 
 /// Collects public items from either the current commit or a given commit.
-fn collect_public_items_from_commit(commit: Option<&str>) -> Result<Vec<PublicItem>> {
+fn collect_public_items_from_commit(
+    commit: Option<&str>,
+) -> Result<(Vec<PublicItem>, Option<String>)> {
     let args = get_args();
 
     // Do a git checkout of a specific commit unless we are supposed to simply
     // use the current commit
-    if let Some(commit) = commit {
-        let git_root = git_utils::git_root_from_manifest_path(args.manifest_path.as_path())?;
-        git_utils::git_checkout(commit, &git_root)?;
-    }
+    let original_branch = if let Some(commit) = commit {
+        Some(git_utils::git_checkout(commit, &args.git_root()?)?)
+    } else {
+        None
+    };
 
     let json_path = match rustdoc_json::build(
         BuildOptions::default()
@@ -222,7 +235,10 @@ fn collect_public_items_from_commit(commit: Option<&str>) -> Result<Vec<PublicIt
     }
     let options = get_options(&args);
 
-    public_api_from_rustdoc_json_path(json_path, options)
+    Ok((
+        public_api_from_rustdoc_json_path(json_path, options)?,
+        original_branch,
+    ))
 }
 
 fn public_api_from_rustdoc_json_path<T: AsRef<Path>>(

@@ -3,12 +3,15 @@ use std::path::{Path, PathBuf};
 use anyhow::{anyhow, Context, Result};
 
 /// Synchronously do a `git checkout` of `commit`.
-pub(crate) fn git_checkout(commit: &str, git_root: &Path) -> Result<()> {
+/// Returns the name of the original branch.
+pub(crate) fn git_checkout(commit: &str, git_root: impl AsRef<Path>) -> Result<String> {
+    let original_branch = current_branch(&git_root)?;
+
     let mut command = std::process::Command::new("git");
     command.current_dir(git_root);
-    command.args(["checkout", commit]);
+    command.args(["checkout", "--quiet", commit]);
     if command.spawn()?.wait()?.success() {
-        Ok(())
+        Ok(original_branch)
     } else {
         Err(anyhow!(
             "Failed to git checkout {}, see error message on stdout/stderr.",
@@ -18,7 +21,8 @@ pub(crate) fn git_checkout(commit: &str, git_root: &Path) -> Result<()> {
 }
 
 /// Goes up the chain of parents and looks for a `.git` dir.
-pub(crate) fn git_root_from_manifest_path(manifest_path: &Path) -> Result<PathBuf> {
+#[allow(unused)] // It IS used!
+pub fn git_root_from_manifest_path(manifest_path: &Path) -> Result<PathBuf> {
     let err_fn = || anyhow!("No `.git` dir when starting from `{:?}`.", &manifest_path);
     let start = std::fs::canonicalize(manifest_path).with_context(err_fn)?;
     let mut candidate_opt = start.parent();
@@ -33,4 +37,18 @@ pub(crate) fn git_root_from_manifest_path(manifest_path: &Path) -> Result<PathBu
         candidate_opt = candidate.parent();
     }
     Err(err_fn())
+}
+
+/// Returns the name of the current git branch.
+pub(crate) fn current_branch(path: impl AsRef<Path>) -> Result<String> {
+    let mut git = std::process::Command::new("git");
+    git.current_dir(path);
+    git.args(&["rev-parse", "--abbrev-ref", "HEAD"]);
+
+    let output = git.output()?;
+    if output.status.success() && output.stderr.is_empty() {
+        Ok(String::from_utf8_lossy(&output.stdout).trim().to_string())
+    } else {
+        Err(anyhow!("Failed to get current branch: {:?}", output))
+    }
 }

@@ -2,7 +2,7 @@ use anyhow::anyhow;
 
 use std::str::FromStr;
 
-use crate::{markdown::Markdown, output_formatter::OutputFormatter, plain::Plain};
+use crate::{markdown::Markdown, output_formatter::OutputFormatter, plain::Plain, Args};
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq, clap::ArgEnum)]
 #[clap(rename_all = "lower")]
@@ -65,5 +65,11 @@ impl Color {
             Color::Never => false,
             Color::Always => true,
         }
+    }
+}
+
+impl Args {
+    pub(crate) fn git_root(&self) -> crate::Result<std::path::PathBuf> {
+        crate::git_utils::git_root_from_manifest_path(self.manifest_path.as_path())
     }
 }

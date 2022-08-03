@@ -65,7 +65,7 @@ fn virtual_manifest_error() {
 #[test]
 fn diff_public_items() {
     let test_repo = TestRepo::new();
-    let branch_before = git_utils::current_branch(&test_repo.path).unwrap();
+    let branch_before = git_utils::current_branch(&test_repo.path).unwrap().unwrap();
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
     cmd.current_dir(&test_repo.path);
     cmd.arg("--color=never");
@@ -77,7 +77,7 @@ fn diff_public_items() {
             "./expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt"
         ))
         .success();
-    let branch_after = git_utils::current_branch(&test_repo.path).unwrap();
+    let branch_after = git_utils::current_branch(&test_repo.path).unwrap().unwrap();
 
     // Diffing does a git checkout of the commits to diff. Afterwards the
     // original branch shall be restored to minimize user disturbance.
@@ -91,11 +91,13 @@ fn diff_public_items_detached_head() {
     let test_repo = TestRepo::new();
 
     // Detach HEAD
-    git_utils::git_checkout("HEAD^", test_repo.path(), true).unwrap();
+    let path = test_repo.path();
+    git_utils::git_checkout("v0.1.1", path, true).unwrap();
+    assert_eq!(None, git_utils::current_branch(path).unwrap());
+    let before = git_utils::current_commit(path).unwrap();
 
-    // Make sure diffing still works and does not explode
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
-    cmd.current_dir(&test_repo.path);
+    cmd.current_dir(path);
     cmd.arg("--color=never");
     cmd.arg("--diff-git-checkouts");
     cmd.arg("v0.2.0");
@@ -106,8 +108,8 @@ fn diff_public_items_detached_head() {
         ))
         .success();
 
-    let branch_after = git_utils::current_branch(&test_repo.path).unwrap();
-    assert_eq!("HEAD", branch_after);
+    let after = git_utils::current_commit(path).unwrap();
+    assert_eq!(before, after);
 }
 
 /// Test that diffing fails if the git tree is dirty

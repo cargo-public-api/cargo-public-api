@@ -1,13 +1,16 @@
-use std::path::{Path, PathBuf};
+use std::{
+    path::{Path, PathBuf},
+    process::Command,
+};
 
 use anyhow::{anyhow, Context, Result};
 
 /// Synchronously do a `git checkout` of `commit`.
-/// Returns the name of the original branch.
+/// Returns the name of the original branch/commit.
 pub(crate) fn git_checkout(commit: &str, git_root: &Path, quiet: bool) -> Result<String> {
-    let original_branch = current_branch(&git_root)?;
+    let original_branch = current_branch_or_commit(&git_root)?;
 
-    let mut command = std::process::Command::new("git");
+    let mut command = Command::new("git");
     command.current_dir(git_root);
     command.args(["checkout", commit]);
     if quiet {
@@ -42,16 +45,39 @@ pub(crate) fn git_root_from_manifest_path(manifest_path: &Path) -> Result<PathBu
     Err(err_fn())
 }
 
-/// Returns the name of the current git branch.
-pub(crate) fn current_branch(path: impl AsRef<Path>) -> Result<String> {
-    let mut git = std::process::Command::new("git");
-    git.current_dir(path);
-    git.args(&["rev-parse", "--abbrev-ref", "HEAD"]);
+pub(crate) fn current_branch_or_commit(path: impl AsRef<Path>) -> Result<String> {
+    let current_branch = current_branch(&path)?;
+    let current_commit = current_commit(&path)?;
+    Ok(current_branch.unwrap_or(current_commit))
+}
 
-    let output = git.output()?;
-    if output.status.success() && output.stderr.is_empty() {
+/// Returns the name of the current git branch. Or `None` if there is no current
+/// branch.
+pub(crate) fn current_branch(path: impl AsRef<Path>) -> Result<Option<String>> {
+    let branch = trimmed_git_stdout(path, &["rev-parse", "--abbrev-ref", "HEAD"])?;
+    if &branch == "HEAD" {
+        Ok(None)
+    } else {
+        Ok(Some(branch))
+    }
+}
+/// Returns the current commit hash.
+pub(crate) fn current_commit(path: impl AsRef<Path>) -> Result<String> {
+    trimmed_git_stdout(path, &["rev-parse", "--short", "HEAD"])
+}
+
+fn trimmed_git_stdout(path: impl AsRef<Path>, args: &[&str]) -> Result<String> {
+    let mut git = Command::new("git");
+    git.current_dir(path);
+    git.args(args);
+    trimmed_stdout(git)
+}
+
+fn trimmed_stdout(mut cmd: Command) -> Result<String> {
+    let output = cmd.output()?;
+    if output.status.success() {
         Ok(String::from_utf8_lossy(&output.stdout).trim().to_string())
     } else {
-        Err(anyhow!("Failed to get current branch: {:?}", output))
+        Err(anyhow!("Failure: {:?}", output))
     }
 }

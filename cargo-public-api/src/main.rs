@@ -239,7 +239,9 @@ fn get_options(args: &Args) -> Options {
     options
 }
 
-/// Collects public items from either the current commit or a given commit.
+/// Collects public items from either the current commit or a given commit. If
+/// `commit` is `Some` and thus a `git checkout` will be made, also return the
+/// original branch.
 fn collect_public_items_from_commit(
     commit: Option<&str>,
 ) -> Result<(Vec<PublicItem>, Option<String>)> {

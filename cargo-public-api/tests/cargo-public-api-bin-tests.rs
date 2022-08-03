@@ -3,10 +3,17 @@
 //! ./scripts/bless-expected-output-for-tests.sh
 //! ```
 
-use std::path::{Path, PathBuf};
+use std::io::Write;
+use std::{
+    fs::OpenOptions,
+    path::{Path, PathBuf},
+};
 
 use assert_cmd::Command;
 use predicates::str::contains;
+
+#[path = "../src/git_utils.rs"] // Say NO to copy-paste!
+mod git_utils;
 
 #[test]
 fn list_public_items() {
@@ -58,6 +65,7 @@ fn virtual_manifest_error() {
 #[test]
 fn diff_public_items() {
     let test_repo = TestRepo::new();
+    let branch_before = git_utils::current_branch(&test_repo.path).unwrap().unwrap();
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
     cmd.current_dir(&test_repo.path);
     cmd.arg("--color=never");
@@ -69,6 +77,68 @@ fn diff_public_items() {
             "./expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt"
         ))
         .success();
+    let branch_after = git_utils::current_branch(&test_repo.path).unwrap().unwrap();
+
+    // Diffing does a git checkout of the commits to diff. Afterwards the
+    // original branch shall be restored to minimize user disturbance.
+    assert_eq!(branch_before, branch_after);
+}
+
+/// Test that the mechanism to restore the original git branch works even if
+/// there is no current branch
+#[test]
+fn diff_public_items_detached_head() {
+    let test_repo = TestRepo::new();
+
+    // Detach HEAD
+    let path = test_repo.path();
+    git_utils::git_checkout("v0.1.1", path, true).unwrap();
+    assert_eq!(None, git_utils::current_branch(path).unwrap());
+    let before = git_utils::current_commit(path).unwrap();
+
+    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    cmd.current_dir(path);
+    cmd.arg("--color=never");
+    cmd.arg("--diff-git-checkouts");
+    cmd.arg("v0.2.0");
+    cmd.arg("v0.3.0");
+    cmd.assert()
+        .stdout(include_str!(
+            "./expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt"
+        ))
+        .success();
+
+    let after = git_utils::current_commit(path).unwrap();
+    assert_eq!(before, after);
+}
+
+/// Test that diffing fails if the git tree is dirty
+#[test]
+fn diff_public_items_with_dirty_tree_fails() {
+    let test_repo = TestRepo::new();
+
+    // Make the tree dirty by appending a comment to src/lib.rs
+    let mut lib_rs_path = test_repo.path.path().to_owned();
+    lib_rs_path.push("src/lib.rs");
+
+    let mut lib_rs = OpenOptions::new()
+        .write(true)
+        .append(true)
+        .open(&lib_rs_path)
+        .unwrap();
+
+    writeln!(lib_rs, "// Make git tree dirty").unwrap();
+
+    // Make sure diffing does not destroy uncommitted data!
+    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    cmd.current_dir(&test_repo.path);
+    cmd.arg("--color=never");
+    cmd.arg("--diff-git-checkouts");
+    cmd.arg("v0.2.0");
+    cmd.arg("v0.3.0");
+    cmd.assert()
+        .stderr(contains("commit your changes or stash them"))
+        .failure();
 }
 
 #[test]
@@ -353,5 +423,9 @@ impl TestRepo {
         initialize_test_repo(tempdir.path());
 
         Self { path: tempdir }
+    }
+
+    fn path(&self) -> &Path {
+        self.path.path()
     }
 }

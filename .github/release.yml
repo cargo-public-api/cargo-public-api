@@ -7,6 +7,6 @@ changelog:
     - title: New Features
       labels:
         - enhancement
-    - title: Other Changes and Fixes
+    - title: Bugfixes and Other Changes
       labels:
         - "*"

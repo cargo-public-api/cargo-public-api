@@ -1,6 +1,6 @@
 use std::{collections::HashMap, fmt::Display, rc::Rc};
 
-use rustdoc_types::{Crate, Id, Impl, Item, ItemEnum, Type};
+use rustdoc_types::{Crate, Id, Impl, Item, ItemEnum, Path, Type};
 
 use super::intermediate_public_item::IntermediatePublicItem;
 use crate::{tokens::Token, Options};
@@ -163,7 +163,7 @@ fn find_all_impls(crate_: &Crate, options: Options) -> Impls {
     for item in crate_.index.values() {
         if let ItemEnum::Impl(impl_) = &item.inner {
             if let Impl {
-                for_: Type::ResolvedPath { id, .. },
+                for_: Type::ResolvedPath(Path { id, .. }),
                 blanket_impl,
                 ..
             } = impl_

@@ -768,19 +768,6 @@ fn arrow() -> Vec<Token> {
 
 #[cfg(test)]
 mod test {
-    macro_rules! parameterized_test {
-        [$($name:ident: $function:ident($($values:expr,)*) => $expected:expr => $str:literal);*;] => {
-            $(
-            #[test]
-            fn $name() {
-                let value = $function($($values),*);
-                assert_eq!(value, $expected);
-                assert_eq!(crate::item_iterator::tokens_to_string(&value), $str);
-            }
-        )*
-        };
-    }
-
     macro_rules! s {
         ($value:literal) => {
             $value.to_string()
@@ -790,78 +777,287 @@ mod test {
     use super::*;
     use rustdoc_types::Id;
 
-    parameterized_test![
-        test_type_infer:
-        render_type(&Type::Infer,)
-        => vec![Token::symbol("_")]
-        => "_";
-        test_type_generic:
-        render_type(&Type::Generic("name".to_string()),)
-        => vec![Token::generic("name")]
-        => "name";
-        test_type_primitive:
-        render_type(&Type::Primitive("name".to_string()),)
-        => vec![Token::primitive("name")]
-        => "name";
-        test_type_resolved_simple:
-        render_type(&Type::ResolvedPath{name: "name".to_string(), args: None, id: Id("id".to_string()), param_names: vec![]},)
-        => vec![Token::type_("name")]
-        => "name";
-        test_type_resolved_long_name:
-        render_type(&Type::ResolvedPath{name: "name::with::parts".to_string(), args: None, id: Id("id".to_string()), param_names: vec![]},)
-        => vec![Token::identifier("name"), Token::symbol("::"), Token::identifier("with"), Token::symbol("::"), Token::type_("parts")]
-        => "name::with::parts";
-        test_type_resolved_crate_name:
-        render_type(&Type::ResolvedPath{name: "$crate::name".to_string(), args: None, id: Id("id".to_string()), param_names: vec![]},)
-        => vec![Token::identifier("$crate"), Token::symbol("::"), Token::type_("name")]
-        => "$crate::name";
-        test_type_resolved_name_crate:
-        render_type(&Type::ResolvedPath{name: "name::$crate".to_string(), args: None, id: Id("id".to_string()), param_names: vec![]},)
-        => vec![Token::identifier("name"), Token::symbol("::"), Token::type_("$crate")]
-        => "name::$crate";
-        test_type_tuple_empty:
-        render_type(&Type::Tuple(vec![]),)
-        => vec![Token::symbol("("), Token::symbol(")")]
-        => "()";
-        test_type_tuple:
-        render_type(&Type::Tuple(vec![Type::Infer, Type::Generic(s!("gen"))]),)
-        => vec![Token::symbol("("), Token::symbol("_"), Token::symbol(","), ws!(), Token::generic("gen"), Token::symbol(")")]
-        => "(_, gen)";
-        test_type_slice:
-        render_type(&Type::Slice(Box::new(Type::Infer)),)
-        => vec![Token::symbol("["), Token::symbol("_"), Token::symbol("]")]
-        => "[_]";
-        test_type_array:
-        render_type(&Type::Array{type_:Box::new(Type::Infer), len: s!("20")},)
-        => vec![Token::symbol("["), Token::symbol("_"), Token::symbol(";"), ws!(), Token::primitive("20"), Token::symbol("]")]
-        => "[_; 20]";
-        test_type_pointer:
-        render_type(&Type::RawPointer { mutable: false, type_: Box::new(Type::Infer)},)
-        => vec![Token::symbol("*"), Token::keyword("const"), ws!(), Token::symbol("_")]
-        => "*const _";
-        test_type_pointer_mut:
-        render_type(&Type::RawPointer { mutable: true, type_: Box::new(Type::Infer)},)
-        => vec![Token::symbol("*"), Token::keyword("mut"), ws!(), Token::symbol("_")]
-        => "*mut _";
-        test_type_ref:
-        render_type(&Type::BorrowedRef { lifetime: None, mutable: false, type_: Box::new(Type::Infer)},)
-        => vec![Token::symbol("&"), Token::symbol("_")]
-        => "&_";
-        test_type_ref_mut:
-        render_type(&Type::BorrowedRef { lifetime: None, mutable: true, type_: Box::new(Type::Infer)},)
-        => vec![Token::symbol("&"), Token::keyword("mut"), ws!(), Token::symbol("_")]
-        => "&mut _";
-        test_type_ref_lt:
-        render_type(&Type::BorrowedRef { lifetime: Some(s!("'a")), mutable: false, type_: Box::new(Type::Infer)},)
-        => vec![Token::symbol("&"), Token::lifetime("'a"), ws!(), Token::symbol("_")]
-        => "&'a _";
-        test_type_ref_lt_mut:
-        render_type(&Type::BorrowedRef { lifetime: Some(s!("'a")), mutable: true, type_: Box::new(Type::Infer)},)
-        => vec![Token::symbol("&"), Token::lifetime("'a"), ws!(), Token::keyword("mut"), ws!(), Token::symbol("_")]
-        => "&'a mut _";
-        test_type_path:
-        render_type(&Type::QualifiedPath { name: s!("name"), args: Box::new(GenericArgs::AngleBracketed { args: vec![], bindings: vec![] }), self_type: Box::new(Type::Generic(s!("type"))), trait_: Box::new(Type::Generic(s!("trait"))) },)
-        => vec![Token::symbol("<"), Token::generic("type"), ws!(), Token::keyword("as"), ws!(), Token::generic("trait"), Token::symbol(">::"), Token::identifier("name")]
-        => "<type as trait>::name";
-    ];
+    #[test]
+    fn test_type_infer() {
+        assert_render(render_type(&Type::Infer), vec![Token::symbol("_")], "_");
+    }
+
+    #[test]
+    fn test_type_generic() {
+        assert_render(
+            render_type(&Type::Generic(s!("name"))),
+            vec![Token::generic("name")],
+            "name",
+        );
+    }
+
+    #[test]
+    fn test_type_primitive() {
+        assert_render(
+            render_type(&Type::Primitive(s!("name"))),
+            vec![Token::primitive("name")],
+            "name",
+        );
+    }
+
+    #[test]
+    fn test_type_resolved_simple() {
+        assert_render(
+            render_type(&Type::ResolvedPath {
+                name: s!("name"),
+                args: None,
+                id: Id(s!("id")),
+                param_names: vec![],
+            }),
+            vec![Token::type_("name")],
+            "name",
+        );
+    }
+
+    #[test]
+    fn test_type_resolved_long_name() {
+        assert_render(
+            render_type(&Type::ResolvedPath {
+                name: s!("name::with::parts"),
+                args: None,
+                id: Id(s!("id")),
+                param_names: vec![],
+            }),
+            vec![
+                Token::identifier("name"),
+                Token::symbol("::"),
+                Token::identifier("with"),
+                Token::symbol("::"),
+                Token::type_("parts"),
+            ],
+            "name::with::parts",
+        );
+    }
+
+    #[test]
+    fn test_type_resolved_crate_name() {
+        assert_render(
+            render_type(&Type::ResolvedPath {
+                name: s!("$crate::name"),
+                args: None,
+                id: Id(s!("id")),
+                param_names: vec![],
+            }),
+            vec![
+                Token::identifier("$crate"),
+                Token::symbol("::"),
+                Token::type_("name"),
+            ],
+            "$crate::name",
+        );
+    }
+
+    #[test]
+    fn test_type_resolved_name_crate() {
+        assert_render(
+            render_type(&Type::ResolvedPath {
+                name: s!("name::$crate"),
+                args: None,
+                id: Id(s!("id")),
+                param_names: vec![],
+            }),
+            vec![
+                Token::identifier("name"),
+                Token::symbol("::"),
+                Token::type_("$crate"),
+            ],
+            "name::$crate",
+        );
+    }
+
+    #[test]
+    fn test_type_tuple_empty() {
+        assert_render(
+            render_type(&Type::Tuple(vec![])),
+            vec![Token::symbol("("), Token::symbol(")")],
+            "()",
+        );
+    }
+
+    #[test]
+    fn test_type_tuple() {
+        assert_render(
+            render_type(&Type::Tuple(vec![Type::Infer, Type::Generic(s!("gen"))])),
+            vec![
+                Token::symbol("("),
+                Token::symbol("_"),
+                Token::symbol(","),
+                ws!(),
+                Token::generic("gen"),
+                Token::symbol(")"),
+            ],
+            "(_, gen)",
+        );
+    }
+
+    #[test]
+    fn test_type_slice() {
+        assert_render(
+            render_type(&Type::Slice(Box::new(Type::Infer))),
+            vec![Token::symbol("["), Token::symbol("_"), Token::symbol("]")],
+            "[_]",
+        );
+    }
+
+    #[test]
+    fn test_type_array() {
+        assert_render(
+            render_type(&Type::Array {
+                type_: Box::new(Type::Infer),
+                len: s!("20"),
+            }),
+            vec![
+                Token::symbol("["),
+                Token::symbol("_"),
+                Token::symbol(";"),
+                ws!(),
+                Token::primitive("20"),
+                Token::symbol("]"),
+            ],
+            "[_; 20]",
+        );
+    }
+
+    #[test]
+    fn test_type_pointer() {
+        assert_render(
+            render_type(&Type::RawPointer {
+                mutable: false,
+                type_: Box::new(Type::Infer),
+            }),
+            vec![
+                Token::symbol("*"),
+                Token::keyword("const"),
+                ws!(),
+                Token::symbol("_"),
+            ],
+            "*const _",
+        );
+    }
+
+    #[test]
+    fn test_type_pointer_mut() {
+        assert_render(
+            render_type(&Type::RawPointer {
+                mutable: true,
+                type_: Box::new(Type::Infer),
+            }),
+            vec![
+                Token::symbol("*"),
+                Token::keyword("mut"),
+                ws!(),
+                Token::symbol("_"),
+            ],
+            "*mut _",
+        );
+    }
+
+    #[test]
+    fn test_type_ref() {
+        assert_render(
+            render_type(&Type::BorrowedRef {
+                lifetime: None,
+                mutable: false,
+                type_: Box::new(Type::Infer),
+            }),
+            vec![Token::symbol("&"), Token::symbol("_")],
+            "&_",
+        );
+    }
+
+    #[test]
+    fn test_type_ref_mut() {
+        assert_render(
+            render_type(&Type::BorrowedRef {
+                lifetime: None,
+                mutable: true,
+                type_: Box::new(Type::Infer),
+            }),
+            vec![
+                Token::symbol("&"),
+                Token::keyword("mut"),
+                ws!(),
+                Token::symbol("_"),
+            ],
+            "&mut _",
+        );
+    }
+
+    #[test]
+    fn test_type_ref_lt() {
+        assert_render(
+            render_type(&Type::BorrowedRef {
+                lifetime: Some(s!("'a")),
+                mutable: false,
+                type_: Box::new(Type::Infer),
+            }),
+            vec![
+                Token::symbol("&"),
+                Token::lifetime("'a"),
+                ws!(),
+                Token::symbol("_"),
+            ],
+            "&'a _",
+        );
+    }
+
+    #[test]
+    fn test_type_ref_lt_mut() {
+        assert_render(
+            render_type(&Type::BorrowedRef {
+                lifetime: Some(s!("'a")),
+                mutable: true,
+                type_: Box::new(Type::Infer),
+            }),
+            vec![
+                Token::symbol("&"),
+                Token::lifetime("'a"),
+                ws!(),
+                Token::keyword("mut"),
+                ws!(),
+                Token::symbol("_"),
+            ],
+            "&'a mut _",
+        );
+    }
+
+    #[test]
+    fn test_type_path() {
+        assert_render(
+            render_type(&Type::QualifiedPath {
+                name: s!("name"),
+                args: Box::new(GenericArgs::AngleBracketed {
+                    args: vec![],
+                    bindings: vec![],
+                }),
+                self_type: Box::new(Type::Generic(s!("type"))),
+                trait_: Box::new(Type::Generic(s!("trait"))),
+            }),
+            vec![
+                Token::symbol("<"),
+                Token::generic("type"),
+                ws!(),
+                Token::keyword("as"),
+                ws!(),
+                Token::generic("trait"),
+                Token::symbol(">::"),
+                Token::identifier("name"),
+            ],
+            "<type as trait>::name",
+        );
+    }
+
+    #[allow(clippy::needless_pass_by_value)]
+    fn assert_render(actual: Vec<Token>, expected: Vec<Token>, expected_string: &str) {
+        assert_eq!(actual, expected);
+        assert_eq!(
+            crate::item_iterator::tokens_to_string(&actual),
+            expected_string.to_string()
+        );
+    }
 }

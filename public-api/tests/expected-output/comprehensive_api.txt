@@ -31,7 +31,10 @@ pub fn comprehensive_api::RenamedPlain::s2(&self)
 pub fn comprehensive_api::RenamedPlain::s3(&mut self)
 pub fn comprehensive_api::RenamedPlain::s4(&'a self)
 pub fn comprehensive_api::attributes::must_use() -> usize
-pub fn comprehensive_api::functions::dyn_arg(d: &std::io::Write + Send + 'static)
+pub fn comprehensive_api::functions::dyn_arg_one_trait(d: &dyn std::io::Write)
+pub fn comprehensive_api::functions::dyn_arg_one_trait_one_lifetime(d: &(dyn std::io::Write + 'static))
+pub fn comprehensive_api::functions::dyn_arg_two_traits(d: &(dyn std::io::Write + Send))
+pub fn comprehensive_api::functions::dyn_arg_two_traits_one_lifetime(d: &(dyn std::io::Write + Send + 'static))
 pub fn comprehensive_api::functions::fn_arg(f: impl Fn(bool, RenamedPlain) -> bool, f_mut: impl FnMut())
 pub fn comprehensive_api::functions::generic_arg<T>(t: T) -> T
 pub fn comprehensive_api::functions::generic_bound<T: Sized>(t: T) -> T
@@ -51,6 +54,7 @@ pub fn comprehensive_api::functions::return_tuple() -> (bool, Basic)
 pub fn comprehensive_api::functions::somewhere<T, U>(t: T, u: U) where T: Display, U: Debug
 pub fn comprehensive_api::functions::struct_arg(s: PrivateField)
 pub fn comprehensive_api::functions::synthetic_arg(t: impl Simple) -> impl Simple
+pub fn comprehensive_api::higher_ranked_trait_bounds::Foo::bar<T>() where T: Trait<'a>
 pub fn comprehensive_api::higher_ranked_trait_bounds::test1<T>() where for<'a> &'a T: Iterator
 pub fn comprehensive_api::higher_ranked_trait_bounds::test2<T>() where for<'a, 'b> &'a T: Trait<'b>
 pub fn comprehensive_api::higher_ranked_trait_bounds::test3<F>() where F: for<'a, 'b> Fn(&'a u8, &'b u8)
@@ -82,6 +86,7 @@ pub static comprehensive_api::statics::FUNCTION_POINTER: Option<fn(usize, i8) ->
 pub struct comprehensive_api::Plain
 pub struct comprehensive_api::RenamedPlain
 pub struct comprehensive_api::StructInPrivateMod
+pub struct comprehensive_api::higher_ranked_trait_bounds::Bar<'a>
 pub struct comprehensive_api::higher_ranked_trait_bounds::Foo<'a>
 pub struct comprehensive_api::structs::ConstArg<T, const N: usize>
 pub struct comprehensive_api::structs::Plain
@@ -98,7 +103,10 @@ pub struct field comprehensive_api::enums::DiverseVariants::Struct::x: usize
 pub struct field comprehensive_api::enums::DiverseVariants::Struct::y: SingleVariant
 pub struct field comprehensive_api::enums::EnumWithGenerics::Variant::d: D
 pub struct field comprehensive_api::enums::EnumWithGenerics::Variant::t: &'a T
+pub struct field comprehensive_api::higher_ranked_trait_bounds::Bar::bar: &'a (dyn for<'b> Trait<'b> + Unpin)
+pub struct field comprehensive_api::higher_ranked_trait_bounds::Bar::baz: &'a (dyn Unpin + for<'b> Trait<'b>)
 pub struct field comprehensive_api::higher_ranked_trait_bounds::Foo::some_func: for<'c> fn(val: &'c i32) -> i32
+pub struct field comprehensive_api::higher_ranked_trait_bounds::Foo::some_trait: &'a dyn for<'b> Trait<'b>
 pub struct field comprehensive_api::structs::ConstArg::items: [T; N]
 pub struct field comprehensive_api::structs::Plain::x: usize
 pub struct field comprehensive_api::structs::Tuple::0: usize
@@ -107,6 +115,7 @@ pub struct field comprehensive_api::structs::WithLifetimeAndGenericParam::unit_r
 pub struct field comprehensive_api::unions::Basic::x: usize
 pub struct field comprehensive_api::unions::Basic::y: usize
 pub trait comprehensive_api::RngCore
+pub trait comprehensive_api::higher_ranked_trait_bounds::B<'x>
 pub trait comprehensive_api::higher_ranked_trait_bounds::Trait<'x>
 pub trait comprehensive_api::traits::AssociatedConst
 pub trait comprehensive_api::traits::AssociatedConstDefault

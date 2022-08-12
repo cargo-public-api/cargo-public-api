@@ -790,10 +790,6 @@ mod test {
     use super::*;
     use rustdoc_types::Id;
 
-    // Tests for the `render_type` function.
-    // Missing:
-    //  * ImplTrait
-    //  * FunctionPointer
     parameterized_test![
         test_type_infer:
         render_type(&Type::Infer,)
@@ -867,12 +863,5 @@ mod test {
         render_type(&Type::QualifiedPath { name: s!("name"), args: Box::new(GenericArgs::AngleBracketed { args: vec![], bindings: vec![] }), self_type: Box::new(Type::Generic(s!("type"))), trait_: Box::new(Type::Generic(s!("trait"))) },)
         => vec![Token::symbol("<"), Token::generic("type"), ws!(), Token::keyword("as"), ws!(), Token::generic("trait"), Token::symbol(">::"), Token::identifier("name")]
         => "<type as trait>::name";
-        //test_type_fn_pointer:
-        //render_type(&Type::FunctionPointer(Box::new(FunctionPointer{
-        //    decl: FnDecl{inputs: vec![(s!("a"), Type::Infer)], output: None, c_variadic: false},
-        //    generic_params: vec![],
-        //    header: Header{const_:false, unsafe_:false, async_:false, abi: Abi::Rust}})),)
-        //=> vec![Token::symbol("<"), Token::generic("type"), ws!(), Token::keyword("as"), ws!(), Token::generic("trait"), Token::symbol(">::"), Token::identifier("name")].into()
-        //=> "Fn(_)";
     ];
 }

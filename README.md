@@ -80,11 +80,6 @@ Use `--with-blanket-implementations` if you want to include items of blanket imp
 cargo public-api --with-blanket-implementations
 ```
 
-## Limitations
-
-See [`[limitation]`](https://github.com/Enselic/cargo-public-api/labels/limitation)
-labeled issues.
-
 # Compatibility matrix
 
 | cargo-public-api | Understands the rustdoc JSON output of  |

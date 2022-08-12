@@ -94,7 +94,7 @@ dependencies = [
 
 [[package]]
 name = "cargo-public-api"
-version = "0.12.4"
+version = "0.13.0"
 dependencies = [
  "ansi_term",
  "anyhow",
@@ -410,7 +410,7 @@ dependencies = [
 
 [[package]]
 name = "public-api"
-version = "0.12.4"
+version = "0.13.0"
 dependencies = [
  "assert_cmd",
  "hashbag",

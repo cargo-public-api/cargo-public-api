@@ -40,8 +40,8 @@ pub struct Args {
 
     /// Usage: --diff-git-checkouts <COMMIT_1> <COMMIT_2>
     ///
-    /// Rudimentary wrapper "script" to diff the public API across two different
-    /// commits. The following steps are performed:
+    /// Allows to diff the public API across two different commits. The
+    /// following steps are performed:
     ///
     /// 1. Do a literal in-tree, in-place `git checkout` of the first commit
     ///
@@ -53,25 +53,25 @@ pub struct Args {
     ///
     /// 5. Print the diff between public API in step 2 and step 4
     ///
+    /// 6. Restore the original commit before step 1
+    ///
+    /// If you have local changes, git will refuse to do `git checkout`, so your
+    /// work will not be discarded.
+    ///
     /// Do not use non-fixed commit references such as `HEAD^` since the meaning
     /// of `HEAD^` is different depending on what commit is the current commit.
     ///
-    /// While potentially annoying and in worst case destructive, doing this in
-    /// the current git repo has the benefit of making it likely for the build
-    /// to succeed. If we e.g. were to git clone a temporary copy of a commit
-    /// ourselves, the risk is high that additional steps are needed before a
-    /// build can succeed. Such as the need to set up git submodules.
-    ///
-    /// Tip: Make the second commit the same as your current commit, so that
-    /// the working tree is restored to your current state after the diff
-    /// has been printed.
+    /// Using the current git repo has the benefit of making it likely for the
+    /// build to succeed. If we e.g. were to git clone a temporary copy of a
+    /// commit ourselves, the risk is high that additional steps are needed
+    /// before a build can succeed. Such as the need to set up git submodules.
     #[clap(long, min_values = 2, max_values = 2)]
     diff_git_checkouts: Option<Vec<String>>,
 
     /// Usage: --diff-rustdoc-json <RUSTDOC_JSON_PATH_1> <RUSTDOC_JSON_PATH_2>
     ///
     /// Diff the public API across two different rustdoc JSON files.
-    #[clap(long, min_values = 2, max_values = 2)]
+    #[clap(long, min_values = 2, max_values = 2, hide = true)]
     diff_rustdoc_json: Option<Vec<String>>,
 
     /// Exit with failure if the specified API diff is detected. all = deny

@@ -1,4 +1,26 @@
-# Contributor guidelines
+# Architecture
+
+Before you get started, you might want to read about the [architecture](./ARCHITECTURE.md).
+
+# Getting started
+
+Just clone the repo. Then you can make changes and run tests:
+
+```
+git clone https://github.com/Enselic/cargo-public-api.git
+cd cargo-public-api
+
+cargo test
+```
+
+This project makes heavy use of CI. To simulate the CI pipeline locally, run
+```
+./scripts/run-ci-locally.sh
+```
+
+Note that you can run that script from within your IDE (see `.vscode/tasks.json` for an example configuration)
+
+# Constraints
 
 ## Minimum required stable Rust version
 
@@ -13,10 +35,6 @@ Since the rustdoc JSON format still changes in incompatible ways, there is a low
 Our CI runs every night, so any problems are generally detected quickly. If `cargo test` fails, make sure you have a recent enough nightly toolchain installed.
 
 # Tips to work on this tool
-
-## Running CI steps locally
-
-Run `./scripts/run-ci-locally.sh`.
 
 ## Run local copy of `cargo-public-api` on an arbitrary crate
 

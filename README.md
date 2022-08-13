@@ -47,6 +47,31 @@ and the API diff will be printed:
 
 You can also manually do a diff by writing the full list of items to a file for two different versions of your library and then do a regular `diff` between the files.
 
+### As a CI check
+
+Via CI you can ensure the public API is not changed for your crate by using `--deny=all` together with `--diff-git-checkouts`. For example, a GitHub Actions job to do this would look something like this:
+
+```yaml
+jobs:
+  deny-public-api-changes:
+    runs-on: ubuntu-latest
+    steps:
+      # Full git history needed
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      # Install nightly (stable is already installed)
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: nightly
+          profile: minimal
+
+      # Install and run cargo public-api and deny any API diff
+      - run: cargo install cargo-public-api
+      - run: cargo public-api --diff-git-checkouts ${GITHUB_BASE_REF} ${GITHUB_HEAD_REF} --deny=all
+```
+
 ## Expected output
 
 Output aims to be character-by-character identical to the textual parts of the regular `cargo doc` HTML output. For example, [this item](https://docs.rs/bat/0.20.0/bat/struct.PrettyPrinter.html#method.input_files) has the following textual representation in the rendered HTML:

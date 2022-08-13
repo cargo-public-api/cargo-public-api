@@ -131,35 +131,24 @@ fn check_diff(args: &Args, diff: &Option<PublicItemsDiff>) -> Result<()> {
     match (&args.deny, diff) {
         // We were requested to deny diffs, so make sure there is no diff
         (Some(deny), Some(diff)) => {
+            let mut violations = crate::error::Violations::new();
             for d in deny {
-                match d {
-                    DenyMethod::All => {
-                        if !diff.is_empty() {
-                            anyhow::bail!(error::Error::DiffDenied)
-                        }
-                    }
-
-                    DenyMethod::Added => {
-                        if !diff.added.is_empty() {
-                            anyhow::bail!(error::Error::DiffAddedDenied)
-                        }
-                    }
-
-                    DenyMethod::Changed => {
-                        if !diff.changed.is_empty() {
-                            anyhow::bail!(error::Error::DiffChangedDenied)
-                        }
-                    }
-
-                    DenyMethod::Removed => {
-                        if !diff.removed.is_empty() {
-                            anyhow::bail!(error::Error::DiffRemoveDenied)
-                        }
-                    }
+                if d.deny_added() && !diff.added.is_empty() {
+                    violations.extend_added(diff.added.iter().cloned());
+                }
+                if d.deny_changed() && !diff.changed.is_empty() {
+                    violations.extend_changed(diff.changed.iter().cloned());
+                }
+                if d.deny_removed() && !diff.removed.is_empty() {
+                    violations.extend_removed(diff.removed.iter().cloned());
                 }
             }
 
-            Ok(())
+            if violations.is_empty() {
+                Ok(())
+            } else {
+                Err(anyhow!(error::Error::DiffDenied(violations)))
+            }
         }
 
         // We were requested to deny diffs, but we did not calculate a diff!

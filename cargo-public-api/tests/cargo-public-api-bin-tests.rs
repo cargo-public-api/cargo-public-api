@@ -288,7 +288,7 @@ fn deny_removed_with_diff() {
     cmd.arg("--deny=removed");
     cmd.assert()
         .stderr(contains(
-            "The API diff is not allowed as per --deny=removed",
+            "The API diff is not allowed as per --deny: Removed items not allowed: [pub fn example_api::function(v1_param: Struct, v2_param: usize)]",
         ))
         .failure();
 }

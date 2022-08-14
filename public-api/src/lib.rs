@@ -144,5 +144,5 @@ pub fn public_api_from_rustdoc_json_str(
 fn deserialize_without_recursion_limit(rustdoc_json_str: &str) -> Result<rustdoc_types::Crate> {
     let mut deserializer = serde_json::Deserializer::from_str(rustdoc_json_str);
     deserializer.disable_recursion_limit();
-    return Ok(serde::de::Deserialize::deserialize(&mut deserializer)?);
+    Ok(serde::de::Deserialize::deserialize(&mut deserializer)?)
 }

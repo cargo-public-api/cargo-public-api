@@ -3,8 +3,8 @@ use std::rc::Rc;
 
 use rustdoc_types::{
     Abi, Constant, FnDecl, FunctionPointer, GenericArg, GenericArgs, GenericBound, GenericParamDef,
-    GenericParamDefKind, Generics, Header, ItemEnum, MacroKind, PolyTrait, Term, Type, TypeBinding,
-    TypeBindingKind, Variant, WherePredicate,
+    GenericParamDefKind, Generics, Header, ItemEnum, MacroKind, Path, PolyTrait, Term, Type,
+    TypeBinding, TypeBindingKind, Variant, WherePredicate,
 };
 
 /// A simple macro to write `Token::Whitespace` in less characters.
@@ -261,12 +261,7 @@ fn render_sequence_impl<T>(
 
 fn render_type(ty: &Type) -> Vec<Token> {
     match ty {
-        Type::ResolvedPath {
-            name,
-            id: _,
-            args,
-            param_names,
-        } => render_resolved_path(name, args.as_deref(), param_names),
+        Type::ResolvedPath(path) => render_resolved_path(path),
         Type::DynTrait(dyn_trait) => render_dyn_trait(dyn_trait),
         Type::Generic(name) => vec![Token::generic(name)],
         Type::Primitive(name) => vec![Token::primitive(name)],
@@ -422,12 +417,9 @@ fn simplified_self(name: &str, ty: &Type) -> Option<Vec<Token>> {
     }
 }
 
-fn render_resolved_path(
-    name: &str,
-    args: Option<&GenericArgs>,
-    param_names: &[GenericBound],
-) -> Vec<Token> {
+fn render_resolved_path(path: &Path) -> Vec<Token> {
     let mut output = vec![];
+    let name = &path.name;
     if !name.is_empty() {
         let split: Vec<_> = name.split("::").collect();
         let len = split.len();
@@ -444,13 +436,9 @@ fn render_resolved_path(
         if len > 0 {
             output.pop();
         }
-        if let Some(args) = args {
+        if let Some(args) = &path.args {
             output.extend(render_generic_args(args));
         }
-    }
-    if !param_names.is_empty() {
-        output.extend(plus());
-        output.extend(render_generic_bounds(param_names));
     }
     output
 }
@@ -518,11 +506,11 @@ fn render_borrowed_ref(lifetime: Option<&str>, mutable: bool, type_: &Type) -> V
     output
 }
 
-fn render_qualified_path(type_: &Type, trait_: &Type, name: &str) -> Vec<Token> {
+fn render_qualified_path(type_: &Type, trait_: &Path, name: &str) -> Vec<Token> {
     let mut output = vec![Token::symbol("<")];
     output.extend(render_type(type_));
     output.extend(vec![ws!(), Token::keyword("as"), ws!()]);
-    output.extend(render_type(trait_));
+    output.extend(render_resolved_path(trait_));
     output.push(Token::symbol(">::"));
     output.push(Token::identifier(name));
     output
@@ -578,7 +566,7 @@ fn render_term(term: &Term) -> Vec<Token> {
 
 fn render_poly_trait(poly_trait: &PolyTrait) -> Vec<Token> {
     let mut output = render_higher_rank_trait_bounds(&poly_trait.generic_params);
-    output.extend(render_type(&poly_trait.trait_));
+    output.extend(render_resolved_path(&poly_trait.trait_));
     output
 }
 
@@ -729,7 +717,7 @@ fn render_generic_bounds(bounds: &[GenericBound]) -> Vec<Token> {
         } => {
             let mut output = vec![];
             output.extend(render_higher_rank_trait_bounds(generic_params));
-            output.extend(render_type(trait_));
+            output.extend(render_resolved_path(trait_));
             output
         }
         GenericBound::Outlives(id) => vec![Token::lifetime(id)],
@@ -803,12 +791,11 @@ mod test {
     #[test]
     fn test_type_resolved_simple() {
         assert_render(
-            render_type(&Type::ResolvedPath {
+            render_type(&Type::ResolvedPath(Path {
                 name: s!("name"),
                 args: None,
                 id: Id(s!("id")),
-                param_names: vec![],
-            }),
+            })),
             vec![Token::type_("name")],
             "name",
         );
@@ -817,12 +804,11 @@ mod test {
     #[test]
     fn test_type_resolved_long_name() {
         assert_render(
-            render_type(&Type::ResolvedPath {
+            render_type(&Type::ResolvedPath(Path {
                 name: s!("name::with::parts"),
                 args: None,
                 id: Id(s!("id")),
-                param_names: vec![],
-            }),
+            })),
             vec![
                 Token::identifier("name"),
                 Token::symbol("::"),
@@ -837,12 +823,11 @@ mod test {
     #[test]
     fn test_type_resolved_crate_name() {
         assert_render(
-            render_type(&Type::ResolvedPath {
+            render_type(&Type::ResolvedPath(Path {
                 name: s!("$crate::name"),
                 args: None,
                 id: Id(s!("id")),
-                param_names: vec![],
-            }),
+            })),
             vec![
                 Token::identifier("$crate"),
                 Token::symbol("::"),
@@ -855,12 +840,11 @@ mod test {
     #[test]
     fn test_type_resolved_name_crate() {
         assert_render(
-            render_type(&Type::ResolvedPath {
+            render_type(&Type::ResolvedPath(Path {
                 name: s!("name::$crate"),
                 args: None,
                 id: Id(s!("id")),
-                param_names: vec![],
-            }),
+            })),
             vec![
                 Token::identifier("name"),
                 Token::symbol("::"),
@@ -1036,7 +1020,11 @@ mod test {
                     bindings: vec![],
                 }),
                 self_type: Box::new(Type::Generic(s!("type"))),
-                trait_: Box::new(Type::Generic(s!("trait"))),
+                trait_: Path {
+                    name: String::from("trait"),
+                    args: None,
+                    id: Id(s!("id")),
+                },
             }),
             vec![
                 Token::symbol("<"),
@@ -1044,7 +1032,7 @@ mod test {
                 ws!(),
                 Token::keyword("as"),
                 ws!(),
-                Token::generic("trait"),
+                Token::type_("trait"),
                 Token::symbol(">::"),
                 Token::identifier("name"),
             ],

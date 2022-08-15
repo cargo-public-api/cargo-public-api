@@ -20,7 +20,7 @@ pub(crate) fn git_checkout(commit: &str, git_root: &Path, quiet: bool) -> Result
         Ok(original_branch)
     } else {
         Err(anyhow!(
-            "Failed to git checkout {}, see error message on stdout/stderr.",
+            "Failed to `git checkout {}`, see error message on stdout/stderr.",
             commit,
         ))
     }

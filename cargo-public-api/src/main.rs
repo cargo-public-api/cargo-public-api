@@ -74,8 +74,18 @@ pub struct Args {
     #[clap(long, min_values = 2, max_values = 2, hide = true)]
     diff_rustdoc_json: Option<Vec<String>>,
 
-    /// Exit with failure if the specified API diff is detected. all = deny
-    /// additions, changes, and removals of public items in the API
+    /// Exit with failure if the specified API diff is detected.
+    ///
+    /// * all = deny added, changed, and removed public items in the API
+    ///
+    /// * added = deny added public items to the API
+    ///
+    /// * changed = deny changed public items in the API
+    ///
+    /// * removed = deny removed public items from the API
+    ///
+    /// They can also be combined. For example, to only allow additions to the
+    /// API, use `--deny=added --deny=changed`.
     #[clap(long, arg_enum)]
     deny: Option<Vec<DenyMethod>>,
 

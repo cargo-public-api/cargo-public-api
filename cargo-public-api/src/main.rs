@@ -43,17 +43,19 @@ pub struct Args {
     /// Allows to diff the public API across two different commits. The
     /// following steps are performed:
     ///
-    /// 1. Do a literal in-tree, in-place `git checkout` of the first commit
+    /// 1. Remember the current branch/commit
     ///
-    /// 2. Collect public API
+    /// 2. Do a literal in-tree, in-place `git checkout` of the first commit
     ///
-    /// 3. Do a literal in-tree, in-place `git checkout` of the second commit
+    /// 3. Collect public API
     ///
-    /// 4. Collect public API
+    /// 4. Do a literal in-tree, in-place `git checkout` of the second commit
     ///
-    /// 5. Print the diff between public API in step 2 and step 4
+    /// 5. Collect public API
     ///
-    /// 6. Restore the original commit before step 1
+    /// 6. Print the diff between public API in step 2 and step 4
+    ///
+    /// 7. Restore the original branch/commit
     ///
     /// If you have local changes, git will refuse to do `git checkout`, so your
     /// work will not be discarded.
@@ -89,7 +91,9 @@ pub struct Args {
     #[clap(long, arg_enum)]
     deny: Option<Vec<DenyMethod>>,
 
-    /// What output format to use. You can select between "plain" and "markdown".
+    /// What output format to use. You can select between `plain` and
+    /// `markdown`. By default, `plain` with syntax highlighting is used (unless
+    /// output is piped to a file, see `--color`)
     #[clap(long, name = "FORMAT", default_value = "plain")]
     output_format: OutputFormat,
 

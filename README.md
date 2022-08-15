@@ -8,7 +8,7 @@ List and diff the public API of Rust library crates between releases and commits
 # Install cargo-public-api with a recent regular stable Rust toolchain
 cargo install cargo-public-api
 
-# Ensure nightly-2022-08-10 or later is installed so cargo-public-api can build rustdoc JSON for you
+# Ensure nightly-2022-08-15 or later is installed so cargo-public-api can build rustdoc JSON for you
 rustup install nightly
 ```
 
@@ -109,7 +109,8 @@ cargo public-api --with-blanket-implementations
 
 | cargo-public-api | Understands the rustdoc JSON output of  |
 | ---------------- | --------------------------------------- |
-| v0.13.x          | nightly-2022-08-10 —                    |
+| v0.14.x          | nightly-2022-08-15 —                    |
+| v0.13.x          | nightly-2022-08-10 — nightly-2022-08-14 |
 | v0.12.x          | nightly-2022-05-19 — nightly-2022-08-09 |
 | v0.10.x          | nightly-2022-03-14 — nightly-2022-05-18 |
 | v0.5.x           | nightly-2022-02-23 — nightly-2022-03-13 |

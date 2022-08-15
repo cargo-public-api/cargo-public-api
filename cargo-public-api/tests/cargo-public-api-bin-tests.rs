@@ -143,8 +143,61 @@ fn diff_public_items_with_dirty_tree_fails() {
 
 #[test]
 fn deny_when_not_diffing() {
+    let test_repo = TestRepo::new();
+
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    cmd.current_dir(&test_repo.path);
     cmd.arg("--deny=all");
+    cmd.assert()
+        .stderr(contains("`--deny` can only be used when diffing"))
+        .failure();
+}
+
+#[test]
+fn deny_added_when_not_diffing() {
+    let test_repo = TestRepo::new();
+
+    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    cmd.current_dir(&test_repo.path);
+    cmd.arg("--deny=added");
+    cmd.assert()
+        .stderr(contains("`--deny` can only be used when diffing"))
+        .failure();
+}
+
+#[test]
+fn deny_changed_when_not_diffing() {
+    let test_repo = TestRepo::new();
+
+    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    cmd.current_dir(&test_repo.path);
+    cmd.arg("--deny=changed");
+    cmd.assert()
+        .stderr(contains("`--deny` can only be used when diffing"))
+        .failure();
+}
+
+#[test]
+fn deny_removed_when_not_diffing() {
+    let test_repo = TestRepo::new();
+
+    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    cmd.current_dir(&test_repo.path);
+    cmd.arg("--deny=removed");
+    cmd.assert()
+        .stderr(contains("`--deny` can only be used when diffing"))
+        .failure();
+}
+
+#[test]
+fn deny_combination_when_not_diffing() {
+    let test_repo = TestRepo::new();
+
+    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    cmd.current_dir(&test_repo.path);
+    cmd.arg("--deny=added");
+    cmd.arg("--deny=changed");
+    cmd.arg("--deny=removed");
     cmd.assert()
         .stderr(contains("`--deny` can only be used when diffing"))
         .failure();
@@ -177,13 +230,77 @@ fn deny_with_diff() {
 }
 
 #[test]
+fn deny_added_with_diff() {
+    let test_repo = TestRepo::new();
+
+    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    cmd.current_dir(&test_repo.path);
+    cmd.arg("--diff-git-checkouts");
+    cmd.arg("v0.1.0");
+    cmd.arg("v0.2.0");
+    cmd.arg("--deny=added");
+    cmd.assert()
+        .stdout(
+            "Removed items from the public API
+=================================
+(none)
+
+Changed items in the public API
+===============================
+-pub fn example_api::function(v1_param: Struct)
++pub fn example_api::function(v1_param: Struct, v2_param: usize)
+-pub struct example_api::Struct
++#[non_exhaustive] pub struct example_api::Struct
+
+Added items to the public API
+=============================
++pub struct example_api::StructV2
++pub struct field example_api::Struct::v2_field: usize
++pub struct field example_api::StructV2::field: usize
+
+",
+        )
+        .failure();
+}
+
+#[test]
+fn deny_changed_with_diff() {
+    let test_repo = TestRepo::new();
+
+    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    cmd.current_dir(&test_repo.path);
+    cmd.arg("--diff-git-checkouts");
+    cmd.arg("v0.1.0");
+    cmd.arg("v0.2.0");
+    cmd.arg("--deny=changed");
+    cmd.assert().failure();
+}
+
+#[test]
+fn deny_removed_with_diff() {
+    let test_repo = TestRepo::new();
+
+    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    cmd.current_dir(&test_repo.path);
+    cmd.arg("--diff-git-checkouts");
+    cmd.arg("v0.2.0");
+    cmd.arg("v0.3.0");
+    cmd.arg("--deny=removed");
+    cmd.assert()
+        .stderr(contains(
+            "The API diff is not allowed as per --deny: Removed items not allowed: [pub fn example_api::function(v1_param: Struct, v2_param: usize)]",
+        ))
+        .failure();
+}
+
+#[test]
 fn deny_with_invalid_arg() {
     let test_repo = TestRepo::new();
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
     cmd.current_dir(&test_repo.path);
     cmd.arg("--diff-git-checkouts");
-    cmd.arg("v0.0.4");
-    cmd.arg("v0.0.5");
+    cmd.arg("v0.2.0");
+    cmd.arg("v0.3.0");
     cmd.arg("--deny=invalid");
     cmd.assert()
         .stderr(contains("\"invalid\" isn't a valid value"))
@@ -217,8 +334,8 @@ fn diff_public_items_without_git_root() {
     cmd.arg("/does/not/exist/Cargo.toml");
     cmd.arg("--color=never");
     cmd.arg("--diff-git-checkouts");
-    cmd.arg("v0.0.4");
-    cmd.arg("v0.0.5");
+    cmd.arg("v0.2.0");
+    cmd.arg("v0.3.0");
     cmd.assert()
         .stderr(predicates::str::starts_with(
             "Error: No `.git` dir when starting from `",

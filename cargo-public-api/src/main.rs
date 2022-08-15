@@ -74,8 +74,18 @@ pub struct Args {
     #[clap(long, min_values = 2, max_values = 2, hide = true)]
     diff_rustdoc_json: Option<Vec<String>>,
 
-    /// Exit with failure if the specified API diff is detected. all = deny
-    /// additions, changes, and removals of public items in the API
+    /// Exit with failure if the specified API diff is detected.
+    ///
+    /// * all = deny added, changed, and removed public items in the API
+    ///
+    /// * added = deny added public items to the API
+    ///
+    /// * changed = deny changed public items in the API
+    ///
+    /// * removed = deny removed public items from the API
+    ///
+    /// They can also be combined. For example, to only allow additions to the
+    /// API, use `--deny=added --deny=changed`.
     #[clap(long, arg_enum)]
     deny: Option<Vec<DenyMethod>>,
 
@@ -130,11 +140,24 @@ fn main_() -> Result<()> {
 fn check_diff(args: &Args, diff: &Option<PublicItemsDiff>) -> Result<()> {
     match (&args.deny, diff) {
         // We were requested to deny diffs, so make sure there is no diff
-        (Some(_deny), Some(diff)) => {
-            if diff.is_empty() {
+        (Some(deny), Some(diff)) => {
+            let mut violations = crate::error::Violations::new();
+            for d in deny {
+                if d.deny_added() && !diff.added.is_empty() {
+                    violations.extend_added(diff.added.iter().cloned());
+                }
+                if d.deny_changed() && !diff.changed.is_empty() {
+                    violations.extend_changed(diff.changed.iter().cloned());
+                }
+                if d.deny_removed() && !diff.removed.is_empty() {
+                    violations.extend_removed(diff.removed.iter().cloned());
+                }
+            }
+
+            if violations.is_empty() {
                 Ok(())
             } else {
-                Err(anyhow!(error::Error::DiffDenied))
+                Err(anyhow!(error::Error::DiffDenied(violations)))
             }
         }
 

@@ -15,22 +15,20 @@ const OVERRIDDEN_TOOLCHAIN: Option<&str> = option_env!("RUSTDOC_JSON_OVERRIDDEN_
 /// Run `cargo rustdoc` to produce rustdoc JSON and return the path to the built
 /// file.
 pub(crate) fn run_cargo_rustdoc(options: BuildOptions) -> Result<PathBuf, BuildError> {
-    let output = cargo_rustdoc_command(
+    let status = cargo_rustdoc_command(
         options.toolchain.as_deref(),
         &options.manifest_path,
         options.quiet,
     )
-    .output()?;
-    if output.status.success() {
+    .status()?;
+    if status.success() {
         rustdoc_json_path_for_manifest_path(options.manifest_path)
     } else {
-        let stderr = String::from_utf8_lossy(&output.stderr).to_string();
-        if stderr.contains("is a virtual manifest, but this command requires running against an actual package in this workspace") {
-            Err(BuildError::VirtualManifest(
-                options.manifest_path,
-            ))
+        let manifest = cargo_toml::Manifest::from_path(&options.manifest_path)?;
+        if manifest.workspace.is_some() {
+            Err(BuildError::VirtualManifest(options.manifest_path))
         } else {
-            Err(BuildError::General(stderr))
+            Err(BuildError::General(String::from("See above")))
         }
     }
 }

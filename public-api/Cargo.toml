@@ -32,4 +32,4 @@ itertools = { version = "0.10.3", default-features = false }
 
 [dev-dependencies.rustdoc-json]
 path = "../rustdoc-json"
-version = "0.3.0"
+version = "0.3.1"

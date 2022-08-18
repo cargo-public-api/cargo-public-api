@@ -26,7 +26,7 @@ trap 'rm -f "${stdout_name}" "${stderr_name}"' EXIT
 assert_progress_and_output() {
     local cmd="$1"
 
-    echo -n "Testing that \`${cmd}\` writes expected info to stdout and stderr ... "
+    echo -n "${cmd} ... "
 
     CARGO_TERM_COLOR=never ${cmd} >${stdout_name} 2>${stderr_name}
 

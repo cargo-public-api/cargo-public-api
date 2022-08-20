@@ -1,6 +1,6 @@
 use std::{collections::HashMap, fmt::Display, rc::Rc};
 
-use rustdoc_types::{Crate, Id, Impl, Item, ItemEnum, Path, Type};
+use rustdoc_types::{Crate, Id, Impl, Import, Item, ItemEnum, Module, Path, Type};
 
 use super::intermediate_public_item::IntermediatePublicItem;
 use crate::{tokens::Token, Options};
@@ -88,10 +88,30 @@ impl<'a> ItemIterator<'a> {
     ) {
         match self.crate_.index.get(id) {
             Some(item) => {
+                // We need to handle `pub use foo::*` specially. In case of such
+                // wildcard imports, `glob` will be `true` and `id` will be the
+                // module we should import all items from, but we should NOT add
+                // the module itself.
+                if let ItemEnum::Import(Import {
+                    id: Some(mod_id),
+                    glob: true,
+                    ..
+                }) = &item.inner
+                {
+                    if let Some(Item {
+                        inner: ItemEnum::Module(Module { items, .. }),
+                        ..
+                    }) = self.crate_.index.get(mod_id)
+                    {
+                        for item in items {
+                            self.try_add_item_to_visit(item, parent.clone());
+                        }
+                    }
+                }
                 // We handle `impl`s specially, and we don't want to process `impl`
                 // items directly. See [`ItemIterator::impls`] docs for more info.
                 // All other items we can go ahead and add.
-                if !matches!(item.inner, ItemEnum::Impl { .. }) {
+                else if !matches!(item.inner, ItemEnum::Impl { .. }) {
                     self.add_item_to_visit(item, parent);
                 }
             }

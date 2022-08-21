@@ -112,6 +112,10 @@ pub struct Args {
     /// Useful if you have built a toolchain from source for example.
     #[clap(long, hide = true, default_value = "+nightly")]
     rustdoc_json_toolchain: String,
+
+    /// Build for the target triple
+    #[clap(long)]
+    target: Option<String>,
 }
 
 /// After listing or diffing, we might want to do some extra work. This struct
@@ -286,11 +290,14 @@ fn collect_public_items_from_commit(
         None
     };
 
-    let json_path = match rustdoc_json::build(
-        BuildOptions::default()
-            .toolchain(&args.rustdoc_json_toolchain)
-            .manifest_path(&args.manifest_path),
-    ) {
+    let mut build_options = BuildOptions::default()
+        .toolchain(&args.rustdoc_json_toolchain)
+        .manifest_path(&args.manifest_path);
+    if let Some(target) = &args.target {
+        build_options = build_options.target(target.to_owned());
+    }
+
+    let json_path = match rustdoc_json::build(build_options) {
         Err(BuildError::VirtualManifest(manifest_path)) => virtual_manifest_error(&manifest_path)?,
         res => res?,
     };

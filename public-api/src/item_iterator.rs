@@ -163,9 +163,14 @@ impl<'a> ItemIterator<'a> {
                 Some(format!("<<{}::*>>", import.source))
             } else {
                 if let Some(imported_id) = &import.id {
-                    match self.crate_.index.get(imported_id) {
-                        Some(imported_item) => item = imported_item,
-                        None => self.add_missing_id(imported_id),
+                    if !parent
+                        .clone()
+                        .map_or(false, |p| p.path_contains_id(imported_id))
+                    {
+                        match self.crate_.index.get(imported_id) {
+                            Some(imported_item) => item = imported_item,
+                            None => self.add_missing_id(imported_id),
+                        }
                     }
                 }
                 Some(import.name.clone())

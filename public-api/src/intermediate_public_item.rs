@@ -1,7 +1,7 @@
 use crate::render;
 use std::rc::Rc;
 
-use rustdoc_types::Item;
+use rustdoc_types::{Id, Item};
 
 use crate::tokens::Token;
 
@@ -49,6 +49,11 @@ impl<'a> IntermediatePublicItem<'a> {
         }
 
         path
+    }
+
+    #[must_use]
+    pub fn path_contains_id(&self, id: &'a Id) -> bool {
+        self.path().iter().any(|m| m.item.id == *id)
     }
 
     pub fn render_token_stream(&self) -> Vec<Token> {

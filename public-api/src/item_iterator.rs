@@ -111,15 +111,22 @@ impl<'a> ItemIterator<'a> {
             ..
         }) = &item.inner
         {
-            if let Some(Item {
-                inner: ItemEnum::Module(Module { items, .. }),
-                ..
-            }) = self.crate_.index.get(mod_id)
-            {
-                for item in items {
-                    self.try_add_item_to_visit(item, parent.clone());
+            // Before we inline this wildcard import, make sure that the module
+            // is not indirectly trying to import itself. If we allow that,
+            // we'll get a stack overflow. Note that `glob_import_inlined`
+            // remains `false` in that case, which means that the output will
+            // use a special syntax to indicate that we broke recursion.
+            if !parent.clone().map_or(false, |p| p.path_contains_id(mod_id)) {
+                if let Some(Item {
+                    inner: ItemEnum::Module(Module { items, .. }),
+                    ..
+                }) = self.crate_.index.get(mod_id)
+                {
+                    for item in items {
+                        self.try_add_item_to_visit(item, parent.clone());
+                    }
+                    glob_import_inlined = true;
                 }
-                glob_import_inlined = true;
             }
         }
 
@@ -152,17 +159,22 @@ impl<'a> ItemIterator<'a> {
                 // Items should have been inlined in maybe_add_item_to_visit(),
                 // but since we got here that must have failed, typically
                 // because the built rustdoc JSON omitted some items from the
-                // output.
+                // output, or to break import recursion.
                 Some(format!("<<{}::*>>", import.source))
             } else {
+                if let Some(imported_id) = &import.id {
+                    if !parent
+                        .clone()
+                        .map_or(false, |p| p.path_contains_id(imported_id))
+                    {
+                        match self.crate_.index.get(imported_id) {
+                            Some(imported_item) => item = imported_item,
+                            None => self.add_missing_id(imported_id),
+                        }
+                    }
+                }
                 Some(import.name.clone())
             };
-            if let Some(imported_id) = &import.id {
-                match self.crate_.index.get(imported_id) {
-                    Some(imported_item) => item = imported_item,
-                    None => self.add_missing_id(imported_id),
-                }
-            }
         }
 
         let public_item = Rc::new(IntermediatePublicItem::new(

@@ -55,39 +55,9 @@ cargo public-api --diff-git-checkouts origin/main your-current-branch
 
 which will print the the diff of your public API changes compared to `origin/main`.
 
-### As a CI Check With a Changeable Public API
+### As a CI Check
 
-Sometimes you want CI to prevent accidental changes to your public API while still allowing you to easily bless changes to the public API. To do this, first write the current public API to a file:
-
-```bash
-cargo public-api > public-api.txt
-```
-
-and then create a CI job that ensures the API remains unchanged, with instructions on how to bless changes. For example, a GitHub Actions job to do so would look something like this:
-
-```yaml
-jobs:
-  deny-public-api-changes:
-    runs-on: ubuntu-latest
-    steps:
-      # Install nightly (stable is already installed)
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: nightly
-          profile: minimal
-
-      # Install and run cargo public-api and deny any API diff
-      - run: cargo install cargo-public-api
-      - run: |
-          diff -u public-api.txt <(cargo public-api) ||
-              (echo '\nFAIL: Public API changed! To bless, `git commit` the result of `cargo public-api > public-api.txt`' && exit 1)
-```
-
-Caution: Since the rustdoc JSON format is unstable and frequently changes, and since improvements of cargo public-api are regularly released, you must expect changes to `public-api.txt` as time goes by even though you don't change your API. To mitigate that you can lock CI to a fixed version of `nightly` and a fixed version of `cargo public-api`. Use e.g. `cargo install cargo-public-api@0.14.0` and `toolchain: nightly-2022-08-01` and then use `cargo public-api --rustdoc-json-toolchain=+nightly-2022-08-15`.
-
-### As a CI Check With a Public API Set in Stone
-
-If the API is set in stone, another alternative is to use the `--deny=all` flag together with `--diff-git-checkouts`. A GitHub Actions job to do this for PRs would look something like this:
+To deny any changes to the public API, you can use the `--deny=all` flag together with `--diff-git-checkouts`. A GitHub Actions job to do this for PRs would look something like this:
 
 ```yaml
 jobs:

@@ -11,3 +11,11 @@ pub mod v1 {
         foo();
     }
 }
+
+pub mod recursion_1 {
+    pub use super::recursion_2::*;
+}
+
+pub mod recursion_2 {
+    pub use super::recursion_1::*;
+}

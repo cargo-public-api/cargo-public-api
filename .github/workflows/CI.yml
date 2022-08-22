@@ -50,6 +50,19 @@ jobs:
           profile: minimal
       - run: cargo test --locked
 
+  check-public-apis:
+    name: Check public APIs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: nightly
+          profile: minimal
+      - run: |
+          scripts/check-public-apis.sh ||
+              (echo '\nFAIL: Public API changed! To bless, `git commit` the result of `scripts/bless-public-apis.sh' && exit 1)
+
   test-invocation-variants:
     name: scripts/test-invocation-variants.sh
     runs-on: ubuntu-latest

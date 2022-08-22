@@ -87,36 +87,41 @@ impl<'a> ItemIterator<'a> {
         parent: Option<Rc<IntermediatePublicItem<'a>>>,
     ) {
         match self.crate_.index.get(id) {
-            Some(item) => {
-                // We need to handle `pub use foo::*` specially. In case of such
-                // wildcard imports, `glob` will be `true` and `id` will be the
-                // module we should import all items from, but we should NOT add
-                // the module itself.
-                if let ItemEnum::Import(Import {
-                    id: Some(mod_id),
-                    glob: true,
-                    ..
-                }) = &item.inner
-                {
-                    if let Some(Item {
-                        inner: ItemEnum::Module(Module { items, .. }),
-                        ..
-                    }) = self.crate_.index.get(mod_id)
-                    {
-                        for item in items {
-                            self.try_add_item_to_visit(item, parent.clone());
-                        }
-                    }
-                }
-                // We handle `impl`s specially, and we don't want to process `impl`
-                // items directly. See [`ItemIterator::impls`] docs for more info.
-                // All other items we can go ahead and add.
-                else if !matches!(item.inner, ItemEnum::Impl { .. }) {
-                    self.add_item_to_visit(item, parent);
+            Some(item) => self.maybe_add_item_to_visit(item, parent),
+            None => self.add_missing_id(id),
+        }
+    }
+
+    fn maybe_add_item_to_visit(
+        &mut self,
+        item: &'a Item,
+        parent: Option<Rc<IntermediatePublicItem<'a>>>,
+    ) {
+        // We need to handle `pub use foo::*` specially. In case of such
+        // wildcard imports, `glob` will be `true` and `id` will be the
+        // module we should import all items from, but we should NOT add
+        // the module itself.
+        if let ItemEnum::Import(Import {
+            id: Some(mod_id),
+            glob: true,
+            ..
+        }) = &item.inner
+        {
+            if let Some(Item {
+                inner: ItemEnum::Module(Module { items, .. }),
+                ..
+            }) = self.crate_.index.get(mod_id)
+            {
+                for item in items {
+                    self.try_add_item_to_visit(item, parent.clone());
                 }
             }
-
-            None => self.add_missing_id(id),
+        }
+        // We handle `impl`s specially, and we don't want to process `impl`
+        // items directly. See [`ItemIterator::impls`] docs for more info.
+        // All other items we can go ahead and add.
+        else if !matches!(item.inner, ItemEnum::Impl { .. }) {
+            self.add_item_to_visit(item, parent);
         }
     }
 

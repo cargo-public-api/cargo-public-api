@@ -83,6 +83,8 @@ jobs:
               (echo '\nFAIL: Public API changed! To bless, `git commit` the result of `cargo public-api > public-api.txt`' && exit 1)
 ```
 
+Caution: Since the rustdoc JSON format is unstable and frequently changes, and since improvements of cargo public-api are regularly released, you must expect changes to `public-api.txt` as time goes by even though you don't change your API. To mitigate that you can lock CI to a fixed version of `nightly` and a fixed version of `cargo public-api`. Use e.g. `cargo install cargo-public-api@0.14.0` and `toolchain: nightly-2022-08-01` and then use `cargo public-api --rustdoc-json-toolchain=+nightly-2022-08-15`.
+
 ### As a CI Check With a Public API Set in Stone
 
 If the API is set in stone, another alternative is to use the `--deny=all` flag together with `--diff-git-checkouts`. A GitHub Actions job to do this for PRs would look something like this:

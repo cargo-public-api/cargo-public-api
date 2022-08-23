@@ -60,8 +60,7 @@ jobs:
           toolchain: nightly
           profile: minimal
       - run: |
-          scripts/check-public-apis.sh ||
-              (echo '\nFAIL: Public API changed! To bless, `git commit` the result of `scripts/bless-public-apis.sh' && exit 1)
+          scripts/check-public-apis.sh
 
   test-invocation-variants:
     name: scripts/test-invocation-variants.sh

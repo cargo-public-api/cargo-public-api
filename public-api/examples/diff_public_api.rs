@@ -15,7 +15,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         options,
     )?;
 
-    let diff = PublicItemsDiff::between(old, new);
+    let diff = PublicItemsDiff::between(old.items, new.items);
     println!("{:#?}", diff);
 
     Ok(())

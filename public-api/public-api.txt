@@ -1,5 +1,6 @@
 #[non_exhaustive] pub enum public_api::Error
 #[non_exhaustive] pub struct public_api::Options
+#[non_exhaustive] pub struct public_api::PublicApi
 pub const public_api::MINIMUM_RUSTDOC_JSON_VERSION: &'static str
 pub enum public_api::tokens::Token
 pub enum variant public_api::Error::SerdeJsonError(serde_json::Error)
@@ -23,6 +24,7 @@ pub fn public_api::Error::source(&self) -> std::option::Option<&(dyn std::error:
 pub fn public_api::Options::clone(&self) -> Options
 pub fn public_api::Options::default() -> Self
 pub fn public_api::Options::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
+pub fn public_api::PublicApi::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
 pub fn public_api::PublicItem::clone(&self) -> PublicItem
 pub fn public_api::PublicItem::cmp(&self, other: &Self) -> std::cmp::Ordering
 pub fn public_api::PublicItem::eq(&self, other: &PublicItem) -> bool
@@ -41,7 +43,7 @@ pub fn public_api::diff::PublicItemsDiff::clone(&self) -> PublicItemsDiff
 pub fn public_api::diff::PublicItemsDiff::eq(&self, other: &PublicItemsDiff) -> bool
 pub fn public_api::diff::PublicItemsDiff::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
 pub fn public_api::diff::PublicItemsDiff::is_empty(&self) -> bool
-pub fn public_api::public_api_from_rustdoc_json_str(rustdoc_json_str: &str, options: Options) -> Result<Vec<PublicItem>>
+pub fn public_api::public_api_from_rustdoc_json_str(rustdoc_json_str: &str, options: Options) -> Result<PublicApi>
 pub fn public_api::tokens::Token::clone(&self) -> Token
 pub fn public_api::tokens::Token::cmp(&self, other: &Token) -> $crate::cmp::Ordering
 pub fn public_api::tokens::Token::eq(&self, other: &Token) -> bool
@@ -55,6 +57,8 @@ pub mod public_api::diff
 pub mod public_api::tokens
 pub struct field public_api::Options::sorted: bool
 pub struct field public_api::Options::with_blanket_implementations: bool
+pub struct field public_api::PublicApi::items: Vec<PublicItem>
+pub struct field public_api::PublicApi::missing_item_ids: Vec<String>
 pub struct field public_api::diff::ChangedPublicItem::new: PublicItem
 pub struct field public_api::diff::ChangedPublicItem::old: PublicItem
 pub struct field public_api::diff::PublicItemsDiff::added: Vec<PublicItem>

@@ -6,7 +6,8 @@ cd cargo-public-api
 
 # We expect this public API to be printed to stdout
 expected_stdout="pub fn cargo_public_api::for_self_testing_purposes_please_ignore()
-pub mod cargo_public_api"
+pub mod cargo_public_api
+pub use cargo_public_api::public_api"
 
 # We want the tool to print progress when it builds rustdoc JSON. The presence
 # of this string is what we use to test if that is the case.

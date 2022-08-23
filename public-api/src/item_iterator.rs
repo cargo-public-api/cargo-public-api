@@ -3,7 +3,7 @@ use std::{collections::HashMap, fmt::Display, rc::Rc};
 use rustdoc_types::{Crate, Id, Impl, Import, Item, ItemEnum, Module, Path, Type};
 
 use super::intermediate_public_item::IntermediatePublicItem;
-use crate::{tokens::Token, Options};
+use crate::{tokens::Token, Options, PublicApi};
 
 type Impls<'a> = HashMap<&'a Id, Vec<&'a Impl>>;
 
@@ -247,11 +247,21 @@ fn items_in_container(item: &Item) -> Option<&Vec<Id>> {
     }
 }
 
-pub fn public_api_in_crate(
-    crate_: &Crate,
-    options: Options,
-) -> impl Iterator<Item = PublicItem> + '_ {
-    ItemIterator::new(crate_, options).map(|p| intermediate_public_item_to_public_item(&p))
+pub fn public_api_in_crate(crate_: &Crate, options: Options) -> super::PublicApi {
+    let mut item_iterator = ItemIterator::new(crate_, options);
+    let items = item_iterator
+        .by_ref()
+        .map(|p| intermediate_public_item_to_public_item(&p))
+        .collect();
+
+    PublicApi {
+        items,
+        missing_item_ids: item_iterator
+            .missing_ids
+            .iter()
+            .map(|m| m.0.clone())
+            .collect(),
+    }
 }
 
 fn intermediate_public_item_to_public_item(

@@ -467,6 +467,7 @@ fn list_public_items_markdown() {
             "## Public API\n\
              * `pub fn cargo_public_api::for_self_testing_purposes_please_ignore()`\n\
              * `pub mod cargo_public_api`\n\
+             * `pub use cargo_public_api::public_api`\n\
              \n\
              ",
         )
@@ -477,7 +478,10 @@ fn list_public_items_markdown() {
 fn verbose() {
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
     cmd.arg("--verbose");
-    cmd.assert().stdout(contains("Processing \"")).success();
+    cmd.assert()
+        .stdout(contains("Processing \""))
+        .stdout(contains("rustdoc JSON missing referenced item"))
+        .success();
 }
 
 #[test]
@@ -499,6 +503,7 @@ fn assert_presence_of_own_library_items(mut cmd: Command) {
         .stdout(
             "pub fn cargo_public_api::for_self_testing_purposes_please_ignore()\n\
              pub mod cargo_public_api\n\
+             pub use cargo_public_api::public_api\n\
              ",
         )
         .success();

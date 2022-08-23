@@ -8,7 +8,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         Options::default(),
     )?;
 
-    for public_item in public_api {
+    for public_item in public_api.items {
         println!("{}", public_item);
     }
 

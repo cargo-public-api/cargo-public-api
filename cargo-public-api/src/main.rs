@@ -6,7 +6,7 @@ use arg_types::{Color, DenyMethod, OutputFormat};
 use output_formatter::OutputFormatter;
 use public_api::diff::PublicItemsDiff;
 use public_api::{
-    public_api_from_rustdoc_json_str, Options, PublicItem, MINIMUM_RUSTDOC_JSON_VERSION,
+    public_api_from_rustdoc_json_str, Options, PublicApi, PublicItem, MINIMUM_RUSTDOC_JSON_VERSION,
 };
 
 use clap::Parser;
@@ -174,10 +174,17 @@ fn check_diff(args: &Args, diff: &Option<PublicItemsDiff>) -> Result<()> {
 }
 
 fn print_public_items_of_current_commit(args: &Args) -> Result<PostProcessing> {
-    let (public_items, branch_to_restore) = collect_public_items_from_commit(None)?;
+    let (public_items, branch_to_restore) = collect_public_api_from_commit(None)?;
+
+    if args.verbose {
+        public_items.missing_item_ids.iter().for_each(|i| {
+            println!("NOTE: rustdoc JSON missing referenced item with ID \"{i}\"");
+        });
+    }
+
     args.output_format
         .formatter()
-        .print_items(&mut stdout(), args, public_items)?;
+        .print_items(&mut stdout(), args, public_items.items)?;
 
     Ok(PostProcessing {
         diff_to_check: None,
@@ -187,12 +194,12 @@ fn print_public_items_of_current_commit(args: &Args) -> Result<PostProcessing> {
 
 fn print_diff_between_two_commits(args: &Args, commits: &[String]) -> Result<PostProcessing> {
     let old_commit = commits.get(0).expect("clap makes sure first commit exist");
-    let (old, branch_to_restore) = collect_public_items_from_commit(Some(old_commit))?;
+    let (old, branch_to_restore) = collect_public_api_from_commit(Some(old_commit))?;
 
     let new_commit = commits.get(1).expect("clap makes sure second commit exist");
-    let (new, _) = collect_public_items_from_commit(Some(new_commit))?;
+    let (new, _) = collect_public_api_from_commit(Some(new_commit))?;
 
-    let diff_to_check = Some(print_diff(args, old, new)?);
+    let diff_to_check = Some(print_diff(args, old.items, new.items)?);
 
     Ok(PostProcessing {
         diff_to_check,
@@ -212,7 +219,7 @@ fn print_diff_between_two_rustdoc_json_files(
     let new_file = files.get(1).expect("clap makes sure second file exists");
     let new = public_api_from_rustdoc_json_path(new_file, options)?;
 
-    let diff_to_check = Some(print_diff(args, old, new)?);
+    let diff_to_check = Some(print_diff(args, old.items, new.items)?);
 
     Ok(PostProcessing {
         diff_to_check,
@@ -269,9 +276,7 @@ fn get_options(args: &Args) -> Options {
 /// Collects public items from either the current commit or a given commit. If
 /// `commit` is `Some` and thus a `git checkout` will be made, also return the
 /// original branch.
-fn collect_public_items_from_commit(
-    commit: Option<&str>,
-) -> Result<(Vec<PublicItem>, Option<String>)> {
+fn collect_public_api_from_commit(commit: Option<&str>) -> Result<(PublicApi, Option<String>)> {
     let args = get_args();
 
     // Do a git checkout of a specific commit unless we are supposed to simply
@@ -308,7 +313,7 @@ fn collect_public_items_from_commit(
 fn public_api_from_rustdoc_json_path<T: AsRef<Path>>(
     json_path: T,
     options: Options,
-) -> Result<Vec<PublicItem>> {
+) -> Result<PublicApi> {
     let rustdoc_json = &std::fs::read_to_string(&json_path)
         .with_context(|| format!("Failed to read rustdoc JSON at {:?}", json_path.as_ref()))?;
 

@@ -294,7 +294,7 @@ fn collect_public_items_from_commit(
         .toolchain(&args.rustdoc_json_toolchain)
         .manifest_path(&args.manifest_path);
     if let Some(target) = &args.target {
-        build_options = build_options.target(target.to_owned());
+        build_options = build_options.target(target.clone());
     }
 
     let json_path = match rustdoc_json::build(build_options) {

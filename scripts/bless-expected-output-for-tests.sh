@@ -22,6 +22,11 @@ RUSTDOC_JSON_OVERRIDDEN_TOOLCHAIN_HACK=${toolchain} cargo run -p cargo-public-ap
 
 RUSTDOC_JSON_OVERRIDDEN_TOOLCHAIN_HACK=${toolchain} cargo run -p cargo-public-api -- \
       --manifest-path "${test_git_dir}/Cargo.toml" \
+      --color=never > \
+      "cargo-public-api/tests/expected-output/test_repo_api_latest.txt"
+
+RUSTDOC_JSON_OVERRIDDEN_TOOLCHAIN_HACK=${toolchain} cargo run -p cargo-public-api -- \
+      --manifest-path "${test_git_dir}/Cargo.toml" \
       --color=always --diff-git-checkouts "v0.1.0" "v0.2.0" > \
       "cargo-public-api/tests/expected-output/example_api_diff_v0.1.0_to_v0.2.0_colored.txt"
 

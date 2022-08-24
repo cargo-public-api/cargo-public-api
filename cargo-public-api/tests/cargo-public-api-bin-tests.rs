@@ -50,6 +50,33 @@ fn list_public_items_explicit_manifest_path() {
 }
 
 #[test]
+fn target_arg() {
+    // Ugly hack to get the target triple of the host platform. If you know of a
+    // better way, please change to it!
+    fn get_host_target_triple() -> String {
+        let mut cmd = std::process::Command::new("sh");
+        cmd.arg("-c");
+        cmd.arg("rustc -vV | sed -n 's/host: \\(.*\\)/\\1/gp'");
+        let stdout = cmd.output().unwrap().stdout;
+        String::from_utf8_lossy(&stdout)
+            .to_string()
+            .trim()
+            .to_owned()
+    }
+
+    // Make sure to use a separate and temporary repo so that this test does not
+    // accidentally pass due to files from other tests lying around
+    let test_repo = TestRepo::new();
+    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    cmd.current_dir(&test_repo.path);
+    cmd.arg("--target");
+    cmd.arg(get_host_target_triple());
+    cmd.assert()
+        .stdout(include_str!("./expected-output/test_repo_api_latest.txt"))
+        .success();
+}
+
+#[test]
 fn virtual_manifest_error() {
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
     cmd.arg("--manifest-path");

@@ -87,36 +87,55 @@ impl<'a> ItemIterator<'a> {
         parent: Option<Rc<IntermediatePublicItem<'a>>>,
     ) {
         match self.crate_.index.get(id) {
-            Some(item) => {
-                // We need to handle `pub use foo::*` specially. In case of such
-                // wildcard imports, `glob` will be `true` and `id` will be the
-                // module we should import all items from, but we should NOT add
-                // the module itself.
-                if let ItemEnum::Import(Import {
-                    id: Some(mod_id),
-                    glob: true,
+            Some(item) => self.maybe_add_item_to_visit(item, parent),
+            None => self.add_missing_id(id),
+        }
+    }
+
+    fn maybe_add_item_to_visit(
+        &mut self,
+        item: &'a Item,
+        parent: Option<Rc<IntermediatePublicItem<'a>>>,
+    ) {
+        // We try to inline glob imports, but that might fail, and we want to
+        // keep track of when that happens.
+        let mut glob_import_inlined = false;
+
+        // We need to handle `pub use foo::*` specially. In case of such
+        // wildcard imports, `glob` will be `true` and `id` will be the
+        // module we should import all items from, but we should NOT add
+        // the module itself.
+        if let ItemEnum::Import(Import {
+            id: Some(mod_id),
+            glob: true,
+            ..
+        }) = &item.inner
+        {
+            // Before we inline this wildcard import, make sure that the module
+            // is not indirectly trying to import itself. If we allow that,
+            // we'll get a stack overflow. Note that `glob_import_inlined`
+            // remains `false` in that case, which means that the output will
+            // use a special syntax to indicate that we broke recursion.
+            if !parent.clone().map_or(false, |p| p.path_contains_id(mod_id)) {
+                if let Some(Item {
+                    inner: ItemEnum::Module(Module { items, .. }),
                     ..
-                }) = &item.inner
+                }) = self.crate_.index.get(mod_id)
                 {
-                    if let Some(Item {
-                        inner: ItemEnum::Module(Module { items, .. }),
-                        ..
-                    }) = self.crate_.index.get(mod_id)
-                    {
-                        for item in items {
-                            self.try_add_item_to_visit(item, parent.clone());
-                        }
+                    for item in items {
+                        self.try_add_item_to_visit(item, parent.clone());
                     }
-                }
-                // We handle `impl`s specially, and we don't want to process `impl`
-                // items directly. See [`ItemIterator::impls`] docs for more info.
-                // All other items we can go ahead and add.
-                else if !matches!(item.inner, ItemEnum::Impl { .. }) {
-                    self.add_item_to_visit(item, parent);
+                    glob_import_inlined = true;
                 }
             }
+        }
 
-            None => self.add_missing_id(id),
+        // We handle `impl`s specially, and we don't want to process `impl`
+        // items directly. See [`ItemIterator::impls`] docs for more info. And
+        // if we inlined a glob import earlier, we should not add the import
+        // item itself. All other items we can go ahead and add.
+        if !glob_import_inlined && !matches!(item.inner, ItemEnum::Impl { .. }) {
+            self.add_item_to_visit(item, parent);
         }
     }
 
@@ -125,7 +144,7 @@ impl<'a> ItemIterator<'a> {
         mut item: &'a Item,
         parent: Option<Rc<IntermediatePublicItem<'a>>>,
     ) {
-        let mut name = item.name.as_deref();
+        let mut name = item.name.clone();
 
         // Since public imports are part of the public API, we inline them, i.e.
         // replace the item corresponding to an import with the item that is
@@ -136,18 +155,31 @@ impl<'a> ItemIterator<'a> {
         // primitive types, there is no item Id to inline with, so they remain
         // as e.g. `pub use my_i32` in the output.
         if let ItemEnum::Import(import) = &item.inner {
-            name = Some(&import.name);
-            if let Some(imported_id) = &import.id {
-                match self.crate_.index.get(imported_id) {
-                    Some(imported_item) => item = imported_item,
-                    None => self.add_missing_id(imported_id),
+            name = if import.glob {
+                // Items should have been inlined in maybe_add_item_to_visit(),
+                // but since we got here that must have failed, typically
+                // because the built rustdoc JSON omitted some items from the
+                // output, or to break import recursion.
+                Some(format!("<<{}::*>>", import.source))
+            } else {
+                if let Some(imported_id) = &import.id {
+                    if !parent
+                        .clone()
+                        .map_or(false, |p| p.path_contains_id(imported_id))
+                    {
+                        match self.crate_.index.get(imported_id) {
+                            Some(imported_item) => item = imported_item,
+                            None => self.add_missing_id(imported_id),
+                        }
+                    }
                 }
-            }
+                Some(import.name.clone())
+            };
         }
 
         let public_item = Rc::new(IntermediatePublicItem::new(
             item,
-            name.unwrap_or("<<no_name>>"),
+            name.unwrap_or_else(|| String::from("<<no_name>>")),
             parent,
         ));
 
@@ -229,7 +261,7 @@ fn intermediate_public_item_to_public_item(
         path: public_item
             .path()
             .iter()
-            .map(|i| i.name.to_owned())
+            .map(|i| i.name.clone())
             .collect::<PublicItemPath>(),
         tokens: public_item.render_token_stream(),
     }

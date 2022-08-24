@@ -1,7 +1,7 @@
 use crate::render;
 use std::rc::Rc;
 
-use rustdoc_types::Item;
+use rustdoc_types::{Id, Item};
 
 use crate::tokens::Token;
 
@@ -16,7 +16,7 @@ pub struct IntermediatePublicItem<'a> {
 
     /// The name of the item. Normally this is [Item::name]. But in the case of
     /// renamed imports (`pub use other::item as foo;`) it is the new name.
-    pub name: &'a str,
+    pub name: String,
 
     /// The parent item. If [Self::item] is e.g. an enum variant, then the
     /// parent is an enum. We follow the chain of parents to be able to know the
@@ -28,7 +28,7 @@ impl<'a> IntermediatePublicItem<'a> {
     #[must_use]
     pub fn new(
         item: &'a Item,
-        name: &'a str,
+        name: String,
         parent: Option<Rc<IntermediatePublicItem<'a>>>,
     ) -> Self {
         Self { item, name, parent }
@@ -49,6 +49,11 @@ impl<'a> IntermediatePublicItem<'a> {
         }
 
         path
+    }
+
+    #[must_use]
+    pub fn path_contains_id(&self, id: &'a Id) -> bool {
+        self.path().iter().any(|m| m.item.id == *id)
     }
 
     pub fn render_token_stream(&self) -> Vec<Token> {

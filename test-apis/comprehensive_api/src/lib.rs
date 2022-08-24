@@ -1,4 +1,6 @@
 pub extern crate rand;
+// We expect rustdoc JSON to not contain these external items
+pub use rand::distributions::uniform::*;
 pub use rand::RngCore;
 
 mod private;
@@ -32,5 +34,5 @@ pub mod typedefs;
 
 pub mod unions;
 
-pub use u32;
 pub use i32 as my_i32;
+pub use u32;

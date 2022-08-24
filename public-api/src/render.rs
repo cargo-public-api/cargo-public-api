@@ -205,7 +205,7 @@ fn render_path(path: &[Rc<IntermediatePublicItem<'_>>]) -> Vec<Token> {
         } else {
             Token::identifier
         };
-        output.push(token_fn(item.name.to_owned()));
+        output.push(token_fn(item.name.clone()));
         output.push(Token::symbol("::"));
     }
     if !path.is_empty() {

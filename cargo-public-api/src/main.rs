@@ -109,9 +109,10 @@ pub struct Args {
     verbose: bool,
 
     /// Allows you to build rustdoc JSON with a toolchain other than `+nightly`.
-    /// Useful if you have built a toolchain from source for example.
-    #[clap(long, hide = true, default_value = "+nightly")]
-    rustdoc_json_toolchain: String,
+    /// Useful if you have built a toolchain from source for example, or if you
+    /// want to use a fixed toolchain in CI.
+    #[clap(long, default_value = "+nightly")]
+    toolchain: String,
 }
 
 /// After listing or diffing, we might want to do some extra work. This struct
@@ -288,7 +289,7 @@ fn collect_public_items_from_commit(
 
     let json_path = match rustdoc_json::build(
         BuildOptions::default()
-            .toolchain(&args.rustdoc_json_toolchain)
+            .toolchain(&args.toolchain)
             .manifest_path(&args.manifest_path),
     ) {
         Err(BuildError::VirtualManifest(manifest_path)) => virtual_manifest_error(&manifest_path)?,

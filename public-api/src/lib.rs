@@ -126,16 +126,39 @@ impl Default for Options {
 pub fn public_api_from_rustdoc_json_str(
     rustdoc_json_str: &str,
     options: Options,
-) -> Result<Vec<PublicItem>> {
+) -> Result<PublicApi> {
     let crate_ = deserialize_without_recursion_limit(rustdoc_json_str)?;
 
-    let mut public_api: Vec<_> = item_iterator::public_api_in_crate(&crate_, options).collect();
+    let mut public_api = item_iterator::public_api_in_crate(&crate_, options);
 
     if options.sorted {
-        public_api.sort();
+        public_api.items.sort();
     }
 
     Ok(public_api)
+}
+
+/// Return type of [`public_api_from_rustdoc_json_str`].
+#[derive(Debug)]
+#[non_exhaustive] // More fields might be added in the future
+pub struct PublicApi {
+    /// The items that constitutes the public API. An "item" is for example a
+    /// function, a struct, a struct field, an enum, an enum variant, a module,
+    /// etc...
+    pub items: Vec<PublicItem>,
+
+    /// The rustdoc JSON IDs of missing but referenced items. Intended for use
+    /// with `--verbose` flags or similar.
+    ///
+    /// In some cases, a public item might be referenced from another public
+    /// item (e.g. a `mod`), but is missing from the rustdoc JSON file. This
+    /// occurs for example in the case of re-exports of external modules (see
+    /// <https://github.com/Enselic/cargo-public-api/issues/103>). The entries
+    /// in this Vec are what IDs that could not be found.
+    ///
+    /// The exact format of IDs are to be considered an implementation detail
+    /// and must not be be relied on.
+    pub missing_item_ids: Vec<String>,
 }
 
 /// Helper to deserialize the JSON with `serde_json`, but with the recursion

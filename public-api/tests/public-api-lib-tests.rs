@@ -112,12 +112,14 @@ fn public_item_ord() {
     .unwrap();
 
     let generic_arg = public_api
+        .items
         .clone()
         .into_iter()
         .find(|x| format!("{}", x).contains("generic_arg"))
         .unwrap();
 
     let generic_bound = public_api
+        .items
         .into_iter()
         .find(|x| format!("{}", x).contains("generic_bound"))
         .unwrap();
@@ -157,7 +159,7 @@ fn pretty_printed_diff() {
     )
     .unwrap();
 
-    let diff = public_api::diff::PublicItemsDiff::between(old, new);
+    let diff = public_api::diff::PublicItemsDiff::between(old.items, new.items);
     let pretty_printed = format!("{:#?}", diff);
     assert_eq!(
         pretty_printed,
@@ -186,7 +188,7 @@ fn assert_public_api_diff(old_json: &str, new_json: &str, expected: &ExpectedDif
     let old = public_api_from_rustdoc_json_str(old_json, Options::default()).unwrap();
     let new = public_api_from_rustdoc_json_str(new_json, Options::default()).unwrap();
 
-    let diff = public_api::diff::PublicItemsDiff::between(old, new);
+    let diff = public_api::diff::PublicItemsDiff::between(old.items, new.items);
 
     assert_eq!(expected.added, into_strings(diff.added));
     assert_eq!(expected.removed, into_strings(diff.removed));
@@ -221,7 +223,11 @@ fn assert_public_api_impl(
     options.with_blanket_implementations = with_blanket_implementations;
     options.sorted = true;
 
-    let actual = into_strings(public_api_from_rustdoc_json_str(rustdoc_json_str, options).unwrap());
+    let actual = into_strings(
+        public_api_from_rustdoc_json_str(rustdoc_json_str, options)
+            .unwrap()
+            .items,
+    );
 
     let expected = expected_output_to_string_vec(expected_output);
 

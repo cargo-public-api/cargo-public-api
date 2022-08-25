@@ -57,30 +57,7 @@ which will print the the diff of your public API changes compared to `origin/mai
 
 ### As a CI Check
 
-To deny any changes to the public API, you can use the `--deny=all` flag together with `--diff-git-checkouts`. A GitHub Actions job to do this for PRs would look something like this:
-
-```yaml
-jobs:
-  deny-public-api-changes:
-    runs-on: ubuntu-latest
-    steps:
-      # Full git history needed
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-
-      # Install nightly (stable is already installed)
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: nightly
-          profile: minimal
-
-      # Install and run cargo public-api and deny any API diff
-      - run: cargo install cargo-public-api
-      - run: cargo public-api --diff-git-checkouts ${GITHUB_BASE_REF} ${GITHUB_HEAD_REF} --deny=all
-```
-
-See `cargo public-api --help` for more variants of `--deny`.
+This tool can be put to good use in CI pipelines to e.g. help you make sure your public API is not unexpectedly changed. Please see [CI-EXAMPLES.md](./docs/CI-EXAMPLES.md) for CI job configuration examples and use cases.
 
 ## Expected Output
 

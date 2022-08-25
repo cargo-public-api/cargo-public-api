@@ -54,6 +54,7 @@ pub enum BuildError {
 pub struct BuildOptions {
     toolchain: Option<OsString>,
     manifest_path: std::path::PathBuf,
+    target: Option<String>,
     quiet: bool,
 }
 

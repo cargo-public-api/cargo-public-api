@@ -14,6 +14,7 @@ pub fn rustdoc_json::BuildOptions::default() -> Self
 pub fn rustdoc_json::BuildOptions::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
 pub fn rustdoc_json::BuildOptions::manifest_path(self, manifest_path: impl AsRef<Path>) -> Self
 pub fn rustdoc_json::BuildOptions::quiet(self, quiet: bool) -> Self
+pub fn rustdoc_json::BuildOptions::target(self, target: String) -> Self
 pub fn rustdoc_json::BuildOptions::toolchain(self, toolchain: impl AsRef<OsStr>) -> Self
 pub fn rustdoc_json::build(options: BuildOptions) -> Result<PathBuf, BuildError>
 pub mod rustdoc_json

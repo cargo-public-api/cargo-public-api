@@ -18,11 +18,12 @@ pub(crate) fn run_cargo_rustdoc(options: BuildOptions) -> Result<PathBuf, BuildE
     let status = cargo_rustdoc_command(
         options.toolchain.as_deref(),
         &options.manifest_path,
+        options.target.as_deref(),
         options.quiet,
     )
     .status()?;
     if status.success() {
-        rustdoc_json_path_for_manifest_path(options.manifest_path)
+        rustdoc_json_path_for_manifest_path(options.manifest_path, options.target.as_deref())
     } else {
         let manifest = cargo_toml::Manifest::from_path(&options.manifest_path)?;
         if manifest.workspace.is_some() {
@@ -41,6 +42,7 @@ pub(crate) fn run_cargo_rustdoc(options: BuildOptions) -> Result<PathBuf, BuildE
 fn cargo_rustdoc_command(
     requested_toolchain: Option<&OsStr>,
     manifest_path: impl AsRef<Path>,
+    target: Option<&str>,
     quiet: bool,
 ) -> Command {
     let mut command = Command::new("cargo");
@@ -61,6 +63,10 @@ fn cargo_rustdoc_command(
     }
     command.arg("--manifest-path");
     command.arg(manifest_path.as_ref());
+    if let Some(target) = target {
+        command.arg("--target");
+        command.arg(target);
+    }
     command.arg("--");
     command.args(["-Z", "unstable-options"]);
     command.args(["--output-format", "json"]);
@@ -72,11 +78,16 @@ fn cargo_rustdoc_command(
 /// `crate-name` to `crate_name`.
 fn rustdoc_json_path_for_manifest_path(
     manifest_path: impl AsRef<Path>,
+    target: Option<&str>,
 ) -> Result<PathBuf, BuildError> {
     let target_dir = target_directory(&manifest_path)?;
     let lib_name = package_name(&manifest_path)?;
 
     let mut rustdoc_json_path = target_dir;
+    // if one has specified a target explicitly then Cargo appends that target triple name as a subfolder
+    if let Some(target) = target {
+        rustdoc_json_path.push(&target);
+    }
     rustdoc_json_path.push("doc");
     rustdoc_json_path.push(lib_name.replace('-', "_"));
     rustdoc_json_path.set_extension("json");
@@ -107,6 +118,7 @@ impl Default for BuildOptions {
         Self {
             toolchain: None,
             manifest_path: PathBuf::from("Cargo.toml"),
+            target: None,
             quiet: false,
         }
     }
@@ -133,6 +145,13 @@ impl BuildOptions {
     #[must_use]
     pub fn quiet(mut self, quiet: bool) -> Self {
         self.quiet = quiet;
+        self
+    }
+
+    /// Whether or not to pass `--target` to `cargo rustdoc`. Default: `None`
+    #[must_use]
+    pub fn target(mut self, target: String) -> Self {
+        self.target = Some(target);
         self
     }
 }

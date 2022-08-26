@@ -36,6 +36,9 @@
 //! in the thin binary wrapper around the library, see
 //! <https://github.com/Enselic/cargo-public-api/blob/main/public-api/src/main.rs>.
 
+// deny in CI, only warn here
+#![warn(clippy::all, clippy::pedantic, missing_docs)]
+
 mod error;
 mod intermediate_public_item;
 mod item_iterator;

@@ -1,3 +1,6 @@
+// deny in CI, only warn here
+#![warn(clippy::all, clippy::pedantic)]
+
 use std::fmt::Display;
 
 use pretty_assertions::assert_eq;

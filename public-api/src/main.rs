@@ -1,6 +1,9 @@
 //! Simple wrapper around the library. For a much more sophisticated CLI, see
 //! <https://github.com/Enselic/cargo-public-api/blob/main/cargo-public-api/src/main.rs>.
 
+// deny in CI, only warn here
+#![warn(clippy::all, clippy::pedantic)]
+
 use std::io::{stdout, ErrorKind, Write};
 use std::path::{Path, PathBuf};
 

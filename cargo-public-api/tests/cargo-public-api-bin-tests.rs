@@ -1,3 +1,6 @@
+// deny in CI, only warn here
+#![warn(clippy::all, clippy::pedantic)]
+
 //! To update expected output it is in many cases sufficient to run
 //! ```bash
 //! ./scripts/bless-expected-output-for-tests.sh

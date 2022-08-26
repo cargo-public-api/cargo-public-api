@@ -1,3 +1,6 @@
+// deny in CI, only warn here
+#![warn(clippy::all, clippy::pedantic)]
+
 use std::{io::BufRead, str::from_utf8};
 
 use assert_cmd::Command;

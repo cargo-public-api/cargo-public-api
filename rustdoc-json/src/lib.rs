@@ -56,6 +56,9 @@ pub struct BuildOptions {
     manifest_path: std::path::PathBuf,
     target: Option<String>,
     quiet: bool,
+    no_default_features: bool,
+    all_features: bool,
+    features: Vec<String>,
 }
 
 /// Generate rustdoc JSON for a library crate. Returns the path to the freshly

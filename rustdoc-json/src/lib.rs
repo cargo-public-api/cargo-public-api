@@ -18,6 +18,9 @@
 //! A compilable example can be found
 //! [here](https://github.com/Enselic/cargo-public-api/blob/main/rustdoc-json/examples/build-rustdoc-json.rs)
 
+// deny in CI, only warn here
+#![warn(clippy::all, clippy::pedantic, missing_docs)]
+
 use std::{ffi::OsString, path::PathBuf};
 
 mod build;

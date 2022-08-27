@@ -1,3 +1,6 @@
+// deny in CI, only warn here
+#![warn(clippy::all, clippy::pedantic)]
+
 use std::io::stdout;
 use std::path::{Path, PathBuf};
 

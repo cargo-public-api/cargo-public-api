@@ -1,3 +1,6 @@
+// deny in CI, only warn here
+#![warn(clippy::all, clippy::pedantic)]
+
 use public_api::MINIMUM_RUSTDOC_JSON_VERSION;
 
 #[test]

@@ -57,6 +57,12 @@ fn cargo_rustdoc_command(options: &BuildOptions) -> Command {
     let overridden_toolchain = OVERRIDDEN_TOOLCHAIN.map(OsStr::new);
     if let Some(toolchain) = overridden_toolchain.or(requested_toolchain.as_deref()) {
         command.arg(toolchain);
+    } else {
+        // Remove `RUSTUP_TOOLCHAIN` so that it does not override that the caller
+        // of this function explicitly requested no specific toolchain, i.e.
+        // that the default toolchain shall be used. See
+        // <https://rust-lang.github.io/rustup/overrides.html>.
+        command.env_remove("RUSTUP_TOOLCHAIN");
     }
 
     command.arg("rustdoc");

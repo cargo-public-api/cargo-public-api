@@ -22,6 +22,15 @@ mod markdown;
 mod output_formatter;
 mod plain;
 
+#[derive(Debug)]
+struct App {
+    /// With what args we were invoked.
+    args: Args,
+
+    /// If we were invoked as a cargo subcommand.
+    as_subcommand: bool,
+}
+
 #[derive(Parser, Debug)]
 #[clap(author, version, about, long_about = None)]
 #[allow(clippy::struct_excessive_bools)]
@@ -114,9 +123,10 @@ pub struct Args {
 
     /// Allows you to build rustdoc JSON with a toolchain other than `+nightly`.
     /// Useful if you have built a toolchain from source for example, or if you
-    /// want to use a fixed toolchain in CI.
-    #[clap(long, default_value = "+nightly")]
-    toolchain: String,
+    /// want to use a fixed toolchain in CI. Note that you can also use the
+    /// regular toolchain override syntax `cargo +custom public-api`.
+    #[clap(long)]
+    toolchain: Option<String>,
 
     /// Build for the target triple
     #[clap(long)]
@@ -153,7 +163,8 @@ struct PostProcessing {
 }
 
 fn main_() -> Result<()> {
-    let args = get_args();
+    let app = get_app();
+    let args = app.args;
 
     let post_processing = if let Some(commits) = &args.diff_git_checkouts {
         print_diff_between_two_commits(&args, commits)?
@@ -277,16 +288,55 @@ impl Args {
     }
 }
 
+impl App {
+    fn rustdoc_json_toolchain(&self) -> String {
+        if self.as_subcommand {
+            // `RUSTUP_TOOLCHAIN` is expected to be set. Use it. But if we are
+            // run with the stable toolchain, use `+nightly`.
+            let rustup_toolchain =
+                std::env::var("RUSTUP_TOOLCHAIN").unwrap_or_else(|_| "nightly".to_owned());
+            let probably_stable = rustup_toolchain.starts_with("1.");
+            format!(
+                "+{}",
+                if probably_stable {
+                    "nightly"
+                } else {
+                    &rustup_toolchain
+                }
+            )
+        } else {
+            // invoked as a regular program. Use `--toolchain` since
+            // `RUSTUP_TOOLCHAIN` is not set, and default to `+nightly`.
+            self.args
+                .toolchain
+                .as_deref()
+                .unwrap_or("+nightly")
+                .to_owned()
+        }
+    }
+}
+
 /// Get CLI args via `clap` while also handling when we are invoked as a cargo
 /// subcommand
-fn get_args() -> Args {
+fn get_app() -> App {
     // If we are invoked by cargo as `cargo public-api`, the second arg will
     // be "public-api". Remove it before passing args on to clap. If we are
     // not invoked as a cargo subcommand, it will not be part of args at all, so
     // it is safe to filter it out also in that case.
-    let args = std::env::args_os().filter(|x| x != "public-api");
+    let mut args = vec![];
+    let mut as_subcommand = false;
+    for (index, arg) in std::env::args_os().enumerate() {
+        if arg == "public-api" && index == 1 {
+            as_subcommand = true;
+        } else {
+            args.push(arg);
+        }
+    }
 
-    Args::parse_from(args)
+    App {
+        args: Args::parse_from(args),
+        as_subcommand,
+    }
 }
 
 /// Figure out what [`Options`] to pass to
@@ -302,7 +352,8 @@ fn get_options(args: &Args) -> Options {
 /// `commit` is `Some` and thus a `git checkout` will be made, also return the
 /// original branch.
 fn collect_public_api_from_commit(commit: Option<&str>) -> Result<(PublicApi, Option<String>)> {
-    let args = get_args();
+    let app = get_app();
+    let args = &app.args;
 
     // Do a git checkout of a specific commit unless we are supposed to simply
     // use the current commit
@@ -317,7 +368,7 @@ fn collect_public_api_from_commit(commit: Option<&str>) -> Result<(PublicApi, Op
     };
 
     let mut build_options = BuildOptions::default()
-        .toolchain(&args.toolchain)
+        .toolchain(&app.rustdoc_json_toolchain())
         .manifest_path(&args.manifest_path)
         .all_features(args.all_features)
         .no_default_features(args.no_default_features)
@@ -337,7 +388,7 @@ fn collect_public_api_from_commit(commit: Option<&str>) -> Result<(PublicApi, Op
     if args.verbose {
         println!("Processing {:?}", json_path);
     }
-    let options = get_options(&args);
+    let options = get_options(args);
 
     Ok((
         public_api_from_rustdoc_json_path(json_path, options)?,

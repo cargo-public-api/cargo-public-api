@@ -8,7 +8,7 @@
 //!
 //!    let json_path = rustdoc_json::build(
 //!        BuildOptions::default()
-//!            .toolchain("+nightly")
+//!            .toolchain("+nightly".to_owned())
 //!            .manifest_path("Cargo.toml"),
 //!    ).unwrap();
 //!
@@ -21,7 +21,7 @@
 // deny in CI, only warn here
 #![warn(clippy::all, clippy::pedantic, missing_docs)]
 
-use std::{ffi::OsString, path::PathBuf};
+use std::path::PathBuf;
 
 mod build;
 
@@ -55,7 +55,7 @@ pub enum BuildError {
 /// See [crate] for an example on how to use it.
 #[derive(Debug)]
 pub struct BuildOptions {
-    toolchain: Option<OsString>,
+    toolchain: Option<String>,
     manifest_path: std::path::PathBuf,
     target: Option<String>,
     quiet: bool,

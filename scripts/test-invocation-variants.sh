@@ -75,3 +75,7 @@ assert_progress_and_output "cargo public-api"
 
 # Make sure we can run the tool on an external directory as a cargo sub-command
 assert_progress_and_output "cargo public-api --manifest-path $(pwd)/Cargo.toml"
+
+# Make sure we can run the tool with MINIMUM_RUSTDOC_JSON_VERSION
+rustup toolchain install nightly-2022-08-15
+assert_progress_and_output "cargo +nightly-2022-08-15 public-api --manifest-path $(pwd)/Cargo.toml"

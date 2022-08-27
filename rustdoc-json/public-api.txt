@@ -16,6 +16,7 @@ pub fn rustdoc_json::BuildOptions::features<I: IntoIterator<Item = S>, S: AsRef<
 pub fn rustdoc_json::BuildOptions::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
 pub fn rustdoc_json::BuildOptions::manifest_path(self, manifest_path: impl AsRef<Path>) -> Self
 pub fn rustdoc_json::BuildOptions::no_default_features(self, no_default_features: bool) -> Self
+pub fn rustdoc_json::BuildOptions::package(self, package: impl AsRef<str>) -> Self
 pub fn rustdoc_json::BuildOptions::quiet(self, quiet: bool) -> Self
 pub fn rustdoc_json::BuildOptions::target(self, target: String) -> Self
 pub fn rustdoc_json::BuildOptions::toolchain(self, toolchain: impl AsRef<OsStr>) -> Self

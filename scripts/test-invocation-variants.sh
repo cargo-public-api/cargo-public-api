@@ -4,6 +4,8 @@ set -o errexit -o nounset -o pipefail
 # The script assumes that cargo-public-api is the current dir
 cd cargo-public-api
 
+td=$(mktemp -d)
+
 # We expect this public API to be printed to stdout
 expected_stdout="pub fn cargo_public_api::for_self_testing_purposes_please_ignore()
 pub mod cargo_public_api
@@ -14,13 +16,12 @@ pub use cargo_public_api::public_api"
 expected_stderr="Documenting cargo-public-api"
 
 # We write stdout and stderr to temporary files so we can later assert on their
-# content. These are the filenames we use. We prefix it with our own tool name
-# to minimize risk of conflicts with other files from other tools.
-stdout_name="cargo-public-api-test-invocation-variants-stdout"
-stderr_name="cargo-public-api-test-invocation-variants-stderr"
+# content.
+stdout_path="${td}/cargo-public-api-test-invocation-variants-stdout"
+stderr_path="${td}/cargo-public-api-test-invocation-variants-stderr"
 
-# Make sure to clean up any temp files if we exit unexpectedly
-trap 'rm -f "${stdout_name}" "${stderr_name}"' EXIT
+# Clean the temp directory
+trap 'rm -rf "${td}"' EXIT
 
 # Helper that runs the command passed as the first arg, and then asserts on
 # stdout and stderr
@@ -29,12 +30,12 @@ assert_progress_and_output() {
 
     echo -n "${cmd} ... "
 
-    CARGO_TERM_COLOR=never ${cmd} >${stdout_name} 2>${stderr_name}
+    CARGO_TERM_COLOR=never ${cmd} >${stdout_path} 2>${stderr_path}
 
-    local actual_stdout=$(cat ${stdout_name})
-    local actual_stderr=$(cat ${stderr_name})
+    local actual_stdout=$(cat ${stdout_path})
+    local actual_stderr=$(cat ${stderr_path})
 
-    rm ${stdout_name} ${stderr_name}
+    rm ${stdout_path} ${stderr_path}
 
     if [[ ${actual_stdout} != ${expected_stdout} ]]; then
         echo -e "FAIL: \n${actual_stdout}\n!=\n${expected_stdout}"
@@ -65,6 +66,9 @@ assert_progress_and_output "cargo-public-api"
 
 # Make sure we can run the tool on an external directory stand-alone
 assert_progress_and_output "cargo-public-api --manifest-path $(pwd)/Cargo.toml"
+
+# Make sure we can run the tool with a specified package from a virtual manifest
+(cd .. && assert_progress_and_output "cargo-public-api --package cargo-public-api")
 
 # Make sure we can run the tool on the current directory as a cargo sub-command
 assert_progress_and_output "cargo public-api"

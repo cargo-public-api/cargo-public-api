@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -o nounset -o pipefail -o errexit
 
 # Applies to all packages
 cargo clippy --locked --all-targets --all-features -- --deny clippy::all --deny clippy::pedantic --deny warnings

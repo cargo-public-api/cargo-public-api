@@ -17,7 +17,11 @@ const OVERRIDDEN_TOOLCHAIN: Option<&str> = option_env!("RUSTDOC_JSON_OVERRIDDEN_
 pub(crate) fn run_cargo_rustdoc(options: BuildOptions) -> Result<PathBuf, BuildError> {
     let status = cargo_rustdoc_command(&options).status()?;
     if status.success() {
-        rustdoc_json_path_for_manifest_path(options.manifest_path, options.target.as_deref())
+        rustdoc_json_path_for_manifest_path(
+            options.manifest_path,
+            options.package.as_deref(),
+            options.target.as_deref(),
+        )
     } else {
         let manifest = cargo_toml::Manifest::from_path(&options.manifest_path)?;
         if manifest.workspace.is_some() {
@@ -42,6 +46,7 @@ fn cargo_rustdoc_command(options: &BuildOptions) -> Command {
         no_default_features,
         all_features,
         features,
+        package,
     } = options;
     let mut command = Command::new("cargo");
 
@@ -74,6 +79,9 @@ fn cargo_rustdoc_command(options: &BuildOptions) -> Command {
     for feature in features {
         command.args(["--features", &*feature]);
     }
+    if let Some(package) = package {
+        command.args(["--package", package]);
+    }
     command.arg("--");
     command.args(["-Z", "unstable-options"]);
     command.args(["--output-format", "json"]);
@@ -85,10 +93,13 @@ fn cargo_rustdoc_command(options: &BuildOptions) -> Command {
 /// `crate-name` to `crate_name`.
 fn rustdoc_json_path_for_manifest_path(
     manifest_path: impl AsRef<Path>,
+    package: Option<&str>,
     target: Option<&str>,
 ) -> Result<PathBuf, BuildError> {
     let target_dir = target_directory(&manifest_path)?;
-    let lib_name = package_name(&manifest_path)?;
+    let lib_name = package
+        .map(ToOwned::to_owned)
+        .map_or_else(|| package_name(&manifest_path), Ok)?;
 
     let mut rustdoc_json_path = target_dir;
     // if one has specified a target explicitly then Cargo appends that target triple name as a subfolder
@@ -130,6 +141,7 @@ impl Default for BuildOptions {
             no_default_features: false,
             all_features: false,
             features: vec![],
+            package: None,
         }
     }
 }
@@ -186,6 +198,13 @@ impl BuildOptions {
             .into_iter()
             .map(|item| item.as_ref().to_owned())
             .collect();
+        self
+    }
+
+    /// Package to use for `cargo rustdoc` via `-p`. Default: `None`
+    #[must_use]
+    pub fn package(mut self, package: impl AsRef<str>) -> Self {
+        self.package = Some(package.as_ref().to_owned());
         self
     }
 }

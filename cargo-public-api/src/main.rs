@@ -133,6 +133,10 @@ pub struct Args {
     #[clap(long)]
     /// Do not activate the `default` feature
     no_default_features: bool,
+
+    /// Package to document
+    #[clap(long, short)]
+    package: Option<String>,
 }
 
 /// After listing or diffing, we might want to do some extra work. This struct
@@ -322,6 +326,10 @@ fn collect_public_api_from_commit(commit: Option<&str>) -> Result<(PublicApi, Op
         build_options = build_options.target(target.clone());
     }
 
+    if let Some(package) = &args.package {
+        build_options = build_options.package(package);
+    }
+
     let json_path = match rustdoc_json::build(build_options) {
         Err(BuildError::VirtualManifest(manifest_path)) => virtual_manifest_error(&manifest_path)?,
         res => res?,
@@ -362,14 +370,9 @@ fn virtual_manifest_error(manifest_path: &Path) -> Result<PathBuf> {
 
 Listing or diffing the public API of an entire workspace is not supported.
 
-Either do
+Try
 
-    cd specific-crate
-    cargo public-api
-
-or
-
-    cargo public-api --manifest-path specific-crate/Cargo.toml
+    cargo public-api -p specific-crate
 ",
         manifest_path
     ))

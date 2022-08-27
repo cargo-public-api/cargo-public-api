@@ -77,7 +77,7 @@ fn cargo_rustdoc_command(options: &BuildOptions) -> Command {
         command.arg("--all-features");
     }
     for feature in features {
-        command.args(["--features", &*feature]);
+        command.args(["--features", feature]);
     }
     if let Some(package) = package {
         command.args(["--package", package]);

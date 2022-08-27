@@ -15,13 +15,7 @@ const OVERRIDDEN_TOOLCHAIN: Option<&str> = option_env!("RUSTDOC_JSON_OVERRIDDEN_
 /// Run `cargo rustdoc` to produce rustdoc JSON and return the path to the built
 /// file.
 pub(crate) fn run_cargo_rustdoc(options: BuildOptions) -> Result<PathBuf, BuildError> {
-    let status = cargo_rustdoc_command(
-        options.toolchain.as_deref(),
-        &options.manifest_path,
-        options.target.as_deref(),
-        options.quiet,
-    )
-    .status()?;
+    let status = cargo_rustdoc_command(&options).status()?;
     if status.success() {
         rustdoc_json_path_for_manifest_path(options.manifest_path, options.target.as_deref())
     } else {
@@ -39,12 +33,16 @@ pub(crate) fn run_cargo_rustdoc(options: BuildOptions) -> Result<PathBuf, BuildE
 /// ```bash
 /// cargo +nightly rustdoc --lib --manifest-path Cargo.toml -- -Z unstable-options --output-format json --cap-lints warn
 /// ```
-fn cargo_rustdoc_command(
-    requested_toolchain: Option<&OsStr>,
-    manifest_path: impl AsRef<Path>,
-    target: Option<&str>,
-    quiet: bool,
-) -> Command {
+fn cargo_rustdoc_command(options: &BuildOptions) -> Command {
+    let BuildOptions {
+        toolchain: requested_toolchain,
+        manifest_path,
+        target,
+        quiet,
+        no_default_features,
+        all_features,
+        features,
+    } = options;
     let mut command = Command::new("cargo");
 
     // These can override our `+nightly` with `+stable` unless we clear them
@@ -52,20 +50,29 @@ fn cargo_rustdoc_command(
     command.env_remove("RUSTC");
 
     let overridden_toolchain = OVERRIDDEN_TOOLCHAIN.map(OsStr::new);
-    if let Some(toolchain) = overridden_toolchain.or(requested_toolchain) {
+    if let Some(toolchain) = overridden_toolchain.or(requested_toolchain.as_deref()) {
         command.arg(toolchain);
     }
 
     command.arg("rustdoc");
     command.arg("--lib");
-    if quiet {
+    if *quiet {
         command.arg("--quiet");
     }
     command.arg("--manifest-path");
-    command.arg(manifest_path.as_ref());
+    command.arg(manifest_path);
     if let Some(target) = target {
         command.arg("--target");
         command.arg(target);
+    }
+    if *no_default_features {
+        command.arg("--no-default-features");
+    }
+    if *all_features {
+        command.arg("--all-features");
+    }
+    for feature in features {
+        command.args(["--features", &*feature]);
     }
     command.arg("--");
     command.args(["-Z", "unstable-options"]);
@@ -120,6 +127,9 @@ impl Default for BuildOptions {
             manifest_path: PathBuf::from("Cargo.toml"),
             target: None,
             quiet: false,
+            no_default_features: false,
+            all_features: false,
+            features: vec![],
         }
     }
 }
@@ -152,6 +162,30 @@ impl BuildOptions {
     #[must_use]
     pub fn target(mut self, target: String) -> Self {
         self.target = Some(target);
+        self
+    }
+
+    /// Whether to pass `--no-default-features` to `cargo rustdoc`. Default: `false`
+    #[must_use]
+    pub fn no_default_features(mut self, no_default_features: bool) -> Self {
+        self.no_default_features = no_default_features;
+        self
+    }
+
+    /// Whether to pass `--all-features` to `cargo rustdoc`. Default: `false`
+    #[must_use]
+    pub fn all_features(mut self, all_features: bool) -> Self {
+        self.all_features = all_features;
+        self
+    }
+
+    /// Features to pass to `cargo rustdoc` via `--features`. Default to an empty vector
+    #[must_use]
+    pub fn features<I: IntoIterator<Item = S>, S: AsRef<str>>(mut self, features: I) -> Self {
+        self.features = features
+            .into_iter()
+            .map(|item| item.as_ref().to_owned())
+            .collect();
         self
     }
 }

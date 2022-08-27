@@ -12,6 +12,8 @@ for crate in comprehensive_api comprehensive_api_proc_macro; do
     cargo run -p public-api -- "./test-apis/${crate}/target/doc/${crate}.json" > "public-api/tests/expected-output/${crate}.txt"
 done
 
+BLESS=1 RUSTDOC_JSON_OVERRIDDEN_TOOLCHAIN_HACK=${toolchain} cargo test -- cargo_public_api_with_features
+
 RUSTDOC_JSON_OVERRIDDEN_TOOLCHAIN_HACK=${toolchain} cargo run -p public-api -- --with-blanket-implementations "./public-api/tests/rustdoc-json/example_api-v0.2.0.json" > \
       "public-api/tests/expected-output/example_api-v0.2.0-with-blanket-implementations.txt"
 

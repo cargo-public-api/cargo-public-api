@@ -24,6 +24,7 @@ mod plain;
 
 #[derive(Parser, Debug)]
 #[clap(author, version, about, long_about = None)]
+#[allow(clippy::struct_excessive_bools)]
 pub struct Args {
     /// Path to `Cargo.toml`.
     #[clap(long, name = "PATH", default_value = "Cargo.toml", parse(from_os_str))]
@@ -120,6 +121,18 @@ pub struct Args {
     /// Build for the target triple
     #[clap(long)]
     target: Option<String>,
+
+    /// Space or comma separated list of features to activate
+    #[clap(long, short = 'F', min_values = 1)]
+    features: Vec<String>,
+
+    #[clap(long)]
+    /// Activate all available features
+    all_features: bool,
+
+    #[clap(long)]
+    /// Do not activate the `default` feature
+    no_default_features: bool,
 }
 
 /// After listing or diffing, we might want to do some extra work. This struct
@@ -301,7 +314,10 @@ fn collect_public_api_from_commit(commit: Option<&str>) -> Result<(PublicApi, Op
 
     let mut build_options = BuildOptions::default()
         .toolchain(&args.toolchain)
-        .manifest_path(&args.manifest_path);
+        .manifest_path(&args.manifest_path)
+        .all_features(args.all_features)
+        .no_default_features(args.no_default_features)
+        .features(&args.features);
     if let Some(target) = &args.target {
         build_options = build_options.target(target.clone());
     }

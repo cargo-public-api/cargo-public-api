@@ -27,4 +27,7 @@ exclude = [
 
     # To test that we pass --cap-lints when building rustdoc JSON
     "test-apis/lint_error",
+
+    # Test for feature flags
+    "test-apis/features",
 ]

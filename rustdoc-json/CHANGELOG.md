@@ -1,3 +1,10 @@
+## v0.4.0
+* Support for specifying `--target`, `--features`, and `--package`
+* Make it clearer that `RUSTUP_TOOLCHAIN` and friends has an impact
+
+## v0.3.1
+* Don't eat up stdout and stderr
+
 ## v0.3.0
 * Change `fn build()` to take `BuildOptions`
 

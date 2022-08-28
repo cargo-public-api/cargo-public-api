@@ -159,7 +159,7 @@ fn main_() -> Result<()> {
     let mut args = get_args();
 
     // check if using a stable compiler, and use nightly if it is.
-    if probably_stable() {
+    if active_toolchain_is_probably_stable() {
         args.toolchain = Some("+nightly".to_owned());
     }
 
@@ -174,7 +174,12 @@ fn main_() -> Result<()> {
     post_processing.perform(&args)
 }
 
-fn probably_stable() -> bool {
+/// Returns true if it seems like the currently active toolchain is the stable
+/// toolchain.
+///
+/// See <https://rust-lang.github.io/rustup/overrides.html> for some
+/// more info of how different toolchains can be activated.
+fn active_toolchain_is_probably_stable() -> bool {
     let mut cmd = std::process::Command::new("cargo");
     cmd.arg("--version");
 

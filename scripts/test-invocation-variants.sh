@@ -77,5 +77,20 @@ assert_progress_and_output "cargo public-api"
 assert_progress_and_output "cargo public-api --manifest-path $(pwd)/Cargo.toml"
 
 # Make sure we can run the tool with MINIMUM_RUSTDOC_JSON_VERSION
-rustup toolchain install nightly-2022-08-15
+rustup toolchain install --no-self-update nightly-2022-08-15
 assert_progress_and_output "cargo +nightly-2022-08-15 public-api --manifest-path $(pwd)/Cargo.toml"
+
+# Sanity check to make sure we can make the tool build rustdoc JSON with a
+# custom toolchain via the rustup proxy mechanism (see
+# https://rust-lang.github.io/rustup/concepts/index.html#how-rustup-works). The
+# test uses a too old nightly toolchain, which should make the tool fail if it's used.
+custom_toolchain="nightly-2022-06-01"
+rustup toolchain install --no-self-update "${custom_toolchain}"
+cmd="cargo +${custom_toolchain} public-api"
+echo -n "${cmd} ... "
+if ${cmd} >/dev/null 2>/dev/null; then
+    echo "FAIL: Using '${custom_toolchain}' to build rustdoc JSON should have failed!"
+    exit 1
+else
+    echo "PASS"
+fi

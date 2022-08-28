@@ -144,7 +144,15 @@ impl BuildOptions {
     /// Set the toolchain. Default: `None`.
     /// Until rustdoc JSON has stabilized, you will want to set this to
     /// be `"+nightly"` or similar.
+    ///
     /// If the toolchain is set as `None`, the current active toolchain will be used.
+    ///
+    /// # Notes
+    ///
+    /// The currently active toolchain is typically specified by the
+    /// `RUSTUP_TOOLCHAIN` environment variable, which the rustup proxy
+    /// mechanism sets. See <https://rust-lang.github.io/rustup/overrides.html>
+    /// for more info on how the active toolchain is determined.
     #[must_use]
     pub fn toolchain(mut self, toolchain: impl Into<Option<String>>) -> Self {
         self.toolchain = toolchain.into();

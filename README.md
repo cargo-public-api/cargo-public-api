@@ -96,7 +96,7 @@ cargo public-api --with-blanket-implementations
 
 | cargo-public-api | Understands the rustdoc JSON output of  |
 | ---------------- | --------------------------------------- |
-| v0.14.x          | nightly-2022-08-15 —                    |
+| v0.15.x          | nightly-2022-08-15 —                    |
 | v0.13.x          | nightly-2022-08-10 — nightly-2022-08-14 |
 | v0.12.x          | nightly-2022-05-19 — nightly-2022-08-09 |
 | v0.10.x          | nightly-2022-03-14 — nightly-2022-05-18 |

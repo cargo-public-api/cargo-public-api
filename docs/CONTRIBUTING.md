@@ -69,9 +69,13 @@ Another option is the `RUSTDOC_JSON_OVERRIDDEN_TOOLCHAIN_HACK` env var. Use it l
 RUSTDOC_JSON_OVERRIDDEN_TOOLCHAIN_HACK=+custom ./scripts/run-ci-locally.sh
 ```
 
+# Automated tests
+
+All features and bugfixes needs automated tests. The only way to make sure no regressions creep in in software that is constantly changed, is to test for it. But manually testing quickly becomes unmanageable. Therefore, automated tests are needed.
+
 ## Code coverage
 
-Exploring code coverage is a good way to ensure we have broad enough tests. This is the command I use personally to get started:
+Exploring code coverage is a good way to ensure we have broad enough tests for relatively complex and broad code such as rustdoc JSON parsing. This is the command I use personally to get started:
 
 ```bash
 cd public-api

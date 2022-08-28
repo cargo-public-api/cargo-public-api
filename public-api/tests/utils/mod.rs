@@ -10,7 +10,7 @@ pub fn rustdoc_json_path_for_crate(test_crate: &str) -> PathBuf {
     // so build quietly to make running tests much less noisy
     rustdoc_json::build(
         BuildOptions::default()
-            .toolchain("+nightly")
+            .toolchain("+nightly".to_owned())
             .manifest_path(&format!("{}/Cargo.toml", test_crate))
             .quiet(true),
     )

@@ -113,10 +113,13 @@ pub struct Args {
     verbose: bool,
 
     /// Allows you to build rustdoc JSON with a toolchain other than `+nightly`.
+    ///
+    /// Consider using `cargo +toolchain public-api` instead.
+    ///
     /// Useful if you have built a toolchain from source for example, or if you
     /// want to use a fixed toolchain in CI.
-    #[clap(long, default_value = "+nightly")]
-    toolchain: String,
+    #[clap(long)]
+    toolchain: Option<String>,
 
     /// Build for the target triple
     #[clap(long)]
@@ -153,7 +156,12 @@ struct PostProcessing {
 }
 
 fn main_() -> Result<()> {
-    let args = get_args();
+    let mut args = get_args();
+
+    // check if using a stable compiler, and use nightly if it is.
+    if active_toolchain_is_probably_stable() {
+        args.toolchain = Some("+nightly".to_owned());
+    }
 
     let post_processing = if let Some(commits) = &args.diff_git_checkouts {
         print_diff_between_two_commits(&args, commits)?
@@ -164,6 +172,28 @@ fn main_() -> Result<()> {
     };
 
     post_processing.perform(&args)
+}
+
+/// Returns true if it seems like the currently active toolchain is the stable
+/// toolchain.
+///
+/// See <https://rust-lang.github.io/rustup/overrides.html> for some
+/// more info of how different toolchains can be activated.
+fn active_toolchain_is_probably_stable() -> bool {
+    let mut cmd = std::process::Command::new("cargo");
+    cmd.arg("--version");
+
+    let output = match cmd.output() {
+        Ok(output) => output,
+        Err(_) => return false,
+    };
+
+    let version = match String::from_utf8(output.stdout) {
+        Ok(version) => version,
+        Err(_) => return false,
+    };
+
+    version.starts_with("cargo 1") && !version.contains("nightly")
 }
 
 fn check_diff(args: &Args, diff: &Option<PublicItemsDiff>) -> Result<()> {
@@ -199,7 +229,7 @@ fn check_diff(args: &Args, diff: &Option<PublicItemsDiff>) -> Result<()> {
 }
 
 fn print_public_items_of_current_commit(args: &Args) -> Result<PostProcessing> {
-    let (public_items, branch_to_restore) = collect_public_api_from_commit(None)?;
+    let (public_items, branch_to_restore) = collect_public_api_from_commit(args, None)?;
 
     if args.verbose {
         public_items.missing_item_ids.iter().for_each(|i| {
@@ -219,10 +249,10 @@ fn print_public_items_of_current_commit(args: &Args) -> Result<PostProcessing> {
 
 fn print_diff_between_two_commits(args: &Args, commits: &[String]) -> Result<PostProcessing> {
     let old_commit = commits.get(0).expect("clap makes sure first commit exist");
-    let (old, branch_to_restore) = collect_public_api_from_commit(Some(old_commit))?;
+    let (old, branch_to_restore) = collect_public_api_from_commit(args, Some(old_commit))?;
 
     let new_commit = commits.get(1).expect("clap makes sure second commit exist");
-    let (new, _) = collect_public_api_from_commit(Some(new_commit))?;
+    let (new, _) = collect_public_api_from_commit(args, Some(new_commit))?;
 
     let diff_to_check = Some(print_diff(args, old.items, new.items)?);
 
@@ -301,9 +331,10 @@ fn get_options(args: &Args) -> Options {
 /// Collects public items from either the current commit or a given commit. If
 /// `commit` is `Some` and thus a `git checkout` will be made, also return the
 /// original branch.
-fn collect_public_api_from_commit(commit: Option<&str>) -> Result<(PublicApi, Option<String>)> {
-    let args = get_args();
-
+fn collect_public_api_from_commit(
+    args: &Args,
+    commit: Option<&str>,
+) -> Result<(PublicApi, Option<String>)> {
     // Do a git checkout of a specific commit unless we are supposed to simply
     // use the current commit
     let original_branch = if let Some(commit) = commit {
@@ -315,9 +346,8 @@ fn collect_public_api_from_commit(commit: Option<&str>) -> Result<(PublicApi, Op
     } else {
         None
     };
-
     let mut build_options = BuildOptions::default()
-        .toolchain(&args.toolchain)
+        .toolchain(args.toolchain.clone())
         .manifest_path(&args.manifest_path)
         .all_features(args.all_features)
         .no_default_features(args.no_default_features)
@@ -337,7 +367,7 @@ fn collect_public_api_from_commit(commit: Option<&str>) -> Result<(PublicApi, Op
     if args.verbose {
         println!("Processing {:?}", json_path);
     }
-    let options = get_options(&args);
+    let options = get_options(args);
 
     Ok((
         public_api_from_rustdoc_json_path(json_path, options)?,

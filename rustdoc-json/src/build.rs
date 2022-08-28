@@ -2,7 +2,6 @@ use super::BuildError;
 use super::BuildOptions;
 
 use std::{
-    ffi::OsStr,
     path::{Path, PathBuf},
     process::Command,
 };
@@ -24,7 +23,7 @@ pub(crate) fn run_cargo_rustdoc(options: BuildOptions) -> Result<PathBuf, BuildE
         )
     } else {
         let manifest = cargo_toml::Manifest::from_path(&options.manifest_path)?;
-        if manifest.workspace.is_some() {
+        if manifest.package.is_none() && manifest.workspace.is_some() {
             Err(BuildError::VirtualManifest(options.manifest_path))
         } else {
             Err(BuildError::General(String::from("See above")))
@@ -50,12 +49,7 @@ fn cargo_rustdoc_command(options: &BuildOptions) -> Command {
     } = options;
     let mut command = Command::new("cargo");
 
-    // These can override our `+nightly` with `+stable` unless we clear them
-    command.env_remove("RUSTDOC");
-    command.env_remove("RUSTC");
-
-    let overridden_toolchain = OVERRIDDEN_TOOLCHAIN.map(OsStr::new);
-    if let Some(toolchain) = overridden_toolchain.or(requested_toolchain.as_deref()) {
+    if let Some(toolchain) = OVERRIDDEN_TOOLCHAIN.or(requested_toolchain.as_deref()) {
         command.arg(toolchain);
     }
 
@@ -147,12 +141,21 @@ impl Default for BuildOptions {
 }
 
 impl BuildOptions {
-    /// Set the toolchain. Default: `None`, which in practice means `"+stable"`.
+    /// Set the toolchain. Default: `None`.
     /// Until rustdoc JSON has stabilized, you will want to set this to
-    /// `"+nightly"` or similar.
+    /// be `"+nightly"` or similar.
+    ///
+    /// If the toolchain is set as `None`, the current active toolchain will be used.
+    ///
+    /// # Notes
+    ///
+    /// The currently active toolchain is typically specified by the
+    /// `RUSTUP_TOOLCHAIN` environment variable, which the rustup proxy
+    /// mechanism sets. See <https://rust-lang.github.io/rustup/overrides.html>
+    /// for more info on how the active toolchain is determined.
     #[must_use]
-    pub fn toolchain(mut self, toolchain: impl AsRef<OsStr>) -> Self {
-        self.toolchain = Some(toolchain.as_ref().to_owned());
+    pub fn toolchain(mut self, toolchain: impl Into<Option<String>>) -> Self {
+        self.toolchain = toolchain.into();
         self
     }
 

@@ -31,3 +31,7 @@ assert_cmd = "2.0.4"
 predicates = "2.1.1"
 tempfile = "3.3.0"
 cargo_metadata = "0.14.2"
+
+[dev-dependencies.test-utils]
+path = "../test-utils"
+version = "*"

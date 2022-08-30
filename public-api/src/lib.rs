@@ -23,12 +23,12 @@
 //! versions of the same public APIs.
 //!
 //! ## List all public items of a crate (the public API)
-//! ```
+//! ```no_run
 #![doc = include_str!("../examples/list_public_api.rs")]
 //! ```
 //!
 //! ## Diff two versions of a public API
-//! ```
+//! ```no_run
 #![doc = include_str!("../examples/diff_public_api.rs")]
 //! ```
 //!

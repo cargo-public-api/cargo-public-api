@@ -107,6 +107,7 @@ dependencies = [
  "public-api",
  "rustdoc-json",
  "tempfile",
+ "test-utils",
  "thiserror",
 ]
 

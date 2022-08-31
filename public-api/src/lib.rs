@@ -1,4 +1,4 @@
-//! This library gives you a the public API of a library crate, in the form of a
+//! This library gives you the public API of a library crate, in the form of a
 //! list of public items in the crate. Public items are items that other crates
 //! can use. Diffing is also supported.
 //!

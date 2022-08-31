@@ -6,8 +6,7 @@ use std::fmt::Display;
 use pretty_assertions::assert_eq;
 use public_api::{public_api_from_rustdoc_json_str, Error, Options};
 
-mod utils;
-use utils::rustdoc_json_str_for_crate;
+use test_utils::rustdoc_json_str_for_crate;
 
 struct ExpectedDiff<'a> {
     removed: &'a [&'a str],

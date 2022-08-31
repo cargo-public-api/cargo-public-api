@@ -1,8 +1,16 @@
 [workspace]
 members = [
+    # Helper crate to build rustdoc JSON
     "rustdoc-json",
+
+    # Takes rustdoc JSON as input and outputs the corresponding public API
     "public-api",
+
+    # High-level CLI for "rustdoc-json" and "public-api"
     "cargo-public-api",
+
+    # Contains test utilities used by above crates
+    "test-utils"
 ]
 
 # Test APIs can't be part of the workspace because some test API crates use

@@ -1,9 +1,14 @@
+// deny in CI, only warn here
+#![warn(clippy::all, clippy::pedantic)]
+#![allow(clippy::missing_panics_doc)]
+
 use std::path::PathBuf;
 
 use rustdoc_json::BuildOptions;
 
 /// Helper to get the path to a freshly built rustdoc JSON file for the given
 /// test-crate.
+#[must_use]
 pub fn rustdoc_json_path_for_crate(test_crate: &str) -> PathBuf {
     // The test framework is unable to capture output from child processes (see
     // https://users.rust-lang.org/t/cargo-doesnt-capture-stderr-in-tests/67045/4),
@@ -19,7 +24,7 @@ pub fn rustdoc_json_path_for_crate(test_crate: &str) -> PathBuf {
 
 /// Helper to get a String of freshly built rustdoc JSON for the given
 /// test-crate.
-#[allow(unused)] // It IS used
+#[must_use]
 pub fn rustdoc_json_str_for_crate(test_crate: &str) -> String {
     std::fs::read_to_string(rustdoc_json_path_for_crate(test_crate)).unwrap()
 }

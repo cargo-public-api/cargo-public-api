@@ -14,6 +14,7 @@ use std::{
 
 use assert_cmd::Command;
 use predicates::str::contains;
+use test_utils::rustdoc_json_path_for_crate;
 
 #[path = "../src/git_utils.rs"] // Say NO to copy-paste!
 mod git_utils;
@@ -446,10 +447,12 @@ fn diff_public_items_markdown_no_changes() {
 
 #[test]
 fn diff_public_items_from_files() {
+    let old = rustdoc_json_path_for_crate("../test-apis/example_api-v0.1.0");
+    let new = rustdoc_json_path_for_crate("../test-apis/example_api-v0.2.0");
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
     cmd.arg("--diff-rustdoc-json");
-    cmd.arg("../public-api/tests/rustdoc-json/example_api-v0.1.0.json");
-    cmd.arg("../public-api/tests/rustdoc-json/example_api-v0.2.0.json");
+    cmd.arg(old);
+    cmd.arg(new);
     cmd.assert()
         .stdout(
             "Removed items from the public API

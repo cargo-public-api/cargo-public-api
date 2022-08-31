@@ -1,4 +1,4 @@
-//! This library gives you a the public API of a library crate, in the form of a
+//! This library gives you the public API of a library crate, in the form of a
 //! list of public items in the crate. Public items are items that other crates
 //! can use. Diffing is also supported.
 //!
@@ -23,12 +23,12 @@
 //! versions of the same public APIs.
 //!
 //! ## List all public items of a crate (the public API)
-//! ```
+//! ```no_run
 #![doc = include_str!("../examples/list_public_api.rs")]
 //! ```
 //!
 //! ## Diff two versions of a public API
-//! ```
+//! ```no_run
 #![doc = include_str!("../examples/diff_public_api.rs")]
 //! ```
 //!

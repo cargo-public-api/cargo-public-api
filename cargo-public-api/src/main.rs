@@ -118,7 +118,7 @@ pub struct Args {
     ///
     /// Useful if you have built a toolchain from source for example, or if you
     /// want to use a fixed toolchain in CI.
-    #[clap(long)]
+    #[clap(long, validator = |s: &str| if s.starts_with('+') { Ok(()) } else { Err("toolchain must start with a `+`")} )]
     toolchain: Option<String>,
 
     /// Build for the target triple

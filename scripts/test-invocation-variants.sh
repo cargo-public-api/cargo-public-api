@@ -86,6 +86,15 @@ assert_progress_and_output "cargo +nightly-2022-08-15 public-api --manifest-path
 # test uses a too old nightly toolchain, which should make the tool fail if it's used.
 custom_toolchain="nightly-2022-06-01"
 rustup toolchain install --no-self-update "${custom_toolchain}"
+cmd="cargo public-api --toolchain +${custom_toolchain}"
+echo -n "${cmd} ... "
+if ${cmd} >/dev/null 2>/dev/null; then
+    echo "FAIL: Using '${custom_toolchain}' to build rustdoc JSON should have failed!"
+    exit 1
+else
+    echo "PASS"
+fi
+
 cmd="cargo +${custom_toolchain} public-api"
 echo -n "${cmd} ... "
 if ${cmd} >/dev/null 2>/dev/null; then

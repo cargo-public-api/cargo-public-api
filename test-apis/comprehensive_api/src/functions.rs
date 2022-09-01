@@ -102,3 +102,5 @@ pub fn dyn_arg_two_traits_one_lifetime(d: &(dyn std::io::Write + Send + 'static)
 pub unsafe fn unsafe_fn() {}
 
 pub async fn async_fn() {}
+
+pub async fn async_fn_ret_bool() -> bool {}

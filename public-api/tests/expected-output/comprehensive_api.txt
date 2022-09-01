@@ -2,7 +2,8 @@
 #[no_mangle] #[link_section = ".custom"] pub static comprehensive_api::attributes::NO_MANGLE_WITH_CUSTOM_LINK_SECTION: usize
 #[non_exhaustive] pub enum comprehensive_api::attributes::NonExhaustive
 #[repr(C)] pub struct comprehensive_api::attributes::C
-pub async fn comprehensive_api::functions::async_fn() -> impl Future<Output = ()>
+pub async fn comprehensive_api::functions::async_fn() -> ()
+pub async fn comprehensive_api::functions::async_fn_ret_bool() -> bool
 pub const comprehensive_api::constants::CONST: &'static str
 pub const comprehensive_api::traits::AssociatedConst::CONST: bool
 pub const comprehensive_api::traits::AssociatedConstDefault::CONST_WITH_DEFAULT: bool

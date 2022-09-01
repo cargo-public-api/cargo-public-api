@@ -7,14 +7,28 @@ toolchain=${RUSTDOC_JSON_OVERRIDDEN_TOOLCHAIN_HACK:-+nightly}
 test_git_dir="/tmp/cargo-public-api-test-repo"
 [ -d "${test_git_dir}" ] || ./scripts/create-test-git-repo.sh "${test_git_dir}"
 
-for crate in comprehensive_api comprehensive_api_proc_macro; do
+build_for="
+    comprehensive_api
+    comprehensive_api_proc_macro
+    example_api-v0.2.0
+"
+
+output_for="
+    comprehensive_api
+    comprehensive_api_proc_macro
+"
+
+for crate in $build_for; do
     cargo ${toolchain} rustdoc --lib --manifest-path "./test-apis/${crate}/Cargo.toml" -- -Z unstable-options --output-format json
+done
+
+for crate in $output_for; do
     cargo run -p public-api -- "./test-apis/${crate}/target/doc/${crate}.json" > "public-api/tests/expected-output/${crate}.txt"
 done
 
 BLESS=1 RUSTDOC_JSON_OVERRIDDEN_TOOLCHAIN_HACK=${toolchain} cargo test -- cargo_public_api_with_features
 
-RUSTDOC_JSON_OVERRIDDEN_TOOLCHAIN_HACK=${toolchain} cargo run -p public-api -- --with-blanket-implementations "./public-api/tests/rustdoc-json/example_api-v0.2.0.json" > \
+RUSTDOC_JSON_OVERRIDDEN_TOOLCHAIN_HACK=${toolchain} cargo run -p public-api -- --with-blanket-implementations "./test-apis/example_api-v0.2.0/target/doc/example_api.json" > \
       "public-api/tests/expected-output/example_api-v0.2.0-with-blanket-implementations.txt"
 
 RUSTDOC_JSON_OVERRIDDEN_TOOLCHAIN_HACK=${toolchain} cargo run -p cargo-public-api -- \

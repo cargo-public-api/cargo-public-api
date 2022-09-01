@@ -3,15 +3,12 @@ use std::io::{Result, Write};
 use ansi_term::{ANSIString, ANSIStrings, Color, Style};
 use public_api::{diff::PublicItemsDiff, tokens::Token, PublicItem};
 
-use crate::{
-    output_formatter::{print_items_with_header, OutputFormatter},
-    Args,
-};
+use crate::Args;
 
 pub struct Plain;
 
-impl OutputFormatter for Plain {
-    fn print_items(&self, w: &mut dyn Write, args: &Args, items: Vec<PublicItem>) -> Result<()> {
+impl Plain {
+    pub fn print_items(w: &mut dyn Write, args: &Args, items: Vec<PublicItem>) -> Result<()> {
         for item in items {
             if args.color.active() {
                 writeln!(w, "{}", color_item(&item))?;
@@ -23,7 +20,7 @@ impl OutputFormatter for Plain {
         Ok(())
     }
 
-    fn print_diff(&self, w: &mut dyn Write, args: &Args, diff: &PublicItemsDiff) -> Result<()> {
+    pub fn print_diff(w: &mut dyn Write, args: &Args, diff: &PublicItemsDiff) -> Result<()> {
         let use_color = args.color.active();
 
         print_items_with_header(
@@ -142,4 +139,21 @@ fn color_item_with_diff(diff_slice: &[diff::Result<&&Token>], is_old_item: bool)
         .collect::<Vec<_>>();
 
     ANSIStrings(&styled_strings).to_string()
+}
+
+pub fn print_items_with_header<T>(
+    w: &mut dyn Write,
+    header: &str,
+    items: &[T],
+    print_fn: impl Fn(&mut dyn Write, &T) -> Result<()>,
+) -> Result<()> {
+    writeln!(w, "{}", header)?;
+    if items.is_empty() {
+        writeln!(w, "(none)")?;
+    } else {
+        for item in items {
+            print_fn(w, item)?;
+        }
+    }
+    writeln!(w)
 }

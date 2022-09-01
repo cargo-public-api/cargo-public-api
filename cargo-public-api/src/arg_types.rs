@@ -2,8 +2,6 @@ use anyhow::anyhow;
 
 use std::str::FromStr;
 
-use crate::{markdown::Markdown, output_formatter::OutputFormatter, plain::Plain};
-
 #[derive(Copy, Clone, Debug, Eq, PartialEq, clap::ArgEnum)]
 #[clap(rename_all = "lower")]
 pub enum DenyMethod {
@@ -31,33 +29,6 @@ impl DenyMethod {
 
     pub(crate) fn deny_removed(self) -> bool {
         std::matches!(self, DenyMethod::All | DenyMethod::Removed)
-    }
-}
-
-#[derive(Debug)]
-pub enum OutputFormat {
-    Plain,
-    Markdown,
-}
-
-impl FromStr for OutputFormat {
-    type Err = anyhow::Error;
-
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "plain" => Ok(OutputFormat::Plain),
-            "markdown" => Ok(OutputFormat::Markdown),
-            _ => Err(anyhow!("See --help")),
-        }
-    }
-}
-
-impl OutputFormat {
-    pub fn formatter(&self) -> Box<dyn OutputFormatter> {
-        match self {
-            OutputFormat::Plain => Box::new(Plain),
-            OutputFormat::Markdown => Box::new(Markdown),
-        }
     }
 }
 

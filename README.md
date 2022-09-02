@@ -112,3 +112,4 @@ See [CONTRIBUTING.md](./docs/CONTRIBUTING.md).
 
 - [Enselic](https://github.com/Enselic)
 - [douweschulte](https://github.com/douweschulte)
+- [Emilgardis](https://github.com/Emilgardis)

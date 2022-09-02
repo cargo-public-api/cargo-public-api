@@ -402,50 +402,6 @@ fn list_public_items_with_color() {
 }
 
 #[test]
-fn diff_public_items_markdown() {
-    let test_repo = TestRepo::new();
-    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
-    cmd.current_dir(&test_repo.path);
-    cmd.arg("--output-format=markdown");
-    cmd.arg("--diff-git-checkouts");
-    cmd.arg("v0.1.0");
-    cmd.arg("v0.2.0");
-    cmd.assert()
-        .stdout(
-            r"## Removed items from the public API
-(none)
-
-## Changed items in the public API
-* `pub fn example_api::function(v1_param: Struct)` changed to
-  `pub fn example_api::function(v1_param: Struct, v2_param: usize)`
-* `pub struct example_api::Struct` changed to
-  `#[non_exhaustive] pub struct example_api::Struct`
-
-## Added items to the public API
-* `pub struct example_api::StructV2`
-* `pub struct field example_api::Struct::v2_field: usize`
-* `pub struct field example_api::StructV2::field: usize`
-
-",
-        )
-        .success();
-}
-
-#[test]
-fn diff_public_items_markdown_no_changes() {
-    let test_repo = TestRepo::new();
-    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
-    cmd.current_dir(&test_repo.path);
-    cmd.arg("--output-format=markdown");
-    cmd.arg("--diff-git-checkouts");
-    cmd.arg("v0.1.0");
-    cmd.arg("v0.1.1");
-    cmd.assert()
-        .stdout("(No changes to the public API)\n")
-        .success();
-}
-
-#[test]
 fn diff_public_items_from_files() {
     let old = rustdoc_json_path_for_crate("../test-apis/example_api-v0.1.0");
     let new = rustdoc_json_path_for_crate("../test-apis/example_api-v0.2.0");
@@ -489,22 +445,6 @@ fn diff_public_items_missing_one_arg() {
             "requires at least 2 values but only 1 was provided",
         ))
         .failure();
-}
-
-#[test]
-fn list_public_items_markdown() {
-    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
-    cmd.arg("--output-format=markdown");
-    cmd.assert()
-        .stdout(
-            "## Public API\n\
-             * `pub fn cargo_public_api::for_self_testing_purposes_please_ignore()`\n\
-             * `pub mod cargo_public_api`\n\
-             * `pub use cargo_public_api::public_api`\n\
-             \n\
-             ",
-        )
-        .success();
 }
 
 #[test]

@@ -5,8 +5,8 @@ use std::io::stdout;
 use std::path::{Path, PathBuf};
 
 use anyhow::{anyhow, Context, Result};
-use arg_types::{Color, DenyMethod, OutputFormat};
-use output_formatter::OutputFormatter;
+use arg_types::{Color, DenyMethod};
+use plain::Plain;
 use public_api::diff::PublicItemsDiff;
 use public_api::{
     public_api_from_rustdoc_json_str, Options, PublicApi, PublicItem, MINIMUM_RUSTDOC_JSON_VERSION,
@@ -18,8 +18,6 @@ use rustdoc_json::{BuildError, BuildOptions};
 mod arg_types;
 mod error;
 mod git_utils;
-mod markdown;
-mod output_formatter;
 mod plain;
 
 #[derive(Parser, Debug)]
@@ -94,12 +92,6 @@ pub struct Args {
     /// API, use `--deny=added --deny=changed`.
     #[clap(long, arg_enum)]
     deny: Option<Vec<DenyMethod>>,
-
-    /// What output format to use. You can select between `plain` and
-    /// `markdown`. By default, `plain` with syntax highlighting is used (unless
-    /// output is piped to a file, see `--color`)
-    #[clap(long, name = "FORMAT", default_value = "plain")]
-    output_format: OutputFormat,
 
     /// Whether or not to use colors. You can select between "auto", "never", "always".
     /// If "auto" (the default), colors will be used if stdout is a terminal. If you pipe
@@ -237,9 +229,7 @@ fn print_public_items_of_current_commit(args: &Args) -> Result<PostProcessing> {
         });
     }
 
-    args.output_format
-        .formatter()
-        .print_items(&mut stdout(), args, public_items.items)?;
+    Plain::print_items(&mut stdout(), args, public_items.items)?;
 
     Ok(PostProcessing {
         diff_to_check: None,
@@ -284,9 +274,7 @@ fn print_diff_between_two_rustdoc_json_files(
 
 fn print_diff(args: &Args, old: Vec<PublicItem>, new: Vec<PublicItem>) -> Result<PublicItemsDiff> {
     let diff = PublicItemsDiff::between(old, new);
-    args.output_format
-        .formatter()
-        .print_diff(&mut stdout(), args, &diff)?;
+    Plain::print_diff(&mut stdout(), args, &diff)?;
 
     Ok(diff)
 }

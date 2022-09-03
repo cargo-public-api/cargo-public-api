@@ -152,6 +152,12 @@ fn main_() -> Result<()> {
 
     // check if using a stable compiler, and use nightly if it is.
     if active_toolchain_is_probably_stable(args.toolchain.as_deref()) {
+        if let Some(toolchain) = args
+            .toolchain
+            .or_else(active_toolchain_is_environment_override)
+        {
+            eprintln!("Warning: using the `{toolchain}` toolchain for gathering the public api is not possible, switching to `nightly`");
+        }
         args.toolchain = Some("+nightly".to_owned());
     }
 
@@ -189,6 +195,27 @@ fn active_toolchain_is_probably_stable(toolchain: Option<&str>) -> bool {
     };
 
     version.starts_with("cargo 1") && !version.contains("nightly")
+}
+
+/// returns the current toolchain if it was overriden by environment
+fn active_toolchain_is_environment_override() -> Option<String> {
+    let mut cmd = std::process::Command::new("rustup");
+    cmd.args(["show", "active-toolchain"]);
+    cmd.env_remove("RUSTUP_TOOLCHAIN");
+
+    let output = String::from_utf8(cmd.output().ok()?.stdout).ok()?;
+
+    output
+        .split(char::is_whitespace)
+        .next()
+        .and_then(|default| {
+            let toolchain = std::env::var("RUSTUP_TOOLCHAIN").ok();
+            if toolchain.as_deref() == Some(default) {
+                None
+            } else {
+                toolchain
+            }
+        })
 }
 
 fn check_diff(args: &Args, diff: &Option<PublicItemsDiff>) -> Result<()> {

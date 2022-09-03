@@ -103,3 +103,16 @@ if ${cmd} >/dev/null 2>/dev/null; then
 else
     echo "PASS"
 fi
+
+if ! cargo +beta -v >/dev/null 2>/dev/null; then
+    rustup toolchain install beta --no-self-update
+fi
+
+cmd="cargo +beta public-api"
+echo -n "${cmd} ... "
+if n=$(${cmd} 2>&1 | grep "Warning: using the \`beta.*\` toolchain for gathering the public api is not possible"); then
+    echo "PASS"
+else
+    echo "FAIL: Using '+beta' to build rustdoc JSON should have mentioned the upgrade to `+nightly`"
+    exit 1
+fi

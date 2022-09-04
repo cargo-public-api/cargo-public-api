@@ -90,6 +90,12 @@ assert_progress_and_output \
     tests/expected-output/list_self_test_lib_items.txt \
     "Documenting cargo-public-api"
 
+# Make sure cargo subcommand args filtering of 'public-api' is not too aggressive
+assert_progress_and_output \
+    "cargo public-api -p public-api" \
+    tests/expected-output/public_api_list.txt \
+    "Documenting public-api"
+
 # Make sure we can run the tool with MINIMUM_RUSTDOC_JSON_VERSION
 rustup toolchain install --no-self-update nightly-2022-08-15
 assert_progress_and_output \

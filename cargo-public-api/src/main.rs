@@ -326,13 +326,13 @@ impl Args {
 }
 
 /// Get CLI args via `clap` while also handling when we are invoked as a cargo
-/// subcommand
+/// subcommand. When the user runs `cargo public-api -a -b -c` our args will be
+/// `cargo-public-api public-api -a -b -c`.
 fn get_args() -> Args {
-    // If we are invoked by cargo as `cargo public-api`, the second arg will
-    // be "public-api". Remove it before passing args on to clap. If we are
-    // not invoked as a cargo subcommand, it will not be part of args at all, so
-    // it is safe to filter it out also in that case.
-    let args = std::env::args_os().filter(|x| x != "public-api");
+    let args = std::env::args_os()
+        .enumerate()
+        .filter(|(index, arg)| *index != 1 || arg != "public-api")
+        .map(|(_, arg)| arg);
 
     Args::parse_from(args)
 }

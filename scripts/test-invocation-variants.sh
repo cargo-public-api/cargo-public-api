@@ -1,6 +1,26 @@
 #!/usr/bin/env bash
 set -o errexit -o nounset -o pipefail
 
+# The oldest nightly toolchain that we support
+minimal_toolchain=$(sed -n 's/pub const MINIMUM_RUSTDOC_JSON_VERSION: &str = "\(nightly-[^"]\+\)";/\1/p' public-api/src/lib.rs)
+
+# A toolchain that produces rustdoc JSON that we do not understand how to parse.
+unusable_toolchain="nightly-2022-06-01"
+
+toolchains_to_install="
+    beta
+    $minimal_toolchain
+    $unusable_toolchain
+"
+
+# These tests depends on some specific toolchains being installed. Install them
+# if they are not already installed.
+for toolchain in $toolchains_to_install; do
+    if ! cargo "+${toolchain}" -v >/dev/null 2>/dev/null; then
+        rustup toolchain install --no-self-update "${toolchain}"
+    fi
+done
+
 # The script assumes that cargo-public-api is the current dir
 cd cargo-public-api
 
@@ -91,7 +111,6 @@ assert_progress_and_output \
     "Documenting cargo-public-api"
 
 # Make sure we can run the tool with MINIMUM_RUSTDOC_JSON_VERSION
-rustup toolchain install --no-self-update nightly-2022-08-15
 assert_progress_and_output \
     "cargo +nightly-2022-08-15 public-api --manifest-path $(pwd)/Cargo.toml" \
     tests/expected-output/list_self_test_lib_items.txt \
@@ -101,29 +120,24 @@ assert_progress_and_output \
 # custom toolchain via the rustup proxy mechanism (see
 # https://rust-lang.github.io/rustup/concepts/index.html#how-rustup-works). The
 # test uses a too old nightly toolchain, which should make the tool fail if it's used.
-custom_toolchain="nightly-2022-06-01"
-rustup toolchain install --no-self-update "${custom_toolchain}"
-cmd="cargo public-api --toolchain +${custom_toolchain}"
+cmd="cargo public-api --toolchain +${unusable_toolchain}"
 echo -n "${cmd} ... "
 if ${cmd} >/dev/null 2>/dev/null; then
-    echo "FAIL: Using '${custom_toolchain}' to build rustdoc JSON should have failed!"
+    echo "FAIL: Using '${unusable_toolchain}' to build rustdoc JSON should have failed!"
     exit 1
 else
     echo "PASS"
 fi
 
-cmd="cargo +${custom_toolchain} public-api"
+cmd="cargo +${unusable_toolchain} public-api"
 echo -n "${cmd} ... "
 if ${cmd} >/dev/null 2>/dev/null; then
-    echo "FAIL: Using '${custom_toolchain}' to build rustdoc JSON should have failed!"
+    echo "FAIL: Using '${unusable_toolchain}' to build rustdoc JSON should have failed!"
     exit 1
 else
     echo "PASS"
 fi
 
-if ! cargo +beta -v >/dev/null 2>/dev/null; then
-    rustup toolchain install beta --no-self-update
-fi
 
 cmd="cargo +beta public-api"
 echo -n "${cmd} ... "

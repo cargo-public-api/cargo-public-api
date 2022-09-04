@@ -18,6 +18,18 @@ The release philosophy of this project is that it is perfectly fine to make more
 
 There is one external event that usually means we want to make a release as soon as possible, ideally the same day: When the rustdoc JSON format in nightly changes from one day to the next. If this happens, our Nightly CI job will detect it. If we don't make a new release, users that follows the installation instructions in README.md will see `cargo public-api` failures, because the `cargo public-api` will not know how to parse the rustdoc JSON format of latest nightly.
 
+## Versioning strategy
+
+For `public-api` and `cargo-public-api` (which always have the same version number):
+
+* **x.0.0**: We bump to 1.0.0 earliest when the rustdoc JSON format has stabilized, which probably will take many more months, maybe years.
+
+* **0.x.0**: We bump it when
+  * The `public_api` lib or the `cargo-public-api` CLI has had backwards incompatible changes.
+  * When the rustdoc JSON parsing code changes in a backwards incompatible way.
+
+* **0.0.x**: We bump it whenever we want to make a release but we don't have to/want to bump 0.x.0
+
 ## How to release
 
 ### `public-api` and `cargo-public-api`

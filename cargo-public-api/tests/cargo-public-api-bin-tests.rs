@@ -14,6 +14,9 @@ use std::{
 
 use assert_cmd::Command;
 use predicates::str::contains;
+
+#[path = "../../test-utils/src/lib.rs"]
+mod test_utils;
 use test_utils::rustdoc_json_path_for_crate;
 
 #[path = "../src/git_utils.rs"] // Say NO to copy-paste!

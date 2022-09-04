@@ -8,9 +8,6 @@ members = [
 
     # High-level CLI for "rustdoc-json" and "public-api"
     "cargo-public-api",
-
-    # Contains test utilities used by above crates
-    "test-utils"
 ]
 
 # Test APIs can't be part of the workspace because some test API crates use

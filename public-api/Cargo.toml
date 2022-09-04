@@ -23,7 +23,7 @@ features = ["unbounded_depth"]
 
 [dependencies.rustdoc-types]
 # path = "/Users/martin/src/rustdoc-types"
-version = "0.14.0"
+version = "0.15.0"
 
 [dev-dependencies]
 assert_cmd = "2.0.4"

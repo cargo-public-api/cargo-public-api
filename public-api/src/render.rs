@@ -51,10 +51,14 @@ pub fn token_stream(item: &IntermediatePublicItem) -> Vec<Token> {
         ItemEnum::Variant(inner) => {
             let mut output = render_simple(&["enum", "variant"], &item.path());
             match inner {
-                Variant::Struct(_) | // Each struct field is printed individually
-                Variant::Plain => {}
-                Variant::Tuple(types) => output.extend(render_tuple( types)),
-
+                Variant::Struct(_) => {} // Each struct field is printed individually
+                Variant::Plain(discriminant) => {
+                    if let Some(discriminant) = discriminant {
+                        output.extend(equals());
+                        output.push(Token::identifier(&discriminant.value));
+                    }
+                }
+                Variant::Tuple(types) => output.extend(render_tuple(types)),
             }
             output
         }

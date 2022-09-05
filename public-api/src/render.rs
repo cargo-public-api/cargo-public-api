@@ -52,7 +52,7 @@ pub fn token_stream(item: &IntermediatePublicItem) -> Vec<Token> {
             let mut output = render_simple(&["enum", "variant"], &item.path());
             match inner {
                 Variant::Struct(_) | // Each struct field is printed individually
-                Variant::Plain => {}
+                Variant::Plain(_) => {}
                 Variant::Tuple(types) => output.extend(render_tuple( types)),
 
             }

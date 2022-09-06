@@ -11,6 +11,7 @@ pub const fn comprehensive_api::functions::const_fn()
 pub enum comprehensive_api::enums::DiverseVariants
 pub enum comprehensive_api::enums::EnumWithExplicitDiscriminants
 pub enum comprehensive_api::enums::EnumWithGenerics<'a, T, D: Debug> where T: Display
+pub enum comprehensive_api::enums::EnumWithStrippedTupleVariants
 pub enum comprehensive_api::enums::SingleVariant
 pub enum variant comprehensive_api::attributes::NonExhaustive::MoreToCome
 pub enum variant comprehensive_api::enums::DiverseVariants::Recursive
@@ -21,6 +22,11 @@ pub enum variant comprehensive_api::enums::EnumWithExplicitDiscriminants::First 
 pub enum variant comprehensive_api::enums::EnumWithExplicitDiscriminants::Second = 2
 pub enum variant comprehensive_api::enums::EnumWithExplicitDiscriminants::TenPlusTen = 20
 pub enum variant comprehensive_api::enums::EnumWithGenerics::Variant
+pub enum variant comprehensive_api::enums::EnumWithStrippedTupleVariants::Double(bool, bool)
+pub enum variant comprehensive_api::enums::EnumWithStrippedTupleVariants::DoubleFirstHidden(_, bool)
+pub enum variant comprehensive_api::enums::EnumWithStrippedTupleVariants::DoubleSecondHidden(bool, _)
+pub enum variant comprehensive_api::enums::EnumWithStrippedTupleVariants::Single(usize)
+pub enum variant comprehensive_api::enums::EnumWithStrippedTupleVariants::SingleHidden(_)
 pub enum variant comprehensive_api::enums::SingleVariant::Variant
 pub extern crate comprehensive_api::rand
 pub fn comprehensive_api::Plain::f()

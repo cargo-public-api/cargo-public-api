@@ -1,7 +1,7 @@
 use crate::render;
 use std::rc::Rc;
 
-use rustdoc_types::{Id, Item};
+use rustdoc_types::{Id, Item, Type};
 
 use crate::tokens::Token;
 
@@ -18,6 +18,11 @@ pub struct IntermediatePublicItem<'a> {
     /// renamed imports (`pub use other::item as foo;`) it is the new name.
     pub name: String,
 
+    /// This is a special case for `ItemEnum::Variant(Variant::Tuple(fields))`
+    /// for which we need to pre-lookup the corresponding
+    /// `ItemEnum::StructField` in order to be able to render the item.
+    pub enum_tuple_variant_types: Vec<Option<&'a Type>>,
+
     /// The parent item. If [Self::item] is e.g. an enum variant, then the
     /// parent is an enum. We follow the chain of parents to be able to know the
     /// correct path to an item in the output.
@@ -29,9 +34,15 @@ impl<'a> IntermediatePublicItem<'a> {
     pub fn new(
         item: &'a Item,
         name: String,
+        enum_tuple_variant_types: Vec<Option<&'a Type>>,
         parent: Option<Rc<IntermediatePublicItem<'a>>>,
     ) -> Self {
-        Self { item, name, parent }
+        Self {
+            item,
+            name,
+            enum_tuple_variant_types,
+            parent,
+        }
     }
 
     #[must_use]

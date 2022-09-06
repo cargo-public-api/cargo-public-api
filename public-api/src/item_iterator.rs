@@ -1,6 +1,6 @@
 use std::{collections::HashMap, fmt::Display, rc::Rc};
 
-use rustdoc_types::{Crate, Id, Impl, Import, Item, ItemEnum, Module, Path, Type};
+use rustdoc_types::{Crate, Id, Impl, Import, Item, ItemEnum, Module, Path, Type, Variant};
 
 use super::intermediate_public_item::IntermediatePublicItem;
 use crate::{tokens::Token, Options, PublicApi};
@@ -180,10 +180,33 @@ impl<'a> ItemIterator<'a> {
         let public_item = Rc::new(IntermediatePublicItem::new(
             item,
             name.unwrap_or_else(|| String::from("<<no_name>>")),
+            self.enum_tuple_variant_types_for_item(item),
             parent,
         ));
 
         self.items_left.push(public_item);
+    }
+
+    /// See [`IntermediatePublicItem::enum_tuple_variant_types`] docs for more
+    /// info.
+    fn enum_tuple_variant_types_for_item(&self, item: &'a Item) -> Vec<Option<&'a Type>> {
+        let mut enum_tuple_variant_types: Vec<Option<&Type>> = vec![];
+        if let ItemEnum::Variant(Variant::Tuple(fields)) = &item.inner {
+            for id in fields {
+                enum_tuple_variant_types.push(
+                    if let Some(Item {
+                        inner: ItemEnum::StructField(type_),
+                        ..
+                    }) = id.as_ref().and_then(|id| self.crate_.index.get(id))
+                    {
+                        Some(type_)
+                    } else {
+                        None
+                    },
+                );
+            }
+        }
+        enum_tuple_variant_types
     }
 
     fn add_missing_id(&mut self, id: &'a Id) {
@@ -241,8 +264,7 @@ fn items_in_container(item: &Item) -> Option<&Vec<Id>> {
         ItemEnum::Enum(e) => Some(&e.variants),
         ItemEnum::Trait(t) => Some(&t.items),
         ItemEnum::Impl(i) => Some(&i.items),
-        ItemEnum::Variant(rustdoc_types::Variant::Struct(ids)) => Some(ids),
-        // TODO: `ItemEnum::Variant(rustdoc_types::Variant::Tuple(ids)) => Some(ids),` when https://github.com/rust-lang/rust/issues/92945 is fixed
+        ItemEnum::Variant(rustdoc_types::Variant::Struct { fields, .. }) => Some(fields),
         _ => None,
     }
 }

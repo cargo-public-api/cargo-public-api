@@ -51,14 +51,16 @@ pub fn token_stream(item: &IntermediatePublicItem) -> Vec<Token> {
         ItemEnum::Variant(inner) => {
             let mut output = render_simple(&["enum", "variant"], &item.path());
             match inner {
-                Variant::Struct(_) => {} // Each struct field is printed individually
+                Variant::Struct { .. } => {} // Each struct field is printed individually
                 Variant::Plain(discriminant) => {
                     if let Some(discriminant) = discriminant {
                         output.extend(equals());
                         output.push(Token::identifier(&discriminant.value));
                     }
                 }
-                Variant::Tuple(types) => output.extend(render_tuple(types)),
+                Variant::Tuple(_) => {
+                    output.extend(render_option_tuple(&item.enum_tuple_variant_types));
+                }
             }
             output
         }
@@ -264,6 +266,15 @@ fn render_sequence_impl<T>(
 }
 
 fn render_type(ty: &Type) -> Vec<Token> {
+    render_option_type(&Some(ty))
+}
+
+#[allow(clippy::ref_option_ref, clippy::trivially_copy_pass_by_ref)] // Because of `render_sequence()` arg types
+fn render_option_type(ty: &Option<&Type>) -> Vec<Token> {
+    let ty = match ty {
+        Some(ty) => ty,
+        None => return vec![Token::symbol("_")], // The `_` in `EnumWithStrippedTupleVariants::DoubleFirstHidden(_, bool)`
+    };
     match ty {
         Type::ResolvedPath(path) => render_resolved_path(path),
         Type::DynTrait(dyn_trait) => render_dyn_trait(dyn_trait),
@@ -455,12 +466,17 @@ fn render_function_pointer(ptr: &FunctionPointer) -> Vec<Token> {
 }
 
 fn render_tuple(types: &[Type]) -> Vec<Token> {
+    let option_tuple: Vec<Option<&Type>> = types.iter().map(Some).collect();
+    render_option_tuple(&option_tuple)
+}
+
+fn render_option_tuple(types: &[Option<&Type>]) -> Vec<Token> {
     render_sequence(
         vec![Token::symbol("(")],
         vec![Token::symbol(")")],
         comma(),
         types,
-        render_type,
+        render_option_type,
     )
 }
 

@@ -118,7 +118,7 @@ assert_progress_and_output \
 
 # Make sure we can run the tool with MINIMUM_RUSTDOC_JSON_VERSION
 assert_progress_and_output \
-    "cargo +nightly-2022-08-15 public-api --manifest-path $(pwd)/Cargo.toml" \
+    "cargo +${minimal_toolchain} public-api --manifest-path $(pwd)/Cargo.toml" \
     tests/expected-output/list_self_test_lib_items.txt \
     "Documenting cargo-public-api"
 

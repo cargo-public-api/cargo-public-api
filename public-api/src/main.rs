@@ -24,11 +24,16 @@ type Result<T> = std::result::Result<T, Error>;
 struct Args {
     help: bool,
     with_blanket_implementations: bool,
+    print_minimum_rustdoc_json_version: bool,
     files: Vec<PathBuf>,
 }
 
 fn main_() -> Result<()> {
     let args = args();
+    if args.print_minimum_rustdoc_json_version {
+        println!("{}", MINIMUM_RUSTDOC_JSON_VERSION);
+        return Ok(());
+    }
 
     let mut options = Options::default();
     options.with_blanket_implementations = args.with_blanket_implementations;
@@ -160,6 +165,8 @@ fn args() -> Args {
     for arg in std::env::args_os().skip(1) {
         if arg == "--with-blanket-implementations" {
             args.with_blanket_implementations = true;
+        } else if arg == "--print-minimum-rustdoc-json-version" {
+            args.print_minimum_rustdoc_json_version = true;
         } else if arg == "--help" || arg == "-h" {
             args.help = true;
         } else {

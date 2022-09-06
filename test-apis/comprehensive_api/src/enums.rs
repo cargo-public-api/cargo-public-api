@@ -8,7 +8,7 @@ pub enum SingleVariant {
 pub enum EnumWithExplicitDiscriminants {
     First = 1,
     Second = 2,
-    TenPlusTen = 20,
+    TenPlusTen = 10 + 10,
 }
 
 pub enum DiverseVariants {

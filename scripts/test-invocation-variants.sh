@@ -2,7 +2,11 @@
 set -o errexit -o nounset -o pipefail
 
 # The oldest nightly toolchain that we support
-minimal_toolchain=$(sed -n 's/pub const MINIMUM_RUSTDOC_JSON_VERSION: &str = "\(nightly-[^"]\+\)";/\1/p' public-api/src/lib.rs)
+minimal_toolchain=$(cargo run -p public-api -- --print-minimum-rustdoc-json-version)
+if [ -z "${minimal_toolchain}" ]; then
+    echo "FAIL: Could not figure out minimal_toolchain"
+    exit 1
+fi
 
 # A toolchain that produces rustdoc JSON that we do not understand how to parse.
 unusable_toolchain="nightly-2022-06-01"

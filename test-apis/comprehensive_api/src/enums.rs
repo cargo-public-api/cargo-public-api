@@ -5,6 +5,12 @@ pub enum SingleVariant {
     Variant,
 }
 
+pub enum EnumWithExplicitDiscriminants {
+    First = 1,
+    Second = 2,
+    TenPlusTen = 20,
+}
+
 pub enum DiverseVariants {
     Simple,
     Tuple(usize, bool),

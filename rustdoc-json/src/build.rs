@@ -219,6 +219,10 @@ mod tests {
     #[test]
     fn ensure_toolchain_not_overridden() {
         // The override is only meant to be changed locally, do not git commit!
-        assert!(OVERRIDDEN_TOOLCHAIN.is_none());
+        // If the var is set from the env var, that's OK, so skip the check in
+        // that case.
+        if option_env!("RUSTDOC_JSON_OVERRIDDEN_TOOLCHAIN_HACK").is_none() {
+            assert!(OVERRIDDEN_TOOLCHAIN.is_none());
+        }
     }
 }

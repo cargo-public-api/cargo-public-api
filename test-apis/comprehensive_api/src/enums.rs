@@ -24,3 +24,11 @@ where
 {
     Variant { t: &'a T, d: D },
 }
+
+pub enum EnumWithStrippedTupleVariants {
+    Single(usize),
+    SingleHidden(#[doc(hidden)] usize),
+    Double(bool, bool),
+    DoubleFirstHidden(#[doc(hidden)] bool, bool),
+    DoubleSecondHidden(bool, #[doc(hidden)] bool),
+}

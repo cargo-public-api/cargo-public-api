@@ -14,8 +14,8 @@ const OVERRIDDEN_TOOLCHAIN: Option<&str> = option_env!("RUSTDOC_JSON_OVERRIDDEN_
 /// Run `cargo rustdoc` to produce rustdoc JSON and return the path to the built
 /// file.
 pub(crate) fn run_cargo_rustdoc(options: BuildOptions) -> Result<PathBuf, BuildError> {
-    let status = cargo_rustdoc_command(&options).status()?;
-    if status.success() {
+    let mut cmd = cargo_rustdoc_command(&options);
+    if cmd.status()?.success() {
         rustdoc_json_path_for_manifest_path(
             options.manifest_path,
             options.package.as_deref(),
@@ -219,6 +219,10 @@ mod tests {
     #[test]
     fn ensure_toolchain_not_overridden() {
         // The override is only meant to be changed locally, do not git commit!
-        assert!(OVERRIDDEN_TOOLCHAIN.is_none());
+        // If the var is set from the env var, that's OK, so skip the check in
+        // that case.
+        if option_env!("RUSTDOC_JSON_OVERRIDDEN_TOOLCHAIN_HACK").is_none() {
+            assert!(OVERRIDDEN_TOOLCHAIN.is_none());
+        }
     }
 }

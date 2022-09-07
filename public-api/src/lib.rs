@@ -61,7 +61,7 @@ pub use item_iterator::PublicItem;
 /// The rustdoc JSON format is still changing, so every now and then we update
 /// this library to support the latest format. If you use this version of
 /// nightly or later, you should be fine.
-pub const MINIMUM_RUSTDOC_JSON_VERSION: &str = "nightly-2022-09-06";
+pub const MINIMUM_RUSTDOC_JSON_VERSION: &str = "nightly-2022-09-07";
 
 /// Contains various options that you can pass to [`public_api_from_rustdoc_json_str`].
 #[derive(Copy, Clone, Debug)]

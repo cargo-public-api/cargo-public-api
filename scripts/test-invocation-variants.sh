@@ -120,11 +120,13 @@ assert_progress_and_output \
     tests/expected-output/public_api_list.txt \
     "Documenting public-api"
 
-# Make sure we can run the tool with MINIMUM_RUSTDOC_JSON_VERSION
+# Make sure we can run the tool with MINIMUM_RUSTDOC_JSON_VERSION. Test against
+# comprehensive_api, because we want any rustdoc JSON format changes to be
+# detected
 assert_progress_and_output \
-    "cargo +${minimal_toolchain} public-api --manifest-path $(pwd)/Cargo.toml" \
-    tests/expected-output/list_self_test_lib_items.txt \
-    "Documenting cargo-public-api"
+    "cargo +${minimal_toolchain} public-api --manifest-path $(pwd)/../test-apis/comprehensive_api/Cargo.toml" \
+    ../public-api/tests/expected-output/comprehensive_api.txt \
+    "Documenting comprehensive_api"
 
 # Sanity check to make sure we can make the tool build rustdoc JSON with a
 # custom toolchain via the rustup proxy mechanism (see

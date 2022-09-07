@@ -47,7 +47,8 @@ assert_progress_and_output() {
 
     echo -n "${cmd} ... "
 
-    CARGO_TERM_COLOR=never ${cmd} >${stdout_path} 2>${stderr_path}
+    CARGO_TERM_COLOR=never ${cmd} >${stdout_path} 2>${stderr_path} ||
+        (echo "\n\nFAIL: Error when running `${cmd}`. Stderr: \n$(cat ${stderr_path})" && exit 1)
 
     local actual_stderr=$(cat ${stderr_path})
 

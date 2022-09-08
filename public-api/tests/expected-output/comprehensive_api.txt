@@ -57,7 +57,7 @@ pub fn comprehensive_api::functions::inferred_lifetime(foo: &usize) -> usize
 pub fn comprehensive_api::functions::multiple_bounds<T>(t: T) where T: Debug + Display
 pub fn comprehensive_api::functions::multiple_bounds_inline<T: Debug + Display>(t: T)
 pub fn comprehensive_api::functions::one_arg(x: usize)
-pub fn comprehensive_api::functions::outlives<'a, 'b: 'a, 'c: 'b + 'a>(x: &'a bool, y: &'b i128, z: &'c Tuple) -> usize
+pub fn comprehensive_api::functions::outlives<'a, 'b: 'a, 'c: 'b + 'a>(x: &'a bool, y: &'b i128, z: &'c TupleStructSingle) -> usize
 pub fn comprehensive_api::functions::plain()
 pub fn comprehensive_api::functions::return_array() -> [u8; 2]
 pub fn comprehensive_api::functions::return_iterator() -> impl Iterator<Item = u32>
@@ -114,7 +114,10 @@ pub struct comprehensive_api::higher_ranked_trait_bounds::Foo<'a>
 pub struct comprehensive_api::structs::ConstArg<T, const N: usize>
 pub struct comprehensive_api::structs::Plain
 pub struct comprehensive_api::structs::PrivateField
-pub struct comprehensive_api::structs::Tuple
+pub struct comprehensive_api::structs::TupleStructDouble(pub usize, pub bool)
+pub struct comprehensive_api::structs::TupleStructDoubleWithHidden(_, pub bool)
+pub struct comprehensive_api::structs::TupleStructDoubleWithPrivate(_, pub bool)
+pub struct comprehensive_api::structs::TupleStructSingle(pub usize)
 pub struct comprehensive_api::structs::Unit
 pub struct comprehensive_api::structs::WithLifetimeAndGenericParam<'a, T>
 pub struct comprehensive_api::structs::WithTraitBounds<T: Display + Debug>
@@ -132,7 +135,6 @@ pub struct field comprehensive_api::higher_ranked_trait_bounds::Foo::some_func: 
 pub struct field comprehensive_api::higher_ranked_trait_bounds::Foo::some_trait: &'a dyn for<'b> Trait<'b>
 pub struct field comprehensive_api::structs::ConstArg::items: [T; N]
 pub struct field comprehensive_api::structs::Plain::x: usize
-pub struct field comprehensive_api::structs::Tuple::0: usize
 pub struct field comprehensive_api::structs::WithLifetimeAndGenericParam::t: T
 pub struct field comprehensive_api::structs::WithLifetimeAndGenericParam::unit_ref: &'a Unit
 pub struct field comprehensive_api::unions::Basic::x: usize

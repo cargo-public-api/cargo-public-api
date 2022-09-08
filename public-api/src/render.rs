@@ -3,8 +3,8 @@ use std::rc::Rc;
 
 use rustdoc_types::{
     Abi, Constant, FnDecl, FunctionPointer, GenericArg, GenericArgs, GenericBound, GenericParamDef,
-    GenericParamDefKind, Generics, Header, ItemEnum, MacroKind, Path, PolyTrait, Term, Type,
-    TypeBinding, TypeBindingKind, Variant, WherePredicate,
+    GenericParamDefKind, Generics, Header, ItemEnum, MacroKind, Path, PolyTrait, StructKind, Term,
+    Type, TypeBinding, TypeBindingKind, Variant, WherePredicate,
 };
 
 /// A simple macro to write `Token::Whitespace` in less characters.
@@ -35,6 +35,12 @@ pub fn token_stream(item: &IntermediatePublicItem) -> Vec<Token> {
         ItemEnum::Struct(s) => {
             let mut output = render_simple(&["struct"], &item.path());
             output.extend(render_generics(&s.generics));
+            if matches!(s.kind, StructKind::Tuple(_)) {
+                output.extend(render_option_tuple(
+                    &item.pre_resolved_fields,
+                    Some(&pub_()),
+                ));
+            }
             output
         }
         ItemEnum::StructField(inner) => {
@@ -59,7 +65,7 @@ pub fn token_stream(item: &IntermediatePublicItem) -> Vec<Token> {
                     }
                 }
                 Variant::Tuple(_) => {
-                    output.extend(render_option_tuple(&item.enum_tuple_variant_types));
+                    output.extend(render_option_tuple(&item.pre_resolved_fields, None));
                 }
             }
             output
@@ -184,7 +190,7 @@ fn attr_relevant_for_public_apis<S: AsRef<str>>(attr: S) -> bool {
 }
 
 fn render_simple(tags: &[&str], path: &[Rc<IntermediatePublicItem<'_>>]) -> Vec<Token> {
-    let mut output = vec![Token::qualifier("pub"), ws!()];
+    let mut output = pub_();
     output.extend(
         tags.iter()
             .flat_map(|t| [Token::kind(*t), ws!()])
@@ -335,7 +341,7 @@ fn render_function(
     generics: &Generics,
     header: &Header,
 ) -> Vec<Token> {
-    let mut output = vec![Token::qualifier("pub"), ws!()];
+    let mut output = pub_();
     if header.unsafe_ {
         output.extend(vec![Token::qualifier("unsafe"), ws!()]);
     };
@@ -467,16 +473,26 @@ fn render_function_pointer(ptr: &FunctionPointer) -> Vec<Token> {
 
 fn render_tuple(types: &[Type]) -> Vec<Token> {
     let option_tuple: Vec<Option<&Type>> = types.iter().map(Some).collect();
-    render_option_tuple(&option_tuple)
+    render_option_tuple(&option_tuple, None)
 }
 
-fn render_option_tuple(types: &[Option<&Type>]) -> Vec<Token> {
+/// `prefix` is to handle the difference  between tuple structs and enum variant
+/// tuple structs. The former marks public fields as `pub ` whereas all fields
+/// of enum tuple structs are always implicitly `pub`.
+fn render_option_tuple(types: &[Option<&Type>], prefix: Option<&[Token]>) -> Vec<Token> {
     render_sequence(
         vec![Token::symbol("(")],
         vec![Token::symbol(")")],
         comma(),
         types,
-        render_option_type,
+        |type_| {
+            let mut output: Vec<Token> = vec![];
+            if let (Some(prefix), Some(_)) = (prefix, type_) {
+                output.extend(prefix.to_owned());
+            }
+            output.extend(render_option_type(type_));
+            output
+        },
     )
 }
 
@@ -752,6 +768,10 @@ fn render_higher_rank_trait_bounds(generic_params: &[GenericParamDef]) -> Vec<To
         output.push(ws!());
     }
     output
+}
+
+fn pub_() -> Vec<Token> {
+    vec![Token::qualifier("pub"), ws!()]
 }
 
 fn plus() -> Vec<Token> {

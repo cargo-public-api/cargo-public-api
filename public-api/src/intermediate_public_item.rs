@@ -18,10 +18,28 @@ pub struct IntermediatePublicItem<'a> {
     /// renamed imports (`pub use other::item as foo;`) it is the new name.
     pub name: String,
 
-    /// This is a special case for `ItemEnum::Variant(Variant::Tuple(fields))`
-    /// for which we need to pre-lookup the corresponding
-    /// `ItemEnum::StructField` in order to be able to render the item.
-    pub enum_tuple_variant_types: Vec<Option<&'a Type>>,
+    /// Sometimes an item references other items via ID that we do not include
+    /// in the output. Currently this only happens for tuple structs (both
+    /// regular and enum variants). The reason we can get away with that is
+    /// because the tuple type already contains the full info, so also listing
+    /// fields as individual items is just noise.
+    ///
+    /// To be more concrete: It is sufficient to list the public API of `pub
+    /// struct Foo(bool, u32)` as
+    /// ```txt
+    /// pub struct root::Foo(bool, u32)
+    /// ```
+    /// because listing it as
+    /// ```txt
+    /// pub struct root::Foo(bool, u32)
+    /// pub struct field root::Foo::0: bool
+    /// pub struct field root::Foo::1: u32
+    /// ```
+    /// does not convey any more information.
+    ///
+    /// This special case requires us to pre-resolve the IDs however, and that
+    /// is what this field is for.
+    pub pre_resolved_fields: Vec<Option<&'a Type>>,
 
     /// The parent item. If [Self::item] is e.g. an enum variant, then the
     /// parent is an enum. We follow the chain of parents to be able to know the
@@ -34,13 +52,13 @@ impl<'a> IntermediatePublicItem<'a> {
     pub fn new(
         item: &'a Item,
         name: String,
-        enum_tuple_variant_types: Vec<Option<&'a Type>>,
+        pre_resolved_fields: Vec<Option<&'a Type>>,
         parent: Option<Rc<IntermediatePublicItem<'a>>>,
     ) -> Self {
         Self {
             item,
             name,
-            enum_tuple_variant_types,
+            pre_resolved_fields,
             parent,
         }
     }

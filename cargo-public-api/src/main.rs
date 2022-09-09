@@ -405,8 +405,8 @@ fn public_api_from_rustdoc_json_path<T: AsRef<Path>>(
             "Failed to parse rustdoc JSON at {:?}.\n\
             This version of `cargo public-api` requires at least:\n\n    {}\n\n\
             If you have that, it might be `cargo public-api` that is out of date. Try\n\
-            to install the latest versions with `cargo install cargo-public-api`. If the\n\
-            issue remains, please report at https://github.com/Enselic/cargo-public-api/issues.",
+            to install the latest version with `cargo install cargo-public-api`. If the\n\
+            issue remains, please report at\n\n    https://github.com/Enselic/cargo-public-api/issues",
             json_path.as_ref(),
             MINIMUM_RUSTDOC_JSON_VERSION,
         )

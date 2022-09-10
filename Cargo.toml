@@ -10,9 +10,14 @@ members = [
     "cargo-public-api",
 ]
 
-# Test APIs can't be part of the workspace because some test API crates use
-# different directories but the same name (e.g. `example_api`), which cargo does
-# not allow.
+# Test APIs can't be part of the workspace because
+#
+#  * We do not want them to be built when someone does e.g. `cargo build`
+#
+#  * We do not want them to be part of Cargo.lock
+#
+#  * Some test crates use different directories but the same name (e.g.
+#    `example_api`), which cargo does not allow.
 exclude = [
     # Contains a public API that aim so to contain all public API item and
     # variants (with and without generics etc etc)

@@ -25,6 +25,12 @@ pub trait TraitReferencingOwnAssociatedType {
     ) -> <Self as TraitReferencingOwnAssociatedType>::OwnAssociatedType;
 }
 
+pub trait TraitWithGenerics<T, U> {
+    type Foo;
+
+    fn bar() -> <Self as TraitWithGenerics<T, U>>::Foo;
+}
+
 // error[E0658]: associated type defaults are unstable
 // skip for now
 // pub trait AssociatedTypeDefault {

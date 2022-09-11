@@ -25,9 +25,6 @@ for toolchain in $toolchains_to_install; do
     fi
 done
 
-# The script assumes that cargo-public-api is the current dir
-cd cargo-public-api
-
 td=$(mktemp -d)
 
 # We write stdout and stderr to temporary files so we can later assert on their
@@ -67,73 +64,78 @@ assert_progress_and_output() {
 
 # Now we are ready to run the actual tests
 
-# Make sure we can conveniently run the tool from the source dir
-# We want the tool to print progress when it builds rustdoc JSON. The presence
-# of "Documenting cargo-public-api" on stderr is what we use to test if that is
-# the case.
+# Make sure we can conveniently run the tool from the source dir. We want the
+# tool to print progress when it builds rustdoc JSON. The presence of
+# "Documenting comprehensive_api" on stderr is what we use to test if that is
+# the case. We assume that if we can pass args, it will also work to not have
+# any args at all. This assumptions allows us to run tests fast. We do arg-less
+# tests further down.
 assert_progress_and_output \
-    "cargo run" \
-    tests/expected-output/list_self_test_lib_items.txt \
-    "Documenting cargo-public-api"
-
-# Make sure we can conveniently run the tool from the source dir on an external crate
-assert_progress_and_output \
-    "cargo run -- --manifest-path $(pwd)/Cargo.toml" \
-    tests/expected-output/list_self_test_lib_items.txt \
-    "Documenting cargo-public-api"
+    "cargo run -- --manifest-path test-apis/comprehensive_api/Cargo.toml" \
+    public-api/tests/expected-output/comprehensive_api.txt \
+    "Documenting comprehensive_api"
 
 # Install the tool
-cargo install --debug --path .
+cargo install --debug --path cargo-public-api
 
 # Make sure we can run the tool on the current directory stand-alone
-assert_progress_and_output \
-    "cargo-public-api" \
-    tests/expected-output/list_self_test_lib_items.txt \
-    "Documenting cargo-public-api"
+(
+    cd test-apis/comprehensive_api
+    assert_progress_and_output \
+        "cargo-public-api" \
+        ../../public-api/tests/expected-output/comprehensive_api.txt \
+        "Documenting comprehensive_api"
+)
 
 # Make sure we can run the tool on an external directory stand-alone
 assert_progress_and_output \
-    "cargo-public-api --manifest-path $(pwd)/Cargo.toml" \
-    tests/expected-output/list_self_test_lib_items.txt \
-    "Documenting cargo-public-api"
+    "cargo-public-api --manifest-path test-apis/comprehensive_api/Cargo.toml" \
+    public-api/tests/expected-output/comprehensive_api.txt \
+    "Documenting comprehensive_api"
 
 # Make sure we can run the tool with a specified package from a virtual manifest
-(cd .. && assert_progress_and_output \
-    "cargo-public-api --package cargo-public-api" \
-    cargo-public-api/tests/expected-output/list_self_test_lib_items.txt \
-    "Documenting cargo-public-api")
+# Use the smallest crate in our workspace to make tests run fast
+assert_progress_and_output \
+    "cargo-public-api --package rustdoc-json" \
+    cargo-public-api/tests/expected-output/rustdoc_json_list.txt \
+    "Documenting rustdoc-json"
 
 # Make sure we can run the tool on the current directory as a cargo sub-command
-assert_progress_and_output \
-    "cargo public-api" \
-    tests/expected-output/list_self_test_lib_items.txt \
-    "Documenting cargo-public-api"
+(
+    cd test-apis/comprehensive_api
+    assert_progress_and_output \
+        "cargo public-api" \
+        ../../public-api/tests/expected-output/comprehensive_api.txt \
+        "Documenting comprehensive_api"
+)
 
 # Make sure we can run the tool on an external directory as a cargo sub-command
 assert_progress_and_output \
-    "cargo public-api --manifest-path $(pwd)/Cargo.toml" \
-    tests/expected-output/list_self_test_lib_items.txt \
-    "Documenting cargo-public-api"
+    "cargo public-api --manifest-path test-apis/comprehensive_api/Cargo.toml" \
+    public-api/tests/expected-output/comprehensive_api.txt \
+    "Documenting comprehensive_api"
 
 # Make sure cargo subcommand args filtering of 'public-api' is not too aggressive
 assert_progress_and_output \
     "cargo public-api -p public-api" \
-    tests/expected-output/public_api_list.txt \
+    cargo-public-api/tests/expected-output/public_api_list.txt \
     "Documenting public-api"
 
 # Make sure we can run the tool with MINIMUM_RUSTDOC_JSON_VERSION. Test against
-# comprehensive_api, because we want any rustdoc JSON format changes to be
-# detected
+# comprehensive_api, because we want any rustdoc JSON format incompatibilities
+# to be detected
 assert_progress_and_output \
-    "cargo +${minimal_toolchain} public-api --manifest-path $(pwd)/../test-apis/comprehensive_api/Cargo.toml" \
-    ../public-api/tests/expected-output/comprehensive_api.txt \
+    "cargo +${minimal_toolchain} public-api --manifest-path test-apis/comprehensive_api/Cargo.toml" \
+    public-api/tests/expected-output/comprehensive_api.txt \
     "Documenting comprehensive_api"
 
 # Sanity check to make sure we can make the tool build rustdoc JSON with a
 # custom toolchain via the rustup proxy mechanism (see
 # https://rust-lang.github.io/rustup/concepts/index.html#how-rustup-works). The
 # test uses a too old nightly toolchain, which should make the tool fail if it's used.
-cmd="cargo public-api --toolchain +${unusable_toolchain}"
+# Test against comprehensive_api, because we want any rustdoc JSON format
+# incompatibilities to be detected
+cmd="cargo public-api --toolchain +${unusable_toolchain} --manifest-path test-apis/comprehensive_api/Cargo.toml"
 echo -n "${cmd} ... "
 if ${cmd} >/dev/null 2>/dev/null; then
     echo "FAIL: Using '${unusable_toolchain}' to build rustdoc JSON should have failed!"
@@ -142,7 +144,9 @@ else
     echo "PASS"
 fi
 
-cmd="cargo +${unusable_toolchain} public-api"
+# Test against comprehensive_api, because we want any rustdoc JSON format
+# incompatibilities to be detected
+cmd="cargo +${unusable_toolchain} public-api --manifest-path test-apis/comprehensive_api/Cargo.toml"
 echo -n "${cmd} ... "
 if ${cmd} >/dev/null 2>/dev/null; then
     echo "FAIL: Using '${unusable_toolchain}' to build rustdoc JSON should have failed!"
@@ -151,8 +155,9 @@ else
     echo "PASS"
 fi
 
-
-cmd="cargo +beta public-api"
+# Test against comprehensive_api, because we want any rustdoc JSON format
+# incompatibilities to be detected
+cmd="cargo +beta public-api --manifest-path test-apis/comprehensive_api/Cargo.toml"
 echo -n "${cmd} ... "
 if n=$(${cmd} 2>&1 | grep "Warning: using the \`beta.*\` toolchain for gathering the public api is not possible"); then
     echo "PASS"

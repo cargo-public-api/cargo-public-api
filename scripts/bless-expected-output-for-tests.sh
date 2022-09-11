@@ -5,7 +5,8 @@ set -o nounset -o pipefail -o errexit
 toolchain=${RUSTDOC_JSON_OVERRIDDEN_TOOLCHAIN_HACK:-+nightly}
 
 test_git_dir="/tmp/cargo-public-api-test-repo"
-[ -d "${test_git_dir}" ] || ./scripts/create-test-git-repo.sh "${test_git_dir}"
+rm -rf "${test_git_dir}"
+./scripts/create-test-git-repo.sh "${test_git_dir}"
 
 build_for="
     comprehensive_api

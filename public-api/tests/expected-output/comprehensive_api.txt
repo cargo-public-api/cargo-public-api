@@ -80,6 +80,8 @@ pub fn comprehensive_api::structs::Plain::s3(&mut self)
 pub fn comprehensive_api::structs::Plain::s4(&'a self)
 pub fn comprehensive_api::structs::WithLifetimeAndGenericParam::new(unit_ref: &'b Unit, t: String) -> Self
 pub fn comprehensive_api::traits::Simple::act()
+pub fn comprehensive_api::traits::TraitReferencingOwnAssociatedType::own_associated_type_output(&self) -> Self::OwnAssociatedType
+pub fn comprehensive_api::traits::TraitReferencingOwnAssociatedType::own_associated_type_output_explicit_as(&self) -> <Self as TraitReferencingOwnAssociatedType>::OwnAssociatedType
 pub macro comprehensive_api::simple_macro!
 pub mod comprehensive_api
 pub mod comprehensive_api::attributes
@@ -147,7 +149,9 @@ pub trait comprehensive_api::traits::AssociatedConstDefault
 pub trait comprehensive_api::traits::AssociatedType
 pub trait comprehensive_api::traits::Empty
 pub trait comprehensive_api::traits::Simple
+pub trait comprehensive_api::traits::TraitReferencingOwnAssociatedType
 pub type comprehensive_api::traits::AssociatedType::Type
+pub type comprehensive_api::traits::TraitReferencingOwnAssociatedType::OwnAssociatedType
 pub type comprehensive_api::typedefs::RedefinedResult<T, E> = Result<T, E>
 pub type comprehensive_api::typedefs::TypedefPlain = Plain
 pub union comprehensive_api::unions::Basic

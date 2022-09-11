@@ -16,6 +16,15 @@ pub trait AssociatedType {
     type Type;
 }
 
+pub trait TraitReferencingOwnAssociatedType {
+    type OwnAssociatedType;
+
+    fn own_associated_type_output(&self) -> Self::OwnAssociatedType;
+    fn own_associated_type_output_explicit_as(
+        &self,
+    ) -> <Self as TraitReferencingOwnAssociatedType>::OwnAssociatedType;
+}
+
 // error[E0658]: associated type defaults are unstable
 // skip for now
 // pub trait AssociatedTypeDefault {

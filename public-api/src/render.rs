@@ -543,11 +543,20 @@ fn render_borrowed_ref(lifetime: Option<&str>, mutable: bool, type_: &Type) -> V
 }
 
 fn render_qualified_path(type_: &Type, trait_: &Path, name: &str) -> Vec<Token> {
-    let mut output = vec![Token::symbol("<")];
-    output.extend(render_type(type_));
-    output.extend(vec![ws!(), Token::keyword("as"), ws!()]);
-    output.extend(render_resolved_path(trait_));
-    output.push(Token::symbol(">::"));
+    let mut output = vec![];
+    match type_ {
+        Type::Generic(name) if name == "Self" && trait_.name.is_empty() => {
+            output.push(Token::keyword("Self"));
+        }
+        _ => {
+            output.push(Token::symbol("<"));
+            output.extend(render_type(type_));
+            output.extend(vec![ws!(), Token::keyword("as"), ws!()]);
+            output.extend(render_resolved_path(trait_));
+            output.push(Token::symbol(">"));
+        }
+    }
+    output.push(Token::symbol("::"));
     output.push(Token::identifier(name));
     output
 }
@@ -1073,7 +1082,8 @@ mod test {
                 Token::keyword("as"),
                 ws!(),
                 Token::type_("trait"),
-                Token::symbol(">::"),
+                Token::symbol(">"),
+                Token::symbol("::"),
                 Token::identifier("name"),
             ],
             "<type as trait>::name",

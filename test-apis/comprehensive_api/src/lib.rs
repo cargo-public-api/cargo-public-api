@@ -1,8 +1,3 @@
-pub extern crate rand;
-// We expect rustdoc JSON to not contain these external items
-pub use rand::distributions::uniform::*;
-pub use rand::RngCore;
-
 mod private;
 pub use private::StructInPrivateMod;
 
@@ -36,3 +31,12 @@ pub mod unions;
 
 pub use i32 as my_i32;
 pub use u32;
+
+pub extern crate unicode_ident;
+
+// We currently expect rustdoc JSON to not contain these external items, see
+// <https://github.com/rust-lang/rust/issues/99513>
+pub use unicode_ident::*;
+
+// This explicitly exported item we expect to see in the rustdoc JSON however
+pub use unicode_ident::is_xid_start;

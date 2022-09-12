@@ -4,5 +4,8 @@ name = "comprehensive_api"
 version = "0.1.0"
 edition = "2021"
 
+# So we can test "pub extern crate ..." statements. This should be a crate
+# without any dependencies, so that it is quick to compile, which speeds up
+# running tests, since we re-compile this crate with different toolchains.
 [dependencies]
-rand = "0.8.5" # So we can test "pub extern crate ..." statements
+unicode-ident = "1.0.3"

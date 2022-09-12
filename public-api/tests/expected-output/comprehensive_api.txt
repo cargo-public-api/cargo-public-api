@@ -28,7 +28,7 @@ pub enum variant comprehensive_api::enums::EnumWithStrippedTupleVariants::Double
 pub enum variant comprehensive_api::enums::EnumWithStrippedTupleVariants::Single(usize)
 pub enum variant comprehensive_api::enums::EnumWithStrippedTupleVariants::SingleHidden(_)
 pub enum variant comprehensive_api::enums::SingleVariant::Variant
-pub extern crate comprehensive_api::rand
+pub extern crate comprehensive_api::unicode_ident
 pub fn comprehensive_api::Plain::f()
 pub fn comprehensive_api::Plain::new() -> Plain
 pub fn comprehensive_api::Plain::s1(self)
@@ -142,7 +142,6 @@ pub struct field comprehensive_api::structs::WithLifetimeAndGenericParam::t: T
 pub struct field comprehensive_api::structs::WithLifetimeAndGenericParam::unit_ref: &'a Unit
 pub struct field comprehensive_api::unions::Basic::x: usize
 pub struct field comprehensive_api::unions::Basic::y: usize
-pub trait comprehensive_api::RngCore
 pub trait comprehensive_api::higher_ranked_trait_bounds::B<'x>
 pub trait comprehensive_api::higher_ranked_trait_bounds::Trait<'x>
 pub trait comprehensive_api::traits::AssociatedConst
@@ -160,10 +159,11 @@ pub type comprehensive_api::typedefs::TypedefPlain = Plain
 pub union comprehensive_api::unions::Basic
 pub unsafe fn comprehensive_api::functions::unsafe_fn()
 pub unsafe trait comprehensive_api::traits::UnsafeTrait
-pub use comprehensive_api::<<rand::distributions::uniform::*>>
+pub use comprehensive_api::<<unicode_ident::*>>
 pub use comprehensive_api::exports::recursion_1::recursion_2::recursion_1
 pub use comprehensive_api::exports::recursion_2::recursion_1::recursion_2
 pub use comprehensive_api::exports::recursion_glob_1::<<super::recursion_glob_1::*>>
 pub use comprehensive_api::exports::recursion_glob_2::<<super::recursion_glob_2::*>>
+pub use comprehensive_api::is_xid_start
 pub use comprehensive_api::my_i32
 pub use comprehensive_api::u32

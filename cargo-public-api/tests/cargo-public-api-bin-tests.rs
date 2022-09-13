@@ -58,8 +58,8 @@ fn list_public_items_explicit_manifest_path() {
 
 #[test]
 fn target_arg() {
-    // Ugly hack to get the target triple of the host platform. If you know of a
-    // better way, please change to it!
+    // A bit of a hack but similar to how rustc bootstrap script does it:
+    // https://github.com/rust-lang/rust/blob/1ce51982b8550c782ded466c1abff0d2b2e21c4e/src/bootstrap/bootstrap.py#L207-L219
     fn get_host_target_triple() -> String {
         let mut cmd = std::process::Command::new("sh");
         cmd.arg("-c");

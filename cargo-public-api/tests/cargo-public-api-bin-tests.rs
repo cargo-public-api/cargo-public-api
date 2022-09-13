@@ -6,12 +6,14 @@
 //! ./scripts/bless-expected-output-for-tests.sh
 //! ```
 
+use std::ffi::OsStr;
 use std::io::Write;
 use std::{
     fs::OpenOptions,
     path::{Path, PathBuf},
 };
 
+use assert_cmd::assert::Assert;
 use assert_cmd::Command;
 use predicates::str::contains;
 
@@ -73,9 +75,7 @@ fn target_arg() {
 
     // Make sure to use a separate and temporary repo so that this test does not
     // accidentally pass due to files from other tests lying around
-    let test_repo = TestRepo::new();
-    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
-    cmd.current_dir(&test_repo.path);
+    let mut cmd = TestCmd::new();
     cmd.arg("--target");
     cmd.arg(get_host_target_triple());
     cmd.assert()
@@ -98,10 +98,9 @@ fn virtual_manifest_error() {
 
 #[test]
 fn diff_public_items() {
-    let test_repo = TestRepo::new();
-    let branch_before = git_utils::current_branch(&test_repo.path).unwrap().unwrap();
-    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
-    cmd.current_dir(&test_repo.path);
+    let mut cmd = TestCmd::new();
+    let test_repo_path = cmd.test_repo_path().to_owned();
+    let branch_before = git_utils::current_branch(&test_repo_path).unwrap().unwrap();
     cmd.arg("--color=never");
     cmd.arg("--diff-git-checkouts");
     cmd.arg("v0.2.0");
@@ -111,7 +110,7 @@ fn diff_public_items() {
             "./expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt"
         ))
         .success();
-    let branch_after = git_utils::current_branch(&test_repo.path).unwrap().unwrap();
+    let branch_after = git_utils::current_branch(&test_repo_path).unwrap().unwrap();
 
     // Diffing does a git checkout of the commits to diff. Afterwards the
     // original branch shall be restored to minimize user disturbance.
@@ -177,10 +176,7 @@ fn diff_public_items_with_dirty_tree_fails() {
 
 #[test]
 fn deny_when_not_diffing() {
-    let test_repo = TestRepo::new();
-
-    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
-    cmd.current_dir(&test_repo.path);
+    let mut cmd = TestCmd::new();
     cmd.arg("--deny=all");
     cmd.assert()
         .stderr(contains("`--deny` can only be used when diffing"))
@@ -189,10 +185,7 @@ fn deny_when_not_diffing() {
 
 #[test]
 fn deny_added_when_not_diffing() {
-    let test_repo = TestRepo::new();
-
-    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
-    cmd.current_dir(&test_repo.path);
+    let mut cmd = TestCmd::new();
     cmd.arg("--deny=added");
     cmd.assert()
         .stderr(contains("`--deny` can only be used when diffing"))
@@ -201,10 +194,7 @@ fn deny_added_when_not_diffing() {
 
 #[test]
 fn deny_changed_when_not_diffing() {
-    let test_repo = TestRepo::new();
-
-    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
-    cmd.current_dir(&test_repo.path);
+    let mut cmd = TestCmd::new();
     cmd.arg("--deny=changed");
     cmd.assert()
         .stderr(contains("`--deny` can only be used when diffing"))
@@ -213,10 +203,7 @@ fn deny_changed_when_not_diffing() {
 
 #[test]
 fn deny_removed_when_not_diffing() {
-    let test_repo = TestRepo::new();
-
-    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
-    cmd.current_dir(&test_repo.path);
+    let mut cmd = TestCmd::new();
     cmd.arg("--deny=removed");
     cmd.assert()
         .stderr(contains("`--deny` can only be used when diffing"))
@@ -225,10 +212,7 @@ fn deny_removed_when_not_diffing() {
 
 #[test]
 fn deny_combination_when_not_diffing() {
-    let test_repo = TestRepo::new();
-
-    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
-    cmd.current_dir(&test_repo.path);
+    let mut cmd = TestCmd::new();
     cmd.arg("--deny=added");
     cmd.arg("--deny=changed");
     cmd.arg("--deny=removed");
@@ -239,9 +223,7 @@ fn deny_combination_when_not_diffing() {
 
 #[test]
 fn deny_without_diff() {
-    let test_repo = TestRepo::new();
-    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
-    cmd.current_dir(&test_repo.path);
+    let mut cmd = TestCmd::new();
     cmd.arg("--diff-git-checkouts");
     cmd.arg("v0.1.0");
     cmd.arg("v0.1.1");
@@ -251,9 +233,7 @@ fn deny_without_diff() {
 
 #[test]
 fn deny_with_diff() {
-    let test_repo = TestRepo::new();
-    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
-    cmd.current_dir(&test_repo.path);
+    let mut cmd = TestCmd::new();
     cmd.arg("--diff-git-checkouts");
     cmd.arg("v0.1.0");
     cmd.arg("v0.2.0");
@@ -265,10 +245,7 @@ fn deny_with_diff() {
 
 #[test]
 fn deny_added_with_diff() {
-    let test_repo = TestRepo::new();
-
-    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
-    cmd.current_dir(&test_repo.path);
+    let mut cmd = TestCmd::new();
     cmd.arg("--diff-git-checkouts");
     cmd.arg("v0.1.0");
     cmd.arg("v0.2.0");
@@ -299,10 +276,7 @@ Added items to the public API
 
 #[test]
 fn deny_changed_with_diff() {
-    let test_repo = TestRepo::new();
-
-    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
-    cmd.current_dir(&test_repo.path);
+    let mut cmd = TestCmd::new();
     cmd.arg("--diff-git-checkouts");
     cmd.arg("v0.1.0");
     cmd.arg("v0.2.0");
@@ -312,10 +286,7 @@ fn deny_changed_with_diff() {
 
 #[test]
 fn deny_removed_with_diff() {
-    let test_repo = TestRepo::new();
-
-    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
-    cmd.current_dir(&test_repo.path);
+    let mut cmd = TestCmd::new();
     cmd.arg("--diff-git-checkouts");
     cmd.arg("v0.2.0");
     cmd.arg("v0.3.0");
@@ -329,9 +300,7 @@ fn deny_removed_with_diff() {
 
 #[test]
 fn deny_with_invalid_arg() {
-    let test_repo = TestRepo::new();
-    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
-    cmd.current_dir(&test_repo.path);
+    let mut cmd = TestCmd::new();
     cmd.arg("--diff-git-checkouts");
     cmd.arg("v0.2.0");
     cmd.arg("v0.3.0");
@@ -379,9 +348,7 @@ fn diff_public_items_without_git_root() {
 
 #[test]
 fn diff_public_items_with_color() {
-    let test_repo = TestRepo::new();
-    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
-    cmd.current_dir(&test_repo.path);
+    let mut cmd = TestCmd::new();
     cmd.arg("--color=always");
     cmd.arg("--diff-git-checkouts");
     cmd.arg("v0.1.0");
@@ -438,9 +405,7 @@ Added items to the public API
 
 #[test]
 fn diff_public_items_missing_one_arg() {
-    let test_repo = TestRepo::new();
-    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
-    cmd.current_dir(&test_repo.path);
+    let mut cmd = TestCmd::new();
     cmd.arg("--diff-git-checkouts");
     cmd.arg("v0.2.0");
     cmd.assert()
@@ -614,5 +579,44 @@ impl TestRepo {
 
     fn path(&self) -> &Path {
         self.path.path()
+    }
+}
+
+/// Frequently a test needs to create a test repo and then run
+/// `cargo-public-api` on that repo. This helper constructs such a pair and
+/// pre-configures it, so that tests becomes shorter and more to-the-point.
+///
+/// It comes with a bunch of convenience methods ([`Self::arg()`], etc) to make
+/// test code simpler.
+struct TestCmd {
+    /// `cargo-public-api`
+    cmd: Command,
+
+    /// A short-lived temporary git repo used for tests. Each test typically has
+    /// its own repo so that tests can run in parallel.
+    test_repo: TestRepo,
+}
+
+impl TestCmd {
+    fn new() -> Self {
+        let test_repo = TestRepo::new();
+
+        let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+        cmd.current_dir(&test_repo.path);
+
+        Self { cmd, test_repo }
+    }
+
+    pub fn test_repo_path(&self) -> &Path {
+        self.test_repo.path()
+    }
+
+    pub fn arg(&mut self, arg: impl AsRef<OsStr>) -> &mut Self {
+        self.cmd.arg(arg);
+        self
+    }
+
+    pub fn assert(&mut self) -> Assert {
+        self.cmd.assert()
     }
 }

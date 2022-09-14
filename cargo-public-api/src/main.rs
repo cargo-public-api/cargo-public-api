@@ -338,7 +338,7 @@ fn get_args() -> Args {
 }
 
 /// Figure out what [`Options`] to pass to
-/// [`public_items::sorted_public_items_from_rustdoc_json_str`] based on our
+/// [`public_api::public_api_from_rustdoc_json_str`] based on our
 /// [`Args`]
 fn get_options(args: &Args) -> Options {
     let mut options = Options::default();

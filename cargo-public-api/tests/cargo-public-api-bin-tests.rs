@@ -42,7 +42,8 @@ fn list_public_items_with_lint_error() {
     cmd.assert()
         .stdout(
             "pub mod lint_error\n\
-            pub struct lint_error::MissingDocs\n\
+             pub struct lint_error::MissingDocs\n\
+             pub use lint_error::unicode_ident\n\
             ",
         )
         .success();
@@ -50,9 +51,14 @@ fn list_public_items_with_lint_error() {
 
 #[test]
 fn custom_toolchain() {
-    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
-    cmd.args(["--toolchain", "+nightly"]);
-    assert_presence_of_own_library_items(cmd);
+    let mut cmd = TestCmd::new();
+    cmd.arg("--toolchain");
+    cmd.arg("+nightly");
+    cmd.assert()
+        .stdout(include_str!(
+            "../../public-api/tests/expected-output/example_api-v0.3.0.txt"
+        ))
+        .success();
 }
 
 #[test]
@@ -387,11 +393,11 @@ fn diff_public_items_with_color() {
 
 #[test]
 fn list_public_items_with_color() {
-    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    let mut cmd = TestCmd::new();
     cmd.arg("--color=always");
     cmd.assert()
         .stdout(include_str!(
-            "./expected-output/list_self_test_lib_items_colored.txt"
+            "./expected-output/example_api_v0.3.0_colored.txt"
         ))
         .success();
 }
@@ -443,6 +449,8 @@ fn diff_public_items_missing_one_arg() {
 #[test]
 fn verbose() {
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    cmd.arg("--manifest-path");
+    cmd.arg("../test-apis/lint_error/Cargo.toml");
     cmd.arg("--verbose");
     cmd.assert()
         .stdout(contains("Processing \""))
@@ -462,17 +470,6 @@ fn short_help() {
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
     cmd.arg("-h");
     assert_presence_of_args_in_help(cmd);
-}
-
-fn assert_presence_of_own_library_items(mut cmd: Command) {
-    cmd.assert()
-        .stdout(
-            "pub fn cargo_public_api::for_self_testing_purposes_please_ignore()\n\
-             pub mod cargo_public_api\n\
-             pub use cargo_public_api::public_api\n\
-             ",
-        )
-        .success();
 }
 
 fn assert_presence_of_args_in_help(mut cmd: Command) {

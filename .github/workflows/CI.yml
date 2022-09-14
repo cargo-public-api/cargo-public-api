@@ -40,15 +40,23 @@ jobs:
       - run: scripts/cargo-clippy.sh
 
   cargo-test:
-    name: cargo test
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+    name: cargo test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: nightly
           profile: minimal
+      - uses: Swatinem/rust-cache@v2
       - run: cargo test --locked
+        env:
+          RUSTFLAGS: --cfg in_ci
 
   check-public-apis:
     name: Check public APIs
@@ -63,12 +71,20 @@ jobs:
           scripts/check-public-apis.sh
 
   test-invocation-variants:
-    name: scripts/test-invocation-variants.sh
-    runs-on: ubuntu-latest
+    name: scripts/test-invocation-variants.sh (${{ matrix.os }})
+    strategy:
+      matrix:
+        os:
+          - macos-latest
+          - ubuntu-latest
+          - windows-latest
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: nightly
           profile: minimal
+      - uses: Swatinem/rust-cache@v2
       - run: scripts/test-invocation-variants.sh
+        shell: bash

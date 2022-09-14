@@ -29,8 +29,13 @@ done
 
 BLESS=1 RUSTDOC_JSON_OVERRIDDEN_TOOLCHAIN_HACK=${toolchain} cargo test -- cargo_public_api_with_features
 
-RUSTDOC_JSON_OVERRIDDEN_TOOLCHAIN_HACK=${toolchain} cargo run -p public-api -- --with-blanket-implementations "./test-apis/example_api-v0.2.0/target/doc/example_api.json" > \
+RUSTDOC_JSON_OVERRIDDEN_TOOLCHAIN_HACK=${toolchain} cargo run -p public-api -- \
+      --with-blanket-implementations "./test-apis/example_api-v0.2.0/target/doc/example_api.json" > \
       "public-api/tests/expected-output/example_api-v0.2.0-with-blanket-implementations.txt"
+
+RUSTDOC_JSON_OVERRIDDEN_TOOLCHAIN_HACK=${toolchain} cargo run -p cargo-public-api -- \
+      --manifest-path "${test_git_dir}/Cargo.toml" > \
+      "public-api/tests/expected-output/example_api-v0.3.0.txt"
 
 RUSTDOC_JSON_OVERRIDDEN_TOOLCHAIN_HACK=${toolchain} cargo run -p cargo-public-api -- \
       --manifest-path "${test_git_dir}/Cargo.toml" \

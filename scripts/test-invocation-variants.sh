@@ -1,6 +1,17 @@
 #!/usr/bin/env bash
 set -o errexit -o nounset -o pipefail
 
+# This script tests invocations of `cargo-public-api` that are tricky to test in
+# regular `cargo test` tests. In particular
+#
+# * `cargo run` invocations from the source tree
+# * `cargo public-api` invocations after `cargo install`
+#
+# The reason this is non-trivial is because argv ends up being different in
+# these scenarios, and we need to test to make sure we filter args properly.
+#
+# This script also runs tests that depend on special toolchains being installed.
+
 # The oldest nightly toolchain that we support
 minimal_toolchain=$(cargo run -p public-api -- --print-minimum-rustdoc-json-version)
 if [ -z "${minimal_toolchain}" ]; then
@@ -77,28 +88,6 @@ assert_progress_and_output \
 
 # Install the tool
 cargo install --debug --path cargo-public-api
-
-# Make sure we can run the tool on the current directory stand-alone
-(
-    cd test-apis/comprehensive_api
-    assert_progress_and_output \
-        "cargo-public-api" \
-        ../../public-api/tests/expected-output/comprehensive_api.txt \
-        "Documenting comprehensive_api"
-)
-
-# Make sure we can run the tool on an external directory stand-alone
-assert_progress_and_output \
-    "cargo-public-api --manifest-path test-apis/comprehensive_api/Cargo.toml" \
-    public-api/tests/expected-output/comprehensive_api.txt \
-    "Documenting comprehensive_api"
-
-# Make sure we can run the tool with a specified package from a virtual manifest
-# Use the smallest crate in our workspace to make tests run fast
-assert_progress_and_output \
-    "cargo-public-api --package rustdoc-json" \
-    cargo-public-api/tests/expected-output/rustdoc_json_list.txt \
-    "Documenting rustdoc-json"
 
 # Make sure we can run the tool on the current directory as a cargo sub-command
 (

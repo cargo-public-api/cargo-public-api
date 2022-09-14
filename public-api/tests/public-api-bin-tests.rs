@@ -6,6 +6,7 @@ use std::{io::BufRead, str::from_utf8};
 use assert_cmd::Command;
 use public_api::MINIMUM_RUSTDOC_JSON_VERSION;
 
+// rust-analyzer bug: https://github.com/rust-lang/rust-analyzer/issues/9173
 #[path = "../../test-utils/src/lib.rs"]
 mod test_utils;
 use test_utils::rustdoc_json_path_for_crate;

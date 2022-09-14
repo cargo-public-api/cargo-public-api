@@ -17,6 +17,7 @@ use assert_cmd::assert::Assert;
 use assert_cmd::Command;
 use predicates::str::contains;
 
+// rust-analyzer bug: https://github.com/rust-lang/rust-analyzer/issues/9173
 #[path = "../../test-utils/src/lib.rs"]
 mod test_utils;
 use test_utils::rustdoc_json_path_for_crate;

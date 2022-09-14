@@ -18,6 +18,10 @@ members = [
 #
 #  * Some test crates use different directories but the same name (e.g.
 #    `example_api`), which cargo does not allow.
+#
+#  * We do not want the test-apis to share Cargo.lock since our tests run in
+#    parallel
+#
 exclude = [
     # Contains a public API that aim so to contain all public API item and
     # variants (with and without generics etc etc)

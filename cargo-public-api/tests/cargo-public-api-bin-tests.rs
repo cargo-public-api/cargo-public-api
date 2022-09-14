@@ -26,8 +26,12 @@ mod git_utils;
 
 #[test]
 fn list_public_items() {
-    let cmd = Command::cargo_bin("cargo-public-api").unwrap();
-    assert_presence_of_own_library_items(cmd);
+    let mut cmd = TestCmd::new();
+    cmd.assert()
+        .stdout(include_str!(
+            "../../public-api/tests/expected-output/example_api-v0.3.0.txt"
+        ))
+        .success();
 }
 
 #[test]
@@ -52,10 +56,30 @@ fn custom_toolchain() {
 
 #[test]
 fn list_public_items_explicit_manifest_path() {
+    let test_repo = TestRepo::new();
+    let mut test_repo_manifest = PathBuf::from(test_repo.path());
+    test_repo_manifest.push("Cargo.toml");
+
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
     cmd.arg("--manifest-path");
-    cmd.arg(current_dir_and("Cargo.toml"));
-    assert_presence_of_own_library_items(cmd);
+    cmd.arg(&test_repo_manifest);
+    cmd.assert()
+        .stdout(include_str!(
+            "../../public-api/tests/expected-output/example_api-v0.3.0.txt"
+        ))
+        .success();
+}
+
+/// Make sure we can run the tool with a specified package from a virtual
+/// manifest. Use the smallest crate in our workspace to make tests run fast
+#[test]
+fn list_public_items_via_package_spec() {
+    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    cmd.arg("--package");
+    cmd.arg("rustdoc-json");
+    cmd.assert()
+        .stdout(include_str!("./expected-output/rustdoc_json_list.txt"))
+        .success();
 }
 
 #[test]

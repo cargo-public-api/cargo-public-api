@@ -1,6 +1,5 @@
 pub mod v0 {
-    pub fn foo() {
-    }
+    pub fn foo() {}
 }
 
 pub mod v1 {

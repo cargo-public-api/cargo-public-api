@@ -61,7 +61,11 @@ pub fn inferred_lifetime(foo: &'_ usize) -> usize {
     *foo
 }
 
-pub fn outlives<'a, 'b: 'a, 'c: 'b + 'a>(x: &'a bool, y: &'b i128, z: &'c TupleStructSingle) -> usize {
+pub fn outlives<'a, 'b: 'a, 'c: 'b + 'a>(
+    x: &'a bool,
+    y: &'b i128,
+    z: &'c TupleStructSingle,
+) -> usize {
     if *x && *y > 0 {
         z.0
     } else {

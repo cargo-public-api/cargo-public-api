@@ -1,4 +1,7 @@
-use crate::structs::{Plain, Unit, WithLifetimeAndGenericParam};
+use crate::{
+    structs::{Plain, Unit, WithLifetimeAndGenericParam},
+    traits::Simple,
+};
 
 impl Plain {
     pub fn new() -> Plain {
@@ -22,4 +25,8 @@ impl<'b> WithLifetimeAndGenericParam<'b, String> {
     pub fn new(unit_ref: &'b Unit, t: String) -> Self {
         WithLifetimeAndGenericParam { unit_ref, t }
     }
+}
+
+impl Simple for Unit {
+    fn act() {}
 }

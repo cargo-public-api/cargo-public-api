@@ -1,3 +1,9 @@
+// Allow stuff that prevents us from testing unidiomatic but valid public APIs
+#![allow(
+    unused_variables,
+    dead_code,
+)]
+
 mod private;
 pub use private::StructInPrivateMod;
 

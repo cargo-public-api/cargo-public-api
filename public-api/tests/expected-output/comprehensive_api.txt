@@ -78,6 +78,7 @@ pub fn comprehensive_api::structs::Plain::s1(self)
 pub fn comprehensive_api::structs::Plain::s2(&self)
 pub fn comprehensive_api::structs::Plain::s3(&mut self)
 pub fn comprehensive_api::structs::Plain::s4(&'a self)
+pub fn comprehensive_api::structs::Unit::act()
 pub fn comprehensive_api::structs::WithLifetimeAndGenericParam::new(unit_ref: &'b Unit, t: String) -> Self
 pub fn comprehensive_api::traits::Simple::act()
 pub fn comprehensive_api::traits::TraitReferencingOwnAssociatedType::own_associated_type_output(&self) -> Self::OwnAssociatedType

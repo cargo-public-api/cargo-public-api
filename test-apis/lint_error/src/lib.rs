@@ -12,4 +12,4 @@
 pub struct MissingDocs;
 
 /// Test for verbose output about missing items
-pub use unicode_ident;
+pub use example_api;

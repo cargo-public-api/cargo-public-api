@@ -7,5 +7,6 @@ edition = "2021"
 # So we can test "pub extern crate ..." statements. This should be a crate
 # without any dependencies, so that it is quick to compile, which speeds up
 # running tests, since we re-compile this crate with different toolchains.
-[dependencies]
-unicode-ident = "1.0.3"
+[dependencies.example_api]
+path = "../example_api-v0.2.0"
+version = "0.2.0"

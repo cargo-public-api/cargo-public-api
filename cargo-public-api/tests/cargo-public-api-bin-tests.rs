@@ -43,7 +43,7 @@ fn list_public_items_with_lint_error() {
         .stdout(
             "pub mod lint_error\n\
              pub struct lint_error::MissingDocs\n\
-             pub use lint_error::unicode_ident\n\
+             pub use lint_error::example_api\n\
             ",
         )
         .success();

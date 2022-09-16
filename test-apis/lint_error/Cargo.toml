@@ -4,5 +4,6 @@ name = "lint_error"
 version = "0.1.0"
 edition = "2021"
 
-[dependencies]
-unicode-ident = "1.0.3"
+[dependencies.example_api]
+path = "../example_api-v0.2.0"
+version = "0.2.0"

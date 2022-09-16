@@ -7,7 +7,6 @@
 //! warnings. But for testing purposes it is fine to use
 //! `#![deny(missing_docs)]`.
 #![deny(missing_docs)]
-
 #![no_std] // Reduces rustdoc JSON size by 70%
 
 pub struct MissingDocs;

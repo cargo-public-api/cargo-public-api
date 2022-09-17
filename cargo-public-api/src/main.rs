@@ -33,7 +33,7 @@ pub struct Args {
     /// for T where U: From<T>` be included in the list of public items of a
     /// crate.
     ///
-    /// Blanket implementations are not included by default since the the vast
+    /// Blanket implementations are not included by default since the vast
     /// majority of users will find the presence of these items to just
     /// constitute noise, even if they formally are part of the public API of a
     /// crate.

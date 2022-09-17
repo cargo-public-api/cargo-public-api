@@ -53,7 +53,7 @@ When you make changes to your library you often want to make sure that you do no
 cargo public-api --diff-git-checkouts origin/main your-current-branch
 ```
 
-which will print the the diff of your public API changes compared to `origin/main`.
+which will print the diff of your public API changes compared to `origin/main`.
 
 ### As a CI Check
 

@@ -11,7 +11,7 @@ license = "MIT"
 repository = "https://github.com/Enselic/cargo-public-api"
 
 [dependencies]
-ansi_term = "0.12.1"
+nu-ansi-term = "0.46.0"
 anyhow = "1.0.53"
 atty = "0.2.14"
 clap = { version = "3.1.2", features = ["derive"] }

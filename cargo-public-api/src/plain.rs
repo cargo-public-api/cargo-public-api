@@ -1,6 +1,6 @@
 use std::io::{Result, Write};
 
-use ansi_term::{ANSIString, ANSIStrings, Color, Style};
+use nu_ansi_term::{AnsiString, AnsiStrings, Color, Style};
 use public_api::{diff::PublicItemsDiff, tokens::Token, PublicItem};
 
 use crate::Args;
@@ -83,14 +83,14 @@ fn color_item(item: &public_api::PublicItem) -> String {
 
 fn color_token_stream<'a>(tokens: impl Iterator<Item = &'a Token>, bg: Option<Color>) -> String {
     let styled = tokens.map(|t| color_item_token(t, bg)).collect::<Vec<_>>();
-    ANSIStrings(&styled).to_string()
+    AnsiStrings(&styled).to_string()
 }
 
 /// Color the given Token to render it with a nice syntax highlighting. The
 /// theme is inspired by dark+ in VS Code and uses the default colors from the
 /// terminal to always provide a readable and consistent color scheme.
 /// An extra color can be provided to be used as background color.
-fn color_item_token(token: &Token, bg: Option<Color>) -> ANSIString<'_> {
+fn color_item_token(token: &Token, bg: Option<Color>) -> AnsiString<'_> {
     let style = |colour: Style, text: &str| {
         if let Some(bg) = bg {
             colour.on(bg).paint(text.to_string())
@@ -138,7 +138,7 @@ fn color_item_with_diff(diff_slice: &[diff::Result<&&Token>], is_old_item: bool)
         })
         .collect::<Vec<_>>();
 
-    ANSIStrings(&styled_strings).to_string()
+    AnsiStrings(&styled_strings).to_string()
 }
 
 pub fn print_items_with_header<T>(

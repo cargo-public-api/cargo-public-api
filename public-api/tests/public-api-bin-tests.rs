@@ -128,6 +128,7 @@ Added:
 /// Uses a bash one-liner to test that public-api gracefully handles
 /// `std::io::ErrorKind::BrokenPipe`
 #[test]
+#[cfg_attr(target_family = "windows", ignore)]
 fn broken_pipe() {
     // Use the JSON for a somewhat large API so the pipe has time to become closed
     // before all output has been written to stdout

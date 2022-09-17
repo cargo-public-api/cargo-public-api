@@ -47,11 +47,15 @@ fn cargo_rustdoc_command(options: &BuildOptions) -> Command {
         features,
         package,
     } = options;
-    let mut command = Command::new("cargo");
 
-    if let Some(toolchain) = OVERRIDDEN_TOOLCHAIN.or(requested_toolchain.as_deref()) {
-        command.arg(toolchain);
-    }
+    let mut command =
+        if let Some(toolchain) = OVERRIDDEN_TOOLCHAIN.or(requested_toolchain.as_deref()) {
+            let mut cmd = Command::new("rustup");
+            cmd.args(["run", toolchain.trim_start_matches('+'), "cargo"]);
+            cmd
+        } else {
+            Command::new("cargo")
+        };
 
     command.arg("rustdoc");
     command.arg("--lib");

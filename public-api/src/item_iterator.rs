@@ -1,13 +1,26 @@
 use std::{collections::HashMap, fmt::Display, rc::Rc};
 
 use rustdoc_types::{
-    Crate, Id, Impl, Import, Item, ItemEnum, Module, Path, Struct, StructKind, Type, Variant,
+    Crate, Id, Impl, Import, Item, ItemEnum, Module, Struct, StructKind, Type, Variant,
 };
 
 use super::intermediate_public_item::IntermediatePublicItem;
 use crate::{tokens::Token, Options, PublicApi};
 
 type Impls<'a> = HashMap<&'a Id, Vec<&'a Impl>>;
+
+#[derive(Debug, Clone)]
+enum ImplKind {
+    Normal,
+    Blanket,
+}
+
+#[derive(Debug, Clone)]
+struct ImplItem<'a> {
+    impl_: &'a Impl,
+    for_id: Option<&'a Id>,
+    kind: ImplKind,
+}
 
 /// Each public item has a path that is displayed like `first::second::third`.
 /// Internally we represent that with a `vec!["first", "second", "third"]`. This
@@ -41,20 +54,26 @@ pub struct ItemIterator<'a> {
 
     /// `impl`s are a bit special. They do not need to be reachable by the crate
     /// root in order to matter. All that matters is that the trait and type
-    /// involved are both public. Since the rustdoc JSON by definition only
-    /// includes public items, all `impl`s we see are relevant. Whenever we
-    /// encounter a type that has an `impl`, we inject the associated items of
-    /// the `impl` as children of the type.
-    impls: Impls<'a>,
+    /// involved are both public.
+    ///
+    /// Since the rustdoc JSON by definition only includes public items, all
+    /// `impl`s we see are potentially relevant. We do some filtering though.
+    /// For example, we do not care about blanket implementations by default.
+    ///
+    /// Whenever we encounter an active `impl` for a type, we inject the
+    /// associated items of the `impl` as children of the type.
+    active_impls: Impls<'a>,
 }
 
 impl<'a> ItemIterator<'a> {
     pub fn new(crate_: &'a Crate, options: Options) -> Self {
+        let all_impls: Vec<ImplItem> = all_impls(crate_).collect();
+
         let mut s = ItemIterator {
             crate_,
             items_left: vec![],
             missing_ids: vec![],
-            impls: find_all_impls(crate_, options),
+            active_impls: active_impls(all_impls.clone(), options),
         };
 
         // Bootstrap with the root item
@@ -66,7 +85,7 @@ impl<'a> ItemIterator<'a> {
     fn add_children_for_item(&mut self, public_item: &Rc<IntermediatePublicItem<'a>>) {
         // Handle any impls. See [`ItemIterator::impls`] docs for more info.
         let mut add_after_borrow = vec![];
-        if let Some(impls) = self.impls.get(&public_item.item.id) {
+        if let Some(impls) = self.active_impls.get(&public_item.item.id) {
             for impl_ in impls {
                 for id in &impl_.items {
                     add_after_borrow.push(id);
@@ -242,24 +261,49 @@ impl<'a> Iterator for ItemIterator<'a> {
     }
 }
 
-/// `impl`s are special. This helper finds all `impl`s. See
-/// [`ItemIterator::impls`] docs for more info.
-fn find_all_impls(crate_: &Crate, options: Options) -> Impls {
+fn all_impls(crate_: &Crate) -> impl Iterator<Item = ImplItem> {
+    crate_.index.values().filter_map(|item| match &item.inner {
+        ItemEnum::Impl(impl_) => Some(ImplItem {
+            impl_,
+            kind: impl_kind(impl_),
+            for_id: match &impl_.for_ {
+                Type::ResolvedPath(path) => Some(&path.id),
+                _ => None,
+            },
+        }),
+        _ => None,
+    })
+}
+
+fn impl_kind(impl_: &Impl) -> ImplKind {
+    let has_blanket_impl = matches!(impl_.blanket_impl, Some(_));
+
+    // See https://github.com/rust-lang/rust/blob/54f20bbb8a7aeab93da17c0019c1aaa10329245a/src/librustdoc/json/conversions.rs#L589-L590
+    match (impl_.synthetic, has_blanket_impl) {
+        (false, true) => ImplKind::Blanket,
+        _ => ImplKind::Normal,
+    }
+}
+
+fn active_impls(all_impls: Vec<ImplItem>, options: Options) -> Impls {
     let mut impls = HashMap::new();
 
-    for item in crate_.index.values() {
-        if let ItemEnum::Impl(impl_) = &item.inner {
-            if let Impl {
-                for_: Type::ResolvedPath(Path { id, .. }),
-                blanket_impl,
-                ..
-            } = impl_
-            {
-                let omit = !options.with_blanket_implementations && matches!(blanket_impl, Some(_));
-                if !omit {
-                    impls.entry(id).or_insert_with(Vec::new).push(impl_);
-                }
-            }
+    for impl_item in all_impls {
+        let for_id = match impl_item.for_id {
+            Some(id) => id,
+            None => continue,
+        };
+
+        let active = match impl_item.kind {
+            ImplKind::Normal => true,
+            ImplKind::Blanket => options.with_blanket_implementations,
+        };
+
+        if active {
+            impls
+                .entry(for_id)
+                .or_insert_with(Vec::new)
+                .push(impl_item.impl_);
         }
     }
 

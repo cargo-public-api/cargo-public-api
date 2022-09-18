@@ -184,7 +184,6 @@ fn diff_public_items_detached_head() {
 
 /// Test that diffing fails if the git tree is dirty
 #[test]
-#[cfg_attr(target_family = "windows", ignore)]
 fn diff_public_items_with_dirty_tree_fails() {
     let test_repo = TestRepo::new();
 
@@ -208,7 +207,9 @@ fn diff_public_items_with_dirty_tree_fails() {
     cmd.arg("v0.2.0");
     cmd.arg("v0.3.0");
     cmd.assert()
-        .stderr(contains("commit your changes or stash them"))
+        .stderr(contains(
+            "Your local changes to the following files would be overwritten by checkout",
+        ))
         .failure();
 }
 

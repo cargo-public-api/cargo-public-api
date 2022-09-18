@@ -8,6 +8,9 @@ members = [
 
     # High-level CLI for "rustdoc-json" and "public-api"
     "cargo-public-api",
+
+    # Test utilities. Not published to crates.io.
+    "test-utils",
 ]
 
 # Test APIs can't be part of the workspace because

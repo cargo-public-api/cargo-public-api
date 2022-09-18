@@ -1,10 +1,14 @@
 // deny in CI, only warn here
 #![warn(clippy::all, clippy::pedantic)]
 #![allow(clippy::missing_panics_doc)]
+#![allow(dead_code)]
 
 use std::path::PathBuf;
 
 use rustdoc_json::BuildOptions;
+
+mod create_test_git_repo;
+pub use create_test_git_repo::create_test_git_repo;
 
 /// Helper to get the path to a freshly built rustdoc JSON file for the given
 /// test-crate.

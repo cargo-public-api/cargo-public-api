@@ -184,6 +184,7 @@ fn diff_public_items_detached_head() {
 
 /// Test that diffing fails if the git tree is dirty
 #[test]
+#[cfg_attr(target_family = "windows", ignore)]
 fn diff_public_items_with_dirty_tree_fails() {
     let test_repo = TestRepo::new();
 

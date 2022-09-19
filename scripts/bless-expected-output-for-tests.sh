@@ -6,7 +6,7 @@ toolchain=${RUSTDOC_JSON_OVERRIDDEN_TOOLCHAIN_HACK:-+nightly}
 
 test_git_dir="/tmp/cargo-public-api-test-repo"
 rm -rf "${test_git_dir}"
-./scripts/create-test-git-repo.sh "${test_git_dir}"
+cargo run -p test-utils -- "${test_git_dir}" ./test-apis
 
 build_for="
     comprehensive_api

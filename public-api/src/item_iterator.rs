@@ -5,7 +5,7 @@ use rustdoc_types::{
 };
 
 use super::intermediate_public_item::IntermediatePublicItem;
-use crate::{tokens::Token, Options, PublicApi};
+use crate::{render::RenderingContext, tokens::Token, Options, PublicApi};
 
 type Impls<'a> = HashMap<&'a Id, Vec<&'a Impl>>;
 
@@ -329,10 +329,11 @@ fn items_in_container(item: &Item) -> Option<&Vec<Id>> {
 }
 
 pub fn public_api_in_crate(crate_: &Crate, options: Options) -> super::PublicApi {
+    let context = RenderingContext { crate_ };
     let mut item_iterator = ItemIterator::new(crate_, options);
     let items = item_iterator
         .by_ref()
-        .map(|p| intermediate_public_item_to_public_item(&p))
+        .map(|p| intermediate_public_item_to_public_item(&context, &p))
         .collect();
 
     PublicApi {
@@ -346,6 +347,7 @@ pub fn public_api_in_crate(crate_: &Crate, options: Options) -> super::PublicApi
 }
 
 fn intermediate_public_item_to_public_item(
+    context: &RenderingContext,
     public_item: &Rc<IntermediatePublicItem<'_>>,
 ) -> PublicItem {
     PublicItem {
@@ -354,7 +356,7 @@ fn intermediate_public_item_to_public_item(
             .iter()
             .map(|i| i.name.clone())
             .collect::<PublicItemPath>(),
-        tokens: public_item.render_token_stream(),
+        tokens: public_item.render_token_stream(context),
     }
 }
 

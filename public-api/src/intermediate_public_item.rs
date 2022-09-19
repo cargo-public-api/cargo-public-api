@@ -1,9 +1,8 @@
-use crate::render;
 use std::rc::Rc;
 
 use rustdoc_types::{Id, Item, Type};
 
-use crate::tokens::Token;
+use crate::{render::RenderingContext, tokens::Token};
 
 /// This struct represents one public item of a crate, but in intermediate form.
 /// It wraps a single [Item] but adds additional calculated values to make it
@@ -85,7 +84,7 @@ impl<'a> IntermediatePublicItem<'a> {
         self.path().iter().any(|m| m.item.id == *id)
     }
 
-    pub fn render_token_stream(&self) -> Vec<Token> {
-        render::token_stream(self)
+    pub fn render_token_stream(&self, context: &RenderingContext) -> Vec<Token> {
+        context.token_stream(self)
     }
 }

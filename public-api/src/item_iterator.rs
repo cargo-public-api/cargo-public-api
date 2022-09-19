@@ -1,8 +1,6 @@
 use std::{collections::HashMap, fmt::Display, rc::Rc};
 
-use rustdoc_types::{
-    Crate, Id, Impl, Import, Item, ItemEnum, Module, Struct, StructKind, Type, Variant,
-};
+use rustdoc_types::{Crate, Id, Impl, Import, Item, ItemEnum, Module, Struct, StructKind, Type};
 
 use super::intermediate_public_item::IntermediatePublicItem;
 use crate::{render::RenderingContext, tokens::Token, Options, PublicApi};
@@ -201,43 +199,10 @@ impl<'a> ItemIterator<'a> {
         let public_item = Rc::new(IntermediatePublicItem::new(
             item,
             name.unwrap_or_else(|| String::from("<<no_name>>")),
-            self.pre_resolved_fields_for_item(item),
             parent,
         ));
 
         self.items_left.push(public_item);
-    }
-
-    /// See [`IntermediatePublicItem::pre_resolved_fields`] docs for more info.
-    fn pre_resolved_fields_for_item(&self, item: &'a Item) -> Vec<Option<&'a Type>> {
-        let mut pre_resolved_fields: Vec<Option<&Type>> = vec![];
-
-        let fields_to_pre_resolve = match &item.inner {
-            ItemEnum::Variant(Variant::Tuple(fields))
-            | ItemEnum::Struct(Struct {
-                kind: StructKind::Tuple(fields),
-                ..
-            }) => Some(fields),
-            _ => None,
-        };
-
-        if let Some(fields) = fields_to_pre_resolve {
-            for id in fields {
-                pre_resolved_fields.push(
-                    if let Some(Item {
-                        inner: ItemEnum::StructField(type_),
-                        ..
-                    }) = id.as_ref().and_then(|id| self.crate_.index.get(id))
-                    {
-                        Some(type_)
-                    } else {
-                        None
-                    },
-                );
-            }
-        }
-
-        pre_resolved_fields
     }
 
     fn add_missing_id(&mut self, id: &'a Id) {

@@ -42,12 +42,7 @@ fn list_public_items_with_lint_error() {
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
     cmd.args(["--manifest-path", "../test-apis/lint_error/Cargo.toml"]);
     cmd.assert()
-        .stdout(
-            "pub mod lint_error\n\
-             pub struct lint_error::MissingDocs\n\
-             pub use lint_error::example_api\n\
-            ",
-        )
+        .stdout(include_str!("./expected-output/lint_error_list.txt"))
         .success();
 }
 
@@ -291,26 +286,9 @@ fn deny_added_with_diff() {
     cmd.arg("v0.2.0");
     cmd.arg("--deny=added");
     cmd.assert()
-        .stdout(
-            "Removed items from the public API
-=================================
-(none)
-
-Changed items in the public API
-===============================
--pub fn example_api::function(v1_param: Struct)
-+pub fn example_api::function(v1_param: Struct, v2_param: usize)
--pub struct example_api::Struct
-+#[non_exhaustive] pub struct example_api::Struct
-
-Added items to the public API
-=============================
-+pub struct example_api::StructV2
-+pub struct field example_api::Struct::v2_field: usize
-+pub struct field example_api::StructV2::field: usize
-
-",
-        )
+        .stdout(include_str!(
+            "./expected-output/example_api_diff_v0.1.0_to_v0.2.0.txt"
+        ))
         .failure();
 }
 
@@ -422,26 +400,9 @@ fn diff_public_items_from_files() {
     cmd.arg(old);
     cmd.arg(new);
     cmd.assert()
-        .stdout(
-            "Removed items from the public API
-=================================
-(none)
-
-Changed items in the public API
-===============================
--pub fn example_api::function(v1_param: Struct)
-+pub fn example_api::function(v1_param: Struct, v2_param: usize)
--pub struct example_api::Struct
-+#[non_exhaustive] pub struct example_api::Struct
-
-Added items to the public API
-=============================
-+pub struct example_api::StructV2
-+pub struct field example_api::Struct::v2_field: usize
-+pub struct field example_api::StructV2::field: usize
-
-",
-        )
+        .stdout(include_str!(
+            "./expected-output/example_api_diff_v0.1.0_to_v0.2.0.txt"
+        ))
         .success();
 }
 

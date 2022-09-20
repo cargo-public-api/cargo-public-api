@@ -1,11 +1,9 @@
 use std::{collections::HashMap, fmt::Display, rc::Rc};
 
-use rustdoc_types::{
-    Crate, Id, Impl, Import, Item, ItemEnum, Module, Struct, StructKind, Type, Variant,
-};
+use rustdoc_types::{Crate, Id, Impl, Import, Item, ItemEnum, Module, Struct, StructKind, Type};
 
 use super::intermediate_public_item::IntermediatePublicItem;
-use crate::{tokens::Token, Options, PublicApi};
+use crate::{render::RenderingContext, tokens::Token, Options, PublicApi};
 
 type Impls<'a> = HashMap<&'a Id, Vec<&'a Impl>>;
 
@@ -201,43 +199,10 @@ impl<'a> ItemIterator<'a> {
         let public_item = Rc::new(IntermediatePublicItem::new(
             item,
             name.unwrap_or_else(|| String::from("<<no_name>>")),
-            self.pre_resolved_fields_for_item(item),
             parent,
         ));
 
         self.items_left.push(public_item);
-    }
-
-    /// See [`IntermediatePublicItem::pre_resolved_fields`] docs for more info.
-    fn pre_resolved_fields_for_item(&self, item: &'a Item) -> Vec<Option<&'a Type>> {
-        let mut pre_resolved_fields: Vec<Option<&Type>> = vec![];
-
-        let fields_to_pre_resolve = match &item.inner {
-            ItemEnum::Variant(Variant::Tuple(fields))
-            | ItemEnum::Struct(Struct {
-                kind: StructKind::Tuple(fields),
-                ..
-            }) => Some(fields),
-            _ => None,
-        };
-
-        if let Some(fields) = fields_to_pre_resolve {
-            for id in fields {
-                pre_resolved_fields.push(
-                    if let Some(Item {
-                        inner: ItemEnum::StructField(type_),
-                        ..
-                    }) = id.as_ref().and_then(|id| self.crate_.index.get(id))
-                    {
-                        Some(type_)
-                    } else {
-                        None
-                    },
-                );
-            }
-        }
-
-        pre_resolved_fields
     }
 
     fn add_missing_id(&mut self, id: &'a Id) {
@@ -329,10 +294,11 @@ fn items_in_container(item: &Item) -> Option<&Vec<Id>> {
 }
 
 pub fn public_api_in_crate(crate_: &Crate, options: Options) -> super::PublicApi {
+    let context = RenderingContext { crate_ };
     let mut item_iterator = ItemIterator::new(crate_, options);
     let items = item_iterator
         .by_ref()
-        .map(|p| intermediate_public_item_to_public_item(&p))
+        .map(|p| intermediate_public_item_to_public_item(&context, &p))
         .collect();
 
     PublicApi {
@@ -346,6 +312,7 @@ pub fn public_api_in_crate(crate_: &Crate, options: Options) -> super::PublicApi
 }
 
 fn intermediate_public_item_to_public_item(
+    context: &RenderingContext,
     public_item: &Rc<IntermediatePublicItem<'_>>,
 ) -> PublicItem {
     PublicItem {
@@ -354,7 +321,7 @@ fn intermediate_public_item_to_public_item(
             .iter()
             .map(|i| i.name.clone())
             .collect::<PublicItemPath>(),
-        tokens: public_item.render_token_stream(),
+        tokens: public_item.render_token_stream(context),
     }
 }
 

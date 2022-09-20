@@ -13,7 +13,7 @@ const OVERRIDDEN_TOOLCHAIN: Option<&str> = option_env!("RUSTDOC_JSON_OVERRIDDEN_
 
 /// Run `cargo rustdoc` to produce rustdoc JSON and return the path to the built
 /// file.
-pub(crate) fn run_cargo_rustdoc(options: BuildOptions) -> Result<PathBuf, BuildError> {
+pub fn run_cargo_rustdoc(options: BuildOptions) -> Result<PathBuf, BuildError> {
     let mut cmd = cargo_rustdoc_command(&options);
     if cmd.status()?.success() {
         rustdoc_json_path_for_manifest_path(
@@ -48,14 +48,16 @@ fn cargo_rustdoc_command(options: &BuildOptions) -> Command {
         package,
     } = options;
 
-    let mut command =
-        if let Some(toolchain) = OVERRIDDEN_TOOLCHAIN.or(requested_toolchain.as_deref()) {
-            let mut cmd = Command::new("rustup");
-            cmd.args(["run", toolchain.trim_start_matches('+'), "cargo"]);
-            cmd
-        } else {
-            Command::new("cargo")
-        };
+    let mut command = OVERRIDDEN_TOOLCHAIN
+        .or(requested_toolchain.as_deref())
+        .map_or_else(
+            || Command::new("cargo"),
+            |toolchain| {
+                let mut cmd = Command::new("rustup");
+                cmd.args(["run", toolchain.trim_start_matches('+'), "cargo"]);
+                cmd
+            },
+        );
 
     command.arg("rustdoc");
     command.arg("--lib");
@@ -172,7 +174,7 @@ impl BuildOptions {
 
     /// Whether or not to pass `--quiet` to `cargo rustdoc`. Default: `false`
     #[must_use]
-    pub fn quiet(mut self, quiet: bool) -> Self {
+    pub const fn quiet(mut self, quiet: bool) -> Self {
         self.quiet = quiet;
         self
     }
@@ -186,14 +188,14 @@ impl BuildOptions {
 
     /// Whether to pass `--no-default-features` to `cargo rustdoc`. Default: `false`
     #[must_use]
-    pub fn no_default_features(mut self, no_default_features: bool) -> Self {
+    pub const fn no_default_features(mut self, no_default_features: bool) -> Self {
         self.no_default_features = no_default_features;
         self
     }
 
     /// Whether to pass `--all-features` to `cargo rustdoc`. Default: `false`
     #[must_use]
-    pub fn all_features(mut self, all_features: bool) -> Self {
+    pub const fn all_features(mut self, all_features: bool) -> Self {
         self.all_features = all_features;
         self
     }

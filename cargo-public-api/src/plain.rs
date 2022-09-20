@@ -92,11 +92,10 @@ fn color_token_stream<'a>(tokens: impl Iterator<Item = &'a Token>, bg: Option<Co
 /// An extra color can be provided to be used as background color.
 fn color_item_token(token: &Token, bg: Option<Color>) -> AnsiString<'_> {
     let style = |colour: Style, text: &str| {
-        if let Some(bg) = bg {
-            colour.on(bg).paint(text.to_string())
-        } else {
-            colour.paint(text.to_string())
-        }
+        bg.map_or_else(
+            || colour.paint(text.to_string()),
+            |bg| colour.on(bg).paint(text.to_string()),
+        )
     };
     #[allow(clippy::match_same_arms)]
     match token {

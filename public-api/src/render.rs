@@ -561,45 +561,47 @@ fn render_qualified_path(type_: &Type, trait_: &Path, name: &str) -> Vec<Token> 
     output
 }
 
-enum Binding<'a> {
-    GenericArg(&'a GenericArg),
-    TypeBinding(&'a TypeBinding),
-}
-
 fn render_generic_args(args: &GenericArgs) -> Vec<Token> {
     match args {
-        GenericArgs::AngleBracketed { args, bindings } => render_sequence_if_not_empty(
-            vec![Token::symbol("<")],
-            vec![Token::symbol(">")],
-            comma(),
-            &args
-                .iter()
-                .map(Binding::GenericArg)
-                .chain(bindings.iter().map(Binding::TypeBinding))
-                .collect::<Vec<_>>(),
-            |arg| match arg {
-                Binding::GenericArg(arg) => render_generic_arg(arg),
-                Binding::TypeBinding(binding) => render_type_binding(binding),
-            },
-        ),
-        GenericArgs::Parenthesized {
-            inputs,
-            output: return_ty,
-        } => {
-            let mut output = render_sequence(
-                vec![Token::symbol("(")],
-                vec![Token::symbol(")")],
-                comma(),
-                inputs,
-                render_type,
-            );
-            if let Some(return_ty) = return_ty {
-                output.extend(arrow());
-                output.extend(render_type(return_ty));
-            }
-            output
-        }
+        GenericArgs::AngleBracketed { args, bindings } => render_angle_bracketed(args, bindings),
+        GenericArgs::Parenthesized { inputs, output } => render_parenthesized(inputs, output),
     }
+}
+
+fn render_parenthesized(inputs: &[Type], return_ty: &Option<Type>) -> Vec<Token> {
+    let mut output = render_sequence(
+        vec![Token::symbol("(")],
+        vec![Token::symbol(")")],
+        comma(),
+        inputs,
+        render_type,
+    );
+    if let Some(return_ty) = return_ty {
+        output.extend(arrow());
+        output.extend(render_type(return_ty));
+    }
+    output
+}
+
+fn render_angle_bracketed(args: &[GenericArg], bindings: &[TypeBinding]) -> Vec<Token> {
+    enum Arg<'a> {
+        GenericArg(&'a GenericArg),
+        TypeBinding(&'a TypeBinding),
+    }
+    render_sequence_if_not_empty(
+        vec![Token::symbol("<")],
+        vec![Token::symbol(">")],
+        comma(),
+        &args
+            .iter()
+            .map(Arg::GenericArg)
+            .chain(bindings.iter().map(Arg::TypeBinding))
+            .collect::<Vec<_>>(),
+        |arg| match arg {
+            Arg::GenericArg(arg) => render_generic_arg(arg),
+            Arg::TypeBinding(binding) => render_type_binding(binding),
+        },
+    )
 }
 
 fn render_term(term: &Term) -> Vec<Token> {

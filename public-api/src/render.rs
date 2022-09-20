@@ -169,26 +169,6 @@ pub fn token_stream(item: &IntermediatePublicItem) -> Vec<Token> {
     tokens
 }
 
-/// Our list of allowed attributes comes from
-/// <https://github.com/rust-lang/rust/blob/68d0b29098/src/librustdoc/html/render/mod.rs#L941-L942>
-fn attr_relevant_for_public_apis<S: AsRef<str>>(attr: S) -> bool {
-    let prefixes = [
-        "#[export_name",
-        "#[link_section",
-        "#[no_mangle",
-        "#[non_exhaustive",
-        "#[repr",
-    ];
-
-    for prefix in prefixes {
-        if attr.as_ref().starts_with(prefix) {
-            return true;
-        }
-    }
-
-    false
-}
-
 fn render_simple(tags: &[&str], path: &[Rc<IntermediatePublicItem<'_>>]) -> Vec<Token> {
     let mut output = pub_();
     output.extend(
@@ -779,6 +759,26 @@ fn render_higher_rank_trait_bounds(generic_params: &[GenericParamDef]) -> Vec<To
         output.push(ws!());
     }
     output
+}
+
+/// Our list of allowed attributes comes from
+/// <https://github.com/rust-lang/rust/blob/68d0b29098/src/librustdoc/html/render/mod.rs#L941-L942>
+fn attr_relevant_for_public_apis<S: AsRef<str>>(attr: S) -> bool {
+    let prefixes = [
+        "#[export_name",
+        "#[link_section",
+        "#[no_mangle",
+        "#[non_exhaustive",
+        "#[repr",
+    ];
+
+    for prefix in prefixes {
+        if attr.as_ref().starts_with(prefix) {
+            return true;
+        }
+    }
+
+    false
 }
 
 fn pub_() -> Vec<Token> {

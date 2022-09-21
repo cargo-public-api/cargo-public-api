@@ -4,7 +4,7 @@
 use std::fmt::Display;
 
 use pretty_assertions::assert_eq;
-use public_api::{public_api_from_rustdoc_json_str, Error, Options};
+use public_api::{Error, Options, PublicApi};
 
 // rust-analyzer bug: https://github.com/rust-lang/rust-analyzer/issues/9173
 #[path = "../../test-utils/src/lib.rs"]
@@ -110,7 +110,7 @@ fn comprehensive_api_proc_macro() {
 /// I confess: this test is mainly to get function code coverage on Ord
 #[test]
 fn public_item_ord() {
-    let public_api = public_api_from_rustdoc_json_str(
+    let public_api = PublicApi::public_api_from_rustdoc_json_str(
         &rustdoc_json_str_for_crate("../test-apis/comprehensive_api"),
         Options::default(),
     )
@@ -134,7 +134,7 @@ fn public_item_ord() {
 
 #[test]
 fn invalid_json() {
-    let result = public_api_from_rustdoc_json_str("}}}}}}}}}", Options::default());
+    let result = PublicApi::public_api_from_rustdoc_json_str("}}}}}}}}}", Options::default());
     ensure_impl_debug(&result);
     assert!(matches!(result, Err(Error::SerdeJsonError(_))));
 }
@@ -153,12 +153,12 @@ fn options() {
 #[test]
 fn pretty_printed_diff() {
     let options = Options::default();
-    let old = public_api_from_rustdoc_json_str(
+    let old = PublicApi::public_api_from_rustdoc_json_str(
         &rustdoc_json_str_for_crate("../test-apis/example_api-v0.1.0"),
         options,
     )
     .unwrap();
-    let new = public_api_from_rustdoc_json_str(
+    let new = PublicApi::public_api_from_rustdoc_json_str(
         &rustdoc_json_str_for_crate("../test-apis/example_api-v0.2.0"),
         options,
     )
@@ -190,8 +190,8 @@ fn pretty_printed_diff() {
 }
 
 fn assert_public_api_diff(old_json: &str, new_json: &str, expected: &ExpectedDiff) {
-    let old = public_api_from_rustdoc_json_str(old_json, Options::default()).unwrap();
-    let new = public_api_from_rustdoc_json_str(new_json, Options::default()).unwrap();
+    let old = PublicApi::public_api_from_rustdoc_json_str(old_json, Options::default()).unwrap();
+    let new = PublicApi::public_api_from_rustdoc_json_str(new_json, Options::default()).unwrap();
 
     let diff = public_api::diff::PublicItemsDiff::between(old.items, new.items);
 
@@ -229,7 +229,7 @@ fn assert_public_api_impl(
     options.sorted = true;
 
     let actual = into_strings(
-        public_api_from_rustdoc_json_str(rustdoc_json_str, options)
+        PublicApi::public_api_from_rustdoc_json_str(rustdoc_json_str, options)
             .unwrap()
             .items,
     );

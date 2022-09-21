@@ -14,7 +14,7 @@
 //! cargo +nightly rustdoc --lib -- -Z unstable-options --output-format json
 //! ```
 //!
-//! The main entry point to the library is [`public_api_from_rustdoc_json_str`],
+//! The main entry point to the library is [`PublicApi::public_api_from_rustdoc_json_str`],
 //! so please read its documentation.
 //!
 //! # Examples
@@ -63,7 +63,7 @@ pub use item_iterator::PublicItem;
 /// nightly or later, you should be fine.
 pub const MINIMUM_RUSTDOC_JSON_VERSION: &str = "nightly-2022-09-08";
 
-/// Contains various options that you can pass to [`public_api_from_rustdoc_json_str`].
+/// Contains various options that you can pass to [`PublicApi::public_api_from_rustdoc_json_str`].
 #[derive(Copy, Clone, Debug)]
 #[non_exhaustive] // More options are likely to be added in the future
 pub struct Options {
@@ -104,44 +104,7 @@ impl Default for Options {
     }
 }
 
-/// Takes rustdoc JSON and returns a [`Vec`] of [`PublicItem`]s where each
-/// [`PublicItem`] is one public item of the crate, i.e. part of the crate's
-/// public API.
-///
-/// There exists a convenient `cargo public-api` subcommand wrapper for this
-/// function found at <https://github.com/Enselic/cargo-public-api> that
-/// builds the rustdoc JSON for you and then invokes this function. If you don't
-/// want to use that wrapper, use
-/// ```bash
-/// cargo +nightly rustdoc --lib -- -Z unstable-options --output-format json
-/// ```
-/// to generate the rustdoc JSON that this function takes as input. The output
-/// is put in `./target/doc/your_library.json`.
-///
-/// For reference, the rustdoc JSON format is documented at
-/// <https://rust-lang.github.io/rfcs/2963-rustdoc-json.html>. But the format is
-/// still a moving target. Open PRs and issues for rustdoc JSON itself can be
-/// found at <https://github.com/rust-lang/rust/labels/A-rustdoc-json>.
-///
-/// # Errors
-///
-/// E.g. if the JSON is invalid.
-pub fn public_api_from_rustdoc_json_str(
-    rustdoc_json_str: &str,
-    options: Options,
-) -> Result<PublicApi> {
-    let crate_ = deserialize_without_recursion_limit(rustdoc_json_str)?;
-
-    let mut public_api = item_iterator::public_api_in_crate(&crate_, options);
-
-    if options.sorted {
-        public_api.items.sort();
-    }
-
-    Ok(public_api)
-}
-
-/// Return type of [`public_api_from_rustdoc_json_str`].
+/// Return type of [`PublicApi::public_api_from_rustdoc_json_str`].
 #[derive(Debug)]
 #[non_exhaustive] // More fields might be added in the future
 pub struct PublicApi {
@@ -162,6 +125,54 @@ pub struct PublicApi {
     /// The exact format of IDs are to be considered an implementation detail
     /// and must not be be relied on.
     pub missing_item_ids: Vec<String>,
+}
+
+impl PublicApi {
+    /// Takes rustdoc JSON and returns a [`Vec`] of [`PublicItem`]s where each
+    /// [`PublicItem`] is one public item of the crate, i.e. part of the crate's
+    /// public API.
+    ///
+    /// There exists a convenient `cargo public-api` subcommand wrapper for this
+    /// function found at <https://github.com/Enselic/cargo-public-api> that
+    /// builds the rustdoc JSON for you and then invokes this function. If you don't
+    /// want to use that wrapper, use
+    /// ```bash
+    /// cargo +nightly rustdoc --lib -- -Z unstable-options --output-format json
+    /// ```
+    /// to generate the rustdoc JSON that this function takes as input. The output
+    /// is put in `./target/doc/your_library.json`.
+    ///
+    /// For reference, the rustdoc JSON format is documented at
+    /// <https://rust-lang.github.io/rfcs/2963-rustdoc-json.html>. But the format is
+    /// still a moving target. Open PRs and issues for rustdoc JSON itself can be
+    /// found at <https://github.com/rust-lang/rust/labels/A-rustdoc-json>.
+    ///
+    /// # Errors
+    ///
+    /// E.g. if the JSON is invalid.
+    pub fn public_api_from_rustdoc_json_str(
+        rustdoc_json_str: &str,
+        options: Options,
+    ) -> Result<PublicApi> {
+        let crate_ = deserialize_without_recursion_limit(rustdoc_json_str)?;
+
+        let mut public_api = item_iterator::public_api_in_crate(&crate_, options);
+
+        if options.sorted {
+            public_api.items.sort();
+        }
+
+        Ok(public_api)
+    }
+}
+
+#[allow(clippy::missing_errors_doc, missing_docs)]
+#[deprecated(note = "use `PublicApi::public_api_from_rustdoc_json_str` instead")]
+pub fn public_api_from_rustdoc_json_str(
+    rustdoc_json_str: &str,
+    options: Options,
+) -> Result<PublicApi> {
+    PublicApi::public_api_from_rustdoc_json_str(rustdoc_json_str, options)
 }
 
 /// Helper to deserialize the JSON with `serde_json`, but with the recursion

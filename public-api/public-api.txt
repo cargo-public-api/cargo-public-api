@@ -25,6 +25,7 @@ pub fn public_api::Options::clone(&self) -> Options
 pub fn public_api::Options::default() -> Self
 pub fn public_api::Options::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
 pub fn public_api::PublicApi::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
+pub fn public_api::PublicApi::public_api_from_rustdoc_json_str(rustdoc_json_str: &str, options: Options) -> Result<PublicApi>
 pub fn public_api::PublicItem::clone(&self) -> PublicItem
 pub fn public_api::PublicItem::cmp(&self, other: &Self) -> std::cmp::Ordering
 pub fn public_api::PublicItem::eq(&self, other: &PublicItem) -> bool

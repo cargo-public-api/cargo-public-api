@@ -457,24 +457,30 @@ impl<'a> RenderingContext<'a> {
         let mut output = vec![];
         let name = &path.name;
         if !name.is_empty() {
-            let split: Vec<_> = name.split("::").collect();
-            let len = split.len();
-            for (index, part) in split.into_iter().enumerate() {
-                if index == 0 && part == "$crate" {
-                    output.push(Token::identifier("$crate"));
-                } else if index == len - 1 {
-                    output.push(Token::type_(part));
-                } else {
-                    output.push(Token::identifier(part));
-                }
-                output.push(Token::symbol("::"));
-            }
-            if len > 0 {
-                output.pop();
-            }
+            output.extend(self.render_path_name(name));
             if let Some(args) = &path.args {
                 output.extend(self.render_generic_args(args));
             }
+        }
+        output
+    }
+
+    fn render_path_name(&self, name: &str) -> Vec<Token> {
+        let mut output = vec![];
+        let split: Vec<_> = name.split("::").collect();
+        let len = split.len();
+        for (index, part) in split.into_iter().enumerate() {
+            if index == 0 && part == "$crate" {
+                output.push(Token::identifier("$crate"));
+            } else if index == len - 1 {
+                output.push(Token::type_(part));
+            } else {
+                output.push(Token::identifier(part));
+            }
+            output.push(Token::symbol("::"));
+        }
+        if len > 0 {
+            output.pop();
         }
         output
     }

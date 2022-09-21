@@ -14,7 +14,7 @@
 //! cargo +nightly rustdoc --lib -- -Z unstable-options --output-format json
 //! ```
 //!
-//! The main entry point to the library is [`PublicApi::public_api_from_rustdoc_json_str`],
+//! The main entry point to the library is [`PublicApi::from_rustdoc_json_str`],
 //! so please read its documentation.
 //!
 //! # Examples
@@ -63,7 +63,7 @@ pub use item_iterator::PublicItem;
 /// nightly or later, you should be fine.
 pub const MINIMUM_RUSTDOC_JSON_VERSION: &str = "nightly-2022-09-08";
 
-/// Contains various options that you can pass to [`PublicApi::public_api_from_rustdoc_json_str`].
+/// Contains various options that you can pass to [`PublicApi::from_rustdoc_json_str`].
 #[derive(Copy, Clone, Debug)]
 #[non_exhaustive] // More options are likely to be added in the future
 pub struct Options {
@@ -104,7 +104,7 @@ impl Default for Options {
     }
 }
 
-/// Return type of [`PublicApi::public_api_from_rustdoc_json_str`].
+/// Return type of [`PublicApi::from_rustdoc_json_str`].
 #[derive(Debug)]
 #[non_exhaustive] // More fields might be added in the future
 pub struct PublicApi {
@@ -150,10 +150,7 @@ impl PublicApi {
     /// # Errors
     ///
     /// E.g. if the JSON is invalid.
-    pub fn public_api_from_rustdoc_json_str(
-        rustdoc_json_str: &str,
-        options: Options,
-    ) -> Result<PublicApi> {
+    pub fn from_rustdoc_json_str(rustdoc_json_str: &str, options: Options) -> Result<PublicApi> {
         let crate_ = deserialize_without_recursion_limit(rustdoc_json_str)?;
 
         let mut public_api = item_iterator::public_api_in_crate(&crate_, options);
@@ -167,12 +164,12 @@ impl PublicApi {
 }
 
 #[allow(clippy::missing_errors_doc, missing_docs)]
-#[deprecated(note = "use `PublicApi::public_api_from_rustdoc_json_str` instead")]
+#[deprecated(note = "use `PublicApi::from_rustdoc_json_str` instead")]
 pub fn public_api_from_rustdoc_json_str(
     rustdoc_json_str: &str,
     options: Options,
 ) -> Result<PublicApi> {
-    PublicApi::public_api_from_rustdoc_json_str(rustdoc_json_str, options)
+    PublicApi::from_rustdoc_json_str(rustdoc_json_str, options)
 }
 
 /// Helper to deserialize the JSON with `serde_json`, but with the recursion

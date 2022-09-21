@@ -57,7 +57,7 @@ fn main_() -> Result<()> {
 fn print_public_api(path: &Path, options: Options) -> Result<()> {
     let json = &std::fs::read_to_string(path)?;
 
-    for public_item in PublicApi::public_api_from_rustdoc_json_str(json, options)?.items {
+    for public_item in PublicApi::from_rustdoc_json_str(json, options)?.items {
         writeln!(std::io::stdout(), "{}", public_item)?;
     }
 
@@ -66,10 +66,10 @@ fn print_public_api(path: &Path, options: Options) -> Result<()> {
 
 fn print_public_api_diff(old: &Path, new: &Path, options: Options) -> Result<()> {
     let old_json = std::fs::read_to_string(old)?;
-    let old = PublicApi::public_api_from_rustdoc_json_str(&old_json, options)?;
+    let old = PublicApi::from_rustdoc_json_str(&old_json, options)?;
 
     let new_json = std::fs::read_to_string(new)?;
-    let new = PublicApi::public_api_from_rustdoc_json_str(&new_json, options)?;
+    let new = PublicApi::from_rustdoc_json_str(&new_json, options)?;
 
     let diff = PublicItemsDiff::between(old.items, new.items);
     print_diff_with_headers(&diff, &mut stdout(), "Removed:", "Changed:", "Added:")?;

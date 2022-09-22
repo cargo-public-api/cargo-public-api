@@ -163,7 +163,7 @@ impl<'a> ItemIterator<'a> {
         mut item: &'a Item,
         parent: Option<Rc<IntermediatePublicItem<'a>>>,
     ) {
-        let mut name = item.name.clone();
+        let mut overridden_name = None;
 
         // Since public imports are part of the public API, we inline them, i.e.
         // replace the item corresponding to an import with the item that is
@@ -174,7 +174,7 @@ impl<'a> ItemIterator<'a> {
         // primitive types, there is no item Id to inline with, so they remain
         // as e.g. `pub use my_i32` in the output.
         if let ItemEnum::Import(import) = &item.inner {
-            name = if import.glob {
+            overridden_name = if import.glob {
                 // Items should have been inlined in maybe_add_item_to_visit(),
                 // but since we got here that must have failed, typically
                 // because the built rustdoc JSON omitted some items from the
@@ -196,11 +196,7 @@ impl<'a> ItemIterator<'a> {
             };
         }
 
-        let public_item = Rc::new(IntermediatePublicItem::new(
-            item,
-            name.unwrap_or_else(|| String::from("<<no_name>>")),
-            parent,
-        ));
+        let public_item = Rc::new(IntermediatePublicItem::new(item, overridden_name, parent));
 
         self.items_left.push(public_item);
     }
@@ -319,7 +315,7 @@ fn intermediate_public_item_to_public_item(
         path: public_item
             .path()
             .iter()
-            .map(|i| i.name.clone())
+            .map(|i| i.name())
             .collect::<PublicItemPath>(),
         tokens: public_item.render_token_stream(context),
     }

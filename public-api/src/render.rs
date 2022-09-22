@@ -228,7 +228,7 @@ impl<'a> RenderingContext<'a> {
             } else {
                 Token::identifier
             };
-            output.push(token_fn(item.name.clone()));
+            output.push(token_fn(item.name()));
             output.push(Token::symbol("::"));
         }
         if !path.is_empty() {

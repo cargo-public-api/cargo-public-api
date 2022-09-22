@@ -14,6 +14,9 @@
 //! cargo +nightly rustdoc --lib -- -Z unstable-options --output-format json
 //! ```
 //!
+//! Consider using [`rustdoc_json`](https://crates.io/crates/rustdoc_json)
+//! instead of invoking the above command yourself.
+//!
 //! The main entry point to the library is [`PublicApi::from_rustdoc_json_str`],
 //! so please read its documentation.
 //!
@@ -104,7 +107,31 @@ impl Default for Options {
     }
 }
 
-/// Return type of [`PublicApi::from_rustdoc_json_str`].
+/// The public API of a crate
+///
+/// Return type of [`public_api_from_rustdoc_json_str`].
+///
+/// ## Rendering the items
+///
+/// To render the items in the public API you can iterate over the [items](PublicItem).
+///
+/// You get the `rustdoc_json_str` in the example below as explained in the [crate] documentation, either via
+/// [`rustdoc_json`](https://crates.io/crates/rustdoc_json) or by calling `cargo rustdoc` yourself.
+///
+/// ```no_run
+/// use public_api::{PublicApi, Options};
+///
+/// # let rustdoc_json_str: String = todo!();
+/// let options = Options::default();
+/// // Gather the rustdoc content as described in this crates top-level documentation.
+/// let public_api = PublicApi::from_rustdoc_json_str(&rustdoc_json_str, options)?;
+///
+/// for public_item in public_api.items {
+///     // here we print the items to stdout, we could also write to a string or a file.
+///     println!("{}", public_item);
+/// }
+/// # Ok::<(), Box<dyn std::error::Error>>(())
+/// ```
 #[derive(Debug)]
 #[non_exhaustive] // More fields might be added in the future
 pub struct PublicApi {
@@ -128,19 +155,21 @@ pub struct PublicApi {
 }
 
 impl PublicApi {
-    /// Takes rustdoc JSON and returns a [`Vec`] of [`PublicItem`]s where each
+    /// Takes rustdoc JSON and returns a [`PublicApi`] containing a [`Vec`] of [`PublicItem`]s where each
     /// [`PublicItem`] is one public item of the crate, i.e. part of the crate's
     /// public API.
     ///
     /// There exists a convenient `cargo public-api` subcommand wrapper for this
     /// function found at <https://github.com/Enselic/cargo-public-api> that
     /// builds the rustdoc JSON for you and then invokes this function. If you don't
-    /// want to use that wrapper, use
+    /// want to use that wrapper, use [`rustdoc_json`](https://crates.io/crates/rustdoc_json)
+    /// to build and return the path to the rustdoc json or call
     /// ```bash
     /// cargo +nightly rustdoc --lib -- -Z unstable-options --output-format json
     /// ```
     /// to generate the rustdoc JSON that this function takes as input. The output
-    /// is put in `./target/doc/your_library.json`.
+    /// is put in `./target/doc/your_library.json`. As mentioned,
+    /// [`rustdoc_json`](https://crates.io/crates/rustdoc_json) does this for you.
     ///
     /// For reference, the rustdoc JSON format is documented at
     /// <https://rust-lang.github.io/rfcs/2963-rustdoc-json.html>. But the format is

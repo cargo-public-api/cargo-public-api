@@ -8,9 +8,7 @@ use anyhow::{anyhow, Context, Result};
 use arg_types::{Color, DenyMethod};
 use plain::Plain;
 use public_api::diff::PublicItemsDiff;
-use public_api::{
-    public_api_from_rustdoc_json_str, Options, PublicApi, PublicItem, MINIMUM_RUSTDOC_JSON_VERSION,
-};
+use public_api::{Options, PublicApi, PublicItem, MINIMUM_RUSTDOC_JSON_VERSION};
 
 use clap::Parser;
 use rustdoc_json::{BuildError, BuildOptions};
@@ -341,7 +339,7 @@ fn get_args() -> Args {
 }
 
 /// Figure out what [`Options`] to pass to
-/// [`public_api::public_api_from_rustdoc_json_str`] based on our
+/// [`public_api::PublicApi::from_rustdoc_json_str`] based on our
 /// [`Args`]
 fn get_options(args: &Args) -> Options {
     let mut options = Options::default();
@@ -403,7 +401,7 @@ fn public_api_from_rustdoc_json_path<T: AsRef<Path>>(
     let rustdoc_json = &std::fs::read_to_string(&json_path)
         .with_context(|| format!("Failed to read rustdoc JSON at {:?}", json_path.as_ref()))?;
 
-    public_api_from_rustdoc_json_str(rustdoc_json, options).with_context(|| {
+    PublicApi::from_rustdoc_json_str(rustdoc_json, options).with_context(|| {
         format!(
             "Failed to parse rustdoc JSON at {:?}.\n\
             This version of `cargo public-api` requires at least:\n\n    {}\n\n\

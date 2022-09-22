@@ -47,7 +47,7 @@ impl PublicItemsDiff {
     /// Allows you to diff the public API between two arbitrary versions of a
     /// library, e.g. different releases. The input parameters `old` and `new`
     /// is the output of two different invocations of
-    /// [`crate::public_api_from_rustdoc_json_str`].
+    /// [`crate::PublicApi::from_rustdoc_json_str`].
     #[must_use]
     pub fn between(old_items: Vec<PublicItem>, new_items: Vec<PublicItem>) -> Self {
         // We must use a HashBag, because with a HashSet we would lose public

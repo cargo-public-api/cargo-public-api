@@ -37,11 +37,11 @@ impl<'a> IntermediatePublicItem<'a> {
         }
     }
 
-    pub fn name(&'a self) -> String {
+    pub fn name(&self) -> &str {
         self.overridden_name
-            .clone()
-            .or_else(|| self.item.name.clone())
-            .unwrap_or_else(|| String::from("<<no_name>>"))
+            .as_deref()
+            .or(self.item.name.as_deref())
+            .unwrap_or("<<no_name>>")
     }
 
     #[must_use]

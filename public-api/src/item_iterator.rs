@@ -334,7 +334,7 @@ fn intermediate_public_item_to_public_item(
         path: public_item
             .path()
             .iter()
-            .map(|i| i.name())
+            .map(|i| i.name().to_owned())
             .collect::<PublicItemPath>(),
         tokens: public_item.render_token_stream(context),
     }

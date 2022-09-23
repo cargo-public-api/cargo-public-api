@@ -7,7 +7,7 @@ set -o nounset -o pipefail -o errexit -o xtrace
 
 cargo fmt -- --check
 
-RUSTDOCFLAGS='--deny warnings' cargo doc --locked --no-deps
+RUSTDOCFLAGS='--deny warnings' cargo doc --locked --no-deps --document-private-items
 
 scripts/cargo-clippy.sh
 

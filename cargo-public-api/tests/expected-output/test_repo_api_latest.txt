@@ -1,4 +1,14 @@
 #[non_exhaustive] pub struct example_api::Struct
+impl RefUnwindSafe for example_api::Struct
+impl RefUnwindSafe for example_api::StructV2
+impl Send for example_api::Struct
+impl Send for example_api::StructV2
+impl Sync for example_api::Struct
+impl Sync for example_api::StructV2
+impl Unpin for example_api::Struct
+impl Unpin for example_api::StructV2
+impl UnwindSafe for example_api::Struct
+impl UnwindSafe for example_api::StructV2
 pub fn example_api::Struct::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
 pub mod example_api
 pub struct example_api::StructV2

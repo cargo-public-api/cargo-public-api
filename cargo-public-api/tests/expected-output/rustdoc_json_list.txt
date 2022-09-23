@@ -1,3 +1,13 @@
+impl !RefUnwindSafe for rustdoc_json::BuildError
+impl !UnwindSafe for rustdoc_json::BuildError
+impl RefUnwindSafe for rustdoc_json::Builder
+impl Send for rustdoc_json::BuildError
+impl Send for rustdoc_json::Builder
+impl Sync for rustdoc_json::BuildError
+impl Sync for rustdoc_json::Builder
+impl Unpin for rustdoc_json::BuildError
+impl Unpin for rustdoc_json::Builder
+impl UnwindSafe for rustdoc_json::Builder
 pub enum rustdoc_json::BuildError
 pub enum variant rustdoc_json::BuildError::CargoMetadataError(cargo_metadata::Error)
 pub enum variant rustdoc_json::BuildError::CargoTomlError(cargo_toml::Error)

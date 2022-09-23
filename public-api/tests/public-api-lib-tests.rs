@@ -43,6 +43,11 @@ fn diff_with_added_items() {
                 ),
             ],
             added: &[
+                "impl RefUnwindSafe for example_api::StructV2",
+                "impl Send for example_api::StructV2",
+                "impl Sync for example_api::StructV2",
+                "impl Unpin for example_api::StructV2",
+                "impl UnwindSafe for example_api::StructV2",
                 "pub struct example_api::StructV2",
                 "pub struct field example_api::Struct::v2_field: usize",
                 "pub struct field example_api::StructV2::field: usize",
@@ -72,6 +77,11 @@ fn diff_with_removed_items() {
         &rustdoc_json_str_for_crate("../test-apis/example_api-v0.1.0"),
         &ExpectedDiff {
             removed: &[
+                "impl RefUnwindSafe for example_api::StructV2",
+                "impl Send for example_api::StructV2",
+                "impl Sync for example_api::StructV2",
+                "impl Unpin for example_api::StructV2",
+                "impl UnwindSafe for example_api::StructV2",
                 "pub struct example_api::StructV2",
                 "pub struct field example_api::Struct::v2_field: usize",
                 "pub struct field example_api::StructV2::field: usize",
@@ -181,6 +191,11 @@ fn pretty_printed_diff() {
         },
     ],
     added: [
+        impl RefUnwindSafe for example_api::StructV2,
+        impl Send for example_api::StructV2,
+        impl Sync for example_api::StructV2,
+        impl Unpin for example_api::StructV2,
+        impl UnwindSafe for example_api::StructV2,
         pub struct example_api::StructV2,
         pub struct field example_api::Struct::v2_field: usize,
         pub struct field example_api::StructV2::field: usize,

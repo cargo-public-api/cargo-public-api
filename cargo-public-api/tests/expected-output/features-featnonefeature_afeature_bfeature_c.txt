@@ -1,4 +1,9 @@
 #[non_exhaustive] pub struct features::AStruct
+impl RefUnwindSafe for features::AStruct
+impl Send for features::AStruct
+impl Sync for features::AStruct
+impl Unpin for features::AStruct
+impl UnwindSafe for features::AStruct
 pub mod features
 pub struct field features::AStruct::feature_a: ()
 pub struct field features::AStruct::feature_b: ()

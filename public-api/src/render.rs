@@ -4,8 +4,8 @@ use std::{cmp::Ordering, collections::HashMap, rc::Rc};
 
 use rustdoc_types::{
     Abi, Constant, Crate, FnDecl, FunctionPointer, GenericArg, GenericArgs, GenericBound,
-    GenericParamDef, GenericParamDefKind, Generics, Header, Id, Item, ItemEnum, MacroKind, Path,
-    PolyTrait, StructKind, Term, Type, TypeBinding, TypeBindingKind, Variant, WherePredicate,
+    GenericParamDef, GenericParamDefKind, Generics, Header, Id, Impl, Item, ItemEnum, MacroKind,
+    Path, PolyTrait, StructKind, Term, Type, TypeBinding, TypeBindingKind, Variant, WherePredicate,
 };
 
 /// A simple macro to write `Token::Whitespace` in less characters.
@@ -108,7 +108,7 @@ impl<'a> RenderingContext<'a> {
                 output
             }
             ItemEnum::TraitAlias(_) => self.render_simple(&["trait", "alias"], &item.path()),
-            ItemEnum::Impl(_) => self.render_simple(&["impl"], &item.path()),
+            ItemEnum::Impl(impl_) => self.render_impl(impl_),
             ItemEnum::Typedef(inner) => {
                 let mut output = self.render_simple(&["type"], &item.path());
                 output.extend(self.render_generics(&inner.generics));
@@ -546,6 +546,48 @@ impl<'a> RenderingContext<'a> {
         output
     }
 
+    fn render_impl(&self, impl_: &Impl) -> Vec<Token> {
+        let mut output = vec![];
+
+        if impl_.is_unsafe {
+            output.extend(vec![Token::keyword("unsafe"), ws!()]);
+        }
+
+        output.push(Token::keyword("impl"));
+
+        output.extend(self.render_generic_param_defs(&impl_.generics.params));
+
+        output.push(ws!());
+
+        if let Some(trait_) = &impl_.trait_ {
+            if impl_.negative {
+                output.push(Token::symbol("!"));
+            }
+            output.push(Token::identifier(&trait_.name));
+            if let Some(args) = &trait_.args {
+                output.extend(self.render_generic_args(args));
+            }
+            output.extend(vec![ws!(), Token::keyword("for"), ws!()]);
+            output.extend(self.render_type(&impl_.for_));
+        } else {
+            output.extend(self.render_type(&impl_.for_));
+        }
+
+        output.extend(self.render_where_predicates(&impl_.generics.where_predicates));
+
+        if !impl_.items.is_empty() {
+            output.extend(vec![
+                ws!(),
+                Token::symbol("{"),
+                ws!(),
+                Token::symbol("..."),
+                ws!(),
+                Token::symbol("}"),
+            ]);
+        }
+        output
+    }
+
     fn render_impl_trait(&self, bounds: &[GenericBound]) -> Vec<Token> {
         let mut output = vec![Token::keyword("impl")];
         output.push(ws!());
@@ -682,14 +724,19 @@ impl<'a> RenderingContext<'a> {
     }
 
     fn render_constant(&self, constant: &Constant) -> Vec<Token> {
-        let mut output = self.render_type(&constant.type_);
-        if let Some(value) = &constant.value {
-            output.extend(equals());
-            if constant.is_literal {
-                output.push(Token::primitive(value));
-            } else {
-                output.push(Token::identifier(value));
+        let mut output = vec![];
+        if constant.is_literal {
+            output.extend(self.render_type(&constant.type_));
+            if let Some(value) = &constant.value {
+                output.extend(equals());
+                if constant.is_literal {
+                    output.push(Token::primitive(value));
+                } else {
+                    output.push(Token::identifier(value));
+                }
             }
+        } else {
+            output.push(Token::identifier(&constant.expr));
         }
         output
     }

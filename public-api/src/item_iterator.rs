@@ -7,14 +7,16 @@ use crate::{render::RenderingContext, tokens::Token, Options, PublicApi};
 
 type Impls<'a> = HashMap<&'a Id, Vec<&'a Impl>>;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 enum ImplKind {
     Normal,
+    AutoTrait,
     Blanket,
 }
 
 #[derive(Debug, Clone)]
 struct ImplItem<'a> {
+    item: &'a Item,
     impl_: &'a Impl,
     for_id: Option<&'a Id>,
     kind: ImplKind,
@@ -88,7 +90,20 @@ impl<'a> ItemIterator<'a> {
         // Bootstrap with the root item
         s.try_add_item_to_visit(&crate_.root, None);
 
+        // Many `impl`s are not reachable from the root, but we want to list
+        // some of them as part of the public API.
+        s.try_add_relevant_impls(all_impls);
+
         s
+    }
+
+    fn try_add_relevant_impls(&mut self, all_impls: Vec<ImplItem<'a>>) {
+        for impl_ in all_impls {
+            // Currently only Auto Trait Implementations are supported/listed
+            if impl_.kind == ImplKind::AutoTrait {
+                self.try_add_item_to_visit(&impl_.item.id, None);
+            }
+        }
     }
 
     fn add_children_for_item(&mut self, public_item: &Rc<IntermediatePublicItem<'a>>) {
@@ -164,7 +179,7 @@ impl<'a> ItemIterator<'a> {
         // items directly. See [`ItemIterator::impls`] docs for more info. And
         // if we inlined a glob import earlier, we should not add the import
         // item itself. All other items we can go ahead and add.
-        if !glob_import_inlined && !matches!(item.inner, ItemEnum::Impl { .. }) {
+        if !glob_import_inlined {
             self.add_item_to_visit(item, parent);
         }
     }
@@ -240,6 +255,7 @@ impl<'a> Iterator for ItemIterator<'a> {
 fn all_impls(crate_: &Crate) -> impl Iterator<Item = ImplItem> {
     crate_.index.values().filter_map(|item| match &item.inner {
         ItemEnum::Impl(impl_) => Some(ImplItem {
+            item,
             impl_,
             kind: impl_kind(impl_),
             for_id: match &impl_.for_ {
@@ -256,6 +272,7 @@ fn impl_kind(impl_: &Impl) -> ImplKind {
 
     // See https://github.com/rust-lang/rust/blob/54f20bbb8a7aeab93da17c0019c1aaa10329245a/src/librustdoc/json/conversions.rs#L589-L590
     match (impl_.synthetic, has_blanket_impl) {
+        (true, false) => ImplKind::AutoTrait,
         (false, true) => ImplKind::Blanket,
         _ => ImplKind::Normal,
     }
@@ -271,8 +288,8 @@ fn active_impls(all_impls: Vec<ImplItem>, options: Options) -> Impls {
         };
 
         let active = match impl_item.kind {
-            ImplKind::Normal => true,
             ImplKind::Blanket => options.with_blanket_implementations,
+            ImplKind::AutoTrait | ImplKind::Normal => true,
         };
 
         if active {

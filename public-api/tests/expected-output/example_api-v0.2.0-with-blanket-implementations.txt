@@ -14,7 +14,7 @@ pub fn example_api::StructV2::into(self) -> U
 pub fn example_api::StructV2::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
 pub fn example_api::StructV2::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
 pub fn example_api::StructV2::type_id(&self) -> TypeId
-pub fn example_api::function(v1_param: Struct, v2_param: usize)
+pub fn example_api::function(v1_param: example_api::Struct, v2_param: usize)
 pub mod example_api
 pub struct example_api::StructV2
 pub struct field example_api::Struct::v1_field: usize

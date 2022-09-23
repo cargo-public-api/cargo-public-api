@@ -42,6 +42,16 @@ pub struct ItemIterator<'a> {
     /// What items left to visit (and possibly add more items from)
     items_left: Vec<Rc<IntermediatePublicItem<'a>>>,
 
+    /// Given a rustdoc JSON ID, keeps track of what public items that have this
+    /// ID. The reason this is a one-to-many mapping is because of re-exports.
+    /// If an API re-exports a public item in a different place, the same item
+    /// will be reachable by different paths, and thus the Vec will contain many
+    /// [`IntermediatePublicItem`]s for that ID.
+    ///
+    /// You might think this is rare, but it is actually more common than you
+    /// think out in the wild.
+    id_to_items: HashMap<&'a Id, Vec<Rc<IntermediatePublicItem<'a>>>>,
+
     /// Normally, an item referenced by item Id is present in the rustdoc JSON.
     /// If [`Self::crate_.index`] is missing an Id, then we add it here, to aid
     /// with debugging. It will typically be missing because of bugs (or
@@ -70,6 +80,7 @@ impl<'a> ItemIterator<'a> {
         let mut s = ItemIterator {
             crate_,
             items_left: vec![],
+            id_to_items: HashMap::new(),
             missing_ids: vec![],
             active_impls: active_impls(all_impls.clone(), options),
         };
@@ -163,7 +174,7 @@ impl<'a> ItemIterator<'a> {
         mut item: &'a Item,
         parent: Option<Rc<IntermediatePublicItem<'a>>>,
     ) {
-        let mut name = item.name.clone();
+        let mut overridden_name = None;
 
         // Since public imports are part of the public API, we inline them, i.e.
         // replace the item corresponding to an import with the item that is
@@ -174,7 +185,7 @@ impl<'a> ItemIterator<'a> {
         // primitive types, there is no item Id to inline with, so they remain
         // as e.g. `pub use my_i32` in the output.
         if let ItemEnum::Import(import) = &item.inner {
-            name = if import.glob {
+            overridden_name = if import.glob {
                 // Items should have been inlined in maybe_add_item_to_visit(),
                 // but since we got here that must have failed, typically
                 // because the built rustdoc JSON omitted some items from the
@@ -196,12 +207,12 @@ impl<'a> ItemIterator<'a> {
             };
         }
 
-        let public_item = Rc::new(IntermediatePublicItem::new(
-            item,
-            name.unwrap_or_else(|| String::from("<<no_name>>")),
-            parent,
-        ));
+        let public_item = Rc::new(IntermediatePublicItem::new(item, overridden_name, parent));
 
+        self.id_to_items
+            .entry(&item.id)
+            .or_default()
+            .push(public_item.clone());
         self.items_left.push(public_item);
     }
 
@@ -294,15 +305,19 @@ fn items_in_container(item: &Item) -> Option<&Vec<Id>> {
 }
 
 pub fn public_api_in_crate(crate_: &Crate, options: Options) -> super::PublicApi {
-    let context = RenderingContext { crate_ };
     let mut item_iterator = ItemIterator::new(crate_, options);
-    let items = item_iterator
-        .by_ref()
-        .map(|p| intermediate_public_item_to_public_item(&context, &p))
-        .collect();
+    let items: Vec<_> = item_iterator.by_ref().collect();
+
+    let context = RenderingContext {
+        crate_,
+        id_to_items: item_iterator.id_to_items,
+    };
 
     PublicApi {
-        items,
+        items: items
+            .iter()
+            .map(|item| intermediate_public_item_to_public_item(&context, item))
+            .collect(),
         missing_item_ids: item_iterator
             .missing_ids
             .iter()
@@ -319,7 +334,7 @@ fn intermediate_public_item_to_public_item(
         path: public_item
             .path()
             .iter()
-            .map(|i| i.name.clone())
+            .map(|i| i.name().to_owned())
             .collect::<PublicItemPath>(),
         tokens: public_item.render_token_stream(context),
     }

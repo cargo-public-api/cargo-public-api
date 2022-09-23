@@ -25,7 +25,7 @@ pub struct RenderingContext<'a> {
     pub crate_: &'a Crate,
 
     /// Given a rustdoc JSON ID, keeps track of what public items that have this
-    /// ID. See [`ItemIterator::id_to_items`] for more info.
+    /// ID. See [`crate::item_iterator::ItemIterator::id_to_items`] for more info.
     pub id_to_items: HashMap<&'a Id, Vec<Rc<IntermediatePublicItem<'a>>>>,
 }
 

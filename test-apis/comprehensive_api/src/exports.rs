@@ -49,7 +49,7 @@ pub mod issue_145 {
     pub use external_2 as publicly_renamed;
     use external_2::External as PrivatelyRenamed2;
 
-    pub fn privately_renamed_2_arg_type(_transform: PrivatelyRenamed2) {} // HTML difference!
+    pub fn privately_renamed_2_arg_type(_transform: PrivatelyRenamed2) {}
     pub fn publicly_renamed_external(_transform: publicly_renamed::External) {}
 
     pub mod external_3 {

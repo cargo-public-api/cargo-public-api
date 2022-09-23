@@ -2,17 +2,16 @@
 //!
 //! # Building
 //!
-//! Use [`build()`] to build rustdoc JSON. Like this:
+//! Use [`rustdoc_json::Builder::build()`][Builder] to build rustdoc JSON. Like this:
+//!
 //! ```
-//!    use rustdoc_json::BuildOptions;
+//! let json_path = rustdoc_json::Builder::default()
+//!     .toolchain("+nightly".to_owned())
+//!     .manifest_path("Cargo.toml")
+//!     .build()
+//!     .unwrap();
 //!
-//!    let json_path = rustdoc_json::build(
-//!        BuildOptions::default()
-//!            .toolchain("+nightly".to_owned())
-//!            .manifest_path("Cargo.toml"),
-//!    ).unwrap();
-//!
-//!    println!("Built and wrote rustdoc JSON to {:?}", &json_path);
+//! println!("Built and wrote rustdoc JSON to {:?}", &json_path);
 //! ```
 //!
 //! A compilable example can be found
@@ -25,7 +24,10 @@ use std::path::PathBuf;
 
 mod build;
 
-/// Represents all errors that can occur when using [`crate::build()`].
+#[deprecated(note = "this struct has been renamed to `rustdoc_json::Builder`")]
+pub use Builder as BuildOptions;
+
+/// Represents all errors that can occur when using [`Builder::build()`].
 #[derive(thiserror::Error, Debug)]
 pub enum BuildError {
     /// You tried to generate rustdoc JSON for a virtual manifest. That does not
@@ -50,11 +52,11 @@ pub enum BuildError {
     IoError(#[from] std::io::Error),
 }
 
-/// Contains all options for [`crate::build()`].
+/// Options for building a rustdoc json file.
 ///
 /// See [crate] for an example on how to use it.
 #[derive(Debug)]
-pub struct BuildOptions {
+pub struct Builder {
     toolchain: Option<String>,
     manifest_path: std::path::PathBuf,
     target: Option<String>,
@@ -74,6 +76,7 @@ pub struct BuildOptions {
 ///
 /// E.g. if building the JSON fails or if the manifest path does not exist or is
 /// invalid.
-pub fn build(options: BuildOptions) -> Result<PathBuf, BuildError> {
-    build::run_cargo_rustdoc(options)
+#[deprecated(note = "use `rustdoc_json::Builder::build()` instead")]
+pub fn build(options: Builder) -> Result<PathBuf, BuildError> {
+    options.build()
 }

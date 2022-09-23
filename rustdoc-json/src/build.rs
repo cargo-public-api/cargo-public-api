@@ -1,5 +1,5 @@
 use super::BuildError;
-use super::BuildOptions;
+use super::Builder;
 
 use std::{
     path::{Path, PathBuf},
@@ -13,7 +13,7 @@ const OVERRIDDEN_TOOLCHAIN: Option<&str> = option_env!("RUSTDOC_JSON_OVERRIDDEN_
 
 /// Run `cargo rustdoc` to produce rustdoc JSON and return the path to the built
 /// file.
-pub(crate) fn run_cargo_rustdoc(options: BuildOptions) -> Result<PathBuf, BuildError> {
+pub(crate) fn run_cargo_rustdoc(options: Builder) -> Result<PathBuf, BuildError> {
     let mut cmd = cargo_rustdoc_command(&options);
     if cmd.status()?.success() {
         rustdoc_json_path_for_manifest_path(
@@ -36,8 +36,8 @@ pub(crate) fn run_cargo_rustdoc(options: BuildOptions) -> Result<PathBuf, BuildE
 /// ```bash
 /// cargo +nightly rustdoc --lib --manifest-path Cargo.toml -- -Z unstable-options --output-format json --cap-lints warn
 /// ```
-fn cargo_rustdoc_command(options: &BuildOptions) -> Command {
-    let BuildOptions {
+fn cargo_rustdoc_command(options: &Builder) -> Command {
+    let Builder {
         toolchain: requested_toolchain,
         manifest_path,
         target,
@@ -129,7 +129,7 @@ fn package_name(manifest_path: impl AsRef<Path>) -> Result<String, BuildError> {
         .name)
 }
 
-impl Default for BuildOptions {
+impl Default for Builder {
     fn default() -> Self {
         Self {
             toolchain: None,
@@ -144,7 +144,7 @@ impl Default for BuildOptions {
     }
 }
 
-impl BuildOptions {
+impl Builder {
     /// Set the toolchain. Default: `None`.
     /// Until rustdoc JSON has stabilized, you will want to set this to
     /// be `"+nightly"` or similar.
@@ -213,6 +213,19 @@ impl BuildOptions {
     pub fn package(mut self, package: impl AsRef<str>) -> Self {
         self.package = Some(package.as_ref().to_owned());
         self
+    }
+
+    /// Generate rustdoc JSON for a library crate. Returns the path to the freshly
+    /// built rustdoc JSON file.
+    ///
+    /// See [crate] for an example on how to use it.
+    ///
+    /// # Errors
+    ///
+    /// E.g. if building the JSON fails or if the manifest path does not exist or is
+    /// invalid.
+    pub fn build(self) -> Result<PathBuf, BuildError> {
+        run_cargo_rustdoc(self)
     }
 }
 

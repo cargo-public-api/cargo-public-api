@@ -11,7 +11,7 @@ use public_api::diff::PublicItemsDiff;
 use public_api::{Options, PublicApi, PublicItem, MINIMUM_RUSTDOC_JSON_VERSION};
 
 use clap::Parser;
-use rustdoc_json::{BuildError, BuildOptions};
+use rustdoc_json::BuildError;
 
 mod arg_types;
 mod error;
@@ -365,21 +365,21 @@ fn collect_public_api_from_commit(
     } else {
         None
     };
-    let mut build_options = BuildOptions::default()
+    let mut builder = rustdoc_json::Builder::default()
         .toolchain(args.toolchain.clone())
         .manifest_path(&args.manifest_path)
         .all_features(args.all_features)
         .no_default_features(args.no_default_features)
         .features(&args.features);
     if let Some(target) = &args.target {
-        build_options = build_options.target(target.clone());
+        builder = builder.target(target.clone());
     }
 
     if let Some(package) = &args.package {
-        build_options = build_options.package(package);
+        builder = builder.package(package);
     }
 
-    let json_path = match rustdoc_json::build(build_options) {
+    let json_path = match builder.build() {
         Err(BuildError::VirtualManifest(manifest_path)) => virtual_manifest_error(&manifest_path)?,
         res => res?,
     };

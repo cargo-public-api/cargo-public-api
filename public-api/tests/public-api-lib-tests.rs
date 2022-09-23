@@ -34,8 +34,8 @@ fn diff_with_added_items() {
             removed: &[],
             changed: &[
                 (
-                    "pub fn example_api::function(v1_param: Struct)",
-                    "pub fn example_api::function(v1_param: Struct, v2_param: usize)",
+                    "pub fn example_api::function(v1_param: example_api::Struct)",
+                    "pub fn example_api::function(v1_param: example_api::Struct, v2_param: usize)",
                 ),
                 (
                     "pub struct example_api::Struct",
@@ -82,8 +82,8 @@ fn diff_with_removed_items() {
                     "pub struct example_api::Struct",
                 ),
                 (
-                    "pub fn example_api::function(v1_param: Struct, v2_param: usize)",
-                    "pub fn example_api::function(v1_param: Struct)",
+                    "pub fn example_api::function(v1_param: example_api::Struct, v2_param: usize)",
+                    "pub fn example_api::function(v1_param: example_api::Struct)",
                 ),
             ],
             added: &[],
@@ -172,8 +172,8 @@ fn pretty_printed_diff() {
     removed: [],
     changed: [
         ChangedPublicItem {
-            old: pub fn example_api::function(v1_param: Struct),
-            new: pub fn example_api::function(v1_param: Struct, v2_param: usize),
+            old: pub fn example_api::function(v1_param: example_api::Struct),
+            new: pub fn example_api::function(v1_param: example_api::Struct, v2_param: usize),
         },
         ChangedPublicItem {
             old: pub struct example_api::Struct,

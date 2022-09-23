@@ -20,6 +20,6 @@ pub fn rustdoc_json::BuildOptions::package(self, package: impl AsRef<str>) -> Se
 pub fn rustdoc_json::BuildOptions::quiet(self, quiet: bool) -> Self
 pub fn rustdoc_json::BuildOptions::target(self, target: String) -> Self
 pub fn rustdoc_json::BuildOptions::toolchain(self, toolchain: impl Into<Option<String>>) -> Self
-pub fn rustdoc_json::build(options: BuildOptions) -> Result<PathBuf, BuildError>
+pub fn rustdoc_json::build(options: rustdoc_json::BuildOptions) -> Result<PathBuf, rustdoc_json::BuildError>
 pub mod rustdoc_json
 pub struct rustdoc_json::BuildOptions

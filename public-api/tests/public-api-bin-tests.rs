@@ -48,8 +48,8 @@ fn print_diff() {
 (nothing)
 
 Changed:
--pub fn example_api::function(v1_param: Struct)
-+pub fn example_api::function(v1_param: Struct, v2_param: usize)
+-pub fn example_api::function(v1_param: example_api::Struct)
++pub fn example_api::function(v1_param: example_api::Struct, v2_param: usize)
 -pub struct example_api::Struct
 +#[non_exhaustive] pub struct example_api::Struct
 
@@ -84,8 +84,8 @@ fn print_diff_reversed() {
 Changed:
 -#[non_exhaustive] pub struct example_api::Struct
 +pub struct example_api::Struct
--pub fn example_api::function(v1_param: Struct, v2_param: usize)
-+pub fn example_api::function(v1_param: Struct)
+-pub fn example_api::function(v1_param: example_api::Struct, v2_param: usize)
++pub fn example_api::function(v1_param: example_api::Struct)
 
 Added:
 (nothing)

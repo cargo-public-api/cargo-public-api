@@ -15,7 +15,7 @@ pub struct IntermediatePublicItem<'a> {
 
     /// If `Some`, this overrides [Item::name], which happens in the case of
     /// renamed imports (`pub use other::Item as Foo;`).
-    overridden_name: Option<String>,
+    pub overridden_name: Option<String>,
 
     /// The parent item. If [Self::item] is e.g. an enum variant, then the
     /// parent is an enum. We follow the chain of parents to be able to know the
@@ -64,6 +64,11 @@ impl<'a> IntermediatePublicItem<'a> {
     #[must_use]
     pub fn path_contains_id(&self, id: &'a Id) -> bool {
         self.path().iter().any(|m| m.item.id == *id)
+    }
+
+    #[must_use]
+    pub fn path_contains_renamed_item(&self) -> bool {
+        self.path().iter().any(|m| m.overridden_name.is_some())
     }
 
     pub fn render_token_stream(&self, context: &RenderingContext) -> Vec<Token> {

@@ -42,6 +42,16 @@ pub struct ItemIterator<'a> {
     /// What items left to visit (and possibly add more items from)
     items_left: Vec<Rc<IntermediatePublicItem<'a>>>,
 
+    /// Given a rustdoc JSON ID, keeps track of what public items that have this
+    /// ID. The reason this is a one-to-many mapping is because of re-exports.
+    /// If an API re-exports a public item in a different place, the same item
+    /// will be reachable by different paths, and thus the Vec will contain many
+    /// [`IntermediatePublicItem`]s for that ID.
+    ///
+    /// You might think this is rare, but it is actually more common than you
+    /// think out in the wild.
+    id_to_items: HashMap<&'a Id, Vec<Rc<IntermediatePublicItem<'a>>>>,
+
     /// Normally, an item referenced by item Id is present in the rustdoc JSON.
     /// If [`Self::crate_.index`] is missing an Id, then we add it here, to aid
     /// with debugging. It will typically be missing because of bugs (or
@@ -70,6 +80,7 @@ impl<'a> ItemIterator<'a> {
         let mut s = ItemIterator {
             crate_,
             items_left: vec![],
+            id_to_items: HashMap::new(),
             missing_ids: vec![],
             active_impls: active_impls(all_impls.clone(), options),
         };
@@ -198,6 +209,10 @@ impl<'a> ItemIterator<'a> {
 
         let public_item = Rc::new(IntermediatePublicItem::new(item, overridden_name, parent));
 
+        self.id_to_items
+            .entry(&item.id)
+            .or_default()
+            .push(public_item.clone());
         self.items_left.push(public_item);
     }
 
@@ -290,15 +305,19 @@ fn items_in_container(item: &Item) -> Option<&Vec<Id>> {
 }
 
 pub fn public_api_in_crate(crate_: &Crate, options: Options) -> super::PublicApi {
-    let context = RenderingContext { crate_ };
     let mut item_iterator = ItemIterator::new(crate_, options);
-    let items = item_iterator
-        .by_ref()
-        .map(|p| intermediate_public_item_to_public_item(&context, &p))
-        .collect();
+    let items: Vec<_> = item_iterator.by_ref().collect();
+
+    let context = RenderingContext {
+        crate_,
+        id_to_items: item_iterator.id_to_items,
+    };
 
     PublicApi {
-        items,
+        items: items
+            .iter()
+            .map(|item| intermediate_public_item_to_public_item(&context, item))
+            .collect(),
         missing_item_ids: item_iterator
             .missing_ids
             .iter()

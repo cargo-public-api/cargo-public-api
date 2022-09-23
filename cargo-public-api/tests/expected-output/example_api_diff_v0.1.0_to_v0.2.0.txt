@@ -4,8 +4,8 @@ Removed items from the public API
 
 Changed items in the public API
 ===============================
--pub fn example_api::function(v1_param: Struct)
-+pub fn example_api::function(v1_param: Struct, v2_param: usize)
+-pub fn example_api::function(v1_param: example_api::Struct)
++pub fn example_api::function(v1_param: example_api::Struct, v2_param: usize)
 -pub struct example_api::Struct
 +#[non_exhaustive] pub struct example_api::Struct
 

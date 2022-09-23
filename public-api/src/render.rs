@@ -1,6 +1,6 @@
 #![allow(clippy::unused_self)]
 use crate::intermediate_public_item::IntermediatePublicItem;
-use std::rc::Rc;
+use std::{cmp::Ordering, collections::HashMap, rc::Rc};
 
 use rustdoc_types::{
     Abi, Constant, Crate, FnDecl, FunctionPointer, GenericArg, GenericArgs, GenericBound,
@@ -17,8 +17,16 @@ macro_rules! ws {
 
 use crate::tokens::Token;
 
+/// When we render an item, it might contain references to other parts of the
+/// public API. For such cases, the rendering code can use the fields in this
+/// struct.
 pub struct RenderingContext<'a> {
+    /// The original (deserialized) rustdoc JSON.
     pub crate_: &'a Crate,
+
+    /// Given a rustdoc JSON ID, keeps track of what public items that have this
+    /// ID. See [`ItemIterator::id_to_items`] for more info.
+    pub id_to_items: HashMap<&'a Id, Vec<Rc<IntermediatePublicItem<'a>>>>,
 }
 
 impl<'a> RenderingContext<'a> {
@@ -456,7 +464,9 @@ impl<'a> RenderingContext<'a> {
     fn render_resolved_path(&self, path: &Path) -> Vec<Token> {
         let mut output = vec![];
         let name = &path.name;
-        if !name.is_empty() {
+        if let Some(item) = self.best_item_for_id(&path.id) {
+            output.extend(self.render_path(&item.path()));
+        } else if !name.is_empty() {
             output.extend(self.render_path_name(name));
             if let Some(args) = &path.args {
                 output.extend(self.render_generic_args(args));
@@ -807,6 +817,41 @@ impl<'a> RenderingContext<'a> {
             output.push(ws!());
         }
         output
+    }
+
+    fn best_item_for_id(&self, id: &Id) -> Option<Rc<IntermediatePublicItem<'a>>> {
+        match self.id_to_items.get(&id) {
+            None => None,
+            Some(items) if items.is_empty() => None,
+            Some(items) => {
+                let mut candidates = items.clone();
+                candidates.sort_by(|a, b| {
+                    // If there is any item in the path that has been
+                    // renamed/re-exported, i.e. that is not the original path,
+                    // prefer that less than item with a path where all items
+                    // are original.
+                    let mut ordering = match (
+                        a.path_contains_renamed_item(),
+                        b.path_contains_renamed_item(),
+                    ) {
+                        (true, false) => Ordering::Less,
+                        (false, true) => Ordering::Greater,
+                        _ => Ordering::Equal,
+                    };
+
+                    // If we still can't make up our mind, go with the shortest path
+                    if ordering == Ordering::Equal {
+                        ordering = b.path().len().cmp(&a.path().len());
+                    }
+
+                    ordering
+                });
+
+                // Note that we `pop()` here, so in the sorting above we want to
+                // the best element to end up last.
+                candidates.pop()
+            }
+        }
     }
 }
 
@@ -1188,7 +1233,10 @@ mod test {
             external_crates: HashMap::new(),
             format_version: 0,
         };
-        let context = RenderingContext { crate_: &crate_ };
+        let context = RenderingContext {
+            crate_: &crate_,
+            id_to_items: HashMap::new(),
+        };
 
         let actual = render_fn(context);
 

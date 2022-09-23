@@ -1,3 +1,8 @@
+## v0.4.1
+* rename `BuildOptions` to `Builder`, a new insta-deprecated alias `BuildOptions` is available
+* deprecate `build()`, replaced with `Builder::build()`
+* make `BuildOptions`, replaced with `Builder::build()`
+
 ## v0.4.0
 * Support for specifying `--target`, `--features`, and `--package`
 * Make it clearer that `RUSTUP_TOOLCHAIN` and friends has an impact

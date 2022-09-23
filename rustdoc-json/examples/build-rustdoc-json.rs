@@ -3,14 +3,11 @@
 /// cargo run --example build-rustdoc-json path/to/Cargo.toml
 /// ```
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    use rustdoc_json::BuildOptions;
-
     // Build it
-    let json_path = rustdoc_json::build(
-        BuildOptions::default()
-            .toolchain("+nightly".to_owned())
-            .manifest_path(&std::env::args().nth(1).unwrap()),
-    )?;
+    let json_path = rustdoc_json::Builder::default()
+        .toolchain("+nightly".to_owned())
+        .manifest_path(&std::env::args().nth(1).unwrap())
+        .build()?;
     println!("Built and wrote rustdoc JSON to {:?}", &json_path);
 
     // Show it

@@ -468,9 +468,9 @@ impl<'a> RenderingContext<'a> {
             output.extend(self.render_path(&item.path()));
         } else if !name.is_empty() {
             output.extend(self.render_path_name(name));
-            if let Some(args) = &path.args {
-                output.extend(self.render_generic_args(args));
-            }
+        }
+        if let Some(args) = &path.args {
+            output.extend(self.render_generic_args(args));
         }
         output
     }

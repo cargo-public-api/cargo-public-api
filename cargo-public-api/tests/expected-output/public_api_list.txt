@@ -25,7 +25,7 @@ pub fn public_api::Options::clone(&self) -> public_api::Options
 pub fn public_api::Options::default() -> Self
 pub fn public_api::Options::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
 pub fn public_api::PublicApi::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-pub fn public_api::PublicApi::from_rustdoc_json_str(rustdoc_json_str: &str, options: public_api::Options) -> public_api::Result
+pub fn public_api::PublicApi::from_rustdoc_json_str(rustdoc_json_str: &str, options: public_api::Options) -> public_api::Result<public_api::PublicApi>
 pub fn public_api::PublicItem::clone(&self) -> public_api::PublicItem
 pub fn public_api::PublicItem::cmp(&self, other: &Self) -> std::cmp::Ordering
 pub fn public_api::PublicItem::eq(&self, other: &public_api::PublicItem) -> bool
@@ -44,7 +44,7 @@ pub fn public_api::diff::PublicItemsDiff::clone(&self) -> public_api::diff::Publ
 pub fn public_api::diff::PublicItemsDiff::eq(&self, other: &public_api::diff::PublicItemsDiff) -> bool
 pub fn public_api::diff::PublicItemsDiff::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
 pub fn public_api::diff::PublicItemsDiff::is_empty(&self) -> bool
-pub fn public_api::public_api_from_rustdoc_json_str(rustdoc_json_str: &str, options: public_api::Options) -> public_api::Result
+pub fn public_api::public_api_from_rustdoc_json_str(rustdoc_json_str: &str, options: public_api::Options) -> public_api::Result<public_api::PublicApi>
 pub fn public_api::tokens::Token::clone(&self) -> public_api::tokens::Token
 pub fn public_api::tokens::Token::cmp(&self, other: &public_api::tokens::Token) -> $crate::cmp::Ordering
 pub fn public_api::tokens::Token::eq(&self, other: &public_api::tokens::Token) -> bool

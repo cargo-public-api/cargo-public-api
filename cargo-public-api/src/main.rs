@@ -130,6 +130,10 @@ pub struct Args {
     /// Package to document
     #[clap(long, short)]
     package: Option<String>,
+
+    /// Forwarded to rustdoc JSON build command
+    #[clap(long, hide = true)]
+    cap_lints: Option<String>,
 }
 
 /// After listing or diffing, we might want to do some extra work. This struct
@@ -377,6 +381,10 @@ fn collect_public_api_from_commit(
 
     if let Some(package) = &args.package {
         builder = builder.package(package);
+    }
+
+    if let Some(cap_lints) = &args.cap_lints {
+        builder = builder.cap_lints(Some(cap_lints));
     }
 
     let json_path = match builder.build() {

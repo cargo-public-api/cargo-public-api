@@ -46,6 +46,7 @@ fn cargo_rustdoc_command(options: &Builder) -> Command {
         all_features,
         features,
         package,
+        cap_lints,
     } = options;
 
     let mut command =
@@ -83,7 +84,9 @@ fn cargo_rustdoc_command(options: &Builder) -> Command {
     command.arg("--");
     command.args(["-Z", "unstable-options"]);
     command.args(["--output-format", "json"]);
-    command.args(["--cap-lints", "warn"]);
+    if let Some(cap_lints) = cap_lints {
+        command.args(["--cap-lints", cap_lints]);
+    }
     command
 }
 
@@ -140,6 +143,7 @@ impl Default for Builder {
             all_features: false,
             features: vec![],
             package: None,
+            cap_lints: Some(String::from("warn")),
         }
     }
 }
@@ -212,6 +216,13 @@ impl Builder {
     #[must_use]
     pub fn package(mut self, package: impl AsRef<str>) -> Self {
         self.package = Some(package.as_ref().to_owned());
+        self
+    }
+
+    /// What to pass as `--cap-lints` to rustdoc JSON build command
+    #[must_use]
+    pub fn cap_lints(mut self, cap_lints: Option<impl AsRef<str>>) -> Self {
+        self.cap_lints = cap_lints.map(|c| c.as_ref().to_owned());
         self
     }
 

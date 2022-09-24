@@ -72,7 +72,7 @@ RUSTDOC_JSON_OVERRIDDEN_TOOLCHAIN_HACK=${toolchain} cargo run -p cargo-public-ap
       --diff-git-checkouts "v0.1.0" "v0.2.0" > \
       "cargo-public-api/tests/expected-output/example_api_diff_v0.1.0_to_v0.2.0.txt"
 
-echo 'FIXME: Do not hardcode to `--cap-lints warn` in `rustdoc-json` crate'
 RUSTDOC_JSON_OVERRIDDEN_TOOLCHAIN_HACK=${toolchain} cargo run -p cargo-public-api -- \
+      --cap-lints allow \
       --manifest-path "./test-apis/lint_error/Cargo.toml" > \
       "cargo-public-api/tests/expected-output/lint_error_list.txt"

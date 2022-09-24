@@ -65,6 +65,7 @@ pub struct Builder {
     all_features: bool,
     features: Vec<String>,
     package: Option<String>,
+    cap_lints: Option<String>,
 }
 
 /// Generate rustdoc JSON for a library crate. Returns the path to the freshly

@@ -9,6 +9,7 @@ use public_api::MINIMUM_RUSTDOC_JSON_VERSION;
 // rust-analyzer bug: https://github.com/rust-lang/rust-analyzer/issues/9173
 #[path = "../../test-utils/src/lib.rs"]
 mod test_utils;
+use test_utils::assert_or_bless::AssertOrBless;
 use test_utils::rustdoc_json_path_for_crate;
 
 #[test]
@@ -26,9 +27,9 @@ fn print_public_api_with_blanket_implementations() {
     cmd_with_rustdoc_json_args(&["../test-apis/example_api-v0.2.0"], |mut cmd| {
         cmd.arg("--with-blanket-implementations");
         cmd.assert()
-            .stdout(include_str!(
-                "./expected-output/example_api-v0.2.0-with-blanket-implementations.txt"
-            ))
+            .stdout_or_bless(
+                "./tests/expected-output/example_api-v0.2.0-with-blanket-implementations.txt",
+            )
             .stderr("")
             .success();
     });

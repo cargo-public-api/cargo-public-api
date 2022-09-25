@@ -19,6 +19,10 @@ struct ExpectedDiff<'a> {
 
 #[test]
 fn with_blanket_implementations() {
+    if std::env::var("BLESS").is_ok() {
+        return; // To not race with include_str!()
+    }
+
     assert_public_api_with_blanket_implementations(
         &rustdoc_json_str_for_crate("../test-apis/example_api-v0.2.0"),
         include_str!("./expected-output/example_api-v0.2.0-with-blanket-implementations.txt"),

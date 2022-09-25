@@ -3,6 +3,11 @@ name = "test-utils"
 version = "0.1.0"
 edition = "2021"
 
+
+[dependencies]
+assert_cmd = "2.0.4"
+tempfile = "3.3.0"
+
 [dependencies.rustdoc-json]
 path = "../rustdoc-json"
 version = "*"

@@ -20,6 +20,7 @@ use predicates::str::contains;
 // rust-analyzer bug: https://github.com/rust-lang/rust-analyzer/issues/9173
 #[path = "../../test-utils/src/lib.rs"]
 mod test_utils;
+use test_utils::assert_or_bless::AssertOrBless;
 use test_utils::rustdoc_json_path_for_crate;
 
 #[path = "../src/git_utils.rs"] // Say NO to copy-paste!
@@ -31,9 +32,7 @@ mod git_utils;
 fn list_public_items() {
     let mut cmd = TestCmd::new();
     cmd.assert()
-        .stdout(include_str!(
-            "../../public-api/tests/expected-output/example_api-v0.3.0.txt"
-        ))
+        .stdout_or_bless("./tests/expected-output/example_api-v0.3.0.txt")
         .success();
 }
 
@@ -42,7 +41,7 @@ fn list_public_items_with_lint_error() {
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
     cmd.args(["--manifest-path", "../test-apis/lint_error/Cargo.toml"]);
     cmd.assert()
-        .stdout(include_str!("./expected-output/lint_error_list.txt"))
+        .stdout_or_bless("./tests/expected-output/lint_error_list.txt")
         .success();
 }
 
@@ -54,9 +53,7 @@ fn custom_toolchain() {
     cmd.arg("--toolchain");
     cmd.arg("+nightly");
     cmd.assert()
-        .stdout(include_str!(
-            "../../public-api/tests/expected-output/example_api-v0.3.0.txt"
-        ))
+        .stdout_or_bless("./tests/expected-output/example_api-v0.3.0.txt")
         .success();
 }
 
@@ -72,9 +69,7 @@ fn list_public_items_explicit_manifest_path() {
     cmd.arg("--manifest-path");
     cmd.arg(&test_repo_manifest);
     cmd.assert()
-        .stdout(include_str!(
-            "../../public-api/tests/expected-output/example_api-v0.3.0.txt"
-        ))
+        .stdout_or_bless("./tests/expected-output/example_api-v0.3.0.txt")
         .success();
 }
 
@@ -86,7 +81,7 @@ fn list_public_items_via_package_spec() {
     cmd.arg("--package");
     cmd.arg("rustdoc-json");
     cmd.assert()
-        .stdout(include_str!("./expected-output/rustdoc_json_list.txt"))
+        .stdout_or_bless("./tests/expected-output/rustdoc_json_list.txt")
         .success();
 }
 
@@ -111,7 +106,7 @@ fn target_arg() {
     cmd.arg("--target");
     cmd.arg(get_host_target_triple());
     cmd.assert()
-        .stdout(include_str!("./expected-output/test_repo_api_latest.txt"))
+        .stdout_or_bless("./tests/expected-output/test_repo_api_latest.txt")
         .success();
 }
 
@@ -138,9 +133,7 @@ fn diff_public_items() {
     cmd.arg("v0.2.0");
     cmd.arg("v0.3.0");
     cmd.assert()
-        .stdout(include_str!(
-            "./expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt"
-        ))
+        .stdout_or_bless("./tests/expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt")
         .success();
     let branch_after = git_utils::current_branch(&test_repo_path).unwrap().unwrap();
 
@@ -168,9 +161,7 @@ fn diff_public_items_detached_head() {
     cmd.arg("v0.2.0");
     cmd.arg("v0.3.0");
     cmd.assert()
-        .stdout(include_str!(
-            "./expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt"
-        ))
+        .stdout_or_bless("./tests/expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt")
         .success();
 
     let after = git_utils::current_commit(path).unwrap();
@@ -286,9 +277,7 @@ fn deny_added_with_diff() {
     cmd.arg("v0.2.0");
     cmd.arg("--deny=added");
     cmd.assert()
-        .stdout(include_str!(
-            "./expected-output/example_api_diff_v0.1.0_to_v0.2.0.txt"
-        ))
+        .stdout_or_bless("./tests/expected-output/example_api_diff_v0.1.0_to_v0.2.0.txt")
         .failure();
 }
 
@@ -342,9 +331,7 @@ fn diff_public_items_with_manifest_path() {
     cmd.arg("v0.2.0");
     cmd.arg("v0.3.0");
     cmd.assert()
-        .stdout(include_str!(
-            "./expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt"
-        ))
+        .stdout_or_bless("./tests/expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt")
         .success();
 }
 
@@ -372,9 +359,7 @@ fn diff_public_items_with_color() {
     cmd.arg("v0.1.0");
     cmd.arg("v0.2.0");
     cmd.assert()
-        .stdout(include_str!(
-            "./expected-output/example_api_diff_v0.1.0_to_v0.2.0_colored.txt"
-        ))
+        .stdout_or_bless("./tests/expected-output/example_api_diff_v0.1.0_to_v0.2.0_colored.txt")
         .success();
 }
 
@@ -385,9 +370,7 @@ fn list_public_items_with_color() {
     let mut cmd = TestCmd::new();
     cmd.arg("--color=always");
     cmd.assert()
-        .stdout(include_str!(
-            "./expected-output/example_api_v0.3.0_colored.txt"
-        ))
+        .stdout_or_bless("./tests/expected-output/example_api_v0.3.0_colored.txt")
         .success();
 }
 
@@ -400,9 +383,7 @@ fn diff_public_items_from_files() {
     cmd.arg(old);
     cmd.arg(new);
     cmd.assert()
-        .stdout(include_str!(
-            "./expected-output/example_api_diff_v0.1.0_to_v0.2.0.txt"
-        ))
+        .stdout_or_bless("./tests/expected-output/example_api_diff_v0.1.0_to_v0.2.0.txt")
         .success();
 }
 
@@ -539,18 +520,7 @@ fn cargo_public_api_with_features() -> Result<(), Box<dyn std::error::Error>> {
             cmd.args(["--features", feature]);
         }
 
-        if std::env::var("BLESS").is_ok() {
-            let out = cmd.output().unwrap();
-            std::fs::write(expected_file, out.stdout).unwrap();
-        } else {
-            // Make into a string to show diff
-            let expected = String::from_utf8(
-                std::fs::read(&expected_file)
-                    .unwrap_or_else(|_| panic!("couldn't read file: {expected_file:?}")),
-            )
-            .unwrap();
-            cmd.assert().stdout(expected).success();
-        }
+        cmd.assert().stdout_or_bless(expected_file).success();
     }
     Ok(())
 }

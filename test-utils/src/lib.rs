@@ -8,6 +8,8 @@ use std::path::PathBuf;
 mod create_test_git_repo;
 pub use create_test_git_repo::create_test_git_repo;
 
+pub mod assert_or_bless;
+
 /// Helper to get the path to a freshly built rustdoc JSON file for the given
 /// test-crate.
 #[must_use]

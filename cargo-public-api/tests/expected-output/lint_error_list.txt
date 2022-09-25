@@ -1,3 +1,8 @@
+impl RefUnwindSafe for lint_error::MissingDocs
+impl Send for lint_error::MissingDocs
+impl Sync for lint_error::MissingDocs
+impl Unpin for lint_error::MissingDocs
+impl UnwindSafe for lint_error::MissingDocs
 pub mod lint_error
 pub struct lint_error::MissingDocs
 pub use lint_error::example_api

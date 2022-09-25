@@ -54,6 +54,11 @@ Changed:
 +#[non_exhaustive] pub struct example_api::Struct
 
 Added:
++impl RefUnwindSafe for example_api::StructV2
++impl Send for example_api::StructV2
++impl Sync for example_api::StructV2
++impl Unpin for example_api::StructV2
++impl UnwindSafe for example_api::StructV2
 +pub struct example_api::StructV2
 +pub struct field example_api::Struct::v2_field: usize
 +pub struct field example_api::StructV2::field: usize
@@ -77,6 +82,11 @@ fn print_diff_reversed() {
             cmd.assert()
                 .stdout(
                     "Removed:
+-impl RefUnwindSafe for example_api::StructV2
+-impl Send for example_api::StructV2
+-impl Sync for example_api::StructV2
+-impl Unpin for example_api::StructV2
+-impl UnwindSafe for example_api::StructV2
 -pub struct example_api::StructV2
 -pub struct field example_api::Struct::v2_field: usize
 -pub struct field example_api::StructV2::field: usize

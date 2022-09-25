@@ -11,6 +11,11 @@ Changed items in the public API
 
 Added items to the public API
 =============================
++[34mimpl[0m [36mRefUnwindSafe[0m [34mfor[0m [36mexample_api[0m::[32mStructV2[0m
++[34mimpl[0m [36mSend[0m [34mfor[0m [36mexample_api[0m::[32mStructV2[0m
++[34mimpl[0m [36mSync[0m [34mfor[0m [36mexample_api[0m::[32mStructV2[0m
++[34mimpl[0m [36mUnpin[0m [34mfor[0m [36mexample_api[0m::[32mStructV2[0m
++[34mimpl[0m [36mUnwindSafe[0m [34mfor[0m [36mexample_api[0m::[32mStructV2[0m
 +[34mpub[0m [34mstruct[0m [36mexample_api[0m::[32mStructV2[0m
 +[34mpub[0m [34mstruct[0m [34mfield[0m [36mexample_api[0m::[32mStruct[0m::[36mv2_field[0m: [32musize[0m
 +[34mpub[0m [34mstruct[0m [34mfield[0m [36mexample_api[0m::[32mStructV2[0m::[36mfield[0m: [32musize[0m

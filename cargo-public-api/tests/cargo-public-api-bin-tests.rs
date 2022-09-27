@@ -30,9 +30,10 @@ mod git_utils;
 #[test]
 #[cfg_attr(all(target_family = "windows", in_ci), ignore)]
 fn list_public_items() {
-    let mut cmd = TestCmd::new();
+    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    cmd.args(["--manifest-path", "../public-api/Cargo.toml"]);
     cmd.assert()
-        .stdout_or_bless("./tests/expected-output/example_api-v0.3.0.txt")
+        .stdout_or_bless("./tests/expected-output/public_api_list.txt")
         .success();
 }
 

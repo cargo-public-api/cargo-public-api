@@ -9,6 +9,8 @@ mod create_test_git_repo;
 pub use create_test_git_repo::create_test_git_repo;
 
 pub mod assert_or_bless;
+pub use assert_or_bless::assert_eq_or_bless;
+pub use assert_or_bless::write_to_file_atomically;
 
 /// Helper to get the path to a freshly built rustdoc JSON file for the given
 /// test-crate.

@@ -16,7 +16,7 @@ use test_utils::rustdoc_json_path_for_crate;
 fn print_public_api() {
     cmd_with_rustdoc_json_args(&["../test-apis/comprehensive_api"], |mut cmd| {
         cmd.assert()
-            .stdout(include_str!("./expected-output/comprehensive_api.txt"))
+            .stdout_or_bless("./tests/expected-output/comprehensive_api.txt")
             .stderr("")
             .success();
     });
@@ -44,28 +44,7 @@ fn print_diff() {
         ],
         |mut cmd| {
             cmd.assert()
-                .stdout(
-                    "Removed:
-(nothing)
-
-Changed:
--pub fn example_api::function(v1_param: example_api::Struct)
-+pub fn example_api::function(v1_param: example_api::Struct, v2_param: usize)
--pub struct example_api::Struct
-+#[non_exhaustive] pub struct example_api::Struct
-
-Added:
-+impl RefUnwindSafe for example_api::StructV2
-+impl Send for example_api::StructV2
-+impl Sync for example_api::StructV2
-+impl Unpin for example_api::StructV2
-+impl UnwindSafe for example_api::StructV2
-+pub struct example_api::StructV2
-+pub struct field example_api::Struct::v2_field: usize
-+pub struct field example_api::StructV2::field: usize
-
-",
-                )
+                .stdout_or_bless("./tests/expected-output/print_diff.txt")
                 .stderr("")
                 .success();
         },
@@ -81,28 +60,7 @@ fn print_diff_reversed() {
         ],
         |mut cmd| {
             cmd.assert()
-                .stdout(
-                    "Removed:
--impl RefUnwindSafe for example_api::StructV2
--impl Send for example_api::StructV2
--impl Sync for example_api::StructV2
--impl Unpin for example_api::StructV2
--impl UnwindSafe for example_api::StructV2
--pub struct example_api::StructV2
--pub struct field example_api::Struct::v2_field: usize
--pub struct field example_api::StructV2::field: usize
-
-Changed:
--#[non_exhaustive] pub struct example_api::Struct
-+pub struct example_api::Struct
--pub fn example_api::function(v1_param: example_api::Struct, v2_param: usize)
-+pub fn example_api::function(v1_param: example_api::Struct)
-
-Added:
-(nothing)
-
-",
-                )
+                .stdout_or_bless("./tests/expected-output/print_diff_reversed.txt")
                 .stderr("")
                 .success();
         },
@@ -118,18 +76,7 @@ fn print_no_diff() {
         ],
         |mut cmd| {
             cmd.assert()
-                .stdout(
-                    "Removed:
-(nothing)
-
-Changed:
-(nothing)
-
-Added:
-(nothing)
-
-",
-                )
+                .stdout_or_bless("./tests/expected-output/print_no_diff.txt")
                 .stderr("")
                 .success();
         },

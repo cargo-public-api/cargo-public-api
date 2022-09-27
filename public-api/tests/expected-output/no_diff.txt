@@ -1,0 +1,5 @@
+PublicItemsDiff {
+    removed: [],
+    changed: [],
+    added: [],
+}

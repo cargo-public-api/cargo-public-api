@@ -1,3 +1,6 @@
+pub const fn rustdoc_json::BuildOptions::all_features(self, all_features: bool) -> Self
+pub const fn rustdoc_json::BuildOptions::no_default_features(self, no_default_features: bool) -> Self
+pub const fn rustdoc_json::BuildOptions::quiet(self, quiet: bool) -> Self
 pub enum rustdoc_json::BuildError
 pub enum variant rustdoc_json::BuildError::CargoMetadataError(cargo_metadata::Error)
 pub enum variant rustdoc_json::BuildError::CargoTomlError(cargo_toml::Error)
@@ -10,14 +13,11 @@ pub fn rustdoc_json::BuildError::from(source: cargo_metadata::Error) -> Self
 pub fn rustdoc_json::BuildError::from(source: cargo_toml::Error) -> Self
 pub fn rustdoc_json::BuildError::from(source: std::io::Error) -> Self
 pub fn rustdoc_json::BuildError::source(&self) -> std::option::Option<&(dyn std::error::Error + 'static)>
-pub fn rustdoc_json::BuildOptions::all_features(self, all_features: bool) -> Self
 pub fn rustdoc_json::BuildOptions::default() -> Self
 pub fn rustdoc_json::BuildOptions::features<I: IntoIterator<Item = S>, S: AsRef<str>>(self, features: I) -> Self
 pub fn rustdoc_json::BuildOptions::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
 pub fn rustdoc_json::BuildOptions::manifest_path(self, manifest_path: impl AsRef<Path>) -> Self
-pub fn rustdoc_json::BuildOptions::no_default_features(self, no_default_features: bool) -> Self
 pub fn rustdoc_json::BuildOptions::package(self, package: impl AsRef<str>) -> Self
-pub fn rustdoc_json::BuildOptions::quiet(self, quiet: bool) -> Self
 pub fn rustdoc_json::BuildOptions::target(self, target: String) -> Self
 pub fn rustdoc_json::BuildOptions::toolchain(self, toolchain: impl Into<Option<String>>) -> Self
 pub fn rustdoc_json::build(options: BuildOptions) -> Result<PathBuf, BuildError>

@@ -7,7 +7,7 @@ use anyhow::{anyhow, Context, Result};
 
 /// Synchronously do a `git checkout` of `commit`.
 /// Returns the name of the original branch/commit.
-pub(crate) fn git_checkout(commit: &str, git_root: &Path, quiet: bool) -> Result<String> {
+pub fn git_checkout(commit: &str, git_root: &Path, quiet: bool) -> Result<String> {
     let original_branch = current_branch_or_commit(&git_root)?;
 
     let mut command = Command::new("git");
@@ -28,7 +28,7 @@ pub(crate) fn git_checkout(commit: &str, git_root: &Path, quiet: bool) -> Result
 
 /// Goes up the chain of parents and looks for a `.git` dir.
 #[allow(unused)] // It IS used!
-pub(crate) fn git_root_from_manifest_path(manifest_path: &Path) -> Result<PathBuf> {
+pub fn git_root_from_manifest_path(manifest_path: &Path) -> Result<PathBuf> {
     let err_fn = || anyhow!("No `.git` dir when starting from `{:?}`.", &manifest_path);
     let start = std::fs::canonicalize(manifest_path).with_context(err_fn)?;
     let mut candidate_opt = start.parent();
@@ -45,7 +45,7 @@ pub(crate) fn git_root_from_manifest_path(manifest_path: &Path) -> Result<PathBu
     Err(err_fn())
 }
 
-pub(crate) fn current_branch_or_commit(path: impl AsRef<Path>) -> Result<String> {
+pub fn current_branch_or_commit(path: impl AsRef<Path>) -> Result<String> {
     let current_branch = current_branch(&path)?;
     let current_commit = current_commit(&path)?;
     Ok(current_branch.unwrap_or(current_commit))
@@ -53,7 +53,7 @@ pub(crate) fn current_branch_or_commit(path: impl AsRef<Path>) -> Result<String>
 
 /// Returns the name of the current git branch. Or `None` if there is no current
 /// branch.
-pub(crate) fn current_branch(path: impl AsRef<Path>) -> Result<Option<String>> {
+pub fn current_branch(path: impl AsRef<Path>) -> Result<Option<String>> {
     let branch = trimmed_git_stdout(path, &["rev-parse", "--abbrev-ref", "HEAD"])?;
     if &branch == "HEAD" {
         Ok(None)
@@ -62,7 +62,7 @@ pub(crate) fn current_branch(path: impl AsRef<Path>) -> Result<Option<String>> {
     }
 }
 /// Returns the current commit hash.
-pub(crate) fn current_commit(path: impl AsRef<Path>) -> Result<String> {
+pub fn current_commit(path: impl AsRef<Path>) -> Result<String> {
     trimmed_git_stdout(path, &["rev-parse", "--short", "HEAD"])
 }
 

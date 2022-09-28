@@ -25,7 +25,7 @@ pub struct IntermediatePublicItem<'a> {
 
 impl<'a> IntermediatePublicItem<'a> {
     #[must_use]
-    pub fn new(
+    pub const fn new(
         item: &'a Item,
         overridden_name: Option<String>,
         parent: Option<Rc<IntermediatePublicItem<'a>>>,

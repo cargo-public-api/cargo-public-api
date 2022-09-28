@@ -180,13 +180,14 @@ fn main_() -> Result<()> {
 /// See <https://rust-lang.github.io/rustup/overrides.html> for some
 /// more info of how different toolchains can be activated.
 fn active_toolchain_is_probably_stable(toolchain: Option<&str>) -> bool {
-    let mut cmd = if let Some(toolchain) = toolchain {
-        let mut cmd = std::process::Command::new("rustup");
-        cmd.args(["run", toolchain.trim_start_matches('+'), "cargo"]);
-        cmd
-    } else {
-        std::process::Command::new("cargo")
-    };
+    let mut cmd = toolchain.map_or_else(
+        || std::process::Command::new("cargo"),
+        |toolchain| {
+            let mut cmd = std::process::Command::new("rustup");
+            cmd.args(["run", toolchain.trim_start_matches('+'), "cargo"]);
+            cmd
+        },
+    );
     cmd.arg("--version");
 
     let output = match cmd.output() {

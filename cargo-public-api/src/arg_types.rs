@@ -19,16 +19,16 @@ pub enum DenyMethod {
 }
 
 impl DenyMethod {
-    pub(crate) fn deny_added(self) -> bool {
-        std::matches!(self, DenyMethod::All | DenyMethod::Added)
+    pub(crate) const fn deny_added(self) -> bool {
+        std::matches!(self, Self::All | Self::Added)
     }
 
-    pub(crate) fn deny_changed(self) -> bool {
-        std::matches!(self, DenyMethod::All | DenyMethod::Changed)
+    pub(crate) const fn deny_changed(self) -> bool {
+        std::matches!(self, Self::All | Self::Changed)
     }
 
-    pub(crate) fn deny_removed(self) -> bool {
-        std::matches!(self, DenyMethod::All | DenyMethod::Removed)
+    pub(crate) const fn deny_removed(self) -> bool {
+        std::matches!(self, Self::All | Self::Removed)
     }
 }
 
@@ -44,9 +44,9 @@ impl FromStr for Color {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "auto" => Ok(Color::Auto),
-            "never" => Ok(Color::Never),
-            "always" => Ok(Color::Always),
+            "auto" => Ok(Self::Auto),
+            "never" => Ok(Self::Never),
+            "always" => Ok(Self::Always),
             _ => Err(anyhow!("See --help")),
         }
     }
@@ -55,9 +55,9 @@ impl FromStr for Color {
 impl Color {
     pub fn active(&self) -> bool {
         match self {
-            Color::Auto => atty::is(atty::Stream::Stdout), // We should not assume Stdout here, but good enough for now
-            Color::Never => false,
-            Color::Always => true,
+            Self::Auto => atty::is(atty::Stream::Stdout), // We should not assume Stdout here, but good enough for now
+            Self::Never => false,
+            Self::Always => true,
         }
     }
 }

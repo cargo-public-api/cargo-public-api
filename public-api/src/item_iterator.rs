@@ -26,7 +26,7 @@ struct ImplItem<'a> {
 /// Internally we represent that with a `vec!["first", "second", "third"]`. This
 /// is a type alias for that internal representation to make the code easier to
 /// read.
-pub(crate) type PublicItemPath = Vec<String>;
+pub type PublicItemPath = Vec<String>;
 
 /// Iterates over all items in a crate. Iterating over items has the benefit of
 /// behaving properly when:
@@ -267,7 +267,7 @@ fn all_impls(crate_: &Crate) -> impl Iterator<Item = ImplItem> {
     })
 }
 
-fn impl_kind(impl_: &Impl) -> ImplKind {
+const fn impl_kind(impl_: &Impl) -> ImplKind {
     let has_blanket_impl = matches!(impl_.blanket_impl, Some(_));
 
     // See https://github.com/rust-lang/rust/blob/54f20bbb8a7aeab93da17c0019c1aaa10329245a/src/librustdoc/json/conversions.rs#L589-L590
@@ -305,7 +305,7 @@ fn active_impls(all_impls: Vec<ImplItem>, options: Options) -> Impls {
 
 /// Some items contain other items, which is relevant for analysis. Keep track
 /// of such relationships.
-fn items_in_container(item: &Item) -> Option<&Vec<Id>> {
+const fn items_in_container(item: &Item) -> Option<&Vec<Id>> {
     match &item.inner {
         ItemEnum::Module(m) => Some(&m.items),
         ItemEnum::Union(u) => Some(&u.fields),
@@ -393,7 +393,7 @@ impl Display for PublicItem {
     }
 }
 
-pub(crate) fn tokens_to_string(tokens: &[Token]) -> String {
+pub fn tokens_to_string(tokens: &[Token]) -> String {
     tokens.iter().map(Token::text).collect()
 }
 

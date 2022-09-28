@@ -19,8 +19,8 @@ pub struct Violations {
 }
 
 impl Violations {
-    pub fn new() -> Violations {
-        Violations {
+    pub const fn new() -> Self {
+        Self {
             added: Vec::new(),
             changed: Vec::new(),
             removed: Vec::new(),

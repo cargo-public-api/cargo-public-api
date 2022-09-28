@@ -1,5 +1,5 @@
 use super::BuildError;
-use super::BuildOptions;
+use super::Builder;
 
 use std::{
     path::{Path, PathBuf},
@@ -13,7 +13,7 @@ const OVERRIDDEN_TOOLCHAIN: Option<&str> = option_env!("RUSTDOC_JSON_OVERRIDDEN_
 
 /// Run `cargo rustdoc` to produce rustdoc JSON and return the path to the built
 /// file.
-pub fn run_cargo_rustdoc(options: BuildOptions) -> Result<PathBuf, BuildError> {
+pub fn run_cargo_rustdoc(options: Builder) -> Result<PathBuf, BuildError> {
     let mut cmd = cargo_rustdoc_command(&options);
     if cmd.status()?.success() {
         rustdoc_json_path_for_manifest_path(
@@ -36,8 +36,8 @@ pub fn run_cargo_rustdoc(options: BuildOptions) -> Result<PathBuf, BuildError> {
 /// ```bash
 /// cargo +nightly rustdoc --lib --manifest-path Cargo.toml -- -Z unstable-options --output-format json --cap-lints warn
 /// ```
-fn cargo_rustdoc_command(options: &BuildOptions) -> Command {
-    let BuildOptions {
+fn cargo_rustdoc_command(options: &Builder) -> Command {
+    let Builder {
         toolchain: requested_toolchain,
         manifest_path,
         target,
@@ -46,6 +46,7 @@ fn cargo_rustdoc_command(options: &BuildOptions) -> Command {
         all_features,
         features,
         package,
+        cap_lints,
     } = options;
 
     let mut command = OVERRIDDEN_TOOLCHAIN
@@ -85,7 +86,9 @@ fn cargo_rustdoc_command(options: &BuildOptions) -> Command {
     command.arg("--");
     command.args(["-Z", "unstable-options"]);
     command.args(["--output-format", "json"]);
-    command.args(["--cap-lints", "warn"]);
+    if let Some(cap_lints) = cap_lints {
+        command.args(["--cap-lints", cap_lints]);
+    }
     command
 }
 
@@ -131,7 +134,7 @@ fn package_name(manifest_path: impl AsRef<Path>) -> Result<String, BuildError> {
         .name)
 }
 
-impl Default for BuildOptions {
+impl Default for Builder {
     fn default() -> Self {
         Self {
             toolchain: None,
@@ -142,11 +145,12 @@ impl Default for BuildOptions {
             all_features: false,
             features: vec![],
             package: None,
+            cap_lints: Some(String::from("warn")),
         }
     }
 }
 
-impl BuildOptions {
+impl Builder {
     /// Set the toolchain. Default: `None`.
     /// Until rustdoc JSON has stabilized, you will want to set this to
     /// be `"+nightly"` or similar.
@@ -215,6 +219,26 @@ impl BuildOptions {
     pub fn package(mut self, package: impl AsRef<str>) -> Self {
         self.package = Some(package.as_ref().to_owned());
         self
+    }
+
+    /// What to pass as `--cap-lints` to rustdoc JSON build command
+    #[must_use]
+    pub fn cap_lints(mut self, cap_lints: Option<impl AsRef<str>>) -> Self {
+        self.cap_lints = cap_lints.map(|c| c.as_ref().to_owned());
+        self
+    }
+
+    /// Generate rustdoc JSON for a library crate. Returns the path to the freshly
+    /// built rustdoc JSON file.
+    ///
+    /// See [crate] for an example on how to use it.
+    ///
+    /// # Errors
+    ///
+    /// E.g. if building the JSON fails or if the manifest path does not exist or is
+    /// invalid.
+    pub fn build(self) -> Result<PathBuf, BuildError> {
+        run_cargo_rustdoc(self)
     }
 }
 

@@ -20,6 +20,13 @@ This project makes heavy use of CI. To simulate the CI pipeline locally, run
 
 Note that you can run that script from within your IDE (see `.vscode/tasks.json` for an example configuration)
 
+## Blessing new expected output
+
+To make your changes become the expected output, run
+```
+./scripts/bless-expected-output-for-tests.sh
+```
+
 # Constraints
 
 ## Minimum required stable Rust version

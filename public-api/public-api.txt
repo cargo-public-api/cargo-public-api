@@ -1,6 +1,41 @@
 #[non_exhaustive] pub enum public_api::Error
 #[non_exhaustive] pub struct public_api::Options
 #[non_exhaustive] pub struct public_api::PublicApi
+impl !RefUnwindSafe for public_api::Error
+impl !UnwindSafe for public_api::Error
+impl RefUnwindSafe for public_api::Options
+impl RefUnwindSafe for public_api::PublicApi
+impl RefUnwindSafe for public_api::PublicItem
+impl RefUnwindSafe for public_api::diff::ChangedPublicItem
+impl RefUnwindSafe for public_api::diff::PublicItemsDiff
+impl RefUnwindSafe for public_api::tokens::Token
+impl Send for public_api::Error
+impl Send for public_api::Options
+impl Send for public_api::PublicApi
+impl Send for public_api::PublicItem
+impl Send for public_api::diff::ChangedPublicItem
+impl Send for public_api::diff::PublicItemsDiff
+impl Send for public_api::tokens::Token
+impl Sync for public_api::Error
+impl Sync for public_api::Options
+impl Sync for public_api::PublicApi
+impl Sync for public_api::PublicItem
+impl Sync for public_api::diff::ChangedPublicItem
+impl Sync for public_api::diff::PublicItemsDiff
+impl Sync for public_api::tokens::Token
+impl Unpin for public_api::Error
+impl Unpin for public_api::Options
+impl Unpin for public_api::PublicApi
+impl Unpin for public_api::PublicItem
+impl Unpin for public_api::diff::ChangedPublicItem
+impl Unpin for public_api::diff::PublicItemsDiff
+impl Unpin for public_api::tokens::Token
+impl UnwindSafe for public_api::Options
+impl UnwindSafe for public_api::PublicApi
+impl UnwindSafe for public_api::PublicItem
+impl UnwindSafe for public_api::diff::ChangedPublicItem
+impl UnwindSafe for public_api::diff::PublicItemsDiff
+impl UnwindSafe for public_api::tokens::Token
 pub const public_api::MINIMUM_RUSTDOC_JSON_VERSION: &'static str
 pub enum public_api::tokens::Token
 pub enum variant public_api::Error::SerdeJsonError(serde_json::Error)
@@ -21,50 +56,51 @@ pub fn public_api::Error::fmt(&self, __formatter: &mut std::fmt::Formatter<'_>) 
 pub fn public_api::Error::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
 pub fn public_api::Error::from(source: serde_json::Error) -> Self
 pub fn public_api::Error::source(&self) -> std::option::Option<&(dyn std::error::Error + 'static)>
-pub fn public_api::Options::clone(&self) -> Options
+pub fn public_api::Options::clone(&self) -> public_api::Options
 pub fn public_api::Options::default() -> Self
 pub fn public_api::Options::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
 pub fn public_api::PublicApi::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-pub fn public_api::PublicItem::clone(&self) -> PublicItem
+pub fn public_api::PublicApi::from_rustdoc_json_str(rustdoc_json_str: &str, options: public_api::Options) -> public_api::Result<public_api::PublicApi>
+pub fn public_api::PublicItem::clone(&self) -> public_api::PublicItem
 pub fn public_api::PublicItem::cmp(&self, other: &Self) -> std::cmp::Ordering
-pub fn public_api::PublicItem::eq(&self, other: &PublicItem) -> bool
+pub fn public_api::PublicItem::eq(&self, other: &public_api::PublicItem) -> bool
 pub fn public_api::PublicItem::fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
 pub fn public_api::PublicItem::fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
 pub fn public_api::PublicItem::hash<__H: $crate::hash::Hasher>(&self, state: &mut __H) -> ()
 pub fn public_api::PublicItem::partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering>
-pub fn public_api::PublicItem::tokens(&self) -> impl Iterator<Item = &Token>
-pub fn public_api::diff::ChangedPublicItem::clone(&self) -> ChangedPublicItem
-pub fn public_api::diff::ChangedPublicItem::cmp(&self, other: &ChangedPublicItem) -> $crate::cmp::Ordering
-pub fn public_api::diff::ChangedPublicItem::eq(&self, other: &ChangedPublicItem) -> bool
+pub fn public_api::PublicItem::tokens(&self) -> impl Iterator<Item = &public_api::tokens::Token>
+pub fn public_api::diff::ChangedPublicItem::clone(&self) -> public_api::diff::ChangedPublicItem
+pub fn public_api::diff::ChangedPublicItem::cmp(&self, other: &public_api::diff::ChangedPublicItem) -> $crate::cmp::Ordering
+pub fn public_api::diff::ChangedPublicItem::eq(&self, other: &public_api::diff::ChangedPublicItem) -> bool
 pub fn public_api::diff::ChangedPublicItem::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-pub fn public_api::diff::ChangedPublicItem::partial_cmp(&self, other: &ChangedPublicItem) -> $crate::option::Option<$crate::cmp::Ordering>
-pub fn public_api::diff::PublicItemsDiff::between(old_items: Vec<PublicItem>, new_items: Vec<PublicItem>) -> Self
-pub fn public_api::diff::PublicItemsDiff::clone(&self) -> PublicItemsDiff
-pub fn public_api::diff::PublicItemsDiff::eq(&self, other: &PublicItemsDiff) -> bool
+pub fn public_api::diff::ChangedPublicItem::partial_cmp(&self, other: &public_api::diff::ChangedPublicItem) -> $crate::option::Option<$crate::cmp::Ordering>
+pub fn public_api::diff::PublicItemsDiff::between(old_items: Vec<public_api::PublicItem>, new_items: Vec<public_api::PublicItem>) -> Self
+pub fn public_api::diff::PublicItemsDiff::clone(&self) -> public_api::diff::PublicItemsDiff
+pub fn public_api::diff::PublicItemsDiff::eq(&self, other: &public_api::diff::PublicItemsDiff) -> bool
 pub fn public_api::diff::PublicItemsDiff::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
 pub fn public_api::diff::PublicItemsDiff::is_empty(&self) -> bool
-pub fn public_api::public_api_from_rustdoc_json_str(rustdoc_json_str: &str, options: Options) -> Result<PublicApi>
-pub fn public_api::tokens::Token::clone(&self) -> Token
-pub fn public_api::tokens::Token::cmp(&self, other: &Token) -> $crate::cmp::Ordering
-pub fn public_api::tokens::Token::eq(&self, other: &Token) -> bool
+pub fn public_api::public_api_from_rustdoc_json_str(rustdoc_json_str: &str, options: public_api::Options) -> public_api::Result<public_api::PublicApi>
+pub fn public_api::tokens::Token::clone(&self) -> public_api::tokens::Token
+pub fn public_api::tokens::Token::cmp(&self, other: &public_api::tokens::Token) -> $crate::cmp::Ordering
+pub fn public_api::tokens::Token::eq(&self, other: &public_api::tokens::Token) -> bool
 pub fn public_api::tokens::Token::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
 pub fn public_api::tokens::Token::hash<__H: $crate::hash::Hasher>(&self, state: &mut __H) -> ()
 pub fn public_api::tokens::Token::len(&self) -> usize
-pub fn public_api::tokens::Token::partial_cmp(&self, other: &Token) -> $crate::option::Option<$crate::cmp::Ordering>
+pub fn public_api::tokens::Token::partial_cmp(&self, other: &public_api::tokens::Token) -> $crate::option::Option<$crate::cmp::Ordering>
 pub fn public_api::tokens::Token::text(&self) -> &str
 pub mod public_api
 pub mod public_api::diff
 pub mod public_api::tokens
 pub struct field public_api::Options::sorted: bool
 pub struct field public_api::Options::with_blanket_implementations: bool
-pub struct field public_api::PublicApi::items: Vec<PublicItem>
+pub struct field public_api::PublicApi::items: Vec<public_api::PublicItem>
 pub struct field public_api::PublicApi::missing_item_ids: Vec<String>
-pub struct field public_api::diff::ChangedPublicItem::new: PublicItem
-pub struct field public_api::diff::ChangedPublicItem::old: PublicItem
-pub struct field public_api::diff::PublicItemsDiff::added: Vec<PublicItem>
-pub struct field public_api::diff::PublicItemsDiff::changed: Vec<ChangedPublicItem>
-pub struct field public_api::diff::PublicItemsDiff::removed: Vec<PublicItem>
+pub struct field public_api::diff::ChangedPublicItem::new: public_api::PublicItem
+pub struct field public_api::diff::ChangedPublicItem::old: public_api::PublicItem
+pub struct field public_api::diff::PublicItemsDiff::added: Vec<public_api::PublicItem>
+pub struct field public_api::diff::PublicItemsDiff::changed: Vec<public_api::diff::ChangedPublicItem>
+pub struct field public_api::diff::PublicItemsDiff::removed: Vec<public_api::PublicItem>
 pub struct public_api::PublicItem
 pub struct public_api::diff::ChangedPublicItem
 pub struct public_api::diff::PublicItemsDiff
-pub type public_api::Result<T> = std::result::Result<T, Error>
+pub type public_api::Result<T> = std::result::Result<T, public_api::Error>

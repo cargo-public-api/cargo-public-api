@@ -9,13 +9,14 @@ use public_api::MINIMUM_RUSTDOC_JSON_VERSION;
 // rust-analyzer bug: https://github.com/rust-lang/rust-analyzer/issues/9173
 #[path = "../../test-utils/src/lib.rs"]
 mod test_utils;
+use test_utils::assert_or_bless::AssertOrBless;
 use test_utils::rustdoc_json_path_for_crate;
 
 #[test]
 fn print_public_api() {
     cmd_with_rustdoc_json_args(&["../test-apis/comprehensive_api"], |mut cmd| {
         cmd.assert()
-            .stdout(include_str!("./expected-output/comprehensive_api.txt"))
+            .stdout_or_bless("./tests/expected-output/comprehensive_api.txt")
             .stderr("")
             .success();
     });
@@ -26,9 +27,9 @@ fn print_public_api_with_blanket_implementations() {
     cmd_with_rustdoc_json_args(&["../test-apis/example_api-v0.2.0"], |mut cmd| {
         cmd.arg("--with-blanket-implementations");
         cmd.assert()
-            .stdout(include_str!(
-                "./expected-output/example_api-v0.2.0-with-blanket-implementations.txt"
-            ))
+            .stdout_or_bless(
+                "./tests/expected-output/example_api-v0.2.0-with-blanket-implementations.txt",
+            )
             .stderr("")
             .success();
     });
@@ -43,23 +44,7 @@ fn print_diff() {
         ],
         |mut cmd| {
             cmd.assert()
-                .stdout(
-                    "Removed:
-(nothing)
-
-Changed:
--pub fn example_api::function(v1_param: Struct)
-+pub fn example_api::function(v1_param: Struct, v2_param: usize)
--pub struct example_api::Struct
-+#[non_exhaustive] pub struct example_api::Struct
-
-Added:
-+pub struct example_api::StructV2
-+pub struct field example_api::Struct::v2_field: usize
-+pub struct field example_api::StructV2::field: usize
-
-",
-                )
+                .stdout_or_bless("./tests/expected-output/print_diff.txt")
                 .stderr("")
                 .success();
         },
@@ -75,23 +60,7 @@ fn print_diff_reversed() {
         ],
         |mut cmd| {
             cmd.assert()
-                .stdout(
-                    "Removed:
--pub struct example_api::StructV2
--pub struct field example_api::Struct::v2_field: usize
--pub struct field example_api::StructV2::field: usize
-
-Changed:
--#[non_exhaustive] pub struct example_api::Struct
-+pub struct example_api::Struct
--pub fn example_api::function(v1_param: Struct, v2_param: usize)
-+pub fn example_api::function(v1_param: Struct)
-
-Added:
-(nothing)
-
-",
-                )
+                .stdout_or_bless("./tests/expected-output/print_diff_reversed.txt")
                 .stderr("")
                 .success();
         },
@@ -107,18 +76,7 @@ fn print_no_diff() {
         ],
         |mut cmd| {
             cmd.assert()
-                .stdout(
-                    "Removed:
-(nothing)
-
-Changed:
-(nothing)
-
-Added:
-(nothing)
-
-",
-                )
+                .stdout_or_bless("./tests/expected-output/print_no_diff.txt")
                 .stderr("")
                 .success();
         },

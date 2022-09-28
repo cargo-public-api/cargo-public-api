@@ -8,12 +8,10 @@ use anyhow::{anyhow, Context, Result};
 use arg_types::{Color, DenyMethod};
 use plain::Plain;
 use public_api::diff::PublicItemsDiff;
-use public_api::{
-    public_api_from_rustdoc_json_str, Options, PublicApi, PublicItem, MINIMUM_RUSTDOC_JSON_VERSION,
-};
+use public_api::{Options, PublicApi, PublicItem, MINIMUM_RUSTDOC_JSON_VERSION};
 
 use clap::Parser;
-use rustdoc_json::{BuildError, BuildOptions};
+use rustdoc_json::BuildError;
 
 mod arg_types;
 mod error;
@@ -132,6 +130,10 @@ pub struct Args {
     /// Package to document
     #[clap(long, short)]
     package: Option<String>,
+
+    /// Forwarded to rustdoc JSON build command
+    #[clap(long, hide = true)]
+    cap_lints: Option<String>,
 }
 
 /// After listing or diffing, we might want to do some extra work. This struct
@@ -342,7 +344,7 @@ fn get_args() -> Args {
 }
 
 /// Figure out what [`Options`] to pass to
-/// [`public_api::public_api_from_rustdoc_json_str`] based on our
+/// [`public_api::PublicApi::from_rustdoc_json_str`] based on our
 /// [`Args`]
 fn get_options(args: &Args) -> Options {
     let mut options = Options::default();
@@ -368,21 +370,25 @@ fn collect_public_api_from_commit(
     } else {
         None
     };
-    let mut build_options = BuildOptions::default()
+    let mut builder = rustdoc_json::Builder::default()
         .toolchain(args.toolchain.clone())
         .manifest_path(&args.manifest_path)
         .all_features(args.all_features)
         .no_default_features(args.no_default_features)
         .features(&args.features);
     if let Some(target) = &args.target {
-        build_options = build_options.target(target.clone());
+        builder = builder.target(target.clone());
     }
 
     if let Some(package) = &args.package {
-        build_options = build_options.package(package);
+        builder = builder.package(package);
     }
 
-    let json_path = match rustdoc_json::build(build_options) {
+    if let Some(cap_lints) = &args.cap_lints {
+        builder = builder.cap_lints(Some(cap_lints));
+    }
+
+    let json_path = match builder.build() {
         Err(BuildError::VirtualManifest(manifest_path)) => virtual_manifest_error(&manifest_path)?,
         res => res?,
     };
@@ -404,7 +410,7 @@ fn public_api_from_rustdoc_json_path<T: AsRef<Path>>(
     let rustdoc_json = &std::fs::read_to_string(&json_path)
         .with_context(|| format!("Failed to read rustdoc JSON at {:?}", json_path.as_ref()))?;
 
-    public_api_from_rustdoc_json_str(rustdoc_json, options).with_context(|| {
+    PublicApi::from_rustdoc_json_str(rustdoc_json, options).with_context(|| {
         format!(
             "Failed to parse rustdoc JSON at {:?}.\n\
             This version of `cargo public-api` requires at least:\n\n    {}\n\n\

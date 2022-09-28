@@ -95,6 +95,7 @@ dependencies = [
  "diff",
  "nu-ansi-term",
  "predicates",
+ "pretty_assertions",
  "public-api",
  "rustdoc-json",
  "tempfile",
@@ -420,6 +421,7 @@ dependencies = [
 name = "public-api"
 version = "0.19.0"
 dependencies = [
+ "anyhow",
  "assert_cmd",
  "hashbag",
  "itertools",
@@ -428,6 +430,7 @@ dependencies = [
  "rustdoc-types",
  "serde",
  "serde_json",
+ "tempfile",
  "thiserror",
 ]
 
@@ -595,7 +598,11 @@ checksum = "507e9898683b6c43a9aa55b64259b721b52ba226e0f3779137e50ad114a4c90b"
 name = "test-utils"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
+ "assert_cmd",
+ "pretty_assertions",
  "rustdoc-json",
+ "tempfile",
 ]
 
 [[package]]

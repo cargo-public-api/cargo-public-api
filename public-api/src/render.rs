@@ -1,11 +1,11 @@
 #![allow(clippy::unused_self)]
 use crate::intermediate_public_item::IntermediatePublicItem;
-use std::rc::Rc;
+use std::{cmp::Ordering, collections::HashMap, rc::Rc};
 
 use rustdoc_types::{
     Abi, Constant, Crate, FnDecl, FunctionPointer, GenericArg, GenericArgs, GenericBound,
-    GenericParamDef, GenericParamDefKind, Generics, Header, Id, Item, ItemEnum, MacroKind, Path,
-    PolyTrait, StructKind, Term, Type, TypeBinding, TypeBindingKind, Variant, WherePredicate,
+    GenericParamDef, GenericParamDefKind, Generics, Header, Id, Impl, Item, ItemEnum, MacroKind,
+    Path, PolyTrait, StructKind, Term, Type, TypeBinding, TypeBindingKind, Variant, WherePredicate,
 };
 
 /// A simple macro to write `Token::Whitespace` in less characters.
@@ -17,8 +17,16 @@ macro_rules! ws {
 
 use crate::tokens::Token;
 
+/// When we render an item, it might contain references to other parts of the
+/// public API. For such cases, the rendering code can use the fields in this
+/// struct.
 pub struct RenderingContext<'a> {
+    /// The original (deserialized) rustdoc JSON.
     pub crate_: &'a Crate,
+
+    /// Given a rustdoc JSON ID, keeps track of what public items that have this
+    /// ID. See [`crate::item_iterator::ItemIterator::id_to_items`] for more info.
+    pub id_to_items: HashMap<&'a Id, Vec<Rc<IntermediatePublicItem<'a>>>>,
 }
 
 impl<'a> RenderingContext<'a> {
@@ -100,7 +108,7 @@ impl<'a> RenderingContext<'a> {
                 output
             }
             ItemEnum::TraitAlias(_) => self.render_simple(&["trait", "alias"], &item.path()),
-            ItemEnum::Impl(_) => self.render_simple(&["impl"], &item.path()),
+            ItemEnum::Impl(impl_) => self.render_impl(impl_),
             ItemEnum::Typedef(inner) => {
                 let mut output = self.render_simple(&["type"], &item.path());
                 output.extend(self.render_generics(&inner.generics));
@@ -228,7 +236,7 @@ impl<'a> RenderingContext<'a> {
             } else {
                 Token::identifier
             };
-            output.push(token_fn(item.name.clone()));
+            output.push(token_fn(item.name()));
             output.push(Token::symbol("::"));
         }
         if !path.is_empty() {
@@ -456,25 +464,33 @@ impl<'a> RenderingContext<'a> {
     fn render_resolved_path(&self, path: &Path) -> Vec<Token> {
         let mut output = vec![];
         let name = &path.name;
-        if !name.is_empty() {
-            let split: Vec<_> = name.split("::").collect();
-            let len = split.len();
-            for (index, part) in split.into_iter().enumerate() {
-                if index == 0 && part == "$crate" {
-                    output.push(Token::identifier("$crate"));
-                } else if index == len - 1 {
-                    output.push(Token::type_(part));
-                } else {
-                    output.push(Token::identifier(part));
-                }
-                output.push(Token::symbol("::"));
+        if let Some(item) = self.best_item_for_id(&path.id) {
+            output.extend(self.render_path(&item.path()));
+        } else if !name.is_empty() {
+            output.extend(self.render_path_name(name));
+        }
+        if let Some(args) = &path.args {
+            output.extend(self.render_generic_args(args));
+        }
+        output
+    }
+
+    fn render_path_name(&self, name: &str) -> Vec<Token> {
+        let mut output = vec![];
+        let split: Vec<_> = name.split("::").collect();
+        let len = split.len();
+        for (index, part) in split.into_iter().enumerate() {
+            if index == 0 && part == "$crate" {
+                output.push(Token::identifier("$crate"));
+            } else if index == len - 1 {
+                output.push(Token::type_(part));
+            } else {
+                output.push(Token::identifier(part));
             }
-            if len > 0 {
-                output.pop();
-            }
-            if let Some(args) = &path.args {
-                output.extend(self.render_generic_args(args));
-            }
+            output.push(Token::symbol("::"));
+        }
+        if len > 0 {
+            output.pop();
         }
         output
     }
@@ -527,6 +543,48 @@ impl<'a> RenderingContext<'a> {
             Token::primitive(len),
             Token::symbol("]"),
         ]);
+        output
+    }
+
+    fn render_impl(&self, impl_: &Impl) -> Vec<Token> {
+        let mut output = vec![];
+
+        if impl_.is_unsafe {
+            output.extend(vec![Token::keyword("unsafe"), ws!()]);
+        }
+
+        output.push(Token::keyword("impl"));
+
+        output.extend(self.render_generic_param_defs(&impl_.generics.params));
+
+        output.push(ws!());
+
+        if let Some(trait_) = &impl_.trait_ {
+            if impl_.negative {
+                output.push(Token::symbol("!"));
+            }
+            output.push(Token::identifier(&trait_.name));
+            if let Some(args) = &trait_.args {
+                output.extend(self.render_generic_args(args));
+            }
+            output.extend(vec![ws!(), Token::keyword("for"), ws!()]);
+            output.extend(self.render_type(&impl_.for_));
+        } else {
+            output.extend(self.render_type(&impl_.for_));
+        }
+
+        output.extend(self.render_where_predicates(&impl_.generics.where_predicates));
+
+        if !impl_.items.is_empty() {
+            output.extend(vec![
+                ws!(),
+                Token::symbol("{"),
+                ws!(),
+                Token::symbol("..."),
+                ws!(),
+                Token::symbol("}"),
+            ]);
+        }
         output
     }
 
@@ -666,14 +724,19 @@ impl<'a> RenderingContext<'a> {
     }
 
     fn render_constant(&self, constant: &Constant) -> Vec<Token> {
-        let mut output = self.render_type(&constant.type_);
-        if let Some(value) = &constant.value {
-            output.extend(equals());
-            if constant.is_literal {
-                output.push(Token::primitive(value));
-            } else {
-                output.push(Token::identifier(value));
+        let mut output = vec![];
+        if constant.is_literal {
+            output.extend(self.render_type(&constant.type_));
+            if let Some(value) = &constant.value {
+                output.extend(equals());
+                if constant.is_literal {
+                    output.push(Token::primitive(value));
+                } else {
+                    output.push(Token::identifier(value));
+                }
             }
+        } else {
+            output.push(Token::identifier(&constant.expr));
         }
         output
     }
@@ -801,6 +864,38 @@ impl<'a> RenderingContext<'a> {
             output.push(ws!());
         }
         output
+    }
+
+    fn best_item_for_id(&self, id: &Id) -> Option<Rc<IntermediatePublicItem<'a>>> {
+        match self.id_to_items.get(&id) {
+            None => None,
+            Some(items) => {
+                items
+                    .iter()
+                    .max_by(|a, b| {
+                        // If there is any item in the path that has been
+                        // renamed/re-exported, i.e. that is not the original
+                        // path, prefer that less than an item with a path where
+                        // all items are original.
+                        let mut ordering = match (
+                            a.path_contains_renamed_item(),
+                            b.path_contains_renamed_item(),
+                        ) {
+                            (true, false) => Ordering::Less,
+                            (false, true) => Ordering::Greater,
+                            _ => Ordering::Equal,
+                        };
+
+                        // If we still can't make up our mind, go with the shortest path
+                        if ordering == Ordering::Equal {
+                            ordering = b.path().len().cmp(&a.path().len());
+                        }
+
+                        ordering
+                    })
+                    .cloned()
+            }
+        }
     }
 }
 
@@ -1182,7 +1277,10 @@ mod test {
             external_crates: HashMap::new(),
             format_version: 0,
         };
-        let context = RenderingContext { crate_: &crate_ };
+        let context = RenderingContext {
+            crate_: &crate_,
+            id_to_items: HashMap::new(),
+        };
 
         let actual = render_fn(context);
 

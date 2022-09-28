@@ -1,16 +1,13 @@
-Removed items from the public API
-=================================
-(none)
+Removed:
+(nothing)
 
-Changed items in the public API
-===============================
+Changed:
 -pub fn example_api::function(v1_param: example_api::Struct)
 +pub fn example_api::function(v1_param: example_api::Struct, v2_param: usize)
 -pub struct example_api::Struct
 +#[non_exhaustive] pub struct example_api::Struct
 
-Added items to the public API
-=============================
+Added:
 +impl RefUnwindSafe for example_api::StructV2
 +impl Send for example_api::StructV2
 +impl Sync for example_api::StructV2

@@ -4,7 +4,7 @@ use public_api::{Options, PublicApi};
 
 fn main() -> Result<(), Box<dyn Error>> {
     let json_path = rustdoc_json::Builder::default()
-        .toolchain(String::from("+nightly"))
+        .toolchain(String::from("nightly"))
         .manifest_path("test-apis/example_api-v0.2.0/Cargo.toml")
         .build()?;
 

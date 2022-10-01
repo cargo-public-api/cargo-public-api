@@ -5,7 +5,7 @@
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Build it
     let json_path = rustdoc_json::Builder::default()
-        .toolchain("+nightly".to_owned())
+        .toolchain("nightly".to_owned())
         .manifest_path(&std::env::args().nth(1).unwrap())
         .build()?;
     println!("Built and wrote rustdoc JSON to {:?}", &json_path);

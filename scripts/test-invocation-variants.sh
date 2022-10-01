@@ -124,7 +124,7 @@ assert_progress_and_output \
 # test uses a too old nightly toolchain, which should make the tool fail if it's used.
 # Test against comprehensive_api, because we want any rustdoc JSON format
 # incompatibilities to be detected
-cmd="cargo public-api --toolchain +${unusable_toolchain} --manifest-path test-apis/comprehensive_api/Cargo.toml"
+cmd="cargo public-api --toolchain ${unusable_toolchain} --manifest-path test-apis/comprehensive_api/Cargo.toml"
 echo -n "${cmd} ... "
 if ${cmd} >/dev/null 2>/dev/null; then
     echo "FAIL: Using '${unusable_toolchain}' to build rustdoc JSON should have failed!"

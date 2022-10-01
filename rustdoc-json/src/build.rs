@@ -9,7 +9,7 @@ use std::{
 /// For development purposes only. Sometimes when you work on this project you
 /// want to quickly use a different toolchain to build rustdoc JSON. You can
 /// specify what toolchain, by temporarily changing this.
-const OVERRIDDEN_TOOLCHAIN: Option<&str> = option_env!("RUSTDOC_JSON_OVERRIDDEN_TOOLCHAIN_HACK"); // Some("+nightly-2022-07-16");
+const OVERRIDDEN_TOOLCHAIN: Option<&str> = option_env!("RUSTDOC_JSON_OVERRIDDEN_TOOLCHAIN_HACK"); // Some("nightly-2022-07-16");
 
 /// Run `cargo rustdoc` to produce rustdoc JSON and return the path to the built
 /// file.
@@ -55,7 +55,7 @@ fn cargo_rustdoc_command(options: &Builder) -> Command {
             || Command::new("cargo"),
             |toolchain| {
                 let mut cmd = Command::new("rustup");
-                cmd.args(["run", toolchain.trim_start_matches('+'), "cargo"]);
+                cmd.args(["run", toolchain, "cargo"]);
                 cmd
             },
         );
@@ -153,7 +153,7 @@ impl Default for Builder {
 impl Builder {
     /// Set the toolchain. Default: `None`.
     /// Until rustdoc JSON has stabilized, you will want to set this to
-    /// be `"+nightly"` or similar.
+    /// be `"nightly"` or similar.
     ///
     /// If the toolchain is set as `None`, the current active toolchain will be used.
     ///

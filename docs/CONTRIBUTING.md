@@ -73,7 +73,7 @@ cargo +custom public-api
 
 Another option is the `RUSTDOC_JSON_OVERRIDDEN_TOOLCHAIN_HACK` env var. Use it like this:
 ```
-RUSTDOC_JSON_OVERRIDDEN_TOOLCHAIN_HACK=+custom ./scripts/run-ci-locally.sh
+RUSTDOC_JSON_OVERRIDDEN_TOOLCHAIN_HACK=custom ./scripts/run-ci-locally.sh
 ```
 
 # Automated tests

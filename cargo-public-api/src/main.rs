@@ -102,13 +102,13 @@ pub struct Args {
     #[clap(long, hide = true)]
     verbose: bool,
 
-    /// Allows you to build rustdoc JSON with a toolchain other than `+nightly`.
+    /// Allows you to build rustdoc JSON with a toolchain other than `nightly`.
     ///
     /// Consider using `cargo +toolchain public-api` instead.
     ///
     /// Useful if you have built a toolchain from source for example, or if you
     /// want to use a fixed toolchain in CI.
-    #[clap(long, validator = |s: &str| if s.starts_with('+') { Ok(()) } else { Err("toolchain must start with a `+`")} )]
+    #[clap(long, validator = |s: &str| if !s.starts_with('+') { Ok(()) } else { Err("toolchain must not start with a `+`")} )]
     toolchain: Option<String>,
 
     /// Build for the target triple
@@ -160,7 +160,7 @@ fn main_() -> Result<()> {
         {
             eprintln!("Warning: using the `{toolchain}` toolchain for gathering the public api is not possible, switching to `nightly`");
         }
-        args.toolchain = Some("+nightly".to_owned());
+        args.toolchain = Some("nightly".to_owned());
     }
 
     let post_processing = if let Some(commits) = &args.diff_git_checkouts {
@@ -184,7 +184,7 @@ fn active_toolchain_is_probably_stable(toolchain: Option<&str>) -> bool {
         || std::process::Command::new("cargo"),
         |toolchain| {
             let mut cmd = std::process::Command::new("rustup");
-            cmd.args(["run", toolchain.trim_start_matches('+'), "cargo"]);
+            cmd.args(["run", toolchain, "cargo"]);
             cmd
         },
     );

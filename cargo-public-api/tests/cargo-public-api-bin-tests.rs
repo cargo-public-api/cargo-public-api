@@ -52,7 +52,7 @@ fn list_public_items_with_lint_error() {
 fn custom_toolchain() {
     let mut cmd = TestCmd::new();
     cmd.arg("--toolchain");
-    cmd.arg("+nightly");
+    cmd.arg("nightly");
     cmd.assert()
         .stdout_or_bless("./tests/expected-output/example_api-v0.3.0.txt")
         .success();

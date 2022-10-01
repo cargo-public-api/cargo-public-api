@@ -2,11 +2,18 @@
 changelog:
   exclude:
     labels:
-      - exclude-from-release-notes
+      - category-exclude
   categories:
     - title: New Features
       labels:
-        - enhancement
-    - title: Bugfixes and Other Changes
+        - category-enhancement
+        - enhancement # Legacy name
+    - title: Bugfixes
+      labels:
+        - category-bugfix
+    - title: \`public_api\` library
+      labels:
+        - category-public_api
+    - title: Other Changes
       labels:
         - "*"

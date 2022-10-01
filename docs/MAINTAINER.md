@@ -48,8 +48,10 @@ For `public-api` and `cargo-public-api` (which always have the same version numb
 
 1. Preview what the auto-generated release-notes will look like by triggering [this](https://github.com/Enselic/cargo-public-api/actions/workflows/Peek-release-notes.yml)
 1. For each PR included in the release:
-    1. Label with `[exclude-from-release-notes]` if it shall not be mentioned in the release notes.
-    1. Label with `[enhancement]` if it shall be in the "New Features" section in the auto-generated release notes.
+    1. Label with `[category-exclude]` if it shall not be mentioned in the release notes.
+    1. Label with `[category-enhancement]` if it shall be in the "New Features" section in the auto-generated release notes.
+    1. Label with `[category-bugfix]` if it shall be in the "Bugfixes" section in the auto-generated release notes.
+    1. Label with `[category-public_api]` if it shall be in the "`public_api` library" section in the auto-generated release notes.
     1. Tweak the PR title if necessary so it makes up a good release notes entry
 1. Wait for CR of the PR created in step 2.
 1. Once reviewed and merged, run https://github.com/Enselic/cargo-public-api/actions/workflows/Release.yml workflow from `main` ([instructions](https://github.com/Enselic/cargo-public-api/blob/main/docs/development.md#how-to-trigger-main-branch-workflow))

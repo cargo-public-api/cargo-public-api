@@ -15,7 +15,7 @@ jobs:
         --url https://api.github.com/repos/${{ github.repository }}/releases/generate-notes \
         --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
         --header 'content-type: application/json' \
-        --data '{
-          "tag_name":"main",
-          "target_commitish":"main"
-          }' | jq --raw-output .body | sed s/\\n/\n/g
+        --data "{
+          \"tag_name\":\"${GITHUB_REF_NAME}\",
+          \"target_commitish\":\"${GITHUB_REF_NAME}\"
+          }" | jq --raw-output .body | sed s/\\n/\n/g

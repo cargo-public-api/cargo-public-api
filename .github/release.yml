@@ -11,7 +11,7 @@ changelog:
     - title: Bugfixes
       labels:
         - category-bugfix
-    - title: \`public_api\` library
+    - title: public_api library
       labels:
         - category-public_api
     - title: Other Changes

@@ -202,8 +202,8 @@ fn cmd_with_rustdoc_json_args(crates: &[&str], final_steps: impl FnOnce(Command)
     let mut temp_dirs = vec![];
 
     for crate_ in crates {
-        // Put output in a temp dir so that concurrently running tests do not
-        // concurrently write and read the same JSON, which causes tests to fail
+        // Put output in a temp dir to ensure concurrently running tests do not
+        // write and read the same JSON simultaneously, which causes tests to fail
         // sporadically.
         let temp_dir = TempDir::new().unwrap();
 

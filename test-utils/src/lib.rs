@@ -16,13 +16,12 @@ pub use assert_or_bless::write_to_file_atomically;
 /// test-crate.
 #[must_use]
 pub fn rustdoc_json_path_for_crate(test_crate: &str) -> PathBuf {
-    // The test framework is unable to capture output from child processes (see
-    // https://users.rust-lang.org/t/cargo-doesnt-capture-stderr-in-tests/67045/4),
-    // so build quietly to make running tests much less noisy
-
     rustdoc_json::Builder::default()
         .toolchain("nightly".to_owned())
         .manifest_path(&format!("{}/Cargo.toml", test_crate))
+        // The test framework is unable to capture output from child processes (see
+        // https://users.rust-lang.org/t/cargo-doesnt-capture-stderr-in-tests/67045/4),
+        // so build quietly to make running tests much less noisy
         .quiet(true)
         .build()
         .unwrap()

@@ -58,7 +58,8 @@ pub enum BuildError {
 #[derive(Debug)]
 pub struct Builder {
     toolchain: Option<String>,
-    manifest_path: std::path::PathBuf,
+    manifest_path: PathBuf,
+    target_dir: Option<PathBuf>,
     target: Option<String>,
     quiet: bool,
     no_default_features: bool,

@@ -215,13 +215,12 @@ fn cmd_with_rustdoc_json_args(crates: &[&str], final_steps: impl FnOnce(Command)
         // We need one dir per crate, because in the case of example_api-v0.1.0 and
         // example_api-v0.2.0 for example, the same JSON file name example_api.json
         // is used, so using the same dir for all would cause JSON files to be
-        // overwitten.
+        // overwritten.
         temp_dirs.push(temp_dir);
     }
 
     final_steps(cmd);
 
     // Here temp_dirs are dropped/removed. To prevent that for debugging
-    // purposes, wrap `TempDir::new().unwrap()` in
-    // `std::mem::ManuallyDrop::new()`, but never drop.
+    // purposes, use `TempDir::into_path()`.
 }

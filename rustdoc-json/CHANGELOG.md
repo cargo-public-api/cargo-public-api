@@ -1,3 +1,6 @@
+## v0.4.2
+* Add `Builder::target_dir()`
+
 ## v0.4.1
 * rename `BuildOptions` to `Builder`, a new insta-deprecated alias `BuildOptions` is available
 * deprecate `build()`, replaced with `Builder::build()`

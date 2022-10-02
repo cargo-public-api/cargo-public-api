@@ -19,6 +19,7 @@ pub fn run_cargo_rustdoc(options: Builder) -> Result<PathBuf, BuildError> {
         rustdoc_json_path_for_manifest_path(
             options.manifest_path,
             options.package.as_deref(),
+            options.target_dir.as_deref(),
             options.target.as_deref(),
         )
     } else {
@@ -40,6 +41,7 @@ fn cargo_rustdoc_command(options: &Builder) -> Command {
     let Builder {
         toolchain: requested_toolchain,
         manifest_path,
+        target_dir,
         target,
         quiet,
         no_default_features,
@@ -62,6 +64,10 @@ fn cargo_rustdoc_command(options: &Builder) -> Command {
 
     command.arg("rustdoc");
     command.arg("--lib");
+    if let Some(target_dir) = target_dir {
+        command.arg("--target-dir");
+        command.arg(target_dir);
+    }
     if *quiet {
         command.arg("--quiet");
     }
@@ -97,9 +103,13 @@ fn cargo_rustdoc_command(options: &Builder) -> Command {
 fn rustdoc_json_path_for_manifest_path(
     manifest_path: impl AsRef<Path>,
     package: Option<&str>,
+    target_dir: Option<&Path>,
     target: Option<&str>,
 ) -> Result<PathBuf, BuildError> {
-    let target_dir = target_directory(&manifest_path)?;
+    let target_dir = match target_dir {
+        Some(target_dir) => target_dir.to_owned(),
+        None => target_directory(&manifest_path)?,
+    };
     let lib_name = package
         .map(ToOwned::to_owned)
         .map_or_else(|| package_name(&manifest_path), Ok)?;
@@ -139,6 +149,7 @@ impl Default for Builder {
         Self {
             toolchain: None,
             manifest_path: PathBuf::from("Cargo.toml"),
+            target_dir: None,
             target: None,
             quiet: false,
             no_default_features: false,
@@ -173,6 +184,15 @@ impl Builder {
     #[must_use]
     pub fn manifest_path(mut self, manifest_path: impl AsRef<Path>) -> Self {
         self.manifest_path = manifest_path.as_ref().to_owned();
+        self
+    }
+
+    /// Set what `--target-dir` to pass to `cargo`. Typically only needed if you
+    /// want to be able to build rustdoc JSON for the same crate concurerntly,
+    /// for example to paralellize regression tests.
+    #[must_use]
+    pub fn target_dir(mut self, target_dir: impl AsRef<Path>) -> Self {
+        self.target_dir = Some(target_dir.as_ref().to_owned());
         self
     }
 

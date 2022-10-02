@@ -9,8 +9,10 @@ use public_api::MINIMUM_RUSTDOC_JSON_VERSION;
 // rust-analyzer bug: https://github.com/rust-lang/rust-analyzer/issues/9173
 #[path = "../../test-utils/src/lib.rs"]
 mod test_utils;
+use tempfile::TempDir;
 use test_utils::assert_or_bless::AssertOrBless;
 use test_utils::rustdoc_json_path_for_crate;
+use test_utils::rustdoc_json_path_for_crate_with_target_dir;
 
 #[test]
 fn print_public_api() {
@@ -197,9 +199,29 @@ To include blanket implementations, pass --with-blanket-implementations.
 fn cmd_with_rustdoc_json_args(crates: &[&str], final_steps: impl FnOnce(Command)) {
     let mut cmd = Command::cargo_bin("public-api").unwrap();
 
+    let mut temp_dirs = vec![];
+
     for crate_ in crates {
-        cmd.arg(rustdoc_json_path_for_crate(crate_));
+        // Put output in a temp dir so that concurrently running tests do not
+        // concurrently write and read the same JSON, which causes tests to fail
+        // sporadically.
+        let temp_dir = TempDir::new().unwrap();
+
+        cmd.arg(rustdoc_json_path_for_crate_with_target_dir(
+            crate_,
+            temp_dir.path(),
+        ));
+
+        // We need one dir per crate, because in the case of example_api-v0.1.0 and
+        // example_api-v0.2.0 for example, the same JSON file name example_api.json
+        // is used, so using the same dir for all would cause JSON files to be
+        // overwitten.
+        temp_dirs.push(temp_dir);
     }
 
     final_steps(cmd);
+
+    // Here temp_dirs are dropped/removed. To prevent that for debugging
+    // purposes, wrap `TempDir::new().unwrap()` in
+    // `std::mem::ManuallyDrop::new()`, but never drop.
 }

@@ -188,7 +188,7 @@ impl Builder {
     }
 
     /// Set what `--target-dir` to pass to `cargo`. Typically only needed if you
-    /// want to be able to build rustdoc JSON for the same crate concurerntly,
+    /// want to be able to build rustdoc JSON for the same crate concurrently,
     /// for example to parallelize regression tests.
     #[must_use]
     pub fn target_dir(mut self, target_dir: impl AsRef<Path>) -> Self {

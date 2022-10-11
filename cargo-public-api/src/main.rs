@@ -257,15 +257,15 @@ fn check_diff(args: &Args, diff: &Option<PublicItemsDiff>) -> Result<()> {
 }
 
 fn print_public_items_of_current_commit(args: &Args) -> Result<PostProcessing> {
-    let (public_items, branch_to_restore) = collect_public_api_from_commit(args, None)?;
+    let (public_api, branch_to_restore) = collect_public_api_from_commit(args, None)?;
 
     if args.verbose {
-        public_items.missing_item_ids.iter().for_each(|i| {
+        public_api.missing_item_ids.iter().for_each(|i| {
             println!("NOTE: rustdoc JSON missing referenced item with ID \"{i}\"");
         });
     }
 
-    Plain::print_items(&mut stdout(), args, public_items.items)?;
+    Plain::print_items(&mut stdout(), args, public_api.items)?;
 
     Ok(PostProcessing {
         diff_to_check: None,

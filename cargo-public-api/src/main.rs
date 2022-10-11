@@ -73,7 +73,7 @@ pub struct Args {
     /// Usage: --diff-rustdoc-json <RUSTDOC_JSON_PATH_1> <RUSTDOC_JSON_PATH_2>
     ///
     /// Diff the public API across two different rustdoc JSON files.
-    #[clap(long, min_values = 2, max_values = 2, hide = true)]
+    #[clap(long, min_values = 2, max_values = 2)]
     diff_rustdoc_json: Option<Vec<String>>,
 
     /// Exit with failure if the specified API diff is detected.

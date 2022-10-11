@@ -8,10 +8,10 @@ use crate::Args;
 pub struct Plain;
 
 impl Plain {
-    pub fn print_items(w: &mut dyn Write, args: &Args, items: Vec<PublicItem>) -> Result<()> {
+    pub fn print_items(w: &mut dyn Write, args: &Args, items: &[PublicItem]) -> Result<()> {
         for item in items {
             if args.color.active() {
-                writeln!(w, "{}", color_item(&item))?;
+                writeln!(w, "{}", color_item(item))?;
             } else {
                 writeln!(w, "{}", item)?;
             }

@@ -259,12 +259,6 @@ fn check_diff(args: &Args, diff: &Option<PublicItemsDiff>) -> Result<()> {
 fn print_public_items_of_current_commit(args: &Args) -> Result<PostProcessing> {
     let (public_api, branch_to_restore) = collect_public_api_from_commit(args, None)?;
 
-    if args.verbose {
-        public_api.missing_item_ids.iter().for_each(|i| {
-            println!("NOTE: rustdoc JSON missing referenced item with ID \"{i}\"");
-        });
-    }
-
     Plain::print_items(&mut stdout(), args, public_api.items)?;
 
     Ok(PostProcessing {
@@ -292,13 +286,11 @@ fn print_diff_between_two_rustdoc_json_files(
     args: &Args,
     files: &[String],
 ) -> Result<PostProcessing> {
-    let options = get_options(args);
-
     let old_file = files.get(0).expect("clap makes sure first file exists");
-    let old = public_api_from_rustdoc_json_path(old_file, options)?;
+    let old = public_api_from_rustdoc_json_path(old_file, args)?;
 
     let new_file = files.get(1).expect("clap makes sure second file exists");
-    let new = public_api_from_rustdoc_json_path(new_file, options)?;
+    let new = public_api_from_rustdoc_json_path(new_file, args)?;
 
     let diff_to_check = Some(print_diff(args, old.items, new.items)?);
 
@@ -395,22 +387,23 @@ fn collect_public_api_from_commit(
     if args.verbose {
         println!("Processing {:?}", json_path);
     }
-    let options = get_options(args);
 
     Ok((
-        public_api_from_rustdoc_json_path(json_path, options)?,
+        public_api_from_rustdoc_json_path(json_path, args)?,
         original_branch,
     ))
 }
 
 fn public_api_from_rustdoc_json_path<T: AsRef<Path>>(
     json_path: T,
-    options: Options,
+    args: &Args,
 ) -> Result<PublicApi> {
+    let options = get_options(args);
+
     let rustdoc_json = &std::fs::read_to_string(&json_path)
         .with_context(|| format!("Failed to read rustdoc JSON at {:?}", json_path.as_ref()))?;
 
-    PublicApi::from_rustdoc_json_str(rustdoc_json, options).with_context(|| {
+    let public_api = PublicApi::from_rustdoc_json_str(rustdoc_json, options).with_context(|| {
         format!(
             "Failed to parse rustdoc JSON at {:?}.\n\
             This version of `cargo public-api` requires at least:\n\n    {}\n\n\
@@ -420,7 +413,15 @@ fn public_api_from_rustdoc_json_path<T: AsRef<Path>>(
             json_path.as_ref(),
             MINIMUM_RUSTDOC_JSON_VERSION,
         )
-    })
+    })?;
+
+    if args.verbose {
+        public_api.missing_item_ids.iter().for_each(|i| {
+            println!("NOTE: rustdoc JSON missing referenced item with ID \"{i}\"");
+        });
+    }
+
+    Ok(public_api)
 }
 
 fn virtual_manifest_error(manifest_path: &Path) -> Result<PathBuf> {

@@ -176,7 +176,21 @@ impl<'a> RenderingContext<'a> {
                 }
                 output
             }
-            ItemEnum::PrimitiveType(_) => self.render_simple(&["primitive", "type"], &item.path()),
+            ItemEnum::Primitive(primitive) => {
+                // This is hard to write tests for since only Rust `core` is
+                // allowed to define primitives. So you have to test this code
+                // using the pre-built rustdoc JSON for core:
+                //
+                //   rustup component add rust-docs-json --toolchain nightly
+                //   cargo run -- --rustdoc-json ~/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/share/doc/rust/json/core.json
+                let mut output = pub_();
+                output.extend([
+                    Token::kind("type"),
+                    ws!(),
+                    Token::primitive(&primitive.name),
+                ]);
+                output
+            }
         };
 
         tokens.extend(inner_tokens);

@@ -1,4 +1,8 @@
 [workspace]
 members = [
     "specific-crate",
+    "workspace-version",
 ]
+
+[workspace.package]
+version = "100.0.0"

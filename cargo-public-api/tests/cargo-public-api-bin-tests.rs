@@ -26,6 +26,24 @@ use test_utils::rustdoc_json_path_for_crate;
 #[path = "../src/git_utils.rs"] // Say NO to copy-paste!
 mod git_utils;
 
+fn create_test_repo_with_dirty_git_tree() -> TestRepo {
+    let test_repo = TestRepo::new();
+
+    // Make the tree dirty by appending a comment to src/lib.rs
+    let mut lib_rs_path = test_repo.path.path().to_owned();
+    lib_rs_path.push("src/lib.rs");
+
+    let mut lib_rs = OpenOptions::new()
+        .write(true)
+        .append(true)
+        .open(&lib_rs_path)
+        .unwrap();
+
+    writeln!(lib_rs, "// Make git tree dirty").unwrap();
+
+    test_repo
+}
+
 // FIXME: This tests is ignored in CI due to some unknown issue with windows
 #[test]
 #[cfg_attr(all(target_family = "windows", in_ci), ignore)]
@@ -151,7 +169,7 @@ fn diff_public_items_detached_head() {
 
     // Detach HEAD
     let path = test_repo.path();
-    git_utils::git_checkout("v0.1.1", path, true).unwrap();
+    git_utils::git_checkout("v0.1.1", path, true, false).unwrap();
     assert_eq!(None, git_utils::current_branch(path).unwrap());
     let before = git_utils::current_commit(path).unwrap();
 
@@ -173,19 +191,7 @@ fn diff_public_items_detached_head() {
 #[test]
 #[cfg_attr(target_family = "windows", ignore)]
 fn diff_public_items_with_dirty_tree_fails() {
-    let test_repo = TestRepo::new();
-
-    // Make the tree dirty by appending a comment to src/lib.rs
-    let mut lib_rs_path = test_repo.path.path().to_owned();
-    lib_rs_path.push("src/lib.rs");
-
-    let mut lib_rs = OpenOptions::new()
-        .write(true)
-        .append(true)
-        .open(&lib_rs_path)
-        .unwrap();
-
-    writeln!(lib_rs, "// Make git tree dirty").unwrap();
+    let test_repo = create_test_repo_with_dirty_git_tree();
 
     // Make sure diffing does not destroy uncommitted data!
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
@@ -199,6 +205,25 @@ fn diff_public_items_with_dirty_tree_fails() {
             "Your local changes to the following files would be overwritten by checkout",
         ))
         .failure();
+}
+
+/// Test that diffing succeedes if the git tree is dirty and
+/// `force-git-checkout` option is specified.
+#[test]
+#[cfg_attr(target_family = "windows", ignore)]
+fn diff_public_items_with_dirty_tree_succeedes_with_force_option() {
+    let test_repo = create_test_repo_with_dirty_git_tree();
+
+    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    cmd.current_dir(&test_repo.path);
+    cmd.arg("--color=never");
+    cmd.arg("--diff-git-checkouts");
+    cmd.arg("v0.2.0");
+    cmd.arg("v0.3.0");
+    cmd.arg("--force-git-checkouts");
+    cmd.assert()
+        .stdout_or_bless("./tests/expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt")
+        .success();
 }
 
 #[test]

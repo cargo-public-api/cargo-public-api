@@ -70,6 +70,11 @@ pub struct Args {
     #[clap(long, min_values = 2, max_values = 2)]
     diff_git_checkouts: Option<Vec<String>>,
 
+    /// Raise this flag to discard working tree changes during git checkouts when
+    /// `--diff-git-checkouts` is used.
+    #[clap(long)]
+    force_git_checkouts: bool,
+
     /// Usage: --diff-rustdoc-json <RUSTDOC_JSON_PATH_1> <RUSTDOC_JSON_PATH_2>
     ///
     /// Diff the public API across two different rustdoc JSON files.
@@ -310,7 +315,12 @@ fn print_diff(args: &Args, old: Vec<PublicItem>, new: Vec<PublicItem>) -> Result
 impl PostProcessing {
     fn perform(&self, args: &Args) -> Result<()> {
         if let Some(branch_to_restore) = &self.branch_to_restore {
-            git_utils::git_checkout(branch_to_restore, &args.git_root()?, !args.verbose)?;
+            git_utils::git_checkout(
+                branch_to_restore,
+                &args.git_root()?,
+                !args.verbose,
+                args.force_git_checkouts,
+            )?;
         }
 
         check_diff(args, &self.diff_to_check)
@@ -358,6 +368,7 @@ fn collect_public_api_from_commit(
             commit,
             &args.git_root()?,
             !args.verbose,
+            args.force_git_checkouts,
         )?)
     } else {
         None

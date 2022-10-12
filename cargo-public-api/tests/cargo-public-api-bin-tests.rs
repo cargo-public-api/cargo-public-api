@@ -389,6 +389,17 @@ fn diff_public_items_from_files() {
 }
 
 #[test]
+fn list_public_items_from_json_file() {
+    let json_file = rustdoc_json_path_for_crate("../test-apis/example_api-v0.3.0");
+    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    cmd.arg("--rustdoc-json");
+    cmd.arg(json_file);
+    cmd.assert()
+        .stdout_or_bless("./tests/expected-output/example_api-v0.3.0.txt")
+        .success();
+}
+
+#[test]
 fn diff_public_items_missing_one_arg() {
     let mut cmd = TestCmd::new();
     cmd.arg("--diff-git-checkouts");

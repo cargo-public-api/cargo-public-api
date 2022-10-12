@@ -81,6 +81,19 @@ pub struct Args {
     #[clap(long, min_values = 2, max_values = 2)]
     diff_rustdoc_json: Option<Vec<String>>,
 
+    /// Usage: --rustdoc-json <RUSTDOC_JSON_PATH>
+    ///
+    /// List the public API based on the given rustdoc JSON file. Try for example
+    ///
+    ///     rustup component add rust-docs-json --toolchain  nightly
+    ///
+    /// and then
+    ///
+    ///     cargo public-api --rustdoc-json ~/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/share/doc/rust/json/std.json
+    ///
+    #[clap(long)]
+    rustdoc_json: Option<String>,
+
     /// Exit with failure if the specified API diff is detected.
     ///
     /// * all = deny added, changed, and removed public items in the API
@@ -172,6 +185,8 @@ fn main_() -> Result<()> {
         print_diff_between_two_commits(&args, commits)?
     } else if let Some(files) = &args.diff_rustdoc_json {
         print_diff_between_two_rustdoc_json_files(&args, files)?
+    } else if let Some(rustdoc_json) = &args.rustdoc_json {
+        print_public_items_from_json(&args, rustdoc_json)?
     } else {
         print_public_items_of_current_commit(&args)?
     };
@@ -263,7 +278,19 @@ fn check_diff(args: &Args, diff: &Option<PublicItemsDiff>) -> Result<()> {
 
 fn print_public_items_of_current_commit(args: &Args) -> Result<PostProcessing> {
     let (public_api, branch_to_restore) = collect_public_api_from_commit(args, None)?;
+    print_public_items(args, &public_api, branch_to_restore)
+}
 
+fn print_public_items_from_json(args: &Args, json_path: &str) -> Result<PostProcessing> {
+    let public_api = public_api_from_rustdoc_json_path(json_path, args)?;
+    print_public_items(args, &public_api, None)
+}
+
+fn print_public_items(
+    args: &Args,
+    public_api: &PublicApi,
+    branch_to_restore: Option<String>,
+) -> Result<PostProcessing> {
     Plain::print_items(&mut stdout(), args, &public_api.items)?;
 
     Ok(PostProcessing {

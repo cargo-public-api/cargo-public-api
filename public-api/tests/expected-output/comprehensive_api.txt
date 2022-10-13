@@ -288,6 +288,8 @@ pub trait comprehensive_api::traits::AssociatedType
 pub trait comprehensive_api::traits::Empty
 pub trait comprehensive_api::traits::Simple
 pub trait comprehensive_api::traits::TraitReferencingOwnAssociatedType
+pub trait comprehensive_api::traits::TraitWithBounds: private_mod::PubTraitInPrivateMod + comprehensive_api::traits::Simple + Send
+pub trait comprehensive_api::traits::TraitWithBoundsAndGenerics<U>: comprehensive_api::traits::Simple
 pub trait comprehensive_api::traits::TraitWithGenerics<T, U>
 pub type comprehensive_api::traits::AssociatedType::Type
 pub type comprehensive_api::traits::TraitReferencingOwnAssociatedType::OwnAssociatedType

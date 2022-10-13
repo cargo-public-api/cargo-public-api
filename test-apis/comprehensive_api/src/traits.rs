@@ -38,3 +38,11 @@ pub trait TraitWithGenerics<T, U> {
 // }
 
 pub unsafe trait UnsafeTrait {}
+
+pub trait TraitWithBounds: private_mod::PubTraitInPrivateMod + Simple + Send {}
+
+pub trait TraitWithBoundsAndGenerics<U>: Simple {}
+
+mod private_mod {
+    pub trait PubTraitInPrivateMod {}
+}

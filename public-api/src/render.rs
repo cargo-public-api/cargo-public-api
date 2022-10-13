@@ -5,7 +5,8 @@ use std::{cmp::Ordering, collections::HashMap, rc::Rc};
 use rustdoc_types::{
     Abi, Constant, Crate, FnDecl, FunctionPointer, GenericArg, GenericArgs, GenericBound,
     GenericParamDef, GenericParamDefKind, Generics, Header, Id, Impl, Item, ItemEnum, MacroKind,
-    Path, PolyTrait, StructKind, Term, Type, TypeBinding, TypeBindingKind, Variant, WherePredicate,
+    Path, PolyTrait, StructKind, Term, Trait, Type, TypeBinding, TypeBindingKind, Variant,
+    WherePredicate,
 };
 
 /// A simple macro to write `Token::Whitespace` in less characters.
@@ -97,16 +98,7 @@ impl<'a> RenderingContext<'a> {
                 &inner.generics,
                 &inner.header,
             ),
-            ItemEnum::Trait(inner) => {
-                let tags = if inner.is_unsafe {
-                    vec!["unsafe", "trait"]
-                } else {
-                    vec!["trait"]
-                };
-                let mut output = self.render_simple(&tags, &item.path());
-                output.extend(self.render_generics(&inner.generics));
-                output
-            }
+            ItemEnum::Trait(trait_) => self.render_trait(trait_, &item.path()),
             ItemEnum::TraitAlias(_) => self.render_simple(&["trait", "alias"], &item.path()),
             ItemEnum::Impl(impl_) => self.render_impl(impl_),
             ItemEnum::Typedef(inner) => {
@@ -343,6 +335,21 @@ impl<'a> RenderingContext<'a> {
         }
     }
 
+    fn render_trait(&self, trait_: &Trait, path: &[Rc<IntermediatePublicItem<'_>>]) -> Vec<Token> {
+        let mut output = pub_();
+        if trait_.is_unsafe {
+            output.extend(vec![Token::qualifier("unsafe"), ws!()]);
+        };
+        output.extend([Token::kind("trait"), ws!()]);
+        output.extend(self.render_path(path));
+        output.extend(self.render_generics(&trait_.generics));
+        if !trait_.bounds.is_empty() {
+            output.extend(colon());
+            output.extend(self.render_generic_bounds(&trait_.bounds));
+        }
+        output
+    }
+
     fn render_dyn_trait(&self, dyn_trait: &rustdoc_types::DynTrait) -> Vec<Token> {
         let mut output = vec![];
 
@@ -481,6 +488,19 @@ impl<'a> RenderingContext<'a> {
         if let Some(item) = self.best_item_for_id(&path.id) {
             output.extend(self.render_path(&item.path()));
         } else if !name.is_empty() {
+            // If we get here it means there was no item for this Path in the
+            // rustdoc JSON. Examples of when this happens:
+            //
+            // * The resolved path is for an external item; e.g. from std or an
+            //   external crate.
+            //
+            // * The resolved path is for a public item inside a private mod
+            //   (and thus effectively the item is not public)
+            //
+            // In these cases we simply use the `name` verbatim, which typically
+            // is equal to how it appears in the source text. It might not be
+            // ideal and end up identical to the corresponding rustdoc HTML, but
+            // it is good enough given the edge-case nature of this code path.
             output.extend(self.render_path_name(name));
         }
         if let Some(args) = &path.args {

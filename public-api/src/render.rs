@@ -98,7 +98,7 @@ impl<'a> RenderingContext<'a> {
                 &inner.generics,
                 &inner.header,
             ),
-            ItemEnum::Trait(trait_) => self.render_trait(trait_, item),
+            ItemEnum::Trait(trait_) => self.render_trait(trait_, &item.path()),
             ItemEnum::TraitAlias(_) => self.render_simple(&["trait", "alias"], &item.path()),
             ItemEnum::Impl(impl_) => self.render_impl(impl_),
             ItemEnum::Typedef(inner) => {
@@ -335,13 +335,13 @@ impl<'a> RenderingContext<'a> {
         }
     }
 
-    fn render_trait(&self, trait_: &Trait, item: &IntermediatePublicItem) -> Vec<Token> {
+    fn render_trait(&self, trait_: &Trait, path: &[Rc<IntermediatePublicItem<'_>>]) -> Vec<Token> {
         let mut output = pub_();
         if trait_.is_unsafe {
             output.extend(vec![Token::qualifier("unsafe"), ws!()]);
         };
         output.extend([Token::kind("trait"), ws!()]);
-        output.extend(self.render_path(&item.path()));
+        output.extend(self.render_path(path));
         output.extend(self.render_generics(&trait_.generics));
         if !trait_.bounds.is_empty() {
             output.extend(colon());
@@ -491,8 +491,8 @@ impl<'a> RenderingContext<'a> {
             // If we get here it means there was no item for this Path in the
             // rustdoc JSON. Examples of when this happens:
             //
-            // * The resolved path is for an external item; e.g. from std
-            // * or an external crate.
+            // * The resolved path is for an external item; e.g. from std or an
+            //   external crate.
             //
             // * The resolved path is for a public item inside a private mod
             //   (and thus effectively the item is not public)

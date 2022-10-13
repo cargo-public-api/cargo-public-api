@@ -237,7 +237,6 @@ pub mod comprehensive_api::macros
 pub mod comprehensive_api::statics
 pub mod comprehensive_api::structs
 pub mod comprehensive_api::traits
-pub mod comprehensive_api::traits::public_mod
 pub mod comprehensive_api::typedefs
 pub mod comprehensive_api::unions
 pub mut static comprehensive_api::statics::MUT_ANSWER: i8
@@ -289,10 +288,9 @@ pub trait comprehensive_api::traits::AssociatedType
 pub trait comprehensive_api::traits::Empty
 pub trait comprehensive_api::traits::Simple
 pub trait comprehensive_api::traits::TraitReferencingOwnAssociatedType
-pub trait comprehensive_api::traits::TraitWithBounds: private_mod::SealedInPrivate + comprehensive_api::traits::public_mod::Sealed + Send
-pub trait comprehensive_api::traits::TraitWithBoundsAndGenerics<U>: private_mod::SealedInPrivate + comprehensive_api::traits::public_mod::Sealed + Send
+pub trait comprehensive_api::traits::TraitWithBounds: private_mod::PubTraitInPrivateMod + comprehensive_api::traits::Simple + Send
+pub trait comprehensive_api::traits::TraitWithBoundsAndGenerics<U>: comprehensive_api::traits::Simple
 pub trait comprehensive_api::traits::TraitWithGenerics<T, U>
-pub trait comprehensive_api::traits::public_mod::Sealed
 pub type comprehensive_api::traits::AssociatedType::Type
 pub type comprehensive_api::traits::TraitReferencingOwnAssociatedType::OwnAssociatedType
 pub type comprehensive_api::traits::TraitWithGenerics::Foo

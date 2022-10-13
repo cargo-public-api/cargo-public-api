@@ -39,17 +39,10 @@ pub trait TraitWithGenerics<T, U> {
 
 pub unsafe trait UnsafeTrait {}
 
-pub trait TraitWithBounds: private_mod::SealedInPrivate + public_mod::Sealed + Send {}
+pub trait TraitWithBounds: private_mod::PubTraitInPrivateMod + Simple + Send {}
 
-pub trait TraitWithBoundsAndGenerics<U>:
-    private_mod::SealedInPrivate + public_mod::Sealed + Send
-{
-}
+pub trait TraitWithBoundsAndGenerics<U>: Simple {}
 
 mod private_mod {
-    pub trait SealedInPrivate {}
-}
-
-pub mod public_mod {
-    pub trait Sealed {}
+    pub trait PubTraitInPrivateMod {}
 }

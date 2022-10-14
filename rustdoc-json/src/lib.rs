@@ -24,8 +24,11 @@ use std::path::PathBuf;
 
 mod build;
 
-#[deprecated(note = "this struct has been renamed to `rustdoc_json::Builder`")]
-pub use Builder as BuildOptions;
+/// replace `rustdoc_json::build(BuildOptions::default().option1().option2().build())` with `rustdoc_json::Builder::default().option1().option2().build()`
+#[deprecated(
+    note = "replace `rustdoc_json::build(BuildOptions::default().option1().option2().build())` with `rustdoc_json::Builder::default().option1().option2().build()`"
+)]
+pub struct BuildOptions;
 
 /// Represents all errors that can occur when using [`Builder::build()`].
 #[derive(thiserror::Error, Debug)]

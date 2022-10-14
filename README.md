@@ -45,7 +45,7 @@ and the API diff will be printed:
 
 <img src="docs/img/diff.jpg" alt="colored output of diffing a public api">
 
-### Of Your Current Branch
+### … of Your Current Branch
 
 When you make changes to your library you often want to make sure that you do not accidentally change the public API of your library, or that the API change you are making looks like you expect. For this use case, first git commit your work in progress, and then run
 
@@ -55,7 +55,7 @@ cargo public-api --diff-git-checkouts origin/main your-current-branch
 
 which will print the diff of your public API changes compared to `origin/main`.
 
-### As a CI Check
+### … as a CI Check
 
 This tool can be put to good use in CI pipelines to e.g. help you make sure your public API is not unexpectedly changed. Please see [CI-EXAMPLES.md](./docs/CI-EXAMPLES.md) for CI job configuration examples and use cases.
 

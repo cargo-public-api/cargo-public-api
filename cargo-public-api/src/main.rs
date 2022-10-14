@@ -301,10 +301,14 @@ fn print_public_items(
 
 fn print_diff_between_two_commits(args: &Args, commits: &[String]) -> Result<PostProcessing> {
     let old_commit = commits.get(0).expect("clap makes sure first commit exist");
-    let (old, branch_to_restore) = collect_public_api_from_commit(args, Some(old_commit))?;
-
     let new_commit = commits.get(1).expect("clap makes sure second commit exist");
-    let (new, _) = collect_public_api_from_commit(args, Some(new_commit))?;
+
+    // Validate provided commits and resolve relative refs like HEAD to actual commits
+    let old_commit = git_utils::resolve_ref(&args.git_root()?, old_commit)?;
+    let new_commit = git_utils::resolve_ref(&args.git_root()?, new_commit)?;
+
+    let (old, branch_to_restore) = collect_public_api_from_commit(args, Some(&old_commit))?;
+    let (new, _) = collect_public_api_from_commit(args, Some(&new_commit))?;
 
     let diff_to_check = Some(print_diff(args, old.items, new.items)?);
 

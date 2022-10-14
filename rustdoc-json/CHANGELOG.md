@@ -1,3 +1,6 @@
+## v0.5.0
+* Remove most of `BuildOptions`, only leave deprecation message
+
 ## v0.4.2
 * Add `Builder::target_dir()`
 

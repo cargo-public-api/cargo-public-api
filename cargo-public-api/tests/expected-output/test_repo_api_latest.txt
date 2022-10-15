@@ -2,17 +2,17 @@ pub mod example_api
 #[non_exhaustive] pub struct example_api::Struct
 pub struct field example_api::Struct::v1_field: usize
 pub struct field example_api::Struct::v2_field: usize
-impl Debug for example_api::Struct
-pub fn example_api::Struct::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-impl RefUnwindSafe for example_api::Struct
-impl Send for example_api::Struct
-impl Sync for example_api::Struct
-impl Unpin for example_api::Struct
-impl UnwindSafe for example_api::Struct
+impl core::fmt::Debug for example_api::Struct
+pub fn example_api::Struct::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::panic::unwind_safe::RefUnwindSafe for example_api::Struct
+impl core::marker::Send for example_api::Struct
+impl core::marker::Sync for example_api::Struct
+impl core::marker::Unpin for example_api::Struct
+impl core::panic::unwind_safe::UnwindSafe for example_api::Struct
 pub struct example_api::StructV2
 pub struct field example_api::StructV2::field: usize
-impl RefUnwindSafe for example_api::StructV2
-impl Send for example_api::StructV2
-impl Sync for example_api::StructV2
-impl Unpin for example_api::StructV2
-impl UnwindSafe for example_api::StructV2
+impl core::panic::unwind_safe::RefUnwindSafe for example_api::StructV2
+impl core::marker::Send for example_api::StructV2
+impl core::marker::Sync for example_api::StructV2
+impl core::marker::Unpin for example_api::StructV2
+impl core::panic::unwind_safe::UnwindSafe for example_api::StructV2

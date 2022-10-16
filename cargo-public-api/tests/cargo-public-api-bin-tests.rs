@@ -143,6 +143,18 @@ fn virtual_manifest_error() {
 }
 
 #[test]
+fn workspace_version_does_not_crash() {
+    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    cmd.arg("--manifest-path");
+    cmd.arg(current_dir_and(
+        "tests/virtual-manifest/workspace-version/Cargo.toml",
+    ));
+    cmd.assert()
+        .stdout_or_bless("./tests/expected-output/workspace-version.txt")
+        .success();
+}
+
+#[test]
 fn diff_public_items() {
     let mut cmd = TestCmd::new();
     let test_repo_path = cmd.test_repo_path().to_owned();

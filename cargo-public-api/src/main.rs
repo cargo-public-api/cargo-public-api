@@ -168,18 +168,7 @@ struct PostProcessing {
 }
 
 fn main_() -> Result<()> {
-    let mut args = get_args();
-
-    // check if using a stable compiler, and use nightly if it is.
-    if active_toolchain_is_probably_stable(args.toolchain.as_deref()) {
-        if let Some(toolchain) = args
-            .toolchain
-            .or_else(active_toolchain_is_environment_override)
-        {
-            eprintln!("Warning: using the `{toolchain}` toolchain for gathering the public api is not possible, switching to `nightly`");
-        }
-        args.toolchain = Some("nightly".to_owned());
-    }
+    let args = get_args();
 
     let post_processing = if let Some(commits) = &args.diff_git_checkouts {
         print_diff_between_two_commits(&args, commits)?
@@ -364,12 +353,25 @@ impl Args {
 /// subcommand. When the user runs `cargo public-api -a -b -c` our args will be
 /// `cargo-public-api public-api -a -b -c`.
 fn get_args() -> Args {
-    let args = std::env::args_os()
+    let args_os = std::env::args_os()
         .enumerate()
         .filter(|(index, arg)| *index != 1 || arg != "public-api")
         .map(|(_, arg)| arg);
 
-    Args::parse_from(args)
+    let mut args = Args::parse_from(args_os);
+
+    // check if using a stable compiler, and use nightly if it is.
+    if active_toolchain_is_probably_stable(args.toolchain.as_deref()) {
+        if let Some(toolchain) = args
+            .toolchain
+            .or_else(active_toolchain_is_environment_override)
+        {
+            eprintln!("Warning: using the `{toolchain}` toolchain for gathering the public api is not possible, switching to `nightly`");
+        }
+        args.toolchain = Some("nightly".to_owned());
+    }
+
+    args
 }
 
 /// Figure out what [`Options`] to pass to

@@ -484,10 +484,9 @@ impl<'a> RenderingContext<'a> {
 
     fn render_resolved_path(&self, path: &Path) -> Vec<Token> {
         let mut output = vec![];
-        let name = &path.name;
         if let Some(item) = self.best_item_for_id(&path.id) {
             output.extend(self.render_path(&item.path()));
-        } else if !name.is_empty() {
+        } else if !path.name.is_empty() {
             // If we get here it means there was no item for this Path in the
             // rustdoc JSON. Examples of when this happens:
             //
@@ -501,7 +500,7 @@ impl<'a> RenderingContext<'a> {
             // is equal to how it appears in the source text. It might not be
             // ideal and end up identical to the corresponding rustdoc HTML, but
             // it is good enough given the edge-case nature of this code path.
-            output.extend(self.render_path_name(name));
+            output.extend(self.render_path_name(&path.name));
         }
         if let Some(args) = &path.args {
             output.extend(self.render_generic_args(args));

@@ -511,9 +511,9 @@ impl<'a> RenderingContext<'a> {
 
     fn render_path_name(&self, name: &str) -> Vec<Token> {
         let mut output = vec![];
-        let split: Vec<_> = name.split("::").collect();
-        let len = split.len();
-        for (index, part) in split.into_iter().enumerate() {
+        let path: Vec<_> = name.split("::").collect();
+        let len = path.len();
+        for (index, part) in path.into_iter().enumerate() {
             if index == 0 && part == "$crate" {
                 output.push(Token::identifier("$crate"));
             } else if index == len - 1 {

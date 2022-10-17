@@ -20,23 +20,10 @@ pub struct IntermediatePublicItem<'a> {
     /// The parent item. If [Self::item] is e.g. an enum variant, then the
     /// parent is an enum. We follow the chain of parents to be able to know the
     /// correct path to an item in the output.
-    parent: Option<Rc<IntermediatePublicItem<'a>>>,
+    pub parent: Option<Rc<IntermediatePublicItem<'a>>>,
 }
 
 impl<'a> IntermediatePublicItem<'a> {
-    #[must_use]
-    pub const fn new(
-        item: &'a Item,
-        overridden_name: Option<String>,
-        parent: Option<Rc<IntermediatePublicItem<'a>>>,
-    ) -> Self {
-        Self {
-            item,
-            overridden_name,
-            parent,
-        }
-    }
-
     pub fn name(&self) -> &str {
         self.overridden_name
             .as_deref()

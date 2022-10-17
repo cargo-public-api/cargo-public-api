@@ -222,7 +222,11 @@ impl<'a> ItemIterator<'a> {
             };
         }
 
-        let public_item = Rc::new(IntermediatePublicItem::new(item, overridden_name, parent));
+        let public_item = Rc::new(IntermediatePublicItem {
+            item,
+            overridden_name,
+            parent,
+        });
 
         self.id_to_items
             .entry(&item.id)

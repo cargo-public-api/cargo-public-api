@@ -82,6 +82,28 @@ pub struct Args {
     #[clap(long, min_values = 2, max_values = 2)]
     diff_rustdoc_json: Option<Vec<String>>,
 
+    /// Automatically resolves to either `--diff-git-checkouts` or
+    /// `--diff-rustdoc-json` depending on if args ends in `.json` or not.
+    ///
+    /// Examples:
+    ///
+    ///   cargo public-api --diff v0.2.0 v0.3.0
+    ///
+    /// resolves to
+    ///
+    ///   cargo public-api --diff-git-checkouts v0.2.0 v0.3.0
+    ///
+    /// but
+    ///
+    ///   cargo public-api --diff v0.2.0.json v0.3.0.json
+    ///
+    /// resolves to
+    ///
+    ///   cargo public-api --diff-rustdoc-json v0.2.0.json v0.3.0.json
+    ///
+    #[clap(long, min_values = 2, max_values = 2)]
+    diff: Option<Vec<String>>,
+
     /// Usage: --rustdoc-json <RUSTDOC_JSON_PATH>
     ///
     /// List the public API based on the given rustdoc JSON file. Try for example
@@ -310,16 +332,34 @@ fn get_args() -> Args {
         .map(|(_, arg)| arg);
 
     let mut args = Args::parse_from(args_os);
+    resolve_diff_shorthand(&mut args);
+    resolve_toolchain(&mut args);
+    args
+}
 
-    // check if using a stable compiler, and use nightly if it is.
+/// Check if using a stable compiler, and use nightly if it is.
+fn resolve_toolchain(args: &mut Args) {
     if toolchain::is_probably_stable(args.toolchain.as_deref()) {
-        if let Some(toolchain) = args.toolchain.or_else(toolchain::from_rustup) {
+        if let Some(toolchain) = args.toolchain.clone().or_else(toolchain::from_rustup) {
             eprintln!("Warning: using the `{toolchain}` toolchain for gathering the public api is not possible, switching to `nightly`");
         }
         args.toolchain = Some("nightly".to_owned());
     }
+}
 
-    args
+/// Resolve `--diff` to either `--diff-git-checkouts` or `--diff-rustdoc-json`
+fn resolve_diff_shorthand(args: &mut Args) {
+    if let Some(diff_args) = args.diff.clone() {
+        fn is_json_file(file_name: &String) -> bool {
+            Path::extension(Path::new(file_name)).map_or(false, |a| a.eq_ignore_ascii_case("json"))
+        }
+
+        if diff_args.iter().all(is_json_file) {
+            args.diff_rustdoc_json = Some(diff_args);
+        } else {
+            args.diff_git_checkouts = Some(diff_args);
+        }
+    }
 }
 
 /// Figure out what [`Options`] to pass to

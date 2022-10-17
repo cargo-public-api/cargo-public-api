@@ -156,11 +156,20 @@ fn workspace_version_does_not_crash() {
 
 #[test]
 fn diff_public_items() {
+    diff_public_items_impl("--diff-git-checkouts");
+}
+
+#[test]
+fn diff_public_items_smart_diff() {
+    diff_public_items_impl("--diff");
+}
+
+fn diff_public_items_impl(diff_arg: &str) {
     let mut cmd = TestCmd::new();
     let test_repo_path = cmd.test_repo_path().to_owned();
     let branch_before = git_utils::current_branch(&test_repo_path).unwrap().unwrap();
     cmd.arg("--color=never");
-    cmd.arg("--diff-git-checkouts");
+    cmd.arg(diff_arg);
     cmd.arg("v0.2.0");
     cmd.arg("v0.3.0");
     cmd.assert()
@@ -414,10 +423,18 @@ fn list_public_items_with_color() {
 
 #[test]
 fn diff_public_items_from_files() {
+    diff_public_items_from_files_impl("--diff-rustdoc-json");
+}
+#[test]
+fn diff_public_items_from_files_smart_diff() {
+    diff_public_items_from_files_impl("--diff");
+}
+
+fn diff_public_items_from_files_impl(diff_arg: &str) {
     let old = rustdoc_json_path_for_crate("../test-apis/example_api-v0.1.0");
     let new = rustdoc_json_path_for_crate("../test-apis/example_api-v0.2.0");
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
-    cmd.arg("--diff-rustdoc-json");
+    cmd.arg(diff_arg);
     cmd.arg(old);
     cmd.arg(new);
     cmd.assert()

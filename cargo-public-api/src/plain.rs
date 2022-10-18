@@ -10,11 +10,7 @@ pub struct Plain;
 impl Plain {
     pub fn print_items(w: &mut dyn Write, args: &Args, items: &[PublicItem]) -> Result<()> {
         for item in items {
-            if args.color.active() {
-                writeln!(w, "{}", color_item(item))?;
-            } else {
-                writeln!(w, "{}", item)?;
-            }
+            print_item(args, w, item)?;
         }
 
         Ok(())
@@ -74,6 +70,14 @@ impl Plain {
         )?;
 
         Ok(())
+    }
+}
+
+fn print_item(args: &Args, w: &mut dyn Write, item: &PublicItem) -> Result<()> {
+    if args.color.active() {
+        writeln!(w, "{}", color_item(item))
+    } else {
+        writeln!(w, "{}", item)
     }
 }
 

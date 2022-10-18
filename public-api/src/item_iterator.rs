@@ -226,7 +226,10 @@ impl<'a> ItemIterator<'a> {
             .entry(&item.id)
             .or_default()
             .push(public_item.clone());
-        self.items_left.push(public_item);
+
+        if !matches!(item.inner, ItemEnum::Impl(_)) {
+            self.items_left.push(public_item);
+        }
     }
 
     fn add_missing_id(&mut self, id: &'a Id) {

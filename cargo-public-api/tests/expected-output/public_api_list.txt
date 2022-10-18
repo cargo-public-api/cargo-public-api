@@ -1,43 +1,28 @@
 #[non_exhaustive] pub enum public_api::Error
-#[non_exhaustive] pub struct public_api::Options
-#[non_exhaustive] pub struct public_api::PublicApi
 impl !RefUnwindSafe for public_api::Error
 impl !UnwindSafe for public_api::Error
-impl RefUnwindSafe for public_api::Options
-impl RefUnwindSafe for public_api::PublicApi
-impl RefUnwindSafe for public_api::PublicItem
-impl RefUnwindSafe for public_api::diff::ChangedPublicItem
-impl RefUnwindSafe for public_api::diff::PublicApiDiff
-impl RefUnwindSafe for public_api::tokens::Token
 impl Send for public_api::Error
-impl Send for public_api::Options
-impl Send for public_api::PublicApi
-impl Send for public_api::PublicItem
-impl Send for public_api::diff::ChangedPublicItem
-impl Send for public_api::diff::PublicApiDiff
-impl Send for public_api::tokens::Token
 impl Sync for public_api::Error
-impl Sync for public_api::Options
-impl Sync for public_api::PublicApi
-impl Sync for public_api::PublicItem
-impl Sync for public_api::diff::ChangedPublicItem
-impl Sync for public_api::diff::PublicApiDiff
-impl Sync for public_api::tokens::Token
 impl Unpin for public_api::Error
+#[non_exhaustive] pub struct public_api::Options
+impl RefUnwindSafe for public_api::Options
+impl Send for public_api::Options
+impl Sync for public_api::Options
 impl Unpin for public_api::Options
-impl Unpin for public_api::PublicApi
-impl Unpin for public_api::PublicItem
-impl Unpin for public_api::diff::ChangedPublicItem
-impl Unpin for public_api::diff::PublicApiDiff
-impl Unpin for public_api::tokens::Token
 impl UnwindSafe for public_api::Options
+#[non_exhaustive] pub struct public_api::PublicApi
+impl RefUnwindSafe for public_api::PublicApi
+impl Send for public_api::PublicApi
+impl Sync for public_api::PublicApi
+impl Unpin for public_api::PublicApi
 impl UnwindSafe for public_api::PublicApi
-impl UnwindSafe for public_api::PublicItem
-impl UnwindSafe for public_api::diff::ChangedPublicItem
-impl UnwindSafe for public_api::diff::PublicApiDiff
-impl UnwindSafe for public_api::tokens::Token
 pub const public_api::MINIMUM_RUSTDOC_JSON_VERSION: &'static str
 pub enum public_api::tokens::Token
+impl RefUnwindSafe for public_api::tokens::Token
+impl Send for public_api::tokens::Token
+impl Sync for public_api::tokens::Token
+impl Unpin for public_api::tokens::Token
+impl UnwindSafe for public_api::tokens::Token
 pub enum variant public_api::Error::SerdeJsonError(serde_json::Error)
 pub enum variant public_api::tokens::Token::Annotation(String)
 pub enum variant public_api::tokens::Token::Function(String)
@@ -70,6 +55,7 @@ pub fn public_api::PublicItem::eq(&self, other: &public_api::PublicItem) -> bool
 pub fn public_api::PublicItem::fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
 pub fn public_api::PublicItem::fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
 pub fn public_api::PublicItem::hash<__H: $crate::hash::Hasher>(&self, state: &mut __H) -> ()
+pub fn public_api::PublicItem::impls(&self) -> impl Iterator<Item = &public_api::PublicItem>
 pub fn public_api::PublicItem::partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering>
 pub fn public_api::PublicItem::tokens(&self) -> impl Iterator<Item = &public_api::tokens::Token>
 pub fn public_api::diff::ChangedPublicItem::clone(&self) -> public_api::diff::ChangedPublicItem
@@ -102,6 +88,21 @@ pub struct field public_api::diff::PublicApiDiff::added: Vec<public_api::PublicI
 pub struct field public_api::diff::PublicApiDiff::changed: Vec<public_api::diff::ChangedPublicItem>
 pub struct field public_api::diff::PublicApiDiff::removed: Vec<public_api::PublicItem>
 pub struct public_api::PublicItem
+impl RefUnwindSafe for public_api::PublicItem
+impl Send for public_api::PublicItem
+impl Sync for public_api::PublicItem
+impl Unpin for public_api::PublicItem
+impl UnwindSafe for public_api::PublicItem
 pub struct public_api::diff::ChangedPublicItem
+impl RefUnwindSafe for public_api::diff::ChangedPublicItem
+impl Send for public_api::diff::ChangedPublicItem
+impl Sync for public_api::diff::ChangedPublicItem
+impl Unpin for public_api::diff::ChangedPublicItem
+impl UnwindSafe for public_api::diff::ChangedPublicItem
 pub struct public_api::diff::PublicApiDiff
+impl RefUnwindSafe for public_api::diff::PublicApiDiff
+impl Send for public_api::diff::PublicApiDiff
+impl Sync for public_api::diff::PublicApiDiff
+impl Unpin for public_api::diff::PublicApiDiff
+impl UnwindSafe for public_api::diff::PublicApiDiff
 pub type public_api::Result<T> = std::result::Result<T, public_api::Error>

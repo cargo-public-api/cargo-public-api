@@ -1,6 +1,10 @@
 use std::fmt::Display;
 use std::rc::Rc;
 
+use rustdoc_types::Id;
+use rustdoc_types::Item;
+use rustdoc_types::ItemEnum;
+
 use crate::intermediate_public_item::IntermediatePublicItem;
 use crate::render::RenderingContext;
 use crate::tokens::tokens_to_string;
@@ -23,6 +27,9 @@ pub struct PublicItem {
 
     /// The rendered item as a stream of [`Token`]s
     pub(crate) tokens: Vec<Token>,
+
+    /// The `impl`s for this item (which themselves are public items)
+    pub(crate) impls: Vec<PublicItem>,
 }
 
 impl PublicItem {
@@ -30,6 +37,18 @@ impl PublicItem {
         context: &RenderingContext,
         public_item: &Rc<IntermediatePublicItem<'_>>,
     ) -> PublicItem {
+        let mut impls = vec![];
+
+        for impl_id in impls_for_item(public_item.item).iter().flatten() {
+            if let Some(item) = context.best_item_for_id(impl_id) {
+                impls.push(PublicItem {
+                    path: vec![],
+                    tokens: item.render_token_stream(context),
+                    impls: vec![],
+                });
+            }
+        }
+
         PublicItem {
             path: public_item
                 .path()
@@ -37,12 +56,18 @@ impl PublicItem {
                 .map(|i| i.name().to_owned())
                 .collect::<PublicItemPath>(),
             tokens: public_item.render_token_stream(context),
+            impls,
         }
     }
 
     /// The rendered item as a stream of [`Token`]s
     pub fn tokens(&self) -> impl Iterator<Item = &Token> {
         self.tokens.iter()
+    }
+
+    /// The `impl`s for this item (which themselves are public items)
+    pub fn impls(&self) -> impl Iterator<Item = &PublicItem> {
+        self.impls.iter()
     }
 }
 
@@ -71,5 +96,16 @@ impl PartialOrd for PublicItem {
 impl Ord for PublicItem {
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
         self.to_string().cmp(&other.to_string())
+    }
+}
+
+fn impls_for_item(item: &Item) -> Option<Vec<Id>> {
+    match &item.inner {
+        ItemEnum::Union(union_) => Some(union_.impls.clone()),
+        ItemEnum::Struct(struct_) => Some(struct_.impls.clone()),
+        ItemEnum::Enum(enum_) => Some(enum_.impls.clone()),
+        ItemEnum::Primitive(primitive) => Some(primitive.impls.clone()),
+        // TODO? ItemEnum::Trait(trait_) => trait_.im,
+        _ => None,
     }
 }

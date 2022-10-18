@@ -84,7 +84,8 @@ fn public_item_ord() {
         .unwrap();
 
     let generic_bound = public_api
-        .into_items()
+        .items()
+        .cloned()
         .into_iter()
         .find(|x| format!("{}", x).contains("generic_bound"))
         .unwrap();

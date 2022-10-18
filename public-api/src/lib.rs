@@ -139,6 +139,8 @@ pub struct PublicApi {
     /// The items that constitutes the public API. An "item" is for example a
     /// function, a struct, a struct field, an enum, an enum variant, a module,
     /// etc...
+    ///
+    /// NOTE: This does not include `impl`s! TODO: Explain
     pub(crate) items: Vec<PublicItem>,
 
     /// See [`Self::missing_item_ids()`]
@@ -176,6 +178,9 @@ impl PublicApi {
         let mut public_api = item_iterator::public_api_in_crate(&crate_, options);
 
         if options.sorted {
+            for item in &mut public_api.items {
+                item.impls.sort();
+            }
             public_api.items.sort();
         }
 
@@ -184,13 +189,35 @@ impl PublicApi {
 
     /// Returns an iterator over all public items in the public API
     pub fn items(&self) -> impl Iterator<Item = &'_ PublicItem> {
-        self.items.iter()
+        self.items.iter().flat_map(|item| {
+            let mut all = vec![];
+            all.push(item);
+            all.extend(item.impls.iter());
+            all
+        })
     }
 
     /// Like [`Self::items()`], but ownership of all `PublicItem`s are
     /// transferred to the caller.
     pub fn into_items(self) -> impl Iterator<Item = PublicItem> {
-        self.items.into_iter()
+        self.items.into_iter().flat_map(|item| {
+            let PublicItem {
+                path,
+                tokens,
+                impls,
+            } = item;
+
+            let impls_stripped = PublicItem {
+                path,
+                tokens,
+                impls: vec![],
+            };
+
+            let mut all = vec![];
+            all.push(impls_stripped);
+            all.extend(impls.into_iter());
+            all
+        })
     }
 
     /// The rustdoc JSON IDs of missing but referenced items. Intended for use

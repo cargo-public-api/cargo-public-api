@@ -1,9 +1,9 @@
-use std::{collections::HashMap, fmt::Display, rc::Rc};
+use std::{collections::HashMap, rc::Rc};
 
 use rustdoc_types::{Crate, Id, Impl, Import, Item, ItemEnum, Module, Struct, StructKind, Type};
 
 use super::intermediate_public_item::IntermediatePublicItem;
-use crate::{render::RenderingContext, tokens::Token, Options, PublicApi};
+use crate::{public_item::PublicItem, render::RenderingContext, Options, PublicApi};
 
 type Impls<'a> = HashMap<&'a Id, Vec<&'a Impl>>;
 
@@ -21,12 +21,6 @@ struct ImplItem<'a> {
     for_id: Option<&'a Id>,
     kind: ImplKind,
 }
-
-/// Each public item has a path that is displayed like `first::second::third`.
-/// Internally we represent that with a `vec!["first", "second", "third"]`. This
-/// is a type alias for that internal representation to make the code easier to
-/// read.
-pub type PublicItemPath = Vec<String>;
 
 /// Iterates over all items in a crate. Iterating over items has the benefit of
 /// behaving properly when:
@@ -337,78 +331,12 @@ pub fn public_api_in_crate(crate_: &Crate, options: Options) -> super::PublicApi
     PublicApi {
         items: items
             .iter()
-            .map(|item| intermediate_public_item_to_public_item(&context, item))
-            .collect(),
+            .map(|item| PublicItem::from_intermediate_public_item(&context, item))
+            .collect::<Vec<_>>(),
         missing_item_ids: item_iterator
             .missing_ids
             .iter()
             .map(|m| m.0.clone())
             .collect(),
-    }
-}
-
-fn intermediate_public_item_to_public_item(
-    context: &RenderingContext,
-    public_item: &Rc<IntermediatePublicItem<'_>>,
-) -> PublicItem {
-    PublicItem {
-        path: public_item
-            .path()
-            .iter()
-            .map(|i| i.name().to_owned())
-            .collect::<PublicItemPath>(),
-        tokens: public_item.render_token_stream(context),
-    }
-}
-
-/// Represent a public item of an analyzed crate, i.e. an item that forms part
-/// of the public API of a crate. Implements [`Display`] so it can be printed. It
-/// also implements [`Ord`], but how items are ordered are not stable yet, and
-/// will change in later versions.
-#[derive(Clone, Eq, PartialEq, Hash)]
-pub struct PublicItem {
-    /// The "your_crate::mod_a::mod_b" part of an item. Split by "::"
-    pub(crate) path: PublicItemPath,
-
-    /// The rendered item as a stream of [`Token`]s
-    pub(crate) tokens: Vec<Token>,
-}
-
-impl PublicItem {
-    /// The rendered item as a stream of [`Token`]s
-    pub fn tokens(&self) -> impl Iterator<Item = &Token> {
-        self.tokens.iter()
-    }
-}
-
-/// We want pretty-printing (`"{:#?}"`) of [`crate::diff::PublicItemsDiff`] to print
-/// each public item as `Display`, so implement `Debug` with `Display`.
-impl std::fmt::Debug for PublicItem {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        std::fmt::Display::fmt(self, f)
-    }
-}
-
-/// One of the basic uses cases is printing a sorted `Vec` of `PublicItem`s. So
-/// we implement `Display` for it.
-impl Display for PublicItem {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", tokens_to_string(&self.tokens))
-    }
-}
-
-pub fn tokens_to_string(tokens: &[Token]) -> String {
-    tokens.iter().map(Token::text).collect()
-}
-
-impl PartialOrd for PublicItem {
-    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        Some(self.cmp(other))
-    }
-}
-
-impl Ord for PublicItem {
-    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-        self.to_string().cmp(&other.to_string())
     }
 }

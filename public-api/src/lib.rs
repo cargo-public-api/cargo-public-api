@@ -45,6 +45,7 @@
 mod error;
 mod intermediate_public_item;
 mod item_iterator;
+mod public_item;
 mod render;
 pub mod tokens;
 
@@ -54,7 +55,7 @@ pub mod diff;
 pub use error::{Error, Result};
 
 // Documented at the definition site so cargo doc picks it up
-pub use item_iterator::PublicItem;
+pub use public_item::PublicItem;
 
 /// This constant defines the minimum version of nightly that is required in
 /// order for the rustdoc JSON output to be parsable by this library. Note that

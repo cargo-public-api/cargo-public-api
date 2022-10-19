@@ -17,7 +17,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         .build()?;
     let new = PublicApi::from_rustdoc_json_str(&read_to_string(new_json)?, options)?;
 
-    let diff = PublicApiDiff::between(old.items, new.items);
+    let diff = PublicApiDiff::between(old, new);
     println!("{:#?}", diff);
 
     Ok(())

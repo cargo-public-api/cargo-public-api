@@ -3,7 +3,10 @@
 //! public-api`](https://github.com/Enselic/cargo-public-api) contains
 //! additional helpers for that.
 
-use crate::public_item::{PublicItem, PublicItemPath};
+use crate::{
+    public_item::{PublicItem, PublicItemPath},
+    PublicApi,
+};
 use hashbag::HashBag;
 use std::collections::HashMap;
 
@@ -49,12 +52,12 @@ impl PublicApiDiff {
     /// is the output of two different invocations of
     /// [`crate::PublicApi::from_rustdoc_json_str`].
     #[must_use]
-    pub fn between(old_items: Vec<PublicItem>, new_items: Vec<PublicItem>) -> Self {
+    pub fn between(old: PublicApi, new: PublicApi) -> Self {
         // We must use a HashBag, because with a HashSet we would lose public
         // items that happen to have the same representation due to limitations
         // or bugs
-        let old = old_items.into_iter().collect::<HashBag<_>>();
-        let new = new_items.into_iter().collect::<HashBag<_>>();
+        let old = old.items.into_iter().collect::<HashBag<_>>();
+        let new = new.items.into_iter().collect::<HashBag<_>>();
 
         // First figure out what items have been removed and what have been
         // added. Later we will match added and removed items with the same path
@@ -135,8 +138,8 @@ mod tests {
 
     #[test]
     fn single_and_only_item_removed() {
-        let old = vec![item_with_path("foo")];
-        let new = vec![];
+        let old = api([item_with_path("foo")]);
+        let new = api([]);
 
         let actual = PublicApiDiff::between(old, new);
         let expected = PublicApiDiff {
@@ -150,8 +153,8 @@ mod tests {
 
     #[test]
     fn single_and_only_item_added() {
-        let old = vec![];
-        let new = vec![item_with_path("foo")];
+        let old = api([]);
+        let new = api([item_with_path("foo")]);
 
         let actual = PublicApiDiff::between(old, new);
         let expected = PublicApiDiff {
@@ -165,12 +168,12 @@ mod tests {
 
     #[test]
     fn middle_item_added() {
-        let old = vec![item_with_path("1"), item_with_path("3")];
-        let new = vec![
+        let old = api([item_with_path("1"), item_with_path("3")]);
+        let new = api([
             item_with_path("1"),
             item_with_path("2"),
             item_with_path("3"),
-        ];
+        ]);
 
         let actual = PublicApiDiff::between(old, new);
         let expected = PublicApiDiff {
@@ -184,12 +187,12 @@ mod tests {
 
     #[test]
     fn middle_item_removed() {
-        let old = vec![
+        let old = api([
             item_with_path("1"),
             item_with_path("2"),
             item_with_path("3"),
-        ];
-        let new = vec![item_with_path("1"), item_with_path("3")];
+        ]);
+        let new = api([item_with_path("1"), item_with_path("3")]);
 
         let actual = PublicApiDiff::between(old, new);
         let expected = PublicApiDiff {
@@ -203,7 +206,7 @@ mod tests {
 
     #[test]
     fn many_identical_items() {
-        let old = vec![
+        let old = api([
             item_with_path("1"),
             item_with_path("2"),
             item_with_path("2"),
@@ -212,8 +215,8 @@ mod tests {
             item_with_path("3"),
             fn_with_param_type(&["a", "b"], "i32"),
             fn_with_param_type(&["a", "b"], "i32"),
-        ];
-        let new = vec![
+        ]);
+        let new = api([
             item_with_path("1"),
             item_with_path("2"),
             item_with_path("3"),
@@ -221,7 +224,7 @@ mod tests {
             item_with_path("4"),
             fn_with_param_type(&["a", "b"], "i64"),
             fn_with_param_type(&["a", "b"], "i64"),
-        ];
+        ]);
 
         let actual = PublicApiDiff::between(old, new);
         let expected = PublicApiDiff {
@@ -250,20 +253,20 @@ mod tests {
     /// <https://github.com/Enselic/cargo-public-api/issues/50>
     #[test]
     fn no_off_by_one_diff_skewing() {
-        let old = vec![
+        let old = api([
             fn_with_param_type(&["a", "b"], "i8"),
             fn_with_param_type(&["a", "b"], "i32"),
             fn_with_param_type(&["a", "b"], "i64"),
-        ];
+        ]);
         // Same as `old` but with a new item with the same path added on top.
         // The diffing algorithm needs to figure out that only one item has been
         // added, rather than showing that of three items changed.
-        let new = vec![
+        let new = api([
             fn_with_param_type(&["a", "b"], "u8"), // The only new item!
             fn_with_param_type(&["a", "b"], "i8"),
             fn_with_param_type(&["a", "b"], "i32"),
             fn_with_param_type(&["a", "b"], "i64"),
-        ];
+        ]);
         let expected = PublicApiDiff {
             removed: vec![],
             changed: vec![],
@@ -276,8 +279,8 @@ mod tests {
 
     #[test]
     fn no_diff_means_empty_diff() {
-        let old = vec![item_with_path("foo")];
-        let new = vec![item_with_path("foo")];
+        let old = api([item_with_path("foo")]);
+        let new = api([item_with_path("foo")]);
 
         let actual = PublicApiDiff::between(old, new);
         let expected = PublicApiDiff {
@@ -296,6 +299,13 @@ mod tests {
                 .map(std::string::ToString::to_string)
                 .collect(),
             tokens: vec![crate::tokens::Token::identifier(path)],
+        }
+    }
+
+    fn api(items: impl IntoIterator<Item = PublicItem>) -> PublicApi {
+        PublicApi {
+            items: items.into_iter().collect(),
+            missing_item_ids: vec![],
         }
     }
 

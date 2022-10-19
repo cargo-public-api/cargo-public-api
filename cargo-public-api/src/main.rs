@@ -8,7 +8,7 @@ use anyhow::{anyhow, Context, Result};
 use arg_types::{Color, DenyMethod};
 use plain::Plain;
 use public_api::diff::PublicApiDiff;
-use public_api::{Options, PublicApi, PublicItem, MINIMUM_RUSTDOC_JSON_VERSION};
+use public_api::{Options, PublicApi, MINIMUM_RUSTDOC_JSON_VERSION};
 
 use clap::Parser;
 use rustdoc_json::BuildError;
@@ -268,7 +268,7 @@ fn print_diff_between_two_commits(args: &Args, commits: &[String]) -> Result<Pos
     let new_commit = commits.get(1).expect("clap makes sure second commit exist");
     let (new, _) = collect_public_api_from_commit(args, Some(new_commit))?;
 
-    let diff_to_check = Some(print_diff(args, old.items, new.items)?);
+    let diff_to_check = Some(print_diff(args, old, new)?);
 
     Ok(PostProcessing {
         diff_to_check,
@@ -286,7 +286,7 @@ fn print_diff_between_two_rustdoc_json_files(
     let new_file = files.get(1).expect("clap makes sure second file exists");
     let new = public_api_from_rustdoc_json_path(new_file, args)?;
 
-    let diff_to_check = Some(print_diff(args, old.items, new.items)?);
+    let diff_to_check = Some(print_diff(args, old, new)?);
 
     Ok(PostProcessing {
         diff_to_check,
@@ -294,7 +294,7 @@ fn print_diff_between_two_rustdoc_json_files(
     })
 }
 
-fn print_diff(args: &Args, old: Vec<PublicItem>, new: Vec<PublicItem>) -> Result<PublicApiDiff> {
+fn print_diff(args: &Args, old: PublicApi, new: PublicApi) -> Result<PublicApiDiff> {
     let diff = PublicApiDiff::between(old, new);
     Plain::print_diff(&mut stdout(), args, &diff)?;
 

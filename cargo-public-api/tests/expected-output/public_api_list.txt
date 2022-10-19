@@ -61,6 +61,9 @@ pub fn public_api::Options::default() -> Self
 pub fn public_api::Options::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
 pub fn public_api::PublicApi::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
 pub fn public_api::PublicApi::from_rustdoc_json_str(rustdoc_json_str: &str, options: public_api::Options) -> public_api::Result<public_api::PublicApi>
+pub fn public_api::PublicApi::into_items(self) -> impl Iterator<Item = public_api::PublicItem>
+pub fn public_api::PublicApi::items(&self) -> impl Iterator<Item = &public_api::PublicItem>
+pub fn public_api::PublicApi::missing_item_ids(&self) -> impl Iterator<Item = &String>
 pub fn public_api::PublicItem::clone(&self) -> public_api::PublicItem
 pub fn public_api::PublicItem::cmp(&self, other: &Self) -> std::cmp::Ordering
 pub fn public_api::PublicItem::eq(&self, other: &public_api::PublicItem) -> bool
@@ -93,8 +96,6 @@ pub mod public_api::diff
 pub mod public_api::tokens
 pub struct field public_api::Options::sorted: bool
 pub struct field public_api::Options::with_blanket_implementations: bool
-pub struct field public_api::PublicApi::items: Vec<public_api::PublicItem>
-pub struct field public_api::PublicApi::missing_item_ids: Vec<String>
 pub struct field public_api::diff::ChangedPublicItem::new: public_api::PublicItem
 pub struct field public_api::diff::ChangedPublicItem::old: public_api::PublicItem
 pub struct field public_api::diff::PublicApiDiff::added: Vec<public_api::PublicItem>

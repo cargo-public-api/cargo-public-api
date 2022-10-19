@@ -77,14 +77,14 @@ fn public_item_ord() {
     .unwrap();
 
     let generic_arg = public_api
-        .items
-        .clone()
+        .items()
+        .cloned()
         .into_iter()
         .find(|x| format!("{}", x).contains("generic_arg"))
         .unwrap();
 
     let generic_bound = public_api
-        .items
+        .into_items()
         .into_iter()
         .find(|x| format!("{}", x).contains("generic_bound"))
         .unwrap();
@@ -139,7 +139,7 @@ fn assert_public_api_impl(
     let api = PublicApi::from_rustdoc_json_str(rustdoc_json_str, options).unwrap();
 
     let mut actual = String::new();
-    for item in api.items {
+    for item in api.items() {
         writeln!(&mut actual, "{}", item).unwrap();
     }
 

@@ -253,7 +253,7 @@ fn print_public_items(
     public_api: &PublicApi,
     branch_to_restore: Option<String>,
 ) -> Result<PostProcessing> {
-    Plain::print_items(&mut stdout(), args, &public_api.items)?;
+    Plain::print_items(&mut stdout(), args, public_api.items())?;
 
     Ok(PostProcessing {
         diff_to_check: None,
@@ -444,7 +444,7 @@ fn public_api_from_rustdoc_json_path<T: AsRef<Path>>(
     })?;
 
     if args.verbose {
-        public_api.missing_item_ids.iter().for_each(|i| {
+        public_api.missing_item_ids().for_each(|i| {
             println!("NOTE: rustdoc JSON missing referenced item with ID \"{i}\"");
         });
     }

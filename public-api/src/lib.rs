@@ -81,7 +81,7 @@ pub struct Options {
     pub with_blanket_implementations: bool,
 
     /// If `true`, items will be sorted before being returned. If you will pass
-    /// on the return value to [`diff::PublicItemsDiff::between`], it is
+    /// on the return value to [`diff::PublicApiDiff::between`], it is
     /// currently unnecessary to sort first, because the sorting will be
     /// performed/ensured inside of that function.
     ///

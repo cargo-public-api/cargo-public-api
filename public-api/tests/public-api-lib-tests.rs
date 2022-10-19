@@ -114,7 +114,7 @@ fn assert_public_api_diff(old_json: &str, new_json: &str, expected: impl AsRef<P
     let old = PublicApi::from_rustdoc_json_str(old_json, Options::default()).unwrap();
     let new = PublicApi::from_rustdoc_json_str(new_json, Options::default()).unwrap();
 
-    let diff = public_api::diff::PublicItemsDiff::between(old.items, new.items);
+    let diff = public_api::diff::PublicApiDiff::between(old.items, new.items);
     let pretty_printed = format!("{:#?}", diff);
     assert_eq_or_bless(&pretty_printed, expected);
 }

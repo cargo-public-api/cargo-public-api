@@ -7,7 +7,7 @@
 use std::io::{stdout, ErrorKind, Write};
 use std::path::{Path, PathBuf};
 
-use public_api::diff::PublicItemsDiff;
+use public_api::diff::PublicApiDiff;
 use public_api::{Options, PublicApi, MINIMUM_RUSTDOC_JSON_VERSION};
 
 #[derive(thiserror::Error, Debug)]
@@ -71,14 +71,14 @@ fn print_public_api_diff(old: &Path, new: &Path, options: Options) -> Result<()>
     let new_json = std::fs::read_to_string(new)?;
     let new = PublicApi::from_rustdoc_json_str(&new_json, options)?;
 
-    let diff = PublicItemsDiff::between(old.items, new.items);
+    let diff = PublicApiDiff::between(old.items, new.items);
     print_diff_with_headers(&diff, &mut stdout(), "Removed:", "Changed:", "Added:")?;
 
     Ok(())
 }
 
 fn print_diff_with_headers(
-    diff: &PublicItemsDiff,
+    diff: &PublicApiDiff,
     w: &mut impl std::io::Write,
     header_removed: &str,
     header_changed: &str,

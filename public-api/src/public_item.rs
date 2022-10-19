@@ -46,7 +46,7 @@ impl PublicItem {
     }
 }
 
-/// We want pretty-printing (`"{:#?}"`) of [`crate::diff::PublicItemsDiff`] to print
+/// We want pretty-printing (`"{:#?}"`) of [`crate::diff::PublicApiDiff`] to print
 /// each public item as `Display`, so implement `Debug` with `Display`.
 impl std::fmt::Debug for PublicItem {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {

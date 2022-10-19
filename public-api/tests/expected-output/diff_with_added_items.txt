@@ -1,4 +1,4 @@
-PublicItemsDiff {
+PublicApiDiff {
     removed: [],
     changed: [
         ChangedPublicItem {

@@ -1,6 +1,6 @@
 use std::{error::Error, fs::read_to_string};
 
-use public_api::{diff::PublicItemsDiff, Options, PublicApi};
+use public_api::{diff::PublicApiDiff, Options, PublicApi};
 
 fn main() -> Result<(), Box<dyn Error>> {
     let options = Options::default();
@@ -17,7 +17,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         .build()?;
     let new = PublicApi::from_rustdoc_json_str(&read_to_string(new_json)?, options)?;
 
-    let diff = PublicItemsDiff::between(old.items, new.items);
+    let diff = PublicApiDiff::between(old.items, new.items);
     println!("{:#?}", diff);
 
     Ok(())

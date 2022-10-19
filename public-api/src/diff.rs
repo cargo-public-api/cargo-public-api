@@ -3,7 +3,7 @@
 //! public-api`](https://github.com/Enselic/cargo-public-api) contains
 //! additional helpers for that.
 
-use crate::{item_iterator::PublicItemPath, PublicItem};
+use crate::public_item::{PublicItem, PublicItemPath};
 use hashbag::HashBag;
 use std::collections::HashMap;
 

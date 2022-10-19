@@ -1319,7 +1319,7 @@ mod test {
 
         assert_eq!(actual, expected);
         assert_eq!(
-            crate::item_iterator::tokens_to_string(&actual),
+            crate::tokens::tokens_to_string(&actual),
             expected_string.to_string()
         );
     }

@@ -1,6 +1,6 @@
 //! The module tp contain all token handling logic.
 #[cfg(doc)]
-use crate::item_iterator::PublicItem;
+use crate::public_item::PublicItem;
 
 /// A token in a rendered [`PublicItem`], used to apply syntax colouring in downstream applications.
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -103,4 +103,8 @@ impl Token {
             Self::Whitespace => " ",
         }
     }
+}
+
+pub(crate) fn tokens_to_string(tokens: &[Token]) -> String {
+    tokens.iter().map(Token::text).collect()
 }

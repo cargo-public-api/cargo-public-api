@@ -7,7 +7,7 @@ use std::path::{Path, PathBuf};
 use anyhow::{anyhow, Context, Result};
 use arg_types::{Color, DenyMethod};
 use plain::Plain;
-use public_api::diff::PublicItemsDiff;
+use public_api::diff::PublicApiDiff;
 use public_api::{Options, PublicApi, PublicItem, MINIMUM_RUSTDOC_JSON_VERSION};
 
 use clap::Parser;
@@ -182,7 +182,7 @@ pub struct Args {
 struct PostProcessing {
     /// The `--deny` arg allows the user to disallow the occurrence of API
     /// changes. If this field is set, we are to check that the diff is allowed.
-    diff_to_check: Option<PublicItemsDiff>,
+    diff_to_check: Option<PublicApiDiff>,
 
     /// Doing a `--diff-git-checkouts` involves doing `git checkout`s.
     /// Afterwards, we want to restore the original branch the user was on, to
@@ -206,7 +206,7 @@ fn main_() -> Result<()> {
     post_processing.perform(&args)
 }
 
-fn check_diff(args: &Args, diff: &Option<PublicItemsDiff>) -> Result<()> {
+fn check_diff(args: &Args, diff: &Option<PublicApiDiff>) -> Result<()> {
     match (&args.deny, diff) {
         // We were requested to deny diffs, so make sure there is no diff
         (Some(deny), Some(diff)) => {
@@ -294,8 +294,8 @@ fn print_diff_between_two_rustdoc_json_files(
     })
 }
 
-fn print_diff(args: &Args, old: Vec<PublicItem>, new: Vec<PublicItem>) -> Result<PublicItemsDiff> {
-    let diff = PublicItemsDiff::between(old, new);
+fn print_diff(args: &Args, old: Vec<PublicItem>, new: Vec<PublicItem>) -> Result<PublicApiDiff> {
+    let diff = PublicApiDiff::between(old, new);
     Plain::print_diff(&mut stdout(), args, &diff)?;
 
     Ok(diff)

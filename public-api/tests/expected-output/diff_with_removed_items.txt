@@ -1,4 +1,4 @@
-PublicItemsDiff {
+PublicApiDiff {
     removed: [
         impl RefUnwindSafe for example_api::StructV2,
         impl Send for example_api::StructV2,

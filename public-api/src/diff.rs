@@ -27,7 +27,7 @@ pub struct ChangedPublicItem {
 /// ```
 #[allow(clippy::module_name_repetitions)]
 #[derive(Clone, Debug, PartialEq, Eq)]
-pub struct PublicItemsDiff {
+pub struct PublicApiDiff {
     /// Items that have been removed from the public API. A MAJOR change, in
     /// semver terminology. Sorted.
     pub removed: Vec<PublicItem>,
@@ -43,7 +43,7 @@ pub struct PublicItemsDiff {
     pub added: Vec<PublicItem>,
 }
 
-impl PublicItemsDiff {
+impl PublicApiDiff {
     /// Allows you to diff the public API between two arbitrary versions of a
     /// library, e.g. different releases. The input parameters `old` and `new`
     /// is the output of two different invocations of
@@ -138,8 +138,8 @@ mod tests {
         let old = vec![item_with_path("foo")];
         let new = vec![];
 
-        let actual = PublicItemsDiff::between(old, new);
-        let expected = PublicItemsDiff {
+        let actual = PublicApiDiff::between(old, new);
+        let expected = PublicApiDiff {
             removed: vec![item_with_path("foo")],
             changed: vec![],
             added: vec![],
@@ -153,8 +153,8 @@ mod tests {
         let old = vec![];
         let new = vec![item_with_path("foo")];
 
-        let actual = PublicItemsDiff::between(old, new);
-        let expected = PublicItemsDiff {
+        let actual = PublicApiDiff::between(old, new);
+        let expected = PublicApiDiff {
             removed: vec![],
             changed: vec![],
             added: vec![item_with_path("foo")],
@@ -172,8 +172,8 @@ mod tests {
             item_with_path("3"),
         ];
 
-        let actual = PublicItemsDiff::between(old, new);
-        let expected = PublicItemsDiff {
+        let actual = PublicApiDiff::between(old, new);
+        let expected = PublicApiDiff {
             removed: vec![],
             changed: vec![],
             added: vec![item_with_path("2")],
@@ -191,8 +191,8 @@ mod tests {
         ];
         let new = vec![item_with_path("1"), item_with_path("3")];
 
-        let actual = PublicItemsDiff::between(old, new);
-        let expected = PublicItemsDiff {
+        let actual = PublicApiDiff::between(old, new);
+        let expected = PublicApiDiff {
             removed: vec![item_with_path("2")],
             changed: vec![],
             added: vec![],
@@ -223,8 +223,8 @@ mod tests {
             fn_with_param_type(&["a", "b"], "i64"),
         ];
 
-        let actual = PublicItemsDiff::between(old, new);
-        let expected = PublicItemsDiff {
+        let actual = PublicApiDiff::between(old, new);
+        let expected = PublicApiDiff {
             removed: vec![
                 item_with_path("2"),
                 item_with_path("3"),
@@ -264,12 +264,12 @@ mod tests {
             fn_with_param_type(&["a", "b"], "i32"),
             fn_with_param_type(&["a", "b"], "i64"),
         ];
-        let expected = PublicItemsDiff {
+        let expected = PublicApiDiff {
             removed: vec![],
             changed: vec![],
             added: vec![fn_with_param_type(&["a", "b"], "u8")],
         };
-        let actual = PublicItemsDiff::between(old, new);
+        let actual = PublicApiDiff::between(old, new);
         assert_eq!(actual, expected);
         assert!(!actual.is_empty());
     }
@@ -279,8 +279,8 @@ mod tests {
         let old = vec![item_with_path("foo")];
         let new = vec![item_with_path("foo")];
 
-        let actual = PublicItemsDiff::between(old, new);
-        let expected = PublicItemsDiff {
+        let actual = PublicApiDiff::between(old, new);
+        let expected = PublicApiDiff {
             removed: vec![],
             changed: vec![],
             added: vec![],

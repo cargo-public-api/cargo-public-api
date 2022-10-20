@@ -7,34 +7,34 @@ impl RefUnwindSafe for public_api::Options
 impl RefUnwindSafe for public_api::PublicApi
 impl RefUnwindSafe for public_api::PublicItem
 impl RefUnwindSafe for public_api::diff::ChangedPublicItem
-impl RefUnwindSafe for public_api::diff::PublicItemsDiff
+impl RefUnwindSafe for public_api::diff::PublicApiDiff
 impl RefUnwindSafe for public_api::tokens::Token
 impl Send for public_api::Error
 impl Send for public_api::Options
 impl Send for public_api::PublicApi
 impl Send for public_api::PublicItem
 impl Send for public_api::diff::ChangedPublicItem
-impl Send for public_api::diff::PublicItemsDiff
+impl Send for public_api::diff::PublicApiDiff
 impl Send for public_api::tokens::Token
 impl Sync for public_api::Error
 impl Sync for public_api::Options
 impl Sync for public_api::PublicApi
 impl Sync for public_api::PublicItem
 impl Sync for public_api::diff::ChangedPublicItem
-impl Sync for public_api::diff::PublicItemsDiff
+impl Sync for public_api::diff::PublicApiDiff
 impl Sync for public_api::tokens::Token
 impl Unpin for public_api::Error
 impl Unpin for public_api::Options
 impl Unpin for public_api::PublicApi
 impl Unpin for public_api::PublicItem
 impl Unpin for public_api::diff::ChangedPublicItem
-impl Unpin for public_api::diff::PublicItemsDiff
+impl Unpin for public_api::diff::PublicApiDiff
 impl Unpin for public_api::tokens::Token
 impl UnwindSafe for public_api::Options
 impl UnwindSafe for public_api::PublicApi
 impl UnwindSafe for public_api::PublicItem
 impl UnwindSafe for public_api::diff::ChangedPublicItem
-impl UnwindSafe for public_api::diff::PublicItemsDiff
+impl UnwindSafe for public_api::diff::PublicApiDiff
 impl UnwindSafe for public_api::tokens::Token
 pub const public_api::MINIMUM_RUSTDOC_JSON_VERSION: &'static str
 pub enum public_api::tokens::Token
@@ -74,11 +74,11 @@ pub fn public_api::diff::ChangedPublicItem::cmp(&self, other: &public_api::diff:
 pub fn public_api::diff::ChangedPublicItem::eq(&self, other: &public_api::diff::ChangedPublicItem) -> bool
 pub fn public_api::diff::ChangedPublicItem::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
 pub fn public_api::diff::ChangedPublicItem::partial_cmp(&self, other: &public_api::diff::ChangedPublicItem) -> $crate::option::Option<$crate::cmp::Ordering>
-pub fn public_api::diff::PublicItemsDiff::between(old_items: Vec<public_api::PublicItem>, new_items: Vec<public_api::PublicItem>) -> Self
-pub fn public_api::diff::PublicItemsDiff::clone(&self) -> public_api::diff::PublicItemsDiff
-pub fn public_api::diff::PublicItemsDiff::eq(&self, other: &public_api::diff::PublicItemsDiff) -> bool
-pub fn public_api::diff::PublicItemsDiff::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-pub fn public_api::diff::PublicItemsDiff::is_empty(&self) -> bool
+pub fn public_api::diff::PublicApiDiff::between(old_items: Vec<public_api::PublicItem>, new_items: Vec<public_api::PublicItem>) -> Self
+pub fn public_api::diff::PublicApiDiff::clone(&self) -> public_api::diff::PublicApiDiff
+pub fn public_api::diff::PublicApiDiff::eq(&self, other: &public_api::diff::PublicApiDiff) -> bool
+pub fn public_api::diff::PublicApiDiff::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
+pub fn public_api::diff::PublicApiDiff::is_empty(&self) -> bool
 pub fn public_api::public_api_from_rustdoc_json_str(rustdoc_json_str: &str, options: public_api::Options) -> public_api::Result<public_api::PublicApi>
 pub fn public_api::tokens::Token::clone(&self) -> public_api::tokens::Token
 pub fn public_api::tokens::Token::cmp(&self, other: &public_api::tokens::Token) -> $crate::cmp::Ordering
@@ -97,10 +97,10 @@ pub struct field public_api::PublicApi::items: Vec<public_api::PublicItem>
 pub struct field public_api::PublicApi::missing_item_ids: Vec<String>
 pub struct field public_api::diff::ChangedPublicItem::new: public_api::PublicItem
 pub struct field public_api::diff::ChangedPublicItem::old: public_api::PublicItem
-pub struct field public_api::diff::PublicItemsDiff::added: Vec<public_api::PublicItem>
-pub struct field public_api::diff::PublicItemsDiff::changed: Vec<public_api::diff::ChangedPublicItem>
-pub struct field public_api::diff::PublicItemsDiff::removed: Vec<public_api::PublicItem>
+pub struct field public_api::diff::PublicApiDiff::added: Vec<public_api::PublicItem>
+pub struct field public_api::diff::PublicApiDiff::changed: Vec<public_api::diff::ChangedPublicItem>
+pub struct field public_api::diff::PublicApiDiff::removed: Vec<public_api::PublicItem>
 pub struct public_api::PublicItem
 pub struct public_api::diff::ChangedPublicItem
-pub struct public_api::diff::PublicItemsDiff
+pub struct public_api::diff::PublicApiDiff
 pub type public_api::Result<T> = std::result::Result<T, public_api::Error>

@@ -1,7 +1,7 @@
 use std::io::{Result, Write};
 
 use nu_ansi_term::{AnsiString, AnsiStrings, Color, Style};
-use public_api::{diff::PublicItemsDiff, tokens::Token, PublicItem};
+use public_api::{diff::PublicApiDiff, tokens::Token, PublicItem};
 
 use crate::Args;
 
@@ -16,7 +16,7 @@ impl Plain {
         Ok(())
     }
 
-    pub fn print_diff(w: &mut dyn Write, args: &Args, diff: &PublicItemsDiff) -> Result<()> {
+    pub fn print_diff(w: &mut dyn Write, args: &Args, diff: &PublicApiDiff) -> Result<()> {
         let use_color = args.color.active();
 
         print_items_with_header(

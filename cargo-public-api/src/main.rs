@@ -61,9 +61,6 @@ pub struct Args {
     /// If you have local changes, git will refuse to do `git checkout`, so your
     /// work will not be discarded.
     ///
-    /// Do not use non-fixed commit references such as `HEAD^` since the meaning
-    /// of `HEAD^` is different depending on what commit is the current commit.
-    ///
     /// Using the current git repo has the benefit of making it likely for the
     /// build to succeed. If we e.g. were to git clone a temporary copy of a
     /// commit ourselves, the risk is high that additional steps are needed
@@ -263,10 +260,14 @@ fn print_public_items(
 
 fn print_diff_between_two_commits(args: &Args, commits: &[String]) -> Result<PostProcessing> {
     let old_commit = commits.get(0).expect("clap makes sure first commit exist");
-    let (old, branch_to_restore) = collect_public_api_from_commit(args, Some(old_commit))?;
-
     let new_commit = commits.get(1).expect("clap makes sure second commit exist");
-    let (new, _) = collect_public_api_from_commit(args, Some(new_commit))?;
+
+    // Validate provided commits and resolve relative refs like HEAD to actual commits
+    let old_commit = git_utils::resolve_ref(&args.git_root()?, old_commit)?;
+    let new_commit = git_utils::resolve_ref(&args.git_root()?, new_commit)?;
+
+    let (old, branch_to_restore) = collect_public_api_from_commit(args, Some(&old_commit))?;
+    let (new, _) = collect_public_api_from_commit(args, Some(&new_commit))?;
 
     let diff_to_check = Some(print_diff(args, old, new)?);
 

@@ -67,31 +67,6 @@ fn comprehensive_api_proc_macro() {
     );
 }
 
-/// I confess: this test is mainly to get function code coverage on Ord
-#[test]
-fn public_item_ord() {
-    let public_api = PublicApi::from_rustdoc_json(
-        rustdoc_json_path_for_crate("../test-apis/comprehensive_api"),
-        Options::default(),
-    )
-    .unwrap();
-
-    let generic_arg = public_api
-        .items()
-        .cloned()
-        .into_iter()
-        .find(|x| format!("{}", x).contains("generic_arg"))
-        .unwrap();
-
-    let generic_bound = public_api
-        .into_items()
-        .into_iter()
-        .find(|x| format!("{}", x).contains("generic_bound"))
-        .unwrap();
-
-    assert_eq!(generic_arg.max(generic_bound.clone()), generic_bound);
-}
-
 #[test]
 fn invalid_json() {
     let result = PublicApi::from_rustdoc_json_str("}}}}}}}}}", Options::default());

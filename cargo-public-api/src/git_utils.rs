@@ -84,3 +84,10 @@ fn trimmed_stdout(mut cmd: Command) -> Result<String> {
         Err(anyhow!("Failure: {:?}", output))
     }
 }
+
+/// Resolves a git reference provided at the CLI to an actual commit, allowing
+/// us to validate refs and use "relative" values like HEAD and more.
+#[allow(unused)] // It IS used!
+pub fn resolve_ref(path: impl AsRef<Path>, committish: &str) -> Result<String> {
+    trimmed_git_stdout(path, &["rev-parse", committish])
+}

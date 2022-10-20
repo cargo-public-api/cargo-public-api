@@ -127,7 +127,7 @@ impl Default for Options {
 /// // Gather the rustdoc content as described in this crates top-level documentation.
 /// let public_api = PublicApi::from_rustdoc_json_str(&rustdoc_json_str, options)?;
 ///
-/// for public_item in public_api.items {
+/// for public_item in public_api.items() {
 ///     // here we print the items to stdout, we could also write to a string or a file.
 ///     println!("{}", public_item);
 /// }
@@ -139,20 +139,10 @@ pub struct PublicApi {
     /// The items that constitutes the public API. An "item" is for example a
     /// function, a struct, a struct field, an enum, an enum variant, a module,
     /// etc...
-    pub items: Vec<PublicItem>,
+    pub(crate) items: Vec<PublicItem>,
 
-    /// The rustdoc JSON IDs of missing but referenced items. Intended for use
-    /// with `--verbose` flags or similar.
-    ///
-    /// In some cases, a public item might be referenced from another public
-    /// item (e.g. a `mod`), but is missing from the rustdoc JSON file. This
-    /// occurs for example in the case of re-exports of external modules (see
-    /// <https://github.com/Enselic/cargo-public-api/issues/103>). The entries
-    /// in this Vec are what IDs that could not be found.
-    ///
-    /// The exact format of IDs are to be considered an implementation detail
-    /// and must not be be relied on.
-    pub missing_item_ids: Vec<String>,
+    /// See [`Self::missing_item_ids()`]
+    pub(crate) missing_item_ids: Vec<String>,
 }
 
 impl PublicApi {
@@ -190,6 +180,32 @@ impl PublicApi {
         }
 
         Ok(public_api)
+    }
+
+    /// Returns an iterator over all public items in the public API
+    pub fn items(&self) -> impl Iterator<Item = &'_ PublicItem> {
+        self.items.iter()
+    }
+
+    /// Like [`Self::items()`], but ownership of all `PublicItem`s are
+    /// transferred to the caller.
+    pub fn into_items(self) -> impl Iterator<Item = PublicItem> {
+        self.items.into_iter()
+    }
+
+    /// The rustdoc JSON IDs of missing but referenced items. Intended for use
+    /// with `--verbose` flags or similar.
+    ///
+    /// In some cases, a public item might be referenced from another public
+    /// item (e.g. a `mod`), but is missing from the rustdoc JSON file. This
+    /// occurs for example in the case of re-exports of external modules (see
+    /// <https://github.com/Enselic/cargo-public-api/issues/103>). The entries
+    /// in this Vec are what IDs that could not be found.
+    ///
+    /// The exact format of IDs are to be considered an implementation detail
+    /// and must not be be relied on.
+    pub fn missing_item_ids(&self) -> impl Iterator<Item = &String> {
+        self.missing_item_ids.iter()
     }
 }
 

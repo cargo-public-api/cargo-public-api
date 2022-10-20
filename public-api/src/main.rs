@@ -57,7 +57,7 @@ fn main_() -> Result<()> {
 fn print_public_api(path: &Path, options: Options) -> Result<()> {
     let json = &std::fs::read_to_string(path)?;
 
-    for public_item in PublicApi::from_rustdoc_json_str(json, options)?.items {
+    for public_item in PublicApi::from_rustdoc_json_str(json, options)?.items() {
         writeln!(std::io::stdout(), "{}", public_item)?;
     }
 

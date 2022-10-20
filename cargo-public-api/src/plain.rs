@@ -8,7 +8,11 @@ use crate::Args;
 pub struct Plain;
 
 impl Plain {
-    pub fn print_items(w: &mut dyn Write, args: &Args, items: &[PublicItem]) -> Result<()> {
+    pub fn print_items<'a>(
+        w: &mut dyn Write,
+        args: &Args,
+        items: impl Iterator<Item = &'a PublicItem>,
+    ) -> Result<()> {
         for item in items {
             print_item(args, w, item)?;
         }

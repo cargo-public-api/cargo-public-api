@@ -56,8 +56,8 @@ impl PublicApiDiff {
         // We must use a HashBag, because with a HashSet we would lose public
         // items that happen to have the same representation due to limitations
         // or bugs
-        let old = old.items.into_iter().collect::<HashBag<_>>();
-        let new = new.items.into_iter().collect::<HashBag<_>>();
+        let old = old.into_items().collect::<HashBag<_>>();
+        let new = new.into_items().collect::<HashBag<_>>();
 
         // First figure out what items have been removed and what have been
         // added. Later we will match added and removed items with the same path

@@ -20,7 +20,7 @@ thiserror = "1.0.29"
 
 [dependencies.rustdoc-json]
 path = "../rustdoc-json"
-version = "0.4.2"
+version = "0.5.0"
 
 [dependencies.public-api]
 path = "../public-api"

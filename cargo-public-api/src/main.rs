@@ -60,9 +60,6 @@ pub struct Args {
     /// If you have local changes, git will refuse to do `git checkout`, so your
     /// work will not be discarded.
     ///
-    /// Do not use non-fixed commit references such as `HEAD^` since the meaning
-    /// of `HEAD^` is different depending on what commit is the current commit.
-    ///
     /// Using the current git repo has the benefit of making it likely for the
     /// build to succeed. If we e.g. were to git clone a temporary copy of a
     /// commit ourselves, the risk is high that additional steps are needed

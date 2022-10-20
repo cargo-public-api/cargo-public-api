@@ -1,4 +1,4 @@
-use std::{error::Error, fs::read_to_string};
+use std::error::Error;
 
 use public_api::{Options, PublicApi};
 
@@ -8,8 +8,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         .manifest_path("test-apis/example_api-v0.2.0/Cargo.toml")
         .build()?;
 
-    let public_api =
-        PublicApi::from_rustdoc_json_str(&read_to_string(&json_path)?, Options::default())?;
+    let public_api = PublicApi::from_rustdoc_json(json_path, Options::default())?;
 
     for public_item in public_api.items() {
         println!("{}", public_item);

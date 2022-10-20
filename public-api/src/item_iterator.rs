@@ -155,22 +155,18 @@ impl<'a> ItemIterator<'a> {
             // we'll get a stack overflow. Note that `glob_import_inlined`
             // remains `false` in that case, which means that the output will
             // use a special syntax to indicate that we broke recursion.
-            if !parent.clone().map_or(false, |p| p.path_contains_id(mod_id)) {
-                if let Some(Item {
-                    inner: ItemEnum::Module(Module { items, .. }),
-                    ..
-                }) = self.crate_.index.get(mod_id)
-                {
-                    for item in items {
-                        self.try_add_item_to_visit(item, parent.clone());
-                    }
-                    glob_import_inlined = true;
+            if let Some(Item {
+                inner: ItemEnum::Module(Module { items, .. }),
+                ..
+            }) = self.get_item_if_not_in_path(&parent, mod_id)
+            {
+                for item in items {
+                    self.try_add_item_to_visit(item, parent.clone());
                 }
+                glob_import_inlined = true;
             }
         }
 
-        // We handle `impl`s specially, and we don't want to process `impl`
-        // items directly. See [`ItemIterator::impls`] docs for more info. And
         // if we inlined a glob import earlier, we should not add the import
         // item itself. All other items we can go ahead and add.
         if !glob_import_inlined {
@@ -201,17 +197,14 @@ impl<'a> ItemIterator<'a> {
                 // output, or to break import recursion.
                 Some(format!("<<{}::*>>", import.source))
             } else {
-                if let Some(imported_id) = &import.id {
-                    if !parent
-                        .clone()
-                        .map_or(false, |p| p.path_contains_id(imported_id))
-                    {
-                        match self.crate_.index.get(imported_id) {
-                            Some(imported_item) => item = imported_item,
-                            None => self.add_missing_id(imported_id),
-                        }
-                    }
+                if let Some(import) = import
+                    .id
+                    .as_ref()
+                    .and_then(|id| self.get_item_if_not_in_path(&parent, id))
+                {
+                    item = import;
                 }
+
                 Some(import.name.clone())
             };
         }
@@ -227,6 +220,25 @@ impl<'a> ItemIterator<'a> {
             .or_default()
             .push(public_item.clone());
         self.items_left.push(public_item);
+    }
+
+    /// Get the rustdoc JSON item with `id`, but only if it is not already part
+    /// of the path. This can happen in the case of recursive re-exports, in
+    /// which case we need to break the recursion.
+    fn get_item_if_not_in_path(
+        &mut self,
+        parent: &Option<Rc<IntermediatePublicItem<'a>>>,
+        id: &'a Id,
+    ) -> Option<&'a Item> {
+        if parent.clone().map_or(false, |p| p.path_contains_id(id)) {
+            // The item is already in the path! Break import recursion...
+            return None;
+        }
+
+        self.crate_.index.get(id).or_else(|| {
+            self.add_missing_id(id);
+            None
+        })
     }
 
     fn add_missing_id(&mut self, id: &'a Id) {

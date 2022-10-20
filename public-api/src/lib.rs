@@ -51,6 +51,8 @@ pub mod tokens;
 
 pub mod diff;
 
+use std::path::Path;
+
 // Documented at the definition site so cargo doc picks it up
 pub use error::{Error, Result};
 
@@ -146,9 +148,10 @@ pub struct PublicApi {
 }
 
 impl PublicApi {
-    /// Takes rustdoc JSON and returns a [`PublicApi`] containing a [`Vec`] of [`PublicItem`]s where each
-    /// [`PublicItem`] is one public item of the crate, i.e. part of the crate's
-    /// public API.
+    /// Takes a [`Path`] to a rustdoc JSON file and returns a [`PublicApi`] with
+    /// [`PublicItem`]s where each [`PublicItem`] is one public item of the
+    /// crate, i.e. part of the crate's public API. Use [`Self::items()`] or
+    /// `[Self::into_items()` to get the items.
     ///
     /// There exists a convenient `cargo public-api` subcommand wrapper for this
     /// function found at <https://github.com/Enselic/cargo-public-api> that
@@ -169,9 +172,22 @@ impl PublicApi {
     ///
     /// # Errors
     ///
+    /// E.g. if the JSON is invalid or if the file can't be read.
+    pub fn from_rustdoc_json(path: impl AsRef<Path>, options: Options) -> Result<PublicApi> {
+        Self::from_rustdoc_json_str(&std::fs::read_to_string(path)?, options)
+    }
+
+    /// Same as [`Self::from_rustdoc_json`], but the rustdoc JSON is read from a
+    /// `&str` rather than a file.
+    ///
+    /// # Errors
+    ///
     /// E.g. if the JSON is invalid.
-    pub fn from_rustdoc_json_str(rustdoc_json_str: &str, options: Options) -> Result<PublicApi> {
-        let crate_ = deserialize_without_recursion_limit(rustdoc_json_str)?;
+    pub fn from_rustdoc_json_str(
+        rustdoc_json_str: impl AsRef<str>,
+        options: Options,
+    ) -> Result<PublicApi> {
+        let crate_ = deserialize_without_recursion_limit(rustdoc_json_str.as_ref())?;
 
         let mut public_api = item_iterator::public_api_in_crate(&crate_, options);
 
@@ -210,7 +226,9 @@ impl PublicApi {
 }
 
 #[allow(clippy::missing_errors_doc, missing_docs)]
-#[deprecated(note = "use `PublicApi::from_rustdoc_json_str` instead")]
+#[deprecated(
+    note = "use `PublicApi::from_rustdoc_json` or `PublicApi::from_rustdoc_json_str` instead"
+)]
 pub fn public_api_from_rustdoc_json_str(
     rustdoc_json_str: &str,
     options: Options,

@@ -9,6 +9,11 @@ pub enum Error {
     /// too old. Consult the "Compatibility matrix" in the README.
     #[error(transparent)]
     SerdeJsonError(#[from] serde_json::Error),
+
+    /// Some kind of IO error occurred. For example, we might not have read
+    /// permissions on the rustdoc JSON input file.
+    #[error(transparent)]
+    IoError(#[from] std::io::Error),
 }
 
 /// Shorthand for [`std::result::Result<T, public_api::Error>`].

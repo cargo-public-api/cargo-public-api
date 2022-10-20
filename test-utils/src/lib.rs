@@ -44,11 +44,3 @@ fn rustdoc_json_path_for_crate_impl(test_crate: &str, target_dir: Option<&Path>)
 
     builder.build().unwrap()
 }
-
-/// Helper to get a String of freshly built rustdoc JSON for the given
-/// test-crate.
-#[must_use]
-#[allow(dead_code)]
-pub fn rustdoc_json_str_for_crate(test_crate: &str) -> String {
-    std::fs::read_to_string(rustdoc_json_path_for_crate(test_crate)).unwrap()
-}

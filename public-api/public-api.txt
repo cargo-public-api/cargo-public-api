@@ -38,6 +38,7 @@ impl UnwindSafe for public_api::diff::PublicApiDiff
 impl UnwindSafe for public_api::tokens::Token
 pub const public_api::MINIMUM_RUSTDOC_JSON_VERSION: &'static str
 pub enum public_api::tokens::Token
+pub enum variant public_api::Error::IoError(std::io::Error)
 pub enum variant public_api::Error::SerdeJsonError(serde_json::Error)
 pub enum variant public_api::tokens::Token::Annotation(String)
 pub enum variant public_api::tokens::Token::Function(String)
@@ -55,12 +56,14 @@ pub enum variant public_api::tokens::Token::Whitespace
 pub fn public_api::Error::fmt(&self, __formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
 pub fn public_api::Error::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
 pub fn public_api::Error::from(source: serde_json::Error) -> Self
+pub fn public_api::Error::from(source: std::io::Error) -> Self
 pub fn public_api::Error::source(&self) -> std::option::Option<&(dyn std::error::Error + 'static)>
 pub fn public_api::Options::clone(&self) -> public_api::Options
 pub fn public_api::Options::default() -> Self
 pub fn public_api::Options::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
 pub fn public_api::PublicApi::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-pub fn public_api::PublicApi::from_rustdoc_json_str(rustdoc_json_str: &str, options: public_api::Options) -> public_api::Result<public_api::PublicApi>
+pub fn public_api::PublicApi::from_rustdoc_json(path: impl AsRef<Path>, options: public_api::Options) -> public_api::Result<public_api::PublicApi>
+pub fn public_api::PublicApi::from_rustdoc_json_str(rustdoc_json_str: impl AsRef<str>, options: public_api::Options) -> public_api::Result<public_api::PublicApi>
 pub fn public_api::PublicApi::into_items(self) -> impl Iterator<Item = public_api::PublicItem>
 pub fn public_api::PublicApi::items(&self) -> impl Iterator<Item = &public_api::PublicItem>
 pub fn public_api::PublicApi::missing_item_ids(&self) -> impl Iterator<Item = &String>

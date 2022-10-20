@@ -71,7 +71,7 @@ fn print_public_api_diff(old: &Path, new: &Path, options: Options) -> Result<()>
     let new_json = std::fs::read_to_string(new)?;
     let new = PublicApi::from_rustdoc_json_str(&new_json, options)?;
 
-    let diff = PublicApiDiff::between(old.items, new.items);
+    let diff = PublicApiDiff::between(old, new);
     print_diff_with_headers(&diff, &mut stdout(), "Removed:", "Changed:", "Added:")?;
 
     Ok(())

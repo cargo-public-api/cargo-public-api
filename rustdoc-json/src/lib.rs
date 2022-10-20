@@ -2,7 +2,7 @@
 //!
 //! # Building
 //!
-//! Use [`rustdoc_json::Builder::build()`][Builder] to build rustdoc JSON. Like this:
+//! Use [`rustdoc_json::Builder`][Builder] to build rustdoc JSON. Like this:
 //!
 //! ```
 //! let json_path = rustdoc_json::Builder::default()
@@ -55,9 +55,8 @@ pub enum BuildError {
     IoError(#[from] std::io::Error),
 }
 
-/// Options for building a rustdoc json file.
-///
-/// See [crate] for an example on how to use it.
+/// Builds rustdoc JSON. There are many build options. Refer to the docs to
+/// learn about them all. See [top-level docs](crate) for an example on how to use this builder.
 #[derive(Debug)]
 pub struct Builder {
     toolchain: Option<String>,

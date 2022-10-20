@@ -251,7 +251,7 @@ impl Builder {
     /// Generate rustdoc JSON for a library crate. Returns the path to the freshly
     /// built rustdoc JSON file.
     ///
-    /// See [crate] for an example on how to use it.
+    /// See [top-level docs](crate) for an example on how to use it.
     ///
     /// # Errors
     ///

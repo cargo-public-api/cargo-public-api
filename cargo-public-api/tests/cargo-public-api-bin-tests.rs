@@ -226,6 +226,32 @@ fn diff_public_items_with_dirty_tree_succeedes_with_force_option() {
         .success();
 }
 
+/// Test that relative git references like HEAD and HEAD^ work
+/// (even as the second diff target).
+#[test]
+fn diff_public_items_relative_refs() {
+    let test_repo = TestRepo::new();
+
+    // Pick a specific commit to serve as our HEAD
+    let path = test_repo.path();
+    git_utils::git_checkout("v0.3.0", path, true, false).unwrap();
+    assert_eq!(None, git_utils::current_branch(path).unwrap());
+    let before = git_utils::current_commit(path).unwrap();
+
+    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    cmd.current_dir(path);
+    cmd.arg("--color=never");
+    cmd.arg("--diff-git-checkouts");
+    cmd.arg("HEAD^");
+    cmd.arg("HEAD");
+    cmd.assert()
+        .stdout_or_bless("./tests/expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt")
+        .success();
+
+    let after = git_utils::current_commit(path).unwrap();
+    assert_eq!(before, after);
+}
+
 #[test]
 fn deny_when_not_diffing() {
     let mut cmd = TestCmd::new();

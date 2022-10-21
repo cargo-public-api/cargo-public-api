@@ -69,6 +69,10 @@ Added:
 
 Documentation can be found at [docs.rs](https://docs.rs/public-api/latest/public-api/) as usual. There are also some simple [examples](https://github.com/Enselic/cargo-public-api/tree/main/public-api/examples) on how to use the library. The code for the [thin bin wrapper](https://github.com/Enselic/cargo-public-api/blob/main/public-api/src/main.rs) might also be of interest.
 
+# Changelog
+
+Please refer to [CHANGELOG.md](https://github.com/Enselic/cargo-public-api/blob/main/public-api/CHANGELOG.md)
+
 # Historical note
 
 The code for this library used to live at https://github.com/Enselic/public-api. So git tags for old versions are found in that repo rather than this repo.

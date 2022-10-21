@@ -2,7 +2,7 @@ use std::rc::Rc;
 
 use rustdoc_types::{Id, Item};
 
-use crate::{render::RenderingContext, tokens::Token};
+use crate::{public_item::PublicItemPath, render::RenderingContext, tokens::Token};
 
 /// This struct represents one public item of a crate, but in intermediate form.
 /// It wraps a single [Item] but adds additional calculated values to make it
@@ -46,6 +46,11 @@ impl<'a> IntermediatePublicItem<'a> {
         }
 
         path
+    }
+
+    #[must_use]
+    pub fn path_vec(&'a self) -> PublicItemPath {
+        self.path().iter().map(|i| i.name().to_owned()).collect()
     }
 
     #[must_use]

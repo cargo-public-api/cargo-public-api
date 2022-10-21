@@ -31,11 +31,7 @@ impl PublicItem {
         public_item: &Rc<IntermediatePublicItem<'_>>,
     ) -> PublicItem {
         PublicItem {
-            path: public_item
-                .path()
-                .iter()
-                .map(|i| i.name().to_owned())
-                .collect::<PublicItemPath>(),
+            path: public_item.path_vec(),
             tokens: public_item.render_token_stream(context),
         }
     }

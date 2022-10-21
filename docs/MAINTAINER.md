@@ -37,8 +37,7 @@ For `public-api` and `cargo-public-api` (which always have the same version numb
 1. First release `rustdoc-json` if needed. See below.
 1. Create a PR that targets `main` that
     1. Bumps to the same `version` in
-        * **public-api/Cargo.toml** `[package]`
-        * **cargo-public-api/Cargo.toml** `[package]`
+        * **Cargo.toml** `[workspace.package.version]`
         * **cargo-public-api/Cargo.toml** `[dependencies.public-api]`
     2. If you bump 0.x.0 version, also update the [compatibility matrix](https://github.com/Enselic/cargo-public-api#compatibility-matrix).
     1. If `MINIMUM_RUSTDOC_JSON_VERSION` must be bumped, bump it. If you bump it, also bump it in

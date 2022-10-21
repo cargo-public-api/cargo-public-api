@@ -176,9 +176,14 @@ impl<'a> ItemIterator<'a> {
 
     fn add_item_to_visit(
         &mut self,
-        mut item: &'a Item,
+        original_item: &'a Item,
         parent: Option<Rc<IntermediatePublicItem<'a>>>,
     ) {
+        // Normally we add the original item, but in the case of imports we
+        // replace this with the *imported* item.
+        let mut actual_item = original_item;
+
+        // Imports can optionally rename items.
         let mut overridden_name = None;
 
         // Since public imports are part of the public API, we inline them, i.e.
@@ -189,7 +194,7 @@ impl<'a> ItemIterator<'a> {
         // also show type information! There is one exception; for re-exports of
         // primitive types, there is no item Id to inline with, so they remain
         // as e.g. `pub use my_i32` in the output.
-        if let ItemEnum::Import(import) = &item.inner {
+        if let ItemEnum::Import(import) = &original_item.inner {
             overridden_name = if import.glob {
                 // Items should have been inlined in maybe_add_item_to_visit(),
                 // but since we got here that must have failed, typically
@@ -197,12 +202,12 @@ impl<'a> ItemIterator<'a> {
                 // output, or to break import recursion.
                 Some(format!("<<{}::*>>", import.source))
             } else {
-                if let Some(import) = import
+                if let Some(imported_item) = import
                     .id
                     .as_ref()
-                    .and_then(|id| self.get_item_if_not_in_path(&parent, id))
+                    .and_then(|imported_id| self.get_item_if_not_in_path(&parent, imported_id))
                 {
-                    item = import;
+                    actual_item = imported_item;
                 }
 
                 Some(import.name.clone())
@@ -210,15 +215,16 @@ impl<'a> ItemIterator<'a> {
         }
 
         let public_item = Rc::new(IntermediatePublicItem {
-            item,
+            item: actual_item,
             overridden_name,
             parent,
         });
 
         self.id_to_items
-            .entry(&item.id)
+            .entry(&actual_item.id)
             .or_default()
             .push(public_item.clone());
+
         self.items_left.push(public_item);
     }
 

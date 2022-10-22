@@ -32,13 +32,13 @@ struct ImplItem<'a> {
 /// generated with `--document-private-items`, then private items will also be
 /// included in the output.
 pub struct ItemIterator<'a> {
-    /// The entire rustdoc JSON data
+    /// The original and unmodified rustdoc JSON, in deserialized form.
     crate_: &'a Crate,
 
     /// What items left to visit (and possibly add more items from)
     items_left: Vec<Rc<IntermediatePublicItem<'a>>>,
 
-    /// Given a rustdoc JSON ID, keeps track of what public items that have this
+    /// Given a rustdoc JSON Id, keeps track of what public items that have this
     /// ID. The reason this is a one-to-many mapping is because of re-exports.
     /// If an API re-exports a public item in a different place, the same item
     /// will be reachable by different paths, and thus the Vec will contain many
@@ -174,6 +174,7 @@ impl<'a> ItemIterator<'a> {
         }
     }
 
+    /// Add an item to the list of items to visit later. Handles imports specially.
     fn add_item_to_visit(
         &mut self,
         original_item: &'a Item,
@@ -214,14 +215,24 @@ impl<'a> ItemIterator<'a> {
             };
         }
 
+        self.just_add_item_to_visit(actual_item, overridden_name, parent);
+    }
+
+    /// Adds an item to visit. No questions asked.
+    fn just_add_item_to_visit(
+        &mut self,
+        item: &'a Item,
+        overridden_name: Option<String>,
+        parent: Option<Rc<IntermediatePublicItem<'a>>>,
+    ) {
         let public_item = Rc::new(IntermediatePublicItem {
-            item: actual_item,
+            item,
             overridden_name,
             parent,
         });
 
         self.id_to_items
-            .entry(&actual_item.id)
+            .entry(&item.id)
             .or_default()
             .push(public_item.clone());
 

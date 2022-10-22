@@ -22,7 +22,7 @@ use crate::tokens::Token;
 /// public API. For such cases, the rendering code can use the fields in this
 /// struct.
 pub struct RenderingContext<'a> {
-    /// The original (deserialized) rustdoc JSON.
+    /// The original and unmodified rustdoc JSON, in deserialized form.
     pub crate_: &'a Crate,
 
     /// Given a rustdoc JSON ID, keeps track of what public items that have this

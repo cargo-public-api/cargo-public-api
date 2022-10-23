@@ -120,95 +120,90 @@ impl<'a> ItemIterator<'a> {
         parent: Option<Rc<IntermediatePublicItem<'a>>>,
     ) {
         if let Some(item) = self.crate_.get_item(id) {
-            self.maybe_add_item_to_visit(item, parent);
+            self.add_item_to_visit(item, parent);
         }
     }
 
-    fn maybe_add_item_to_visit(
+    fn add_item_to_visit(
         &mut self,
         item: &'a Item,
+        parent: Option<Rc<IntermediatePublicItem<'a>>>,
+    ) {
+        match &item.inner {
+            ItemEnum::Import(import) => {
+                if import.glob {
+                    self.add_glob_import_item_to_visit(item, import, parent);
+                } else {
+                    self.add_regular_import_item_to_visit(item, import, parent);
+                }
+            }
+            _ => self.just_add_item_to_visit(item, None, parent),
+        }
+    }
+
+    /// We need to handle `pub use foo::*` specially. In case of such wildcard
+    /// imports, `glob` will be `true` and `id` will be the module we should
+    /// import all items from, but we should NOT add the module itself.
+    fn add_glob_import_item_to_visit(
+        &mut self,
+        item: &'a Item,
+        import: &'a Import,
         parent: Option<Rc<IntermediatePublicItem<'a>>>,
     ) {
         // We try to inline glob imports, but that might fail, and we want to
         // keep track of when that happens.
         let mut glob_import_inlined = false;
 
-        // We need to handle `pub use foo::*` specially. In case of such
-        // wildcard imports, `glob` will be `true` and `id` will be the
-        // module we should import all items from, but we should NOT add
-        // the module itself.
-        if let ItemEnum::Import(Import {
-            id: Some(mod_id),
-            glob: true,
+        // Before we inline this wildcard import, make sure that the module is
+        // not indirectly trying to import itself. If we allow that, we'll get a
+        // stack overflow. Note that `glob_import_inlined` remains `false` in
+        // that case, which means that the output will use a special syntax to
+        // indicate that we broke recursion.
+        if let Some(Item {
+            inner: ItemEnum::Module(Module { items, .. }),
             ..
-        }) = &item.inner
+        }) = import
+            .id
+            .as_ref()
+            .and_then(|id| self.get_item_if_not_in_path(&parent, id))
         {
-            // Before we inline this wildcard import, make sure that the module
-            // is not indirectly trying to import itself. If we allow that,
-            // we'll get a stack overflow. Note that `glob_import_inlined`
-            // remains `false` in that case, which means that the output will
-            // use a special syntax to indicate that we broke recursion.
-            if let Some(Item {
-                inner: ItemEnum::Module(Module { items, .. }),
-                ..
-            }) = self.get_item_if_not_in_path(&parent, mod_id)
-            {
-                for item in items {
-                    self.try_add_item_to_visit(item, parent.clone());
-                }
-                glob_import_inlined = true;
+            for item in items {
+                self.try_add_item_to_visit(item, parent.clone());
             }
+            glob_import_inlined = true;
         }
 
-        // if we inlined a glob import earlier, we should not add the import
-        // item itself. All other items we can go ahead and add.
+        // Only add the import item itself if we were unable to add its children
         if !glob_import_inlined {
-            self.add_item_to_visit(item, parent);
+            self.just_add_item_to_visit(item, Some(format!("<<{}::*>>", import.source)), parent);
         }
     }
 
-    /// Add an item to the list of items to visit later. Handles imports specially.
-    fn add_item_to_visit(
+    /// Since public imports are part of the public API, we inline them, i.e.
+    /// replace the item corresponding to an import with the item that is
+    /// imported. If we didn't do this, publicly imported items would show up as
+    /// just e.g. `pub use some::function`, which is not sufficient for the use
+    /// cases of this tool. We want to show the actual API, and thus also show
+    /// type information! There is one exception; for re-exports of primitive
+    /// types, there is no item Id to inline with, so they remain as e.g. `pub
+    /// use my_i32` in the output.
+    fn add_regular_import_item_to_visit(
         &mut self,
-        original_item: &'a Item,
+        item: &'a Item,
+        import: &'a Import,
         parent: Option<Rc<IntermediatePublicItem<'a>>>,
     ) {
-        // Normally we add the original item, but in the case of imports we
-        // replace this with the *imported* item.
-        let mut actual_item = original_item;
+        let mut actual_item = item;
 
-        // Imports can optionally rename items.
-        let mut overridden_name = None;
-
-        // Since public imports are part of the public API, we inline them, i.e.
-        // replace the item corresponding to an import with the item that is
-        // imported. If we didn't do this, publicly imported items would show up
-        // as just e.g. `pub use some::function`, which is not sufficient for
-        // the use cases of this tool. We want to show the actual API, and thus
-        // also show type information! There is one exception; for re-exports of
-        // primitive types, there is no item Id to inline with, so they remain
-        // as e.g. `pub use my_i32` in the output.
-        if let ItemEnum::Import(import) = &original_item.inner {
-            overridden_name = if import.glob {
-                // Items should have been inlined in maybe_add_item_to_visit(),
-                // but since we got here that must have failed, typically
-                // because the built rustdoc JSON omitted some items from the
-                // output, or to break import recursion.
-                Some(format!("<<{}::*>>", import.source))
-            } else {
-                if let Some(imported_item) = import
-                    .id
-                    .as_ref()
-                    .and_then(|imported_id| self.get_item_if_not_in_path(&parent, imported_id))
-                {
-                    actual_item = imported_item;
-                }
-
-                Some(import.name.clone())
-            };
+        if let Some(imported_item) = import
+            .id
+            .as_ref()
+            .and_then(|imported_id| self.get_item_if_not_in_path(&parent, imported_id))
+        {
+            actual_item = imported_item;
         }
 
-        self.just_add_item_to_visit(actual_item, overridden_name, parent);
+        self.just_add_item_to_visit(actual_item, Some(import.name.clone()), parent);
     }
 
     /// Adds an item to visit. No questions asked.

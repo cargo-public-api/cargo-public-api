@@ -9,6 +9,7 @@ use crate::{
 };
 
 type Impls<'a> = HashMap<&'a Id, Vec<&'a Impl>>;
+type Parent<'a> = Option<Rc<IntermediatePublicItem<'a>>>;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 enum ImplKind {
@@ -114,27 +115,19 @@ impl<'a> ItemIterator<'a> {
         }
     }
 
-    fn try_add_item_to_visit(
-        &mut self,
-        id: &'a Id,
-        parent: Option<Rc<IntermediatePublicItem<'a>>>,
-    ) {
+    fn try_add_item_to_visit(&mut self, id: &'a Id, parent: Parent<'a>) {
         if let Some(item) = self.crate_.get_item(id) {
             self.add_item_to_visit(item, parent);
         }
     }
 
-    fn add_item_to_visit(
-        &mut self,
-        item: &'a Item,
-        parent: Option<Rc<IntermediatePublicItem<'a>>>,
-    ) {
+    fn add_item_to_visit(&mut self, item: &'a Item, parent: Parent<'a>) {
         match &item.inner {
             ItemEnum::Import(import) => {
                 if import.glob {
-                    self.add_glob_import_item_to_visit(item, import, parent);
+                    self.add_glob_import_item(item, import, parent);
                 } else {
-                    self.add_regular_import_item_to_visit(item, import, parent);
+                    self.add_regular_import_item(item, import, parent);
                 }
             }
             _ => self.just_add_item_to_visit(item, None, parent),
@@ -144,12 +137,7 @@ impl<'a> ItemIterator<'a> {
     /// We need to handle `pub use foo::*` specially. In case of such wildcard
     /// imports, `glob` will be `true` and `id` will be the module we should
     /// import all items from, but we should NOT add the module itself.
-    fn add_glob_import_item_to_visit(
-        &mut self,
-        item: &'a Item,
-        import: &'a Import,
-        parent: Option<Rc<IntermediatePublicItem<'a>>>,
-    ) {
+    fn add_glob_import_item(&mut self, item: &'a Item, import: &'a Import, parent: Parent<'a>) {
         // We try to inline glob imports, but that might fail, and we want to
         // keep track of when that happens.
         let mut glob_import_inlined = false;
@@ -187,12 +175,7 @@ impl<'a> ItemIterator<'a> {
     /// type information! There is one exception; for re-exports of primitive
     /// types, there is no item Id to inline with, so they remain as e.g. `pub
     /// use my_i32` in the output.
-    fn add_regular_import_item_to_visit(
-        &mut self,
-        item: &'a Item,
-        import: &'a Import,
-        parent: Option<Rc<IntermediatePublicItem<'a>>>,
-    ) {
+    fn add_regular_import_item(&mut self, item: &'a Item, import: &'a Import, parent: Parent<'a>) {
         let mut actual_item = item;
 
         if let Some(imported_item) = import
@@ -211,7 +194,7 @@ impl<'a> ItemIterator<'a> {
         &mut self,
         item: &'a Item,
         overridden_name: Option<String>,
-        parent: Option<Rc<IntermediatePublicItem<'a>>>,
+        parent: Parent<'a>,
     ) {
         let public_item = Rc::new(IntermediatePublicItem {
             item,
@@ -230,11 +213,7 @@ impl<'a> ItemIterator<'a> {
     /// Get the rustdoc JSON item with `id`, but only if it is not already part
     /// of the path. This can happen in the case of recursive re-exports, in
     /// which case we need to break the recursion.
-    fn get_item_if_not_in_path(
-        &mut self,
-        parent: &Option<Rc<IntermediatePublicItem<'a>>>,
-        id: &'a Id,
-    ) -> Option<&'a Item> {
+    fn get_item_if_not_in_path(&mut self, parent: &Parent<'a>, id: &'a Id) -> Option<&'a Item> {
         if parent.clone().map_or(false, |p| p.path_contains_id(id)) {
             // The item is already in the path! Break import recursion...
             return None;

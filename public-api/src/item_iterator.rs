@@ -3,7 +3,10 @@ use std::{collections::HashMap, rc::Rc};
 use rustdoc_types::{Crate, Id, Impl, Import, Item, ItemEnum, Module, Struct, StructKind, Type};
 
 use super::intermediate_public_item::IntermediatePublicItem;
-use crate::{public_item::PublicItem, render::RenderingContext, Options, PublicApi};
+use crate::{
+    crate_wrapper::CrateWrapper, public_item::PublicItem, render::RenderingContext, Options,
+    PublicApi,
+};
 
 type Impls<'a> = HashMap<&'a Id, Vec<&'a Impl>>;
 
@@ -33,7 +36,7 @@ struct ImplItem<'a> {
 /// included in the output.
 pub struct ItemIterator<'a> {
     /// The original and unmodified rustdoc JSON, in deserialized form.
-    crate_: &'a Crate,
+    crate_: CrateWrapper<'a>,
 
     /// What items left to visit (and possibly add more items from)
     items_left: Vec<Rc<IntermediatePublicItem<'a>>>,
@@ -44,17 +47,9 @@ pub struct ItemIterator<'a> {
     /// will be reachable by different paths, and thus the Vec will contain many
     /// [`IntermediatePublicItem`]s for that ID.
     ///
-    /// You might think this is rare, but it is actually more common than you
-    /// think out in the wild.
+    /// You might think this is rare, but it is actually a common thing in
+    /// real-world code.
     id_to_items: HashMap<&'a Id, Vec<Rc<IntermediatePublicItem<'a>>>>,
-
-    /// Normally, an item referenced by item Id is present in the rustdoc JSON.
-    /// If [`Self::crate_.index`] is missing an Id, then we add it here, to aid
-    /// with debugging. It will typically be missing because of bugs (or
-    /// borderline bug such as re-exports of foreign items like discussed in
-    /// <https://github.com/rust-lang/rust/pull/99287#issuecomment-1186586518>)
-    /// We do not report it to users, because they can't do anything about it.
-    missing_ids: Vec<&'a Id>,
 
     /// `impl`s are a bit special. They do not need to be reachable by the crate
     /// root in order to matter. All that matters is that the trait and type
@@ -74,10 +69,9 @@ impl<'a> ItemIterator<'a> {
         let all_impls: Vec<ImplItem> = all_impls(crate_).collect();
 
         let mut s = ItemIterator {
-            crate_,
+            crate_: CrateWrapper::new(crate_),
             items_left: vec![],
             id_to_items: HashMap::new(),
-            missing_ids: vec![],
             active_impls: active_impls(all_impls.clone(), options),
         };
 
@@ -125,9 +119,8 @@ impl<'a> ItemIterator<'a> {
         id: &'a Id,
         parent: Option<Rc<IntermediatePublicItem<'a>>>,
     ) {
-        match self.crate_.index.get(id) {
-            Some(item) => self.maybe_add_item_to_visit(item, parent),
-            None => self.add_missing_id(id),
+        if let Some(item) = self.crate_.get_item(id) {
+            self.maybe_add_item_to_visit(item, parent);
         }
     }
 
@@ -252,14 +245,7 @@ impl<'a> ItemIterator<'a> {
             return None;
         }
 
-        self.crate_.index.get(id).or_else(|| {
-            self.add_missing_id(id);
-            None
-        })
-    }
-
-    fn add_missing_id(&mut self, id: &'a Id) {
-        self.missing_ids.push(id);
+        self.crate_.get_item(id)
     }
 }
 
@@ -362,10 +348,6 @@ pub fn public_api_in_crate(crate_: &Crate, options: Options) -> super::PublicApi
             .iter()
             .map(|item| PublicItem::from_intermediate_public_item(&context, item))
             .collect::<Vec<_>>(),
-        missing_item_ids: item_iterator
-            .missing_ids
-            .iter()
-            .map(|m| m.0.clone())
-            .collect(),
+        missing_item_ids: item_iterator.crate_.missing_item_ids(),
     }
 }

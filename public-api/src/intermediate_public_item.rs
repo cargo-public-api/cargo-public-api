@@ -31,7 +31,7 @@ impl<'c> IntermediatePublicItem<'c> {
     }
 
     #[must_use]
-    pub fn path(&'c self) -> Vec<Rc<IntermediatePublicItem<'c>>> {
+    pub fn path(&self) -> Vec<Rc<IntermediatePublicItem<'c>>> {
         let mut path = vec![];
 
         let rc_self = Rc::new(self.clone());
@@ -48,7 +48,7 @@ impl<'c> IntermediatePublicItem<'c> {
     }
 
     #[must_use]
-    pub fn path_vec(&'c self) -> PublicItemPath {
+    pub fn path_vec(&self) -> PublicItemPath {
         self.path()
             .iter()
             .filter_map(|i| i.name())

@@ -901,7 +901,7 @@ impl<'c> RenderingContext<'c> {
         output
     }
 
-    fn best_item_for_id(&self, id: &Id) -> Option<Rc<IntermediatePublicItem<'c>>> {
+    fn best_item_for_id(&self, id: &'c Id) -> Option<Rc<IntermediatePublicItem<'c>>> {
         match self.id_to_items.get(&id) {
             None => None,
             Some(items) => {

@@ -21,16 +21,16 @@ use crate::tokens::Token;
 /// When we render an item, it might contain references to other parts of the
 /// public API. For such cases, the rendering code can use the fields in this
 /// struct.
-pub struct RenderingContext<'a> {
+pub struct RenderingContext<'c> {
     /// The original and unmodified rustdoc JSON, in deserialized form.
-    pub crate_: &'a Crate,
+    pub crate_: &'c Crate,
 
     /// Given a rustdoc JSON ID, keeps track of what public items that have this
     /// ID. See [`crate::item_iterator::ItemIterator::id_to_items`] for more info.
-    pub id_to_items: HashMap<&'a Id, Vec<Rc<IntermediatePublicItem<'a>>>>,
+    pub id_to_items: HashMap<&'c Id, Vec<Rc<IntermediatePublicItem<'c>>>>,
 }
 
-impl<'a> RenderingContext<'a> {
+impl<'c> RenderingContext<'c> {
     #[allow(clippy::too_many_lines)]
     pub fn token_stream(&self, item: &IntermediatePublicItem) -> Vec<Token> {
         let mut tokens = vec![];
@@ -193,7 +193,7 @@ impl<'a> RenderingContext<'a> {
     /// Tuple fields are referenced by ID in JSON, but we need to look up the
     /// actual types that the IDs correspond to, in order to render the fields.
     /// This helper does that for a slice of fields.
-    fn resolve_tuple_fields(&self, fields: &[Option<Id>]) -> Vec<Option<&'a Type>> {
+    fn resolve_tuple_fields(&self, fields: &[Option<Id>]) -> Vec<Option<&'c Type>> {
         let mut resolved_fields: Vec<Option<&Type>> = vec![];
 
         for id in fields {
@@ -701,9 +701,9 @@ impl<'a> RenderingContext<'a> {
     }
 
     fn render_angle_bracketed(&self, args: &[GenericArg], bindings: &[TypeBinding]) -> Vec<Token> {
-        enum Arg<'a> {
-            GenericArg(&'a GenericArg),
-            TypeBinding(&'a TypeBinding),
+        enum Arg<'c> {
+            GenericArg(&'c GenericArg),
+            TypeBinding(&'c TypeBinding),
         }
         self.render_sequence_if_not_empty(
             vec![Token::symbol("<")],
@@ -901,7 +901,7 @@ impl<'a> RenderingContext<'a> {
         output
     }
 
-    fn best_item_for_id(&self, id: &Id) -> Option<Rc<IntermediatePublicItem<'a>>> {
+    fn best_item_for_id(&self, id: &Id) -> Option<Rc<IntermediatePublicItem<'c>>> {
         match self.id_to_items.get(&id) {
             None => None,
             Some(items) => {

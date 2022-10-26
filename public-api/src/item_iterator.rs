@@ -8,8 +8,8 @@ use crate::{
     PublicApi,
 };
 
-type Impls<'a> = HashMap<&'a Id, Vec<&'a Impl>>;
-type Parent<'a> = Option<Rc<IntermediatePublicItem<'a>>>;
+type Impls<'c> = HashMap<&'c Id, Vec<&'c Impl>>;
+type Parent<'c> = Option<Rc<IntermediatePublicItem<'c>>>;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 enum ImplKind {
@@ -19,10 +19,10 @@ enum ImplKind {
 }
 
 #[derive(Debug, Clone)]
-struct ImplItem<'a> {
-    item: &'a Item,
-    impl_: &'a Impl,
-    for_id: Option<&'a Id>,
+struct ImplItem<'c> {
+    item: &'c Item,
+    impl_: &'c Impl,
+    for_id: Option<&'c Id>,
     kind: ImplKind,
 }
 
@@ -35,12 +35,12 @@ struct ImplItem<'a> {
 /// of `impl`s, see relevant code for more details), so if the rustdoc JSON is
 /// generated with `--document-private-items`, then private items will also be
 /// included in the output.
-pub struct ItemIterator<'a> {
+pub struct ItemIterator<'c> {
     /// The original and unmodified rustdoc JSON, in deserialized form.
-    crate_: CrateWrapper<'a>,
+    crate_: CrateWrapper<'c>,
 
     /// What items left to visit (and possibly add more items from)
-    items_left: Vec<Rc<IntermediatePublicItem<'a>>>,
+    items_left: Vec<Rc<IntermediatePublicItem<'c>>>,
 
     /// Given a rustdoc JSON Id, keeps track of what public items that have this
     /// ID. The reason this is a one-to-many mapping is because of re-exports.
@@ -50,7 +50,7 @@ pub struct ItemIterator<'a> {
     ///
     /// You might think this is rare, but it is actually a common thing in
     /// real-world code.
-    id_to_items: HashMap<&'a Id, Vec<Rc<IntermediatePublicItem<'a>>>>,
+    id_to_items: HashMap<&'c Id, Vec<Rc<IntermediatePublicItem<'c>>>>,
 
     /// `impl`s are a bit special. They do not need to be reachable by the crate
     /// root in order to matter. All that matters is that the trait and type
@@ -62,11 +62,11 @@ pub struct ItemIterator<'a> {
     ///
     /// Whenever we encounter an active `impl` for a type, we inject the
     /// associated items of the `impl` as children of the type.
-    active_impls: Impls<'a>,
+    active_impls: Impls<'c>,
 }
 
-impl<'a> ItemIterator<'a> {
-    pub fn new(crate_: &'a Crate, options: Options) -> Self {
+impl<'c> ItemIterator<'c> {
+    pub fn new(crate_: &'c Crate, options: Options) -> Self {
         let all_impls: Vec<ImplItem> = all_impls(crate_).collect();
 
         let mut s = ItemIterator {
@@ -86,7 +86,7 @@ impl<'a> ItemIterator<'a> {
         s
     }
 
-    fn try_add_relevant_impls(&mut self, all_impls: Vec<ImplItem<'a>>) {
+    fn try_add_relevant_impls(&mut self, all_impls: Vec<ImplItem<'c>>) {
         for impl_ in all_impls {
             // Currently only Auto Trait Implementations are supported/listed
             if impl_.kind == ImplKind::AutoTrait {
@@ -95,7 +95,7 @@ impl<'a> ItemIterator<'a> {
         }
     }
 
-    fn add_children_for_item(&mut self, public_item: &Rc<IntermediatePublicItem<'a>>) {
+    fn add_children_for_item(&mut self, public_item: &Rc<IntermediatePublicItem<'c>>) {
         // Handle any impls. See [`ItemIterator::impls`] docs for more info.
         let mut add_after_borrow = vec![];
         if let Some(impls) = self.active_impls.get(&public_item.item.id) {
@@ -115,13 +115,13 @@ impl<'a> ItemIterator<'a> {
         }
     }
 
-    fn try_add_item_to_visit(&mut self, id: &'a Id, parent: Parent<'a>) {
+    fn try_add_item_to_visit(&mut self, id: &'c Id, parent: Parent<'c>) {
         if let Some(item) = self.crate_.get_item(id) {
             self.add_item_to_visit(item, parent);
         }
     }
 
-    fn add_item_to_visit(&mut self, item: &'a Item, parent: Parent<'a>) {
+    fn add_item_to_visit(&mut self, item: &'c Item, parent: Parent<'c>) {
         match &item.inner {
             ItemEnum::Import(import) => {
                 if import.glob {
@@ -137,7 +137,7 @@ impl<'a> ItemIterator<'a> {
     /// We need to handle `pub use foo::*` specially. In case of such wildcard
     /// imports, `glob` will be `true` and `id` will be the module we should
     /// import all items from, but we should NOT add the module itself.
-    fn add_glob_import_item(&mut self, item: &'a Item, import: &'a Import, parent: Parent<'a>) {
+    fn add_glob_import_item(&mut self, item: &'c Item, import: &'c Import, parent: Parent<'c>) {
         // We try to inline glob imports, but that might fail, and we want to
         // keep track of when that happens.
         let mut glob_import_inlined = false;
@@ -175,7 +175,7 @@ impl<'a> ItemIterator<'a> {
     /// type information! There is one exception; for re-exports of primitive
     /// types, there is no item Id to inline with, so they remain as e.g. `pub
     /// use my_i32` in the output.
-    fn add_regular_import_item(&mut self, item: &'a Item, import: &'a Import, parent: Parent<'a>) {
+    fn add_regular_import_item(&mut self, item: &'c Item, import: &'c Import, parent: Parent<'c>) {
         let mut actual_item = item;
 
         if let Some(imported_item) = import
@@ -192,9 +192,9 @@ impl<'a> ItemIterator<'a> {
     /// Adds an item to visit. No questions asked.
     fn just_add_item_to_visit(
         &mut self,
-        item: &'a Item,
+        item: &'c Item,
         overridden_name: Option<String>,
-        parent: Parent<'a>,
+        parent: Parent<'c>,
     ) {
         let public_item = Rc::new(IntermediatePublicItem {
             item,
@@ -213,7 +213,7 @@ impl<'a> ItemIterator<'a> {
     /// Get the rustdoc JSON item with `id`, but only if it is not already part
     /// of the path. This can happen in the case of recursive re-exports, in
     /// which case we need to break the recursion.
-    fn get_item_if_not_in_path(&mut self, parent: &Parent<'a>, id: &'a Id) -> Option<&'a Item> {
+    fn get_item_if_not_in_path(&mut self, parent: &Parent<'c>, id: &'c Id) -> Option<&'c Item> {
         if parent.clone().map_or(false, |p| p.path_contains_id(id)) {
             // The item is already in the path! Break import recursion...
             return None;
@@ -223,8 +223,8 @@ impl<'a> ItemIterator<'a> {
     }
 }
 
-impl<'a> Iterator for ItemIterator<'a> {
-    type Item = Rc<IntermediatePublicItem<'a>>;
+impl<'c> Iterator for ItemIterator<'c> {
+    type Item = Rc<IntermediatePublicItem<'c>>;
 
     fn next(&mut self) -> Option<Self::Item> {
         let mut result = None;

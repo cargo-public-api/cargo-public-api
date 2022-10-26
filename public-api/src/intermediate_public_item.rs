@@ -9,9 +9,9 @@ use crate::{public_item::PublicItemPath, render::RenderingContext, tokens::Token
 /// easier to work with. Later, one [`Self`] will be converted to exactly one
 /// [`crate::PublicItem`].
 #[derive(Clone, Debug)]
-pub struct IntermediatePublicItem<'a> {
+pub struct IntermediatePublicItem<'c> {
     /// The item we are effectively wrapping.
-    pub item: &'a Item,
+    pub item: &'c Item,
 
     /// If `Some`, this overrides [Item::name], which happens in the case of
     /// renamed imports (`pub use other::Item as Foo;`).
@@ -20,10 +20,10 @@ pub struct IntermediatePublicItem<'a> {
     /// The parent item. If [Self::item] is e.g. an enum variant, then the
     /// parent is an enum. We follow the chain of parents to be able to know the
     /// correct path to an item in the output.
-    pub parent: Option<Rc<IntermediatePublicItem<'a>>>,
+    pub parent: Option<Rc<IntermediatePublicItem<'c>>>,
 }
 
-impl<'a> IntermediatePublicItem<'a> {
+impl<'c> IntermediatePublicItem<'c> {
     pub fn name(&self) -> Option<&str> {
         self.overridden_name
             .as_deref()
@@ -31,7 +31,7 @@ impl<'a> IntermediatePublicItem<'a> {
     }
 
     #[must_use]
-    pub fn path(&'a self) -> Vec<Rc<IntermediatePublicItem<'a>>> {
+    pub fn path(&'c self) -> Vec<Rc<IntermediatePublicItem<'c>>> {
         let mut path = vec![];
 
         let rc_self = Rc::new(self.clone());
@@ -48,7 +48,7 @@ impl<'a> IntermediatePublicItem<'a> {
     }
 
     #[must_use]
-    pub fn path_vec(&'a self) -> PublicItemPath {
+    pub fn path_vec(&'c self) -> PublicItemPath {
         self.path()
             .iter()
             .filter_map(|i| i.name())
@@ -57,7 +57,7 @@ impl<'a> IntermediatePublicItem<'a> {
     }
 
     #[must_use]
-    pub fn path_contains_id(&self, id: &'a Id) -> bool {
+    pub fn path_contains_id(&self, id: &'c Id) -> bool {
         self.path().iter().any(|m| m.item.id == *id)
     }
 

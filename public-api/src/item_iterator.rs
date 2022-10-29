@@ -136,17 +136,11 @@ impl<'c> ItemIterator<'c> {
 
     /// We need to handle `pub use foo::*` specially. In case of such wildcard
     /// imports, `glob` will be `true` and `id` will be the module we should
-    /// import all items from, but we should NOT add the module itself.
+    /// import all items from, but we should NOT add the module itself. Before
+    /// we inline this wildcard import, make sure that the module is not
+    /// indirectly trying to import itself. If we allow that, we'll get a stack
+    /// overflow.
     fn add_glob_import_item(&mut self, item: &'c Item, import: &'c Import, parent: Parent<'c>) {
-        // We try to inline glob imports, but that might fail, and we want to
-        // keep track of when that happens.
-        let mut glob_import_inlined = false;
-
-        // Before we inline this wildcard import, make sure that the module is
-        // not indirectly trying to import itself. If we allow that, we'll get a
-        // stack overflow. Note that `glob_import_inlined` remains `false` in
-        // that case, which means that the output will use a special syntax to
-        // indicate that we broke recursion.
         if let Some(Item {
             inner: ItemEnum::Module(Module { items, .. }),
             ..
@@ -158,11 +152,7 @@ impl<'c> ItemIterator<'c> {
             for item in items {
                 self.try_add_item_to_visit(item, parent.clone());
             }
-            glob_import_inlined = true;
-        }
-
-        // Only add the import item itself if we were unable to add its children
-        if !glob_import_inlined {
+        } else {
             self.just_add_item_to_visit(item, Some(format!("<<{}::*>>", import.source)), parent);
         }
     }

@@ -60,13 +60,21 @@ impl<'c> ItemProcessor<'c> {
         }
     }
 
+    /// Adds an item to the front of the work queue. We want to add items to the
+    /// front of the work queue since we process items from the top, and since
+    /// we want to "fully" process an item before we move on to the next one. So
+    /// when we encounter a struct, we also encounter its struct fields, and we
+    /// want to insert the struct fields BEFORE everything else, so that these
+    /// items remain groped together. And the same applies for many kinds of
+    /// groupings (enums, impls, etc).
     fn add_to_work_queue(&mut self, parent_path: Vec<NameableItem<'c>>, id: &'c Id) {
         self.work_queue
             .push_front(UnprocessedItem { parent_path, id });
     }
 
     /// Processes the entire work queue. Adds more items based on items it
-    /// processes. When this returns, all items have been recursively processed.
+    /// processes. When this returns, all items and their children and impls
+    /// have been recursively processed.
     fn run(&mut self) {
         while let Some(unprocessed_item) = self.work_queue.pop_front() {
             if let Some(item) = self.crate_.get_item(unprocessed_item.id) {
@@ -75,7 +83,7 @@ impl<'c> ItemProcessor<'c> {
         }
     }
 
-    /// Process any item. In particular, does the right thing is the item is an
+    /// Process any item. In particular, does the right thing if the item is an
     /// impl or an import.
     fn process_any_item(&mut self, item: &'c Item, unprocessed_item: UnprocessedItem<'c>) {
         match &item.inner {
@@ -95,6 +103,8 @@ impl<'c> ItemProcessor<'c> {
         }
     }
 
+    /// We need to handle `pub use foo::*` specially. In case of such wildcard
+    /// imports, `glob` will be `true` and `id` will be the module we should
     /// import all items from, but we should NOT add the module itself. Before
     /// we inline this wildcard import, make sure that the module is not
     /// indirectly trying to import itself. If we allow that, we'll get a stack
@@ -105,9 +115,6 @@ impl<'c> ItemProcessor<'c> {
         unprocessed_item: UnprocessedItem<'c>,
         item: &'c Item,
     ) {
-        // Before we inline this wildcard import, make sure that the module is
-        // not indirectly trying to import itself. If we allow that, we'll get a
-        // stack overflow.
         if let Some(Item {
             inner: ItemEnum::Module(Module { items, .. }),
             ..
@@ -155,8 +162,8 @@ impl<'c> ItemProcessor<'c> {
         self.process_item(unprocessed_item, actual_item, Some(import.name.clone()));
     }
 
-    /// Processes impls. Is special only because we support filtering out e.g.
-    /// blanket implementations to reduce noise.
+    /// Processes impls. Impls are special because we support filtering out e.g.
+    /// blanket implementations to reduce output noise.
     fn process_impl_item(
         &mut self,
         unprocessed_item: UnprocessedItem<'c>,
@@ -210,8 +217,7 @@ impl<'c> ItemProcessor<'c> {
 }
 
 impl<'c> UnprocessedItem<'c> {
-    /// Finishes an item. Turns an [`UnprocessedItem`] into a finished
-    /// [`IntermediatePublicItem`].
+    /// Turns an [`UnprocessedItem`] into a finished [`IntermediatePublicItem`].
     fn finish(self, item: &'c Item, overridden_name: Option<String>) -> IntermediatePublicItem<'c> {
         // Transfer path ownership to output item
         let mut path = self.parent_path;

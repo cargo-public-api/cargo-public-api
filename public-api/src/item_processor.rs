@@ -179,7 +179,7 @@ impl<'c> ItemProcessor<'c> {
         overridden_name: Option<String>,
     ) {
         let finished_item = unprocessed_item.finish(item, overridden_name);
-        let children = items_in_container(item).into_iter().flatten();
+        let children = children_for_item(item).into_iter().flatten();
         let impls = impls_for_item(item).into_iter().flatten();
 
         // Use .rev() so order is preserved with .push_front(). Use
@@ -256,7 +256,7 @@ impl ImplKind {
 
 /// Some items contain other items, which is relevant for analysis. Keep track
 /// of such relationships.
-const fn items_in_container(item: &Item) -> Option<&Vec<Id>> {
+const fn children_for_item(item: &Item) -> Option<&Vec<Id>> {
     match &item.inner {
         ItemEnum::Module(m) => Some(&m.items),
         ItemEnum::Union(u) => Some(&u.fields),

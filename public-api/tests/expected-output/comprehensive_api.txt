@@ -11,7 +11,11 @@ impl RefUnwindSafe for comprehensive_api::enums::EnumWithStrippedTupleVariants
 impl RefUnwindSafe for comprehensive_api::enums::SingleVariant
 impl RefUnwindSafe for comprehensive_api::exports::issue_145::external::External
 impl RefUnwindSafe for comprehensive_api::exports::issue_145::external_2::External
+impl RefUnwindSafe for comprehensive_api::exports::issue_145::external_2::External
 impl RefUnwindSafe for comprehensive_api::exports::issue_145::external_3::External
+impl RefUnwindSafe for comprehensive_api::exports::issue_145::external_3::External
+impl RefUnwindSafe for comprehensive_api::structs::Plain
+impl RefUnwindSafe for comprehensive_api::structs::Plain
 impl RefUnwindSafe for comprehensive_api::structs::Plain
 impl RefUnwindSafe for comprehensive_api::structs::PrivateField
 impl RefUnwindSafe for comprehensive_api::structs::TupleStructDouble
@@ -29,7 +33,11 @@ impl Send for comprehensive_api::enums::EnumWithStrippedTupleVariants
 impl Send for comprehensive_api::enums::SingleVariant
 impl Send for comprehensive_api::exports::issue_145::external::External
 impl Send for comprehensive_api::exports::issue_145::external_2::External
+impl Send for comprehensive_api::exports::issue_145::external_2::External
 impl Send for comprehensive_api::exports::issue_145::external_3::External
+impl Send for comprehensive_api::exports::issue_145::external_3::External
+impl Send for comprehensive_api::structs::Plain
+impl Send for comprehensive_api::structs::Plain
 impl Send for comprehensive_api::structs::Plain
 impl Send for comprehensive_api::structs::PrivateField
 impl Send for comprehensive_api::structs::TupleStructDouble
@@ -38,6 +46,7 @@ impl Send for comprehensive_api::structs::TupleStructDoubleWithPrivate
 impl Send for comprehensive_api::structs::TupleStructSingle
 impl Send for comprehensive_api::structs::Unit
 impl Send for comprehensive_api::unions::Basic
+impl Simple for comprehensive_api::structs::Unit
 impl Sync for comprehensive_api::StructInPrivateMod
 impl Sync for comprehensive_api::attributes::C
 impl Sync for comprehensive_api::attributes::NonExhaustive
@@ -47,7 +56,11 @@ impl Sync for comprehensive_api::enums::EnumWithStrippedTupleVariants
 impl Sync for comprehensive_api::enums::SingleVariant
 impl Sync for comprehensive_api::exports::issue_145::external::External
 impl Sync for comprehensive_api::exports::issue_145::external_2::External
+impl Sync for comprehensive_api::exports::issue_145::external_2::External
 impl Sync for comprehensive_api::exports::issue_145::external_3::External
+impl Sync for comprehensive_api::exports::issue_145::external_3::External
+impl Sync for comprehensive_api::structs::Plain
+impl Sync for comprehensive_api::structs::Plain
 impl Sync for comprehensive_api::structs::Plain
 impl Sync for comprehensive_api::structs::PrivateField
 impl Sync for comprehensive_api::structs::TupleStructDouble
@@ -65,7 +78,11 @@ impl Unpin for comprehensive_api::enums::EnumWithStrippedTupleVariants
 impl Unpin for comprehensive_api::enums::SingleVariant
 impl Unpin for comprehensive_api::exports::issue_145::external::External
 impl Unpin for comprehensive_api::exports::issue_145::external_2::External
+impl Unpin for comprehensive_api::exports::issue_145::external_2::External
 impl Unpin for comprehensive_api::exports::issue_145::external_3::External
+impl Unpin for comprehensive_api::exports::issue_145::external_3::External
+impl Unpin for comprehensive_api::structs::Plain
+impl Unpin for comprehensive_api::structs::Plain
 impl Unpin for comprehensive_api::structs::Plain
 impl Unpin for comprehensive_api::structs::PrivateField
 impl Unpin for comprehensive_api::structs::TupleStructDouble
@@ -83,7 +100,11 @@ impl UnwindSafe for comprehensive_api::enums::EnumWithStrippedTupleVariants
 impl UnwindSafe for comprehensive_api::enums::SingleVariant
 impl UnwindSafe for comprehensive_api::exports::issue_145::external::External
 impl UnwindSafe for comprehensive_api::exports::issue_145::external_2::External
+impl UnwindSafe for comprehensive_api::exports::issue_145::external_2::External
 impl UnwindSafe for comprehensive_api::exports::issue_145::external_3::External
+impl UnwindSafe for comprehensive_api::exports::issue_145::external_3::External
+impl UnwindSafe for comprehensive_api::structs::Plain
+impl UnwindSafe for comprehensive_api::structs::Plain
 impl UnwindSafe for comprehensive_api::structs::Plain
 impl UnwindSafe for comprehensive_api::structs::PrivateField
 impl UnwindSafe for comprehensive_api::structs::TupleStructDouble
@@ -92,6 +113,9 @@ impl UnwindSafe for comprehensive_api::structs::TupleStructDoubleWithPrivate
 impl UnwindSafe for comprehensive_api::structs::TupleStructSingle
 impl UnwindSafe for comprehensive_api::structs::Unit
 impl UnwindSafe for comprehensive_api::unions::Basic
+impl comprehensive_api::structs::Plain
+impl comprehensive_api::structs::Plain
+impl comprehensive_api::structs::Plain
 impl<'a, T, D> RefUnwindSafe for comprehensive_api::enums::EnumWithGenerics<'a, T, D> where D: RefUnwindSafe, T: RefUnwindSafe
 impl<'a, T, D> Send for comprehensive_api::enums::EnumWithGenerics<'a, T, D> where D: Send, T: Sync
 impl<'a, T, D> Sync for comprehensive_api::enums::EnumWithGenerics<'a, T, D> where D: Sync, T: Sync
@@ -112,6 +136,11 @@ impl<'a> !UnwindSafe for comprehensive_api::higher_ranked_trait_bounds::Bar<'a>
 impl<'a> !UnwindSafe for comprehensive_api::higher_ranked_trait_bounds::Foo<'a>
 impl<'a> Unpin for comprehensive_api::higher_ranked_trait_bounds::Bar<'a>
 impl<'a> Unpin for comprehensive_api::higher_ranked_trait_bounds::Foo<'a>
+impl<'a> comprehensive_api::higher_ranked_trait_bounds::Foo<'a>
+impl<'a> comprehensive_api::structs::Plain
+impl<'a> comprehensive_api::structs::Plain
+impl<'a> comprehensive_api::structs::Plain
+impl<'b> comprehensive_api::structs::WithLifetimeAndGenericParam<'b, String>
 impl<T, const N: usize> RefUnwindSafe for comprehensive_api::structs::ConstArg<T, N> where T: RefUnwindSafe
 impl<T, const N: usize> Send for comprehensive_api::structs::ConstArg<T, N> where T: Send
 impl<T, const N: usize> Sync for comprehensive_api::structs::ConstArg<T, N> where T: Sync

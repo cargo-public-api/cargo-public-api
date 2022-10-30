@@ -1,4 +1,5 @@
 #[non_exhaustive] pub struct example_api::Struct
+impl Debug for example_api::Struct
 impl RefUnwindSafe for example_api::Struct
 impl RefUnwindSafe for example_api::StructV2
 impl Send for example_api::Struct
@@ -9,6 +10,20 @@ impl Unpin for example_api::Struct
 impl Unpin for example_api::StructV2
 impl UnwindSafe for example_api::Struct
 impl UnwindSafe for example_api::StructV2
+impl<T, U> Into<U> for example_api::Struct where U: From<T>
+impl<T, U> Into<U> for example_api::StructV2 where U: From<T>
+impl<T, U> TryFrom<U> for example_api::Struct where U: Into<T>
+impl<T, U> TryFrom<U> for example_api::StructV2 where U: Into<T>
+impl<T, U> TryInto<U> for example_api::Struct where U: TryFrom<T>
+impl<T, U> TryInto<U> for example_api::StructV2 where U: TryFrom<T>
+impl<T> Any for example_api::Struct where T: 'static + Sized
+impl<T> Any for example_api::StructV2 where T: 'static + Sized
+impl<T> Borrow<T> for example_api::Struct where T: Sized
+impl<T> Borrow<T> for example_api::StructV2 where T: Sized
+impl<T> BorrowMut<T> for example_api::Struct where T: Sized
+impl<T> BorrowMut<T> for example_api::StructV2 where T: Sized
+impl<T> From<T> for example_api::Struct
+impl<T> From<T> for example_api::StructV2
 pub fn example_api::Struct::borrow(&self) -> &T
 pub fn example_api::Struct::borrow_mut(&mut self) -> &mut T
 pub fn example_api::Struct::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result

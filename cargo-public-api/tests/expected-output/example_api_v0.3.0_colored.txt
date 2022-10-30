@@ -1,4 +1,5 @@
 #[non_exhaustive] [34mpub[0m [34mstruct[0m [36mexample_api[0m::[32mStruct[0m
+[34mimpl[0m [36mDebug[0m [34mfor[0m [36mexample_api[0m::[32mStruct[0m
 [34mimpl[0m [36mRefUnwindSafe[0m [34mfor[0m [36mexample_api[0m::[32mStruct[0m
 [34mimpl[0m [36mRefUnwindSafe[0m [34mfor[0m [36mexample_api[0m::[32mStructV2[0m
 [34mimpl[0m [36mSend[0m [34mfor[0m [36mexample_api[0m::[32mStruct[0m

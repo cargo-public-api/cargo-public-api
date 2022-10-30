@@ -1,31 +1,13 @@
-use std::{
-    collections::{HashMap, VecDeque},
-    vec,
-};
-
-use rustdoc_types::{Crate, Id, Impl, Import, Item, ItemEnum, Module, Struct, StructKind};
-
 use super::intermediate_public_item::NameableItem;
 use crate::{
     crate_wrapper::CrateWrapper, intermediate_public_item::IntermediatePublicItem,
     public_item::PublicItem, render::RenderingContext, Options, PublicApi,
 };
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-enum ImplKind {
-    Normal,
-    AutoTrait,
-    Blanket,
-}
-
-impl ImplKind {
-    fn is_active(&self, options: Options) -> bool {
-        match self {
-            ImplKind::Blanket => options.with_blanket_implementations,
-            ImplKind::AutoTrait | ImplKind::Normal => true,
-        }
-    }
-}
+use rustdoc_types::{Crate, Id, Impl, Import, Item, ItemEnum, Module, Struct, StructKind};
+use std::{
+    collections::{HashMap, VecDeque},
+    vec,
+};
 
 /// Items in rustdoc JSON reference each other by Id. The [`ItemProcessor`]
 /// essentially takes one Id at a time and figure out what to do with it. Once
@@ -181,7 +163,7 @@ impl<'c> ItemProcessor<'c> {
         item: &'c Item,
         impl_: &'c Impl,
     ) {
-        if !impl_kind(impl_).is_active(self.options) {
+        if !ImplKind::from(impl_).is_active(self.options) {
             return;
         }
 
@@ -256,14 +238,30 @@ impl<'c> UnprocessedItem<'c> {
     }
 }
 
-const fn impl_kind(impl_: &Impl) -> ImplKind {
-    let has_blanket_impl = matches!(impl_.blanket_impl, Some(_));
+#[derive(Debug, Clone, PartialEq, Eq)]
+enum ImplKind {
+    Normal,
+    AutoTrait,
+    Blanket,
+}
 
-    // See https://github.com/rust-lang/rust/blob/54f20bbb8a7aeab93da17c0019c1aaa10329245a/src/librustdoc/json/conversions.rs#L589-L590
-    match (impl_.synthetic, has_blanket_impl) {
-        (true, false) => ImplKind::AutoTrait,
-        (false, true) => ImplKind::Blanket,
-        _ => ImplKind::Normal,
+impl ImplKind {
+    fn from(impl_: &Impl) -> Self {
+        let has_blanket_impl = matches!(impl_.blanket_impl, Some(_));
+
+        // See https://github.com/rust-lang/rust/blob/54f20bbb8a7aeab93da17c0019c1aaa10329245a/src/librustdoc/json/conversions.rs#L589-L590
+        match (impl_.synthetic, has_blanket_impl) {
+            (true, false) => ImplKind::AutoTrait,
+            (false, true) => ImplKind::Blanket,
+            _ => ImplKind::Normal,
+        }
+    }
+
+    fn is_active(&self, options: Options) -> bool {
+        match self {
+            ImplKind::Blanket => options.with_blanket_implementations,
+            ImplKind::AutoTrait | ImplKind::Normal => true,
+        }
     }
 }
 

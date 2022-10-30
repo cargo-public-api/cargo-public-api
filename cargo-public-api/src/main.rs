@@ -140,6 +140,11 @@ pub struct Args {
     #[clap(long, hide = true)]
     verbose: bool,
 
+    /// Do not sort the output lexicographically. Instead keep the logical
+    /// grouping where e.g. struct fields come after structs.
+    #[clap(long, hide = true)]
+    unsorted: bool,
+
     /// Allows you to build rustdoc JSON with a toolchain other than `nightly`.
     ///
     /// Consider using `cargo +toolchain public-api` instead.
@@ -369,6 +374,7 @@ fn resolve_diff_shorthand(args: &mut Args) {
 fn get_options(args: &Args) -> Options {
     let mut options = Options::default();
     options.with_blanket_implementations = args.with_blanket_implementations;
+    options.sorted = !args.unsorted;
     options
 }
 

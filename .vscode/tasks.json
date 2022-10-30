@@ -44,7 +44,7 @@
 				"$rustc"
 			],
 			"group": "build",
-			"label": "rust: cargo clippy"
+			"label": "./scripts/cargo-clippy.sh"
 		},
 	]
 }

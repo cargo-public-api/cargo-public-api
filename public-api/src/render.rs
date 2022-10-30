@@ -610,16 +610,6 @@ impl<'c> RenderingContext<'c> {
 
         output.extend(self.render_where_predicates(&impl_.generics.where_predicates));
 
-        if !impl_.items.is_empty() {
-            output.extend(vec![
-                ws!(),
-                Token::symbol("{"),
-                ws!(),
-                Token::symbol("..."),
-                ws!(),
-                Token::symbol("}"),
-            ]);
-        }
         output
     }
 

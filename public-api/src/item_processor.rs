@@ -291,7 +291,7 @@ pub fn impls_for_item(item: &Item) -> Option<&[Id]> {
         ItemEnum::Struct(struct_) => Some(&struct_.impls),
         ItemEnum::Enum(enum_) => Some(&enum_.impls),
         ItemEnum::Primitive(primitive) => Some(&primitive.impls),
-        // TODO? ItemEnum::Trait(trait_) => trait_.im,  Emils case!!!!!!!
+        ItemEnum::Trait(trait_) => Some(&trait_.implementations),
         _ => None,
     }
 }

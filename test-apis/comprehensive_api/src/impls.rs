@@ -30,3 +30,11 @@ impl<'b> WithLifetimeAndGenericParam<'b, String> {
 impl Simple for Unit {
     fn act() {}
 }
+
+pub trait ForUnit {
+    fn for_unit();
+}
+
+impl ForUnit for () {
+    fn for_unit() {}
+}

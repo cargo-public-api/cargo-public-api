@@ -120,7 +120,7 @@ impl<'c> ItemProcessor<'c> {
                 self.add_to_work_queue(unprocessed_item.parent_path.clone(), item_id);
             }
         } else {
-            self.finish_to_output(
+            self.process_item(
                 unprocessed_item,
                 item,
                 Some(format!("<<{}::*>>", import.source)),
@@ -189,17 +189,6 @@ impl<'c> ItemProcessor<'c> {
             self.add_to_work_queue(finished_item.path().into(), id);
         }
 
-        self.output.push(finished_item);
-    }
-
-    /// Helper to both finish an item and put it in the output.
-    fn finish_to_output(
-        &mut self,
-        unprocessed_item: UnprocessedItem<'c>,
-        item: &'c Item,
-        overridden_name: Option<String>,
-    ) {
-        let finished_item = unprocessed_item.finish(item, overridden_name);
         self.output.push(finished_item);
     }
 

@@ -193,7 +193,12 @@ fn main_() -> Result<()> {
     let post_processing = if let Some(commits) = &args.diff_git_checkouts {
         print_diff_between_two_commits(&args, commits)?
     } else if let Some(files) = &args.diff_rustdoc_json {
-        print_diff_between_two_rustdoc_json_files(&args, files)?
+        // clap ensures both args exists if we get here
+        print_diff_between_two_rustdoc_json_files(
+            &args,
+            files.get(0).unwrap(),
+            files.get(1).unwrap(),
+        )?
     } else if let Some(rustdoc_json) = &args.rustdoc_json {
         print_public_items_from_json(&args, rustdoc_json)?
     } else {
@@ -279,12 +284,10 @@ fn print_diff_between_two_commits(args: &Args, commits: &[String]) -> Result<Pos
 
 fn print_diff_between_two_rustdoc_json_files(
     args: &Args,
-    files: &[String],
+    old_file: impl AsRef<Path>,
+    new_file: impl AsRef<Path>,
 ) -> Result<PostProcessing> {
-    let old_file = files.get(0).expect("clap makes sure first file exists");
     let old = public_api_from_rustdoc_json_path(old_file, args)?;
-
-    let new_file = files.get(1).expect("clap makes sure second file exists");
     let new = public_api_from_rustdoc_json_path(new_file, args)?;
 
     let diff_to_check = Some(print_diff(args, old, new)?);

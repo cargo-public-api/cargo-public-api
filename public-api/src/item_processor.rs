@@ -11,11 +11,11 @@ use std::{
 
 /// Items in rustdoc JSON reference each other by Id. The [`ItemProcessor`]
 /// essentially takes one Id at a time and figure out what to do with it. Once
-/// complete, the item both ready to be listed as part of the public API, and
-/// and many cases also ready to be used as part of a path to another item.
+/// complete, the item is ready to be listed as part of the public API, and
+/// optionally can also be used as part of a path to another (child) item.
 ///
 /// This struct contains a (processed) path to an item that is about to be
-/// processed further.
+/// processed further, and the Id of that item.
 #[derive(Debug)]
 struct UnprocessedItem<'c> {
     /// The path to the item to process.
@@ -214,6 +214,25 @@ impl<'c> ItemProcessor<'c> {
 
         self.crate_.get_item(id)
     }
+
+    // Returns a HashMap where a rustdoc JSON Id is mapped to what public items
+    // that have this ID. The reason this is a one-to-many mapping is because of
+    // re-exports. If an API re-exports a public item in a different place, the
+    // same item will be reachable by different paths, and thus the Vec will
+    // contain many [`IntermediatePublicItem`]s for that ID.
+    //
+    // You might think this is rare, but it is actually a common thing in
+    // real-world code.
+    fn id_to_items(&self) -> HashMap<&Id, Vec<&IntermediatePublicItem>> {
+        let mut id_to_items: HashMap<&Id, Vec<&IntermediatePublicItem>> = HashMap::new();
+        for finished_item in &self.output {
+            id_to_items
+                .entry(&finished_item.item().id)
+                .or_default()
+                .push(finished_item);
+        }
+        id_to_items
+    }
 }
 
 impl<'c> UnprocessedItem<'c> {
@@ -280,11 +299,11 @@ const fn children_for_item(item: &Item) -> Option<&Vec<Id>> {
 
 pub fn impls_for_item(item: &Item) -> Option<&[Id]> {
     match &item.inner {
-        ItemEnum::Union(union_) => Some(&union_.impls),
-        ItemEnum::Struct(struct_) => Some(&struct_.impls),
-        ItemEnum::Enum(enum_) => Some(&enum_.impls),
-        ItemEnum::Primitive(primitive) => Some(&primitive.impls),
-        ItemEnum::Trait(trait_) => Some(&trait_.implementations),
+        ItemEnum::Union(u) => Some(&u.impls),
+        ItemEnum::Struct(s) => Some(&s.impls),
+        ItemEnum::Enum(e) => Some(&e.impls),
+        ItemEnum::Primitive(p) => Some(&p.impls),
+        ItemEnum::Trait(t) => Some(&t.implementations),
         _ => None,
     }
 }
@@ -294,25 +313,9 @@ pub fn public_api_in_crate(crate_: &Crate, options: Options) -> super::PublicApi
     item_processor.add_to_work_queue(vec![], &crate_.root);
     item_processor.run();
 
-    // Given a rustdoc JSON Id, keeps track of what public items that have this
-    // ID. The reason this is a one-to-many mapping is because of re-exports.
-    // If an API re-exports a public item in a different place, the same item
-    // will be reachable by different paths, and thus the Vec will contain many
-    // [`IntermediatePublicItem`]s for that ID.
-    //
-    // You might think this is rare, but it is actually a common thing in
-    // real-world code.
-    let mut id_to_items: HashMap<&Id, Vec<&IntermediatePublicItem>> = HashMap::new();
-    for finished_item in &item_processor.output {
-        id_to_items
-            .entry(&finished_item.item().id)
-            .or_default()
-            .push(finished_item);
-    }
-
     let context = RenderingContext {
         crate_,
-        id_to_items,
+        id_to_items: item_processor.id_to_items(),
     };
 
     PublicApi {

@@ -409,15 +409,21 @@ fn collect_public_api_from_commit(
         builder = builder.cap_lints(Some(cap_lints));
     }
 
-    let json_path = match builder.build() {
-        Err(BuildError::VirtualManifest(manifest_path)) => virtual_manifest_error(&manifest_path)?,
-        res => res?,
-    };
+    let json_path = build_rustdoc_json(builder)?;
 
     Ok((
         public_api_from_rustdoc_json_path(json_path, args)?,
         original_branch,
     ))
+}
+
+/// Helper to build rustdoc JSON with a builder while also handling any virtual
+/// manifest errors.
+fn build_rustdoc_json(builder: rustdoc_json::Builder) -> Result<PathBuf, anyhow::Error> {
+    match builder.build() {
+        Err(BuildError::VirtualManifest(manifest_path)) => virtual_manifest_error(&manifest_path),
+        res => Ok(res?),
+    }
 }
 
 fn public_api_from_rustdoc_json_path<T: AsRef<Path>>(

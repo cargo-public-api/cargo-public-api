@@ -413,9 +413,6 @@ fn collect_public_api_from_commit(
         Err(BuildError::VirtualManifest(manifest_path)) => virtual_manifest_error(&manifest_path)?,
         res => res?,
     };
-    if args.verbose {
-        println!("Processing {:?}", json_path);
-    }
 
     Ok((
         public_api_from_rustdoc_json_path(json_path, args)?,
@@ -431,6 +428,10 @@ fn public_api_from_rustdoc_json_path<T: AsRef<Path>>(
 
     let rustdoc_json = &std::fs::read_to_string(&json_path)
         .with_context(|| format!("Failed to read rustdoc JSON at {:?}", json_path.as_ref()))?;
+
+    if args.verbose {
+        println!("Processing {:?}", json_path.as_ref());
+    }
 
     let public_api = PublicApi::from_rustdoc_json_str(rustdoc_json, options).with_context(|| {
         format!(

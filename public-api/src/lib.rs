@@ -113,7 +113,7 @@ impl Default for Options {
 
 /// The public API of a crate
 ///
-/// Return type of [`public_api_from_rustdoc_json_str`].
+/// Create an instance with [`PublicApi::from_rustdoc_json()`].
 ///
 /// ## Rendering the items
 ///
@@ -224,17 +224,6 @@ impl PublicApi {
     pub fn missing_item_ids(&self) -> impl Iterator<Item = &String> {
         self.missing_item_ids.iter()
     }
-}
-
-#[allow(clippy::missing_errors_doc, missing_docs)]
-#[deprecated(
-    note = "use `PublicApi::from_rustdoc_json` or `PublicApi::from_rustdoc_json_str` instead"
-)]
-pub fn public_api_from_rustdoc_json_str(
-    rustdoc_json_str: &str,
-    options: Options,
-) -> Result<PublicApi> {
-    PublicApi::from_rustdoc_json_str(rustdoc_json_str, options)
 }
 
 /// Helper to deserialize the JSON with `serde_json`, but with the recursion

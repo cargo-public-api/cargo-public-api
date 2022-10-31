@@ -391,6 +391,17 @@ fn collect_public_api_from_commit(
     } else {
         None
     };
+
+    let builder = builder_from_args(args);
+    let json_path = build_rustdoc_json(builder)?;
+    Ok((
+        public_api_from_rustdoc_json_path(json_path, args)?,
+        original_branch,
+    ))
+}
+
+/// Creates a rustdoc JSON builder based on the args to this program.
+fn builder_from_args(args: &Args) -> rustdoc_json::Builder {
     let mut builder = rustdoc_json::Builder::default()
         .toolchain(args.toolchain.clone())
         .manifest_path(&args.manifest_path)
@@ -400,21 +411,13 @@ fn collect_public_api_from_commit(
     if let Some(target) = &args.target {
         builder = builder.target(target.clone());
     }
-
     if let Some(package) = &args.package {
         builder = builder.package(package);
     }
-
     if let Some(cap_lints) = &args.cap_lints {
         builder = builder.cap_lints(Some(cap_lints));
     }
-
-    let json_path = build_rustdoc_json(builder)?;
-
-    Ok((
-        public_api_from_rustdoc_json_path(json_path, args)?,
-        original_branch,
-    ))
+    builder
 }
 
 /// Helper to build rustdoc JSON with a builder while also handling any virtual

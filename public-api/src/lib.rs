@@ -45,7 +45,7 @@
 mod crate_wrapper;
 mod error;
 mod intermediate_public_item;
-mod item_iterator;
+mod item_processor;
 mod public_item;
 mod render;
 pub mod tokens;
@@ -190,7 +190,7 @@ impl PublicApi {
     ) -> Result<PublicApi> {
         let crate_ = deserialize_without_recursion_limit(rustdoc_json_str.as_ref())?;
 
-        let mut public_api = item_iterator::public_api_in_crate(&crate_, options);
+        let mut public_api = item_processor::public_api_in_crate(&crate_, options);
 
         if options.sorted {
             public_api.items.sort();

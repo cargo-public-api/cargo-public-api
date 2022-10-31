@@ -1,64 +1,60 @@
-use std::rc::Rc;
-
-use rustdoc_types::{Id, Item};
+use rustdoc_types::Item;
 
 use crate::{public_item::PublicItemPath, render::RenderingContext, tokens::Token};
 
-/// This struct represents one public item of a crate, but in intermediate form.
-/// It wraps a single [Item] but adds additional calculated values to make it
-/// easier to work with. Later, one [`Self`] will be converted to exactly one
-/// [`crate::PublicItem`].
+/// Wraps an [`Item`] and allows us to override its name.
 #[derive(Clone, Debug)]
-pub struct IntermediatePublicItem<'c> {
+pub struct NameableItem<'c> {
     /// The item we are effectively wrapping.
     pub item: &'c Item,
 
     /// If `Some`, this overrides [Item::name], which happens in the case of
     /// renamed imports (`pub use other::Item as Foo;`).
+    ///
+    /// We can't calculate this on-demand, because we can't know the final name
+    /// until we have checked if we need to break import recursion.
     pub overridden_name: Option<String>,
-
-    /// The parent item. If [Self::item] is e.g. an enum variant, then the
-    /// parent is an enum. We follow the chain of parents to be able to know the
-    /// correct path to an item in the output.
-    pub parent: Option<Rc<IntermediatePublicItem<'c>>>,
 }
 
-impl<'c> IntermediatePublicItem<'c> {
+impl<'c> NameableItem<'c> {
     pub fn name(&self) -> Option<&str> {
         self.overridden_name
             .as_deref()
             .or(self.item.name.as_deref())
     }
+}
+
+/// This struct represents one public item of a crate, but in intermediate form.
+/// Conceptually it wraps a single [`Item`] even though the path to the item
+/// consists of many [`Item`]s. Later, one [`Self`] will be converted to exactly
+/// one [`crate::PublicItem`].
+#[derive(Clone, Debug)]
+pub struct IntermediatePublicItem<'c> {
+    path: Vec<NameableItem<'c>>,
+}
+
+impl<'c> IntermediatePublicItem<'c> {
+    pub fn new(path: Vec<NameableItem<'c>>) -> Self {
+        Self { path }
+    }
 
     #[must_use]
-    pub fn path(&self) -> Vec<Rc<IntermediatePublicItem<'c>>> {
-        let mut path = vec![];
+    pub fn item(&self) -> &'c Item {
+        self.path().last().expect("path must not be empty").item
+    }
 
-        let rc_self = Rc::new(self.clone());
-
-        path.insert(0, rc_self.clone());
-
-        let mut current_item = rc_self.clone();
-        while let Some(parent) = current_item.parent.clone() {
-            path.insert(0, parent.clone());
-            current_item = parent.clone();
-        }
-
-        path
+    #[must_use]
+    pub fn path(&self) -> &[NameableItem<'c>] {
+        &self.path
     }
 
     #[must_use]
     pub fn path_vec(&self) -> PublicItemPath {
         self.path()
             .iter()
-            .filter_map(|i| i.name())
+            .filter_map(NameableItem::name)
             .map(ToOwned::to_owned)
             .collect()
-    }
-
-    #[must_use]
-    pub fn path_contains_id(&self, id: &'c Id) -> bool {
-        self.path().iter().any(|m| m.item.id == *id)
     }
 
     #[must_use]

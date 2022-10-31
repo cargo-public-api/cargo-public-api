@@ -1,5 +1,4 @@
 use std::fmt::Display;
-use std::rc::Rc;
 
 use crate::intermediate_public_item::IntermediatePublicItem;
 use crate::render::RenderingContext;
@@ -28,7 +27,7 @@ pub struct PublicItem {
 impl PublicItem {
     pub(crate) fn from_intermediate_public_item(
         context: &RenderingContext,
-        public_item: &Rc<IntermediatePublicItem<'_>>,
+        public_item: &IntermediatePublicItem<'_>,
     ) -> PublicItem {
         PublicItem {
             path: public_item.path_vec(),

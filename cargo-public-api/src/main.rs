@@ -241,7 +241,7 @@ fn check_diff(args: &Args, diff: &Option<PublicApiDiff>) -> Result<()> {
 }
 
 fn print_public_items_of_current_commit(args: &Args) -> Result<PostProcessing> {
-    let public_api = public_api_for_working_directory(args)?;
+    let public_api = public_api_for_current_dir(args)?;
     print_public_items(args, &public_api, None)
 }
 
@@ -395,16 +395,22 @@ fn collect_public_api_from_commit(
         None
     };
 
-    Ok((public_api_for_working_directory(args)?, original_branch))
+    Ok((public_api_for_current_dir(args)?, original_branch))
 }
 
 /// Builds the public API for the library in the current working directory. Note
 /// that we sometimes checkout a different commit before invoking this function,
 /// which means it will return the public API of that commit.
-fn public_api_for_working_directory(args: &Args) -> Result<PublicApi, anyhow::Error> {
-    let builder = builder_from_args(args);
-    let json_path = build_rustdoc_json(builder)?;
+fn public_api_for_current_dir(args: &Args) -> Result<PublicApi, anyhow::Error> {
+    let json_path = rustdoc_json_for_current_dir(args)?;
     public_api_from_rustdoc_json_path(json_path, args)
+}
+
+/// Builds the rustdoc JSON for the library in the current working directory.
+/// Also see [`public_api_for_current_dir()`].
+fn rustdoc_json_for_current_dir(args: &Args) -> Result<PathBuf, anyhow::Error> {
+    let builder = builder_from_args(args);
+    build_rustdoc_json(builder)
 }
 
 /// Creates a rustdoc JSON builder based on the args to this program.

@@ -59,6 +59,14 @@ which will print the diff of your public API changes compared to `origin/main`.
 
 This tool can be put to good use in CI pipelines to e.g. help you make sure your public API is not unexpectedly changed. Please see [CI-EXAMPLES.md](./docs/CI-EXAMPLES.md) for CI job configuration examples and use cases.
 
+### … Against Published Version
+
+Before you `cargo publish` a new version of your crate, you can diff the public API of your local code against the public API of the version you last published. Use the `--diff-published` arg for that. Like this:
+
+```bash
+cargo public-api --diff-published regex@0.2.2
+```
+
 ## Expected Output
 
 Output aims to be character-by-character identical to the textual parts of the regular `cargo doc` HTML output. For example, [this item](https://docs.rs/bat/0.20.0/bat/struct.PrettyPrinter.html#method.input_files) has the following textual representation in the rendered HTML:

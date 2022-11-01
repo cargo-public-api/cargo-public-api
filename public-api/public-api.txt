@@ -132,7 +132,6 @@ pub fn public_api::diff::PublicApiDiff::clone(&self) -> public_api::diff::Public
 pub fn public_api::diff::PublicApiDiff::eq(&self, other: &public_api::diff::PublicApiDiff) -> bool
 pub fn public_api::diff::PublicApiDiff::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
 pub fn public_api::diff::PublicApiDiff::is_empty(&self) -> bool
-pub fn public_api::public_api_from_rustdoc_json_str(rustdoc_json_str: &str, options: public_api::Options) -> public_api::Result<public_api::PublicApi>
 pub fn public_api::tokens::Token::clone(&self) -> public_api::tokens::Token
 pub fn public_api::tokens::Token::cmp(&self, other: &public_api::tokens::Token) -> $crate::cmp::Ordering
 pub fn public_api::tokens::Token::eq(&self, other: &public_api::tokens::Token) -> bool

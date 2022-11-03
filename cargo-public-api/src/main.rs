@@ -17,6 +17,7 @@ mod arg_types;
 mod error;
 mod git_utils;
 mod plain;
+mod published_crate;
 mod toolchain;
 
 #[derive(Parser, Debug)]
@@ -79,8 +80,15 @@ pub struct Args {
     #[clap(long, min_values = 2, max_values = 2)]
     diff_rustdoc_json: Option<Vec<String>>,
 
+    /// Usage: --diff-published some-crate@1.2.3
+    ///
+    /// Diff the current API against the API in a published version.
+    #[clap(long)]
+    diff_published: Option<String>,
+
     /// Automatically resolves to either `--diff-git-checkouts` or
-    /// `--diff-rustdoc-json` depending on if args ends in `.json` or not.
+    /// `--diff-rustdoc-json` or `--diff-rustdoc-json` depending on if args ends
+    /// in `.json` or not, or if they contain `@`.
     ///
     /// Examples:
     ///
@@ -98,7 +106,15 @@ pub struct Args {
     ///
     ///   cargo public-api --diff-rustdoc-json v0.2.0.json v0.3.0.json
     ///
-    #[clap(long, min_values = 2, max_values = 2)]
+    /// and
+    ///
+    ///   cargo public-api --diff some-crate@1.2.3
+    ///
+    /// resolves to
+    ///
+    ///   cargo public-api --diff-published some-crate@1.2.3
+    ///
+    #[clap(long, min_values = 1, max_values = 2)]
     diff: Option<Vec<String>>,
 
     /// Usage: --rustdoc-json <RUSTDOC_JSON_PATH>
@@ -204,6 +220,12 @@ fn main_() -> Result<()> {
             files.get(0).unwrap(),
             files.get(1).unwrap(),
         )?
+    } else if let Some(package_spec) = &args.diff_published {
+        print_diff_between_two_rustdoc_json_files(
+            &args,
+            &published_crate::build_rustdoc_json(package_spec, &args)?,
+            &rustdoc_json_for_current_dir(&args)?,
+        )?
     } else if let Some(rustdoc_json) = &args.rustdoc_json {
         print_public_items_from_json(&args, rustdoc_json)?
     } else {
@@ -270,7 +292,7 @@ fn print_public_items(
 
 fn print_diff_between_two_commits(args: &Args, commits: &[String]) -> Result<PostProcessing> {
     let old_commit = commits.get(0).expect("clap makes sure first commit exist");
-    let new_commit = commits.get(1).expect("clap makes sure second commit exist");
+    let new_commit = commits.get(1).expect("missing second commit!");
 
     // Validate provided commits and resolve relative refs like HEAD to actual commits
     let old_commit = git_utils::resolve_ref(&args.git_root()?, old_commit)?;
@@ -365,6 +387,8 @@ fn resolve_diff_shorthand(args: &mut Args) {
 
         if diff_args.iter().all(is_json_file) {
             args.diff_rustdoc_json = Some(diff_args);
+        } else if diff_args.iter().any(|a| a.contains('@')) {
+            args.diff_published = diff_args.first().cloned();
         } else {
             args.diff_git_checkouts = Some(diff_args);
         }

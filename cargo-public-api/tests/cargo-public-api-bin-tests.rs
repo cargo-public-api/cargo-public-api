@@ -469,6 +469,29 @@ fn diff_public_items_from_files_impl(diff_arg: &str) {
 }
 
 #[test]
+fn diff_published() {
+    diff_published_impl("--diff-published");
+}
+
+#[test]
+fn diff_published_smart_diff() {
+    diff_published_impl("--diff");
+}
+
+/// Diff against a published crate. Note that we diff two completely unrelated
+/// libraries. But for testing purposes, we only need to test that there IS a
+/// diff. It does not matter how it looks.
+fn diff_published_impl(diff_arg: &str) {
+    let mut cmd = TestCmd::new();
+    cmd.arg("--color=never");
+    cmd.arg(diff_arg);
+    cmd.arg("rustdoc-json@0.2.0");
+    cmd.assert()
+        .stdout_or_bless("./tests/expected-output/diff_published.txt")
+        .success();
+}
+
+#[test]
 fn list_public_items_from_json_file() {
     let json_file = rustdoc_json_path_for_crate("../test-apis/example_api-v0.3.0");
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();

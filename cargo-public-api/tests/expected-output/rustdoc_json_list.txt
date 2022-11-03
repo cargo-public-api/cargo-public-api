@@ -19,12 +19,6 @@ impl Send for rustdoc_json::BuildError
 impl Sync for rustdoc_json::BuildError
 impl Unpin for rustdoc_json::BuildError
 impl !UnwindSafe for rustdoc_json::BuildError
-pub struct rustdoc_json::BuildOptions
-impl RefUnwindSafe for rustdoc_json::BuildOptions
-impl Send for rustdoc_json::BuildOptions
-impl Sync for rustdoc_json::BuildOptions
-impl Unpin for rustdoc_json::BuildOptions
-impl UnwindSafe for rustdoc_json::BuildOptions
 pub struct rustdoc_json::Builder
 impl rustdoc_json::Builder
 pub const fn rustdoc_json::Builder::all_features(self, all_features: bool) -> Self
@@ -47,4 +41,3 @@ impl Send for rustdoc_json::Builder
 impl Sync for rustdoc_json::Builder
 impl Unpin for rustdoc_json::Builder
 impl UnwindSafe for rustdoc_json::Builder
-pub fn rustdoc_json::build(options: rustdoc_json::Builder) -> Result<PathBuf, rustdoc_json::BuildError>

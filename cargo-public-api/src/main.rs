@@ -148,7 +148,7 @@ pub struct Args {
     /// Whether or not to use colors. You can select between "auto", "never", "always".
     /// If "auto" (the default), colors will be used if stdout is a terminal. If you pipe
     /// the output to a file, colors will be disabled by default.
-    #[clap(long, default_value = "auto")]
+    #[clap(long, arg_enum, default_value = "auto")]
     color: Color,
 
     /// Show detailed info about processing. For debugging purposes. The output

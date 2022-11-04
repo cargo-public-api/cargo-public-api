@@ -1,7 +1,3 @@
-use anyhow::anyhow;
-
-use std::str::FromStr;
-
 #[derive(Copy, Clone, Debug, Eq, PartialEq, clap::ArgEnum)]
 #[clap(rename_all = "lower")]
 pub enum DenyMethod {
@@ -32,28 +28,16 @@ impl DenyMethod {
     }
 }
 
-#[derive(Debug)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, clap::ArgEnum)]
+#[clap(rename_all = "lower")]
 pub enum Color {
     Auto,
     Never,
     Always,
 }
 
-impl FromStr for Color {
-    type Err = anyhow::Error;
-
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "auto" => Ok(Self::Auto),
-            "never" => Ok(Self::Never),
-            "always" => Ok(Self::Always),
-            _ => Err(anyhow!("See --help")),
-        }
-    }
-}
-
 impl Color {
-    pub fn active(&self) -> bool {
+    pub fn active(self) -> bool {
         match self {
             Self::Auto => atty::is(atty::Stream::Stdout), // We should not assume Stdout here, but good enough for now
             Self::Never => false,

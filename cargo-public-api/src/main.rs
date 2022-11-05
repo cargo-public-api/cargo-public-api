@@ -214,7 +214,7 @@ fn main_() -> Result<()> {
     // examples: restore a git branch or check that a diff is allowed
     let mut final_actions = vec![];
 
-    let result = print_or_diff(&args, &mut final_actions);
+    let result = list_or_diff(&args, &mut final_actions);
 
     for action in final_actions {
         action.perform(&args)?;
@@ -223,7 +223,7 @@ fn main_() -> Result<()> {
     result
 }
 
-fn print_or_diff(args: &Args, final_actions: &mut Vec<Action>) -> Result<()> {
+fn list_or_diff(args: &Args, final_actions: &mut Vec<Action>) -> Result<()> {
     if let Some(commits) = &args.diff_git_checkouts {
         print_diff_between_two_commits(args, commits, final_actions)
     } else if let Some(files) = &args.diff_rustdoc_json {

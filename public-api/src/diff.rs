@@ -292,13 +292,13 @@ mod tests {
         assert!(actual.is_empty());
     }
 
-    fn item_with_path(path: &str) -> PublicItem {
+    fn item_with_path(path_str: &str) -> PublicItem {
         PublicItem {
-            path: path
+            path: path_str
                 .split("::")
                 .map(std::string::ToString::to_string)
                 .collect(),
-            tokens: vec![crate::tokens::Token::identifier(path)],
+            tokens: vec![crate::tokens::Token::identifier(path_str)],
         }
     }
 

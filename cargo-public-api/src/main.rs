@@ -335,12 +335,7 @@ fn print_diff(args: &Args, old: PublicApi, new: PublicApi) -> Result<PublicApiDi
 impl PostProcessing {
     fn perform(&self, args: &Args) -> Result<()> {
         if let Some(branch_to_restore) = &self.branch_to_restore {
-            git_utils::git_checkout(
-                branch_to_restore,
-                &args.git_root()?,
-                !args.verbose,
-                args.force_git_checkouts,
-            )?;
+            git_checkout(args, branch_to_restore)?;
         }
 
         check_diff(args, &self.diff_to_check)
@@ -415,17 +410,24 @@ fn collect_public_api_from_commit(
     // Do a git checkout of a specific commit unless we are supposed to simply
     // use the current commit
     let original_branch = if let Some(commit) = commit {
-        Some(git_utils::git_checkout(
-            commit,
-            &args.git_root()?,
-            !args.verbose,
-            args.force_git_checkouts,
-        )?)
+        Some(git_checkout(args, commit)?)
     } else {
         None
     };
 
     Ok((public_api_for_current_dir(args)?, original_branch))
+}
+
+/// Helper to reduce code duplication. We can't add [`Args`] to
+/// [`git_utils::git_checkout()`] itself, because it is used in contexts where
+/// [`Args`] is not available (namely in tests).
+fn git_checkout(args: &Args, commit: &str) -> Result<String> {
+    git_utils::git_checkout(
+        commit,
+        &args.git_root()?,
+        !args.verbose,
+        args.force_git_checkouts,
+    )
 }
 
 /// Builds the public API for the library in the current working directory. Note

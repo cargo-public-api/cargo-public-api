@@ -1,6 +1,6 @@
 #![allow(clippy::unused_self)]
 use crate::intermediate_public_item::{IntermediatePublicItem, NameableItem};
-use std::{cmp::Ordering, collections::HashMap};
+use std::{cmp::Ordering, collections::HashMap, vec};
 
 use rustdoc_types::{
     Abi, Constant, Crate, FnDecl, FunctionPointer, GenericArg, GenericArgs, GenericBound,
@@ -35,7 +35,11 @@ impl<'c> RenderingContext<'c> {
         let item = public_item.item();
         let item_path = public_item.path();
 
-        let mut tokens = vec![];
+        let mut tokens = if public_item.indent {
+            vec![ws!(), ws!(), ws!(), ws!()]
+        } else {
+            vec![]
+        };
 
         for attr in &item.attrs {
             if attr_relevant_for_public_apis(attr) {

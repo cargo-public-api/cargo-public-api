@@ -332,7 +332,11 @@ mod tests {
     }
 
     fn new_public_item(path: PublicItemPath, tokens: Vec<Token>) -> PublicItem {
-        PublicItem { path, tokens }
+        PublicItem {
+            path: path.clone(),
+            sortable_path: path,
+            tokens,
+        }
     }
 
     fn s(s: &str) -> Token {

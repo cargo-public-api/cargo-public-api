@@ -40,6 +40,16 @@ pub struct Args {
     #[clap(long)]
     with_blanket_implementations: bool,
 
+    /// If `true`, items that strongly belongs to a parent (such as struct
+    /// fields, enum variants, and associated functions) are rendered with one
+    /// level of indentation (4 spaces). Note that the output is still flat, in
+    /// the sense that e.g. contents of `mod`s are not indented.
+    ///
+    /// The default value is `false`, because this is only something that you
+    /// typically want to do if presenting the output to a human.
+    #[clap(long)]
+    with_indentation: bool,
+
     /// Usage: --diff-git-checkouts <COMMIT_1> <COMMIT_2>
     ///
     /// Allows to diff the public API across two different commits. The
@@ -428,6 +438,7 @@ fn resolve_diff_shorthand(args: &mut Args) {
 fn get_options(args: &Args) -> Options {
     let mut options = Options::default();
     options.with_blanket_implementations = args.with_blanket_implementations;
+    options.with_indentation = args.with_indentation;
     options.sorted = !args.unsorted;
     options
 }

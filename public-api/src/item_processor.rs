@@ -259,7 +259,7 @@ enum ImplKind {
     Blanket,
 }
 
-impl ImplKind {
+impl From<&Impl> for ImplKind {
     fn from(impl_: &Impl) -> Self {
         let has_blanket_impl = matches!(impl_.blanket_impl, Some(_));
 
@@ -270,7 +270,9 @@ impl ImplKind {
             _ => ImplKind::Normal,
         }
     }
+}
 
+impl ImplKind {
     fn is_active(&self, options: Options) -> bool {
         match self {
             ImplKind::Blanket => options.with_blanket_implementations,

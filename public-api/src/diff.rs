@@ -293,13 +293,13 @@ mod tests {
     }
 
     fn item_with_path(path_str: &str) -> PublicItem {
-        PublicItem {
-            path: path_str
+        new_public_item(
+            path_str
                 .split("::")
                 .map(std::string::ToString::to_string)
                 .collect(),
-            tokens: vec![crate::tokens::Token::identifier(path_str)],
-        }
+            vec![crate::tokens::Token::identifier(path_str)],
+        )
     }
 
     fn api(items: impl IntoIterator<Item = PublicItem>) -> PublicApi {
@@ -328,6 +328,10 @@ mod tests {
         tokens.extend(vec![q("("), i("x"), s(":"), w(), t(type_), q(")")]);
 
         // End result is e.g. "pub fn a::b(x: usize)"
+        new_public_item(path, tokens)
+    }
+
+    fn new_public_item(path: PublicItemPath, tokens: Vec<Token>) -> PublicItem {
         PublicItem { path, tokens }
     }
 

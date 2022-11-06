@@ -1,2 +1,2 @@
-pub fn workspace_version::something()
 pub mod workspace_version
+pub fn workspace_version::something()

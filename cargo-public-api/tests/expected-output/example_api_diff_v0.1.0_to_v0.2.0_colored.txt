@@ -4,19 +4,19 @@ Removed items from the public API
 
 Changed items in the public API
 ===============================
--[34mpub[0m [34mfn[0m [36mexample_api[0m::[33mfunction[0m([36mv1_param[0m: [36mexample_api[0m::[32mStruct[0m)
-+[34mpub[0m [34mfn[0m [36mexample_api[0m::[33mfunction[0m([36mv1_param[0m: [36mexample_api[0m::[32mStruct[1;48;5;22;38;5;10m, v2_param: usize[0m)
 -[34mpub[0m [34mstruct[0m [36mexample_api[0m::[32mStruct[0m
 +[1;48;5;22;38;5;10m#[non_exhaustive] [0m[34mpub[0m [34mstruct[0m [36mexample_api[0m::[32mStruct[0m
+-[34mpub[0m [34mfn[0m [36mexample_api[0m::[33mfunction[0m([36mv1_param[0m: [36mexample_api[0m::[32mStruct[0m)
++[34mpub[0m [34mfn[0m [36mexample_api[0m::[33mfunction[0m([36mv1_param[0m: [36mexample_api[0m::[32mStruct[1;48;5;22;38;5;10m, v2_param: usize[0m)
 
 Added items to the public API
 =============================
++[34mpub[0m [34mstruct[0m [34mfield[0m [36mexample_api[0m::[32mStruct[0m::[36mv2_field[0m: [32musize[0m
++[34mpub[0m [34mstruct[0m [36mexample_api[0m::[32mStructV2[0m
++[34mpub[0m [34mstruct[0m [34mfield[0m [36mexample_api[0m::[32mStructV2[0m::[36mfield[0m: [32musize[0m
 +[34mimpl[0m [36mRefUnwindSafe[0m [34mfor[0m [36mexample_api[0m::[32mStructV2[0m
 +[34mimpl[0m [36mSend[0m [34mfor[0m [36mexample_api[0m::[32mStructV2[0m
 +[34mimpl[0m [36mSync[0m [34mfor[0m [36mexample_api[0m::[32mStructV2[0m
 +[34mimpl[0m [36mUnpin[0m [34mfor[0m [36mexample_api[0m::[32mStructV2[0m
 +[34mimpl[0m [36mUnwindSafe[0m [34mfor[0m [36mexample_api[0m::[32mStructV2[0m
-+[34mpub[0m [34mstruct[0m [36mexample_api[0m::[32mStructV2[0m
-+[34mpub[0m [34mstruct[0m [34mfield[0m [36mexample_api[0m::[32mStruct[0m::[36mv2_field[0m: [32musize[0m
-+[34mpub[0m [34mstruct[0m [34mfield[0m [36mexample_api[0m::[32mStructV2[0m::[36mfield[0m: [32musize[0m
 

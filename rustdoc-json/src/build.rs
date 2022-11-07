@@ -137,11 +137,26 @@ fn target_directory(manifest_path: impl AsRef<Path>) -> Result<PathBuf, BuildErr
 /// Figures out the name of the library crate corresponding to the given
 /// `Cargo.toml` manifest path.
 fn package_name(manifest_path: impl AsRef<Path>) -> Result<String, BuildError> {
-    let manifest = cargo_toml::Manifest::from_path(&manifest_path)?;
-    Ok(manifest
-        .package
-        .ok_or_else(|| BuildError::VirtualManifest(manifest_path.as_ref().to_owned()))?
-        .name)
+    let manifest_contents = std::fs::read_to_string(&manifest_path).map_err(BuildError::IoError)?;
+
+    #[derive(serde::Deserialize)]
+    struct Manifest {
+        package: Package,
+    }
+
+    #[derive(serde::Deserialize)]
+    struct Package {
+        name: String,
+    }
+
+    let manifest: Manifest = toml::from_str(&manifest_contents).map_err(|err| {
+        BuildError::General(format!(
+            "failed to deserialize package from '{}': {err}",
+            manifest_path.as_ref().display()
+        ))
+    })?;
+
+    Ok(manifest.package.name)
 }
 
 impl Default for Builder {

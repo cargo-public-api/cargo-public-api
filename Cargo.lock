@@ -532,7 +532,9 @@ version = "0.5.0"
 dependencies = [
  "cargo_metadata",
  "cargo_toml",
+ "serde",
  "thiserror",
+ "toml",
 ]
 
 [[package]]

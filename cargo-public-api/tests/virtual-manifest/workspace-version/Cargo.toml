@@ -1,3 +1,4 @@
 [package]
 name = "workspace-version"
 version.workspace = true
+edition.workspace = true

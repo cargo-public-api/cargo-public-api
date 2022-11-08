@@ -6,3 +6,4 @@ members = [
 
 [workspace.package]
 version = "100.0.0"
+edition = "2021"

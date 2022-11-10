@@ -99,6 +99,7 @@ impl Send for public_api::Error
 impl Sync for public_api::Error
 impl Unpin for public_api::Error
 #[non_exhaustive] pub struct public_api::Options
+pub struct field public_api::Options::debug_sorting: bool
 pub struct field public_api::Options::sorted: bool
 pub struct field public_api::Options::with_blanket_implementations: bool
 pub struct field public_api::Options::with_indentation: bool

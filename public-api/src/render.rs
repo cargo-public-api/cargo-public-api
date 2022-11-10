@@ -1,5 +1,8 @@
 #![allow(clippy::unused_self)]
-use crate::intermediate_public_item::{IntermediatePublicItem, NameableItem};
+use crate::{
+    intermediate_public_item::{IntermediatePublicItem, NameableItem},
+    Options,
+};
 use std::{cmp::Ordering, collections::HashMap, vec};
 
 use rustdoc_types::{
@@ -27,6 +30,8 @@ pub struct RenderingContext<'c> {
 
     /// Given a rustdoc JSON ID, keeps track of what public items that have this Id.
     pub id_to_items: HashMap<&'c Id, Vec<&'c IntermediatePublicItem<'c>>>,
+
+    pub options: Options,
 }
 
 impl<'c> RenderingContext<'c> {
@@ -248,9 +253,19 @@ impl<'c> RenderingContext<'c> {
             } else {
                 Token::identifier
             };
-            if let Some(name) = item.name() {
-                output.push(token_fn(name));
+
+            if self.options.debug_sorting {
+                // There is always a sortable name, so we can push the name
+                // unconditionally
+                output.push(token_fn(item.sortable_name()));
                 output.push(Token::symbol("::"));
+            } else {
+                // If we are not debugging, some items (read: impls) do not have
+                // a name, so we do not always want to push a name
+                if let Some(name) = item.name() {
+                    output.push(token_fn(name.to_string()));
+                    output.push(Token::symbol("::"));
+                }
             }
         }
         if !path.is_empty() {
@@ -1311,6 +1326,7 @@ mod test {
         let context = RenderingContext {
             crate_: &crate_,
             id_to_items: HashMap::new(),
+            options: Options::default(),
         };
 
         let actual = render_fn(context);

@@ -1,7 +1,10 @@
 use super::intermediate_public_item::NameableItem;
 use crate::{
-    crate_wrapper::CrateWrapper, intermediate_public_item::IntermediatePublicItem,
-    public_item::PublicItem, render::RenderingContext, Options, PublicApi,
+    crate_wrapper::CrateWrapper,
+    intermediate_public_item::{sorting_prefix, IntermediatePublicItem},
+    public_item::PublicItem,
+    render::RenderingContext,
+    Options, PublicApi,
 };
 use rustdoc_types::{Crate, Id, Impl, Import, Item, ItemEnum, Module, Struct, StructKind};
 use std::{
@@ -253,6 +256,7 @@ impl<'c> UnprocessedItem<'c> {
         path.push(NameableItem {
             item,
             overridden_name,
+            sorting_prefix: sorting_prefix(item),
         });
 
         // Done
@@ -365,6 +369,7 @@ pub fn public_api_in_crate(crate_: &Crate, options: Options) -> super::PublicApi
     let context = RenderingContext {
         crate_,
         id_to_items: item_processor.id_to_items(),
+        options,
     };
 
     PublicApi {

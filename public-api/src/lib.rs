@@ -73,6 +73,7 @@ pub const MINIMUM_RUSTDOC_JSON_VERSION: &str = "nightly-2022-09-28";
 /// Contains various options that you can pass to [`PublicApi::from_rustdoc_json_str`].
 #[derive(Copy, Clone, Debug)]
 #[non_exhaustive] // More options are likely to be added in the future
+#[allow(clippy::struct_excessive_bools)]
 pub struct Options {
     /// If `true`, items part of blanket implementations such as `impl<T> Any
     /// for T`, `impl<T> Borrow<T> for T`, and `impl<T, U> Into<U> for T where
@@ -100,6 +101,12 @@ pub struct Options {
     /// The default value is `true`, because usually the performance impact is
     /// negligible, and is is generally more practical to work with sorted data.
     pub sorted: bool,
+
+    /// If `true`, item paths include the so called "sorting prefix" that makes
+    /// them grouped in a nice way. Only intended for debugging this library.
+    ///
+    /// The default value is `false`
+    pub debug_sorting: bool,
 }
 
 /// Enables options to be set up like this (note that `Options` is marked
@@ -116,6 +123,7 @@ impl Default for Options {
         Self {
             with_blanket_implementations: false,
             sorted: true,
+            debug_sorting: false,
             with_indentation: false,
         }
     }

@@ -16,6 +16,9 @@ pub struct NameableItem<'c> {
     /// We can't calculate this on-demand, because we can't know the final name
     /// until we have checked if we need to break import recursion.
     pub overridden_name: Option<String>,
+
+    /// See [`sorting_prefix()`] docs for an explanation why we have this.
+    pub sorting_prefix: &'static str,
 }
 
 impl<'c> NameableItem<'c> {
@@ -23,6 +26,14 @@ impl<'c> NameableItem<'c> {
         self.overridden_name
             .as_deref()
             .or(self.item.name.as_deref())
+    }
+
+    pub fn sortable_name(&self) -> String {
+        if let Some(name) = self.name() {
+            format!("{}_{}", self.sorting_prefix, name)
+        } else {
+            self.sorting_prefix.to_string()
+        }
     }
 }
 
@@ -58,7 +69,7 @@ impl<'c> IntermediatePublicItem<'c> {
     pub fn sortable_path(&self) -> PublicItemPath {
         self.path()
             .iter()
-            .map(|item| format!("{}_{:?}", sorting_prefix(item.item), item.name()))
+            .map(NameableItem::sortable_name)
             .collect()
     }
 

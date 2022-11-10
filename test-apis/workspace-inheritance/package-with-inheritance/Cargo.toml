@@ -1,4 +1,4 @@
 [package]
-name = "workspace-version"
+name = "package-with-inheritance"
 version.workspace = true
 edition.workspace = true

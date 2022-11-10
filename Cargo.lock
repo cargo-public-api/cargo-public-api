@@ -117,16 +117,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "cargo_toml"
-version = "0.13.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "aa0e3586af56b3bfa51fca452bd56e8dbbbd5d8d81cbf0b7e4e35b695b537eb8"
-dependencies = [
- "serde",
- "toml",
-]
-
-[[package]]
 name = "cfg-if"
 version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -531,7 +521,6 @@ name = "rustdoc-json"
 version = "0.5.0"
 dependencies = [
  "cargo_metadata",
- "cargo_toml",
  "serde",
  "thiserror",
  "toml",

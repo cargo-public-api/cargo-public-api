@@ -11,7 +11,6 @@ repository = "https://github.com/Enselic/cargo-public-api/tree/main/rustdoc-json
 
 [dependencies]
 cargo_metadata = "0.14.2"
-cargo_toml = "0.13.0"
-serde = { version = "1.0", features = ["derive"] }
+serde = { version = "1.0.145", features = ["derive"] }
 thiserror = "1.0.29"
-toml = "0.5"
+toml = "0.5.6"

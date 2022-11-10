@@ -23,6 +23,7 @@
 use std::path::PathBuf;
 
 mod build;
+mod manifest_parser;
 
 /// replace `rustdoc_json::build(BuildOptions::default().option1().option2().build())` with `rustdoc_json::Builder::default().option1().option2().build()`
 #[deprecated(
@@ -32,6 +33,7 @@ pub struct BuildOptions;
 
 /// Represents all errors that can occur when using [`Builder::build()`].
 #[derive(thiserror::Error, Debug)]
+#[non_exhaustive]
 pub enum BuildError {
     /// You tried to generate rustdoc JSON for a virtual manifest. That does not
     /// work. You need to point to the manifest of a real package.
@@ -41,10 +43,6 @@ pub enum BuildError {
     /// A general error. Refer to the attached error message for more info.
     #[error("Failed to build rustdoc JSON. Stderr: {0}")]
     General(String),
-
-    /// An error originating from `cargo_toml`.
-    #[error(transparent)]
-    CargoTomlError(#[from] cargo_toml::Error),
 
     /// An error originating from `cargo_metadata`.
     #[error(transparent)]

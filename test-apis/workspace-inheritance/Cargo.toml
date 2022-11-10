@@ -1,7 +1,6 @@
 [workspace]
 members = [
-    "specific-crate",
-    "workspace-version",
+    "package-with-inheritance",
 ]
 
 [workspace.package]

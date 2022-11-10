@@ -1,3 +1,4 @@
+#[non_exhaustive] pub enum rustdoc_json::BuildError
 impl !RefUnwindSafe for rustdoc_json::BuildError
 impl !UnwindSafe for rustdoc_json::BuildError
 impl Debug for rustdoc_json::BuildError
@@ -5,7 +6,6 @@ impl Debug for rustdoc_json::Builder
 impl Default for rustdoc_json::Builder
 impl Display for rustdoc_json::BuildError
 impl Error for rustdoc_json::BuildError
-impl From<Error> for rustdoc_json::BuildError
 impl From<Error> for rustdoc_json::BuildError
 impl From<Error> for rustdoc_json::BuildError
 impl RefUnwindSafe for rustdoc_json::BuildOptions
@@ -25,16 +25,13 @@ impl rustdoc_json::Builder
 pub const fn rustdoc_json::Builder::all_features(self, all_features: bool) -> Self
 pub const fn rustdoc_json::Builder::no_default_features(self, no_default_features: bool) -> Self
 pub const fn rustdoc_json::Builder::quiet(self, quiet: bool) -> Self
-pub enum rustdoc_json::BuildError
 pub enum variant rustdoc_json::BuildError::CargoMetadataError(cargo_metadata::Error)
-pub enum variant rustdoc_json::BuildError::CargoTomlError(cargo_toml::Error)
 pub enum variant rustdoc_json::BuildError::General(String)
 pub enum variant rustdoc_json::BuildError::IoError(std::io::Error)
 pub enum variant rustdoc_json::BuildError::VirtualManifest(PathBuf)
 pub fn rustdoc_json::BuildError::fmt(&self, __formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
 pub fn rustdoc_json::BuildError::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
 pub fn rustdoc_json::BuildError::from(source: cargo_metadata::Error) -> Self
-pub fn rustdoc_json::BuildError::from(source: cargo_toml::Error) -> Self
 pub fn rustdoc_json::BuildError::from(source: std::io::Error) -> Self
 pub fn rustdoc_json::BuildError::source(&self) -> std::option::Option<&(dyn std::error::Error + 'static)>
 pub fn rustdoc_json::Builder::build(self) -> Result<PathBuf, rustdoc_json::BuildError>

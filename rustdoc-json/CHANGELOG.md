@@ -1,3 +1,6 @@
+## v0.6.0
+* Remove `BuildError::CargoTomlError` (and `cargo_toml` dependency)
+
 ## v0.5.0
 * Remove most of `BuildOptions`, only leave deprecation message
 

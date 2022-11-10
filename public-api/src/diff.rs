@@ -122,7 +122,7 @@ impl PublicApiDiff {
 fn bag_to_path_map<'a>(difference: impl Iterator<Item = (&'a PublicItem, usize)>) -> ItemsWithPath {
     let mut map: ItemsWithPath = HashMap::new();
     for (item, occurrences) in difference {
-        let items = map.entry(item.path.clone()).or_default();
+        let items = map.entry(item.sortable_path.clone()).or_default();
         for _ in 0..occurrences {
             items.push(item.clone());
         }
@@ -333,7 +333,6 @@ mod tests {
 
     fn new_public_item(path: PublicItemPath, tokens: Vec<Token>) -> PublicItem {
         PublicItem {
-            path: path.clone(),
             sortable_path: path,
             tokens,
         }

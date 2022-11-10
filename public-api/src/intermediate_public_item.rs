@@ -53,15 +53,6 @@ impl<'c> IntermediatePublicItem<'c> {
         &self.path
     }
 
-    #[must_use]
-    pub fn path_vec(&self) -> PublicItemPath {
-        self.path()
-            .iter()
-            .filter_map(NameableItem::name)
-            .map(ToOwned::to_owned)
-            .collect()
-    }
-
     /// See [`sorting_prefix()`] docs for an explanation why we have this.
     #[must_use]
     pub fn sortable_path(&self) -> PublicItemPath {

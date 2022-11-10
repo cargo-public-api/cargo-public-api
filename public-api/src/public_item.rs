@@ -18,9 +18,6 @@ pub(crate) type PublicItemPath = Vec<String>;
 /// will change in later versions.
 #[derive(Clone, Eq, PartialEq, Hash)]
 pub struct PublicItem {
-    /// The "your_crate::mod_a::mod_b" part of an item. Split by "::"
-    pub(crate) path: PublicItemPath,
-
     /// Read [`crate::intermediate_public_item::sorting_prefix()`] docs for more info
     pub(crate) sortable_path: PublicItemPath,
 
@@ -34,7 +31,6 @@ impl PublicItem {
         public_item: &IntermediatePublicItem<'_>,
     ) -> PublicItem {
         PublicItem {
-            path: public_item.path_vec(),
             sortable_path: public_item.sortable_path(),
             tokens: public_item.render_token_stream(context),
         }

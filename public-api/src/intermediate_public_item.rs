@@ -18,7 +18,7 @@ pub struct NameableItem<'c> {
     pub overridden_name: Option<String>,
 
     /// See [`sorting_prefix()`] docs for an explanation why we have this.
-    pub sorting_prefix: &'static str,
+    pub sorting_prefix: u8,
 }
 
 impl<'c> NameableItem<'c> {
@@ -30,7 +30,7 @@ impl<'c> NameableItem<'c> {
 
     pub fn sortable_name(&self) -> String {
         if let Some(name) = self.name() {
-            format!("{}_{}", self.sorting_prefix, name)
+            format!("{:0>3}_{:?}", self.sorting_prefix, name)
         } else {
             self.sorting_prefix.to_string()
         }
@@ -87,48 +87,48 @@ impl<'c> IntermediatePublicItem<'c> {
 /// each item in the path to an item. That way, sorting on the name (with this
 /// prefix) will group items. But we don't want this prefix to be be visible to
 /// users of course, so we do this "behind the scenes".
-pub(crate) fn sorting_prefix(item: &Item) -> &'static str {
+pub(crate) fn sorting_prefix(item: &Item) -> u8 {
     match &item.inner {
-        ItemEnum::ExternCrate { .. } => "01_extern_crate",
-        ItemEnum::Import(_) => "02_import",
+        ItemEnum::ExternCrate { .. } => 1,
+        ItemEnum::Import(_) => 2,
 
-        ItemEnum::Primitive(_) => "03_prim",
+        ItemEnum::Primitive(_) => 3,
 
-        ItemEnum::Module(_) => "04_mod",
+        ItemEnum::Module(_) => 4,
 
-        ItemEnum::Macro(_) => "05_macro",
-        ItemEnum::ProcMacro(_) => "06_proc_macro",
+        ItemEnum::Macro(_) => 5,
+        ItemEnum::ProcMacro(_) => 6,
 
-        ItemEnum::Enum(_) => "07_enum",
-        ItemEnum::Union(_) => "08_union",
-        ItemEnum::Struct(_) => "09_struct",
-        ItemEnum::StructField(_) => "10_field",
-        ItemEnum::Variant(_) => "11_variant",
+        ItemEnum::Enum(_) => 7,
+        ItemEnum::Union(_) => 8,
+        ItemEnum::Struct(_) => 9,
+        ItemEnum::StructField(_) => 10,
+        ItemEnum::Variant(_) => 11,
 
-        ItemEnum::Constant(_) => "12_const",
+        ItemEnum::Constant(_) => 12,
 
-        ItemEnum::Static(_) => "13_static",
+        ItemEnum::Static(_) => 13,
 
-        ItemEnum::Trait(_) => "14_trait",
+        ItemEnum::Trait(_) => 14,
 
-        ItemEnum::Function(_) => "15_fn",
+        ItemEnum::Function(_) => 15,
 
-        ItemEnum::Typedef(_) => "16_typedef",
+        ItemEnum::Typedef(_) => 16,
 
         ItemEnum::Impl(impl_) => match ImplKind::from(impl_) {
-            ImplKind::Normal => "17_impl_01_normal",
-            ImplKind::AutoTrait => "17_impl_02_auto_trait",
-            ImplKind::Blanket => "17_impl_03_blanket",
+            ImplKind::Normal => 17,
+            ImplKind::AutoTrait => 18,
+            ImplKind::Blanket => 19,
         },
-        ItemEnum::AssocType { .. } => "18_assoc_type",
-        ItemEnum::AssocConst { .. } => "19_assoc_const",
+        ItemEnum::AssocType { .. } => 20,
+        ItemEnum::AssocConst { .. } => 21,
 
-        ItemEnum::Method(_) => "20_method",
+        ItemEnum::Method(_) => 22,
 
-        ItemEnum::ForeignType => "21_foreign_type",
+        ItemEnum::ForeignType => 23,
 
-        ItemEnum::OpaqueTy(_) => "22_opaque_type",
+        ItemEnum::OpaqueTy(_) => 24,
 
-        ItemEnum::TraitAlias(_) => "23_trait_alias",
+        ItemEnum::TraitAlias(_) => 25,
     }
 }

@@ -187,8 +187,8 @@ pub fn comprehensive_api::higher_ranked_trait_bounds::test2<T>() where for<'a, '
 pub fn comprehensive_api::higher_ranked_trait_bounds::test3<F>() where F: for<'a, 'b> Fn(&'a u8, &'b u8)
 pub mod comprehensive_api::impls
 pub trait comprehensive_api::impls::ForUnit
-impl ForUnit for ()
 pub fn comprehensive_api::impls::ForUnit::for_unit()
+impl ForUnit for ()
 pub fn comprehensive_api::impls::ForUnit::for_unit()
 pub mod comprehensive_api::macros
 pub mod comprehensive_api::statics
@@ -281,8 +281,8 @@ pub trait comprehensive_api::traits::AssociatedType
 pub type comprehensive_api::traits::AssociatedType::Type
 pub trait comprehensive_api::traits::Empty
 pub trait comprehensive_api::traits::Simple
-impl Simple for comprehensive_api::structs::Unit
 pub fn comprehensive_api::traits::Simple::act()
+impl Simple for comprehensive_api::structs::Unit
 pub fn comprehensive_api::traits::Simple::act()
 pub trait comprehensive_api::traits::TraitReferencingOwnAssociatedType
 pub type comprehensive_api::traits::TraitReferencingOwnAssociatedType::OwnAssociatedType

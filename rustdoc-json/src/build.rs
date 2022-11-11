@@ -1,3 +1,5 @@
+use crate::manifest_parser;
+
 use super::BuildError;
 use super::Builder;
 
@@ -23,7 +25,7 @@ pub fn run_cargo_rustdoc(options: Builder) -> Result<PathBuf, BuildError> {
             options.target.as_deref(),
         )
     } else {
-        let manifest = cargo_toml::Manifest::from_path(&options.manifest_path)?;
+        let manifest = manifest_parser::Manifest::from_path(&options.manifest_path)?;
         if manifest.package.is_none() && manifest.workspace.is_some() {
             Err(BuildError::VirtualManifest(options.manifest_path))
         } else {
@@ -137,7 +139,7 @@ fn target_directory(manifest_path: impl AsRef<Path>) -> Result<PathBuf, BuildErr
 /// Figures out the name of the library crate corresponding to the given
 /// `Cargo.toml` manifest path.
 fn package_name(manifest_path: impl AsRef<Path>) -> Result<String, BuildError> {
-    let manifest = cargo_toml::Manifest::from_path(&manifest_path)?;
+    let manifest = manifest_parser::Manifest::from_path(manifest_path.as_ref())?;
     Ok(manifest
         .package
         .ok_or_else(|| BuildError::VirtualManifest(manifest_path.as_ref().to_owned()))?

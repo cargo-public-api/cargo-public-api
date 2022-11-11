@@ -1,7 +1,6 @@
 pub mod rustdoc_json
-pub enum rustdoc_json::BuildError
+#[non_exhaustive] pub enum rustdoc_json::BuildError
 pub enum variant rustdoc_json::BuildError::CargoMetadataError(cargo_metadata::Error)
-pub enum variant rustdoc_json::BuildError::CargoTomlError(cargo_toml::Error)
 pub enum variant rustdoc_json::BuildError::General(String)
 pub enum variant rustdoc_json::BuildError::IoError(std::io::Error)
 pub enum variant rustdoc_json::BuildError::VirtualManifest(PathBuf)
@@ -13,9 +12,7 @@ impl Error for rustdoc_json::BuildError
 pub fn rustdoc_json::BuildError::source(&self) -> std::option::Option<&(dyn std::error::Error + 'static)>
 impl From<Error> for rustdoc_json::BuildError
 impl From<Error> for rustdoc_json::BuildError
-impl From<Error> for rustdoc_json::BuildError
 pub fn rustdoc_json::BuildError::from(source: cargo_metadata::Error) -> Self
-pub fn rustdoc_json::BuildError::from(source: cargo_toml::Error) -> Self
 pub fn rustdoc_json::BuildError::from(source: std::io::Error) -> Self
 impl !RefUnwindSafe for rustdoc_json::BuildError
 impl Send for rustdoc_json::BuildError

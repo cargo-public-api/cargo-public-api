@@ -1,0 +1,4 @@
+[package]
+name = "package-with-inheritance"
+version.workspace = true
+edition.workspace = true

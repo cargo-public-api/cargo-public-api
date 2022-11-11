@@ -7,5 +7,3 @@
 
 /test-apis/*/target/
 /test-apis/*/Cargo.lock
-/cargo-public-api/tests/virtual-manifest/Cargo.lock
-/cargo-public-api/tests/virtual-manifest/target

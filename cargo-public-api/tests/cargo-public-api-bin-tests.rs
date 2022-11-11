@@ -133,25 +133,13 @@ fn target_arg() {
 fn virtual_manifest_error() {
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
     cmd.arg("--manifest-path");
-    cmd.arg(current_dir_and("tests/virtual-manifest/Cargo.toml"));
+    cmd.arg(current_dir_and("../test-apis/virtual-manifest/Cargo.toml"));
     cmd.assert()
         .stdout("")
         .stderr(contains(
             "Listing or diffing the public API of an entire workspace is not supported.",
         ))
         .failure();
-}
-
-#[test]
-fn workspace_version_does_not_crash() {
-    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
-    cmd.arg("--manifest-path");
-    cmd.arg(current_dir_and(
-        "tests/virtual-manifest/workspace-version/Cargo.toml",
-    ));
-    cmd.assert()
-        .stdout_or_bless("./tests/expected-output/workspace-version.txt")
-        .success();
 }
 
 #[test]

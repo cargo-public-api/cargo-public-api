@@ -166,11 +166,6 @@ pub struct Args {
     #[clap(long, hide = true)]
     verbose: bool,
 
-    /// Do not sort the output lexicographically. Instead keep the logical
-    /// grouping where e.g. struct fields come after structs.
-    #[clap(long, hide = true)]
-    unsorted: bool,
-
     /// If `true`, item paths include the so called "sorting prefix" that makes
     /// them grouped in a nice way. Only intended for debugging this tool.
     #[clap(long, hide = true)]
@@ -445,7 +440,6 @@ fn get_options(args: &Args) -> Options {
     options.with_blanket_implementations = args.with_blanket_implementations;
     options.with_indentation = args.with_indentation;
     options.debug_sorting = args.debug_sorting;
-    options.sorted = !args.unsorted;
     options
 }
 

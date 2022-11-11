@@ -9,22 +9,22 @@ impl Send for example_api::Struct
 impl Sync for example_api::Struct
 impl Unpin for example_api::Struct
 impl UnwindSafe for example_api::Struct
-impl<T, U> Into<U> for example_api::Struct where U: From<T>
-impl<T, U> TryFrom<U> for example_api::Struct where U: Into<T>
-impl<T, U> TryInto<U> for example_api::Struct where U: TryFrom<T>
 impl<T> Any for example_api::Struct where T: 'static + Sized
-impl<T> Borrow<T> for example_api::Struct where T: Sized
-impl<T> BorrowMut<T> for example_api::Struct where T: Sized
-impl<T> From<T> for example_api::Struct
-pub type example_api::Struct::Error = <U as TryFrom<T>>::Error
-pub type example_api::Struct::Error = Infallible
-pub fn example_api::Struct::borrow(&self) -> &T
-pub fn example_api::Struct::borrow_mut(&mut self) -> &mut T
-pub fn example_api::Struct::from(t: T) -> T
-pub fn example_api::Struct::into(self) -> U
-pub fn example_api::Struct::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn example_api::Struct::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
 pub fn example_api::Struct::type_id(&self) -> TypeId
+impl<T> Borrow<T> for example_api::Struct where T: Sized
+pub fn example_api::Struct::borrow(&self) -> &T
+impl<T> BorrowMut<T> for example_api::Struct where T: Sized
+pub fn example_api::Struct::borrow_mut(&mut self) -> &mut T
+impl<T> From<T> for example_api::Struct
+pub fn example_api::Struct::from(t: T) -> T
+impl<T, U> Into<U> for example_api::Struct where U: From<T>
+pub fn example_api::Struct::into(self) -> U
+impl<T, U> TryFrom<U> for example_api::Struct where U: Into<T>
+pub fn example_api::Struct::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
+pub type example_api::Struct::Error = Infallible
+impl<T, U> TryInto<U> for example_api::Struct where U: TryFrom<T>
+pub fn example_api::Struct::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
+pub type example_api::Struct::Error = <U as TryFrom<T>>::Error
 pub struct example_api::StructV2
 pub struct field example_api::StructV2::field: usize
 impl RefUnwindSafe for example_api::StructV2
@@ -32,20 +32,20 @@ impl Send for example_api::StructV2
 impl Sync for example_api::StructV2
 impl Unpin for example_api::StructV2
 impl UnwindSafe for example_api::StructV2
-impl<T, U> Into<U> for example_api::StructV2 where U: From<T>
-impl<T, U> TryFrom<U> for example_api::StructV2 where U: Into<T>
-impl<T, U> TryInto<U> for example_api::StructV2 where U: TryFrom<T>
 impl<T> Any for example_api::StructV2 where T: 'static + Sized
-impl<T> Borrow<T> for example_api::StructV2 where T: Sized
-impl<T> BorrowMut<T> for example_api::StructV2 where T: Sized
-impl<T> From<T> for example_api::StructV2
-pub type example_api::StructV2::Error = <U as TryFrom<T>>::Error
-pub type example_api::StructV2::Error = Infallible
-pub fn example_api::StructV2::borrow(&self) -> &T
-pub fn example_api::StructV2::borrow_mut(&mut self) -> &mut T
-pub fn example_api::StructV2::from(t: T) -> T
-pub fn example_api::StructV2::into(self) -> U
-pub fn example_api::StructV2::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
-pub fn example_api::StructV2::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
 pub fn example_api::StructV2::type_id(&self) -> TypeId
+impl<T> Borrow<T> for example_api::StructV2 where T: Sized
+pub fn example_api::StructV2::borrow(&self) -> &T
+impl<T> BorrowMut<T> for example_api::StructV2 where T: Sized
+pub fn example_api::StructV2::borrow_mut(&mut self) -> &mut T
+impl<T> From<T> for example_api::StructV2
+pub fn example_api::StructV2::from(t: T) -> T
+impl<T, U> Into<U> for example_api::StructV2 where U: From<T>
+pub fn example_api::StructV2::into(self) -> U
+impl<T, U> TryFrom<U> for example_api::StructV2 where U: Into<T>
+pub fn example_api::StructV2::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
+pub type example_api::StructV2::Error = Infallible
+impl<T, U> TryInto<U> for example_api::StructV2 where U: TryFrom<T>
+pub fn example_api::StructV2::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
+pub type example_api::StructV2::Error = <U as TryFrom<T>>::Error
 pub fn example_api::function(v1_param: example_api::Struct, v2_param: usize)

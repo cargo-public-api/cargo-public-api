@@ -111,7 +111,7 @@ impl<'c> RenderingContext<'c> {
             ),
             ItemEnum::Trait(trait_) => self.render_trait(trait_, item_path),
             ItemEnum::TraitAlias(_) => self.render_simple(&["trait", "alias"], item_path),
-            ItemEnum::Impl(impl_) => self.render_impl(impl_),
+            ItemEnum::Impl(impl_) => self.render_impl(impl_, item_path),
             ItemEnum::Typedef(inner) => {
                 let mut output = self.render_simple(&["type"], item_path);
                 output.extend(self.render_generics(&inner.generics));
@@ -259,13 +259,11 @@ impl<'c> RenderingContext<'c> {
                 // unconditionally
                 output.push(token_fn(item.sortable_name()));
                 output.push(Token::symbol("::"));
-            } else {
+            } else if let Some(name) = item.name() {
                 // If we are not debugging, some items (read: impls) do not have
-                // a name, so we do not always want to push a name
-                if let Some(name) = item.name() {
-                    output.push(token_fn(name.to_string()));
-                    output.push(Token::symbol("::"));
-                }
+                // a name, so only push a name if it exists
+                output.push(token_fn(name.to_string()));
+                output.push(Token::symbol("::"));
             }
         }
         if !path.is_empty() {
@@ -602,8 +600,13 @@ impl<'c> RenderingContext<'c> {
         output
     }
 
-    fn render_impl(&self, impl_: &Impl) -> Vec<Token> {
+    fn render_impl(&self, impl_: &Impl, path: &[NameableItem]) -> Vec<Token> {
         let mut output = vec![];
+
+        if self.options.debug_sorting {
+            output.extend(self.render_path(path));
+            output.push(ws!());
+        }
 
         if impl_.is_unsafe {
             output.extend(vec![Token::keyword("unsafe"), ws!()]);

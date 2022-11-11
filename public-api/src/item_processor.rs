@@ -1,10 +1,7 @@
 use super::intermediate_public_item::NameableItem;
 use crate::{
-    crate_wrapper::CrateWrapper,
-    intermediate_public_item::{sorting_prefix, IntermediatePublicItem},
-    public_item::PublicItem,
-    render::RenderingContext,
-    Options, PublicApi,
+    crate_wrapper::CrateWrapper, intermediate_public_item::IntermediatePublicItem,
+    public_item::PublicItem, render::RenderingContext, Options, PublicApi,
 };
 use rustdoc_types::{Crate, Id, Impl, Import, Item, ItemEnum, Module, Struct, StructKind};
 use std::{
@@ -300,6 +297,55 @@ impl<'c> UnprocessedItem<'c> {
                 _ => false,
             },
         }
+    }
+}
+
+/// In order for items in the output to be nicely grouped, we add a prefix to
+/// each item in the path to an item. That way, sorting on the name (with this
+/// prefix) will group items. But we don't want this prefix to be be visible to
+/// users of course, so we do this "behind the scenes".
+pub(crate) fn sorting_prefix(item: &Item) -> u8 {
+    match &item.inner {
+        ItemEnum::ExternCrate { .. } => 1,
+        ItemEnum::Import(_) => 2,
+
+        ItemEnum::Primitive(_) => 3,
+
+        ItemEnum::Module(_) => 4,
+
+        ItemEnum::Macro(_) => 5,
+        ItemEnum::ProcMacro(_) => 6,
+
+        ItemEnum::Enum(_) => 7,
+        ItemEnum::Union(_) => 8,
+        ItemEnum::Struct(_) => 9,
+        ItemEnum::StructField(_) => 10,
+        ItemEnum::Variant(_) => 11,
+
+        ItemEnum::Constant(_) => 12,
+
+        ItemEnum::Static(_) => 13,
+
+        ItemEnum::Trait(_) => 14,
+
+        ItemEnum::Function(_) => 15,
+        ItemEnum::Method(_) => 16,
+
+        ItemEnum::Typedef(_) => 17,
+
+        ItemEnum::Impl(impl_) => match ImplKind::from(impl_) {
+            ImplKind::Normal => 18,
+            ImplKind::AutoTrait => 19,
+            ImplKind::Blanket => 20,
+        },
+        ItemEnum::AssocType { .. } => 21,
+        ItemEnum::AssocConst { .. } => 22,
+
+        ItemEnum::ForeignType => 23,
+
+        ItemEnum::OpaqueTy(_) => 24,
+
+        ItemEnum::TraitAlias(_) => 25,
     }
 }
 

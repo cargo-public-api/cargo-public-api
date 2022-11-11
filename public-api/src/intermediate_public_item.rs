@@ -1,8 +1,6 @@
-use rustdoc_types::{Item, ItemEnum};
+use rustdoc_types::{Impl, Item, ItemEnum};
 
-use crate::{
-    item_processor::ImplKind, public_item::PublicItemPath, render::RenderingContext, tokens::Token,
-};
+use crate::{public_item::PublicItemPath, render::RenderingContext, tokens::Token};
 
 /// Wraps an [`Item`] and allows us to override its name.
 #[derive(Clone, Debug)]
@@ -17,23 +15,41 @@ pub struct NameableItem<'c> {
     /// until we have checked if we need to break import recursion.
     pub overridden_name: Option<String>,
 
-    /// See [`sorting_prefix()`] docs for an explanation why we have this.
+    /// See [`crate::item_processor::sorting_prefix()`] docs for an explanation why we have this.
     pub sorting_prefix: u8,
 }
 
 impl<'c> NameableItem<'c> {
+    /// The regular name of the item. Shown to users.
     pub fn name(&self) -> Option<&str> {
         self.overridden_name
             .as_deref()
             .or(self.item.name.as_deref())
     }
 
+    /// The name that, when sorted on, will group items nicely. Is never shown
+    /// to a user.
     pub fn sortable_name(&self) -> String {
-        if let Some(name) = self.name() {
-            format!("{:0>3}_{:?}", self.sorting_prefix, name)
-        } else {
-            self.sorting_prefix.to_string()
+        let mut perceived_name = "";
+
+        if let ItemEnum::Impl(Impl {
+            trait_: Some(trait_path),
+            ..
+        }) = &self.item.inner
+        {
+            // In order for items of impls to be grouped together with its impl, add
+            // the "name" of the impl to the sorting prefix.
+            perceived_name = &trait_path.name;
         }
+
+        // Note that in order for the prefix to sort properly lexicographically,
+        // we need to pad it with leading zeroes.
+        let mut sortable_name = format!("{:0>3}{}", self.sorting_prefix, perceived_name);
+        if let Some(name) = self.name() {
+            sortable_name.push('-');
+            sortable_name.push_str(name);
+        }
+        sortable_name
     }
 }
 
@@ -64,7 +80,7 @@ impl<'c> IntermediatePublicItem<'c> {
         &self.path
     }
 
-    /// See [`sorting_prefix()`] docs for an explanation why we have this.
+    /// See [`crate::item_processor::sorting_prefix()`] docs for an explanation why we have this.
     #[must_use]
     pub fn sortable_path(&self) -> PublicItemPath {
         self.path()
@@ -80,55 +96,5 @@ impl<'c> IntermediatePublicItem<'c> {
 
     pub fn render_token_stream(&self, context: &RenderingContext) -> Vec<Token> {
         context.token_stream(self)
-    }
-}
-
-/// In order for items in the output to be nicely grouped, we add a prefix to
-/// each item in the path to an item. That way, sorting on the name (with this
-/// prefix) will group items. But we don't want this prefix to be be visible to
-/// users of course, so we do this "behind the scenes".
-pub(crate) fn sorting_prefix(item: &Item) -> u8 {
-    match &item.inner {
-        ItemEnum::ExternCrate { .. } => 1,
-        ItemEnum::Import(_) => 2,
-
-        ItemEnum::Primitive(_) => 3,
-
-        ItemEnum::Module(_) => 4,
-
-        ItemEnum::Macro(_) => 5,
-        ItemEnum::ProcMacro(_) => 6,
-
-        ItemEnum::Enum(_) => 7,
-        ItemEnum::Union(_) => 8,
-        ItemEnum::Struct(_) => 9,
-        ItemEnum::StructField(_) => 10,
-        ItemEnum::Variant(_) => 11,
-
-        ItemEnum::Constant(_) => 12,
-
-        ItemEnum::Static(_) => 13,
-
-        ItemEnum::Trait(_) => 14,
-
-        ItemEnum::Function(_) => 15,
-
-        ItemEnum::Typedef(_) => 16,
-
-        ItemEnum::Impl(impl_) => match ImplKind::from(impl_) {
-            ImplKind::Normal => 17,
-            ImplKind::AutoTrait => 18,
-            ImplKind::Blanket => 19,
-        },
-        ItemEnum::AssocType { .. } => 20,
-        ItemEnum::AssocConst { .. } => 21,
-
-        ItemEnum::Method(_) => 22,
-
-        ItemEnum::ForeignType => 23,
-
-        ItemEnum::OpaqueTy(_) => 24,
-
-        ItemEnum::TraitAlias(_) => 25,
     }
 }

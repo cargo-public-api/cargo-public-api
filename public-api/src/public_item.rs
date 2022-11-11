@@ -18,7 +18,7 @@ pub(crate) type PublicItemPath = Vec<String>;
 /// will change in later versions.
 #[derive(Clone, Eq, PartialEq, Hash)]
 pub struct PublicItem {
-    /// Read [`crate::intermediate_public_item::sorting_prefix()`] docs for more info
+    /// Read [`crate::item_processor::sorting_prefix()`] docs for more info
     pub(crate) sortable_path: PublicItemPath,
 
     /// The rendered item as a stream of [`Token`]s

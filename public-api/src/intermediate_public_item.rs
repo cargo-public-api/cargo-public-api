@@ -60,14 +60,11 @@ impl<'c> NameableItem<'c> {
 #[derive(Clone, Debug)]
 pub struct IntermediatePublicItem<'c> {
     path: Vec<NameableItem<'c>>,
-
-    /// Whether or not to indent this item one level (4 spaces) in the rendered output.
-    pub(crate) indent: bool,
 }
 
 impl<'c> IntermediatePublicItem<'c> {
-    pub fn new(path: Vec<NameableItem<'c>>, indent: bool) -> Self {
-        Self { path, indent }
+    pub fn new(path: Vec<NameableItem<'c>>) -> Self {
+        Self { path }
     }
 
     #[must_use]

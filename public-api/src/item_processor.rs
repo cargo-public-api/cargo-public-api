@@ -185,8 +185,7 @@ impl<'c> ItemProcessor<'c> {
         item: &'c Item,
         overridden_name: Option<String>,
     ) {
-        let finished_item =
-            unprocessed_item.finish(item, overridden_name, self.options.with_indentation);
+        let finished_item = unprocessed_item.finish(item, overridden_name);
         let children = children_for_item(item).into_iter().flatten();
         let impls = impls_for_item(item).into_iter().flatten();
 
@@ -238,14 +237,7 @@ impl<'c> ItemProcessor<'c> {
 
 impl<'c> UnprocessedItem<'c> {
     /// Turns an [`UnprocessedItem`] into a finished [`IntermediatePublicItem`].
-    fn finish(
-        self,
-        item: &'c Item,
-        overridden_name: Option<String>,
-        with_indentation: bool,
-    ) -> IntermediatePublicItem<'c> {
-        let indent = self.is_indented(item, with_indentation);
-
+    fn finish(self, item: &'c Item, overridden_name: Option<String>) -> IntermediatePublicItem<'c> {
         // Transfer path ownership to output item
         let mut path = self.parent_path;
 
@@ -257,46 +249,7 @@ impl<'c> UnprocessedItem<'c> {
         });
 
         // Done
-        IntermediatePublicItem::new(path, indent)
-    }
-
-    fn is_indented(&self, item: &Item, indent_enabled: bool) -> bool {
-        if !indent_enabled {
-            return false;
-        }
-
-        match &item.inner {
-            // Never indent
-            ItemEnum::Module(_)
-            | ItemEnum::ExternCrate { .. }
-            | ItemEnum::Import(_)
-            | ItemEnum::Union(_)
-            | ItemEnum::Struct(_)
-            | ItemEnum::Enum(_)
-            | ItemEnum::Trait(_)
-            | ItemEnum::TraitAlias(_)
-            | ItemEnum::Impl(_)
-            | ItemEnum::Typedef(_)
-            | ItemEnum::OpaqueTy(_)
-            | ItemEnum::Constant(_)
-            | ItemEnum::Static(_)
-            | ItemEnum::ForeignType
-            | ItemEnum::Macro(_)
-            | ItemEnum::ProcMacro(_)
-            | ItemEnum::Primitive(_) => false,
-
-            // Always indent
-            ItemEnum::Variant(_)
-            | ItemEnum::StructField(_)
-            | ItemEnum::AssocConst { .. }
-            | ItemEnum::AssocType { .. } => true,
-
-            // Indent if parent is an impl
-            ItemEnum::Method(_) | ItemEnum::Function(_) => match self.parent_path.last() {
-                Some(item) => matches!(item.item.inner, ItemEnum::Impl(_)),
-                _ => false,
-            },
-        }
+        IntermediatePublicItem::new(path)
     }
 }
 

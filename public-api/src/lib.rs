@@ -84,15 +84,6 @@ pub struct Options {
     /// formally are part of the public API of a crate.
     pub with_blanket_implementations: bool,
 
-    /// If `true`, items that strongly belongs to a parent (such as struct
-    /// fields, enum variants, and associated functions) are rendered with one
-    /// level of indentation (4 spaces). Note that the output is still flat, in
-    /// the sense that e.g. contents of `mod`s are not indented.
-    ///
-    /// The default value is `false`, because this is only something that you
-    /// typically want to do if presenting the output to a human.
-    pub with_indentation: bool,
-
     /// If `true`, items will be sorted before being returned. If you will pass
     /// on the return value to [`diff::PublicApiDiff::between`], it is
     /// currently unnecessary to sort first, because the sorting will be
@@ -124,7 +115,6 @@ impl Default for Options {
             with_blanket_implementations: false,
             sorted: true,
             debug_sorting: false,
-            with_indentation: false,
         }
     }
 }

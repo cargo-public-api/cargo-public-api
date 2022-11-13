@@ -1,50 +1,50 @@
 pub mod rustdoc_json
 #[non_exhaustive] pub enum rustdoc_json::BuildError
-pub enum variant rustdoc_json::BuildError::CargoMetadataError(cargo_metadata::Error)
-pub enum variant rustdoc_json::BuildError::General(String)
-pub enum variant rustdoc_json::BuildError::IoError(std::io::Error)
-pub enum variant rustdoc_json::BuildError::VirtualManifest(PathBuf)
-impl Debug for rustdoc_json::BuildError
-pub fn rustdoc_json::BuildError::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-impl Display for rustdoc_json::BuildError
-pub fn rustdoc_json::BuildError::fmt(&self, __formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
-impl Error for rustdoc_json::BuildError
-pub fn rustdoc_json::BuildError::source(&self) -> std::option::Option<&(dyn std::error::Error + 'static)>
-impl From<Error> for rustdoc_json::BuildError
-impl From<Error> for rustdoc_json::BuildError
-pub fn rustdoc_json::BuildError::from(source: cargo_metadata::Error) -> Self
-pub fn rustdoc_json::BuildError::from(source: std::io::Error) -> Self
-impl !RefUnwindSafe for rustdoc_json::BuildError
-impl Send for rustdoc_json::BuildError
-impl Sync for rustdoc_json::BuildError
-impl Unpin for rustdoc_json::BuildError
-impl !UnwindSafe for rustdoc_json::BuildError
+pub enum variant rustdoc_json::BuildError::CargoMetadataError(cargo_metadata::errors::Error)
+pub enum variant rustdoc_json::BuildError::General(alloc::string::String)
+pub enum variant rustdoc_json::BuildError::IoError(std::io::error::Error)
+pub enum variant rustdoc_json::BuildError::VirtualManifest(std::path::PathBuf)
+impl core::fmt::Debug for rustdoc_json::BuildError
+pub fn rustdoc_json::BuildError::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for rustdoc_json::BuildError
+pub fn rustdoc_json::BuildError::fmt(&self, __formatter: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::error::Error for rustdoc_json::BuildError
+pub fn rustdoc_json::BuildError::source(&self) -> core::option::Option<&(dyn core::error::Error + 'static)>
+impl core::convert::From<cargo_metadata::errors::Error> for rustdoc_json::BuildError
+impl core::convert::From<std::io::error::Error> for rustdoc_json::BuildError
+pub fn rustdoc_json::BuildError::from(source: cargo_metadata::errors::Error) -> Self
+pub fn rustdoc_json::BuildError::from(source: std::io::error::Error) -> Self
+impl !core::panic::unwind_safe::RefUnwindSafe for rustdoc_json::BuildError
+impl core::marker::Send for rustdoc_json::BuildError
+impl core::marker::Sync for rustdoc_json::BuildError
+impl core::marker::Unpin for rustdoc_json::BuildError
+impl !core::panic::unwind_safe::UnwindSafe for rustdoc_json::BuildError
 pub struct rustdoc_json::BuildOptions
-impl RefUnwindSafe for rustdoc_json::BuildOptions
-impl Send for rustdoc_json::BuildOptions
-impl Sync for rustdoc_json::BuildOptions
-impl Unpin for rustdoc_json::BuildOptions
-impl UnwindSafe for rustdoc_json::BuildOptions
+impl core::panic::unwind_safe::RefUnwindSafe for rustdoc_json::BuildOptions
+impl core::marker::Send for rustdoc_json::BuildOptions
+impl core::marker::Sync for rustdoc_json::BuildOptions
+impl core::marker::Unpin for rustdoc_json::BuildOptions
+impl core::panic::unwind_safe::UnwindSafe for rustdoc_json::BuildOptions
 pub struct rustdoc_json::Builder
 impl rustdoc_json::Builder
 pub const fn rustdoc_json::Builder::all_features(self, all_features: bool) -> Self
-pub fn rustdoc_json::Builder::build(self) -> Result<PathBuf, rustdoc_json::BuildError>
-pub fn rustdoc_json::Builder::cap_lints(self, cap_lints: Option<impl AsRef<str>>) -> Self
-pub fn rustdoc_json::Builder::features<I: IntoIterator<Item = S>, S: AsRef<str>>(self, features: I) -> Self
-pub fn rustdoc_json::Builder::manifest_path(self, manifest_path: impl AsRef<Path>) -> Self
+pub fn rustdoc_json::Builder::build(self) -> core::result::Result<std::path::PathBuf, rustdoc_json::BuildError>
+pub fn rustdoc_json::Builder::cap_lints(self, cap_lints: core::option::Option<impl core::convert::AsRef<str>>) -> Self
+pub fn rustdoc_json::Builder::features<I: core::iter::traits::collect::IntoIterator<Item = S>, S: core::convert::AsRef<str>>(self, features: I) -> Self
+pub fn rustdoc_json::Builder::manifest_path(self, manifest_path: impl core::convert::AsRef<std::path::Path>) -> Self
 pub const fn rustdoc_json::Builder::no_default_features(self, no_default_features: bool) -> Self
-pub fn rustdoc_json::Builder::package(self, package: impl AsRef<str>) -> Self
+pub fn rustdoc_json::Builder::package(self, package: impl core::convert::AsRef<str>) -> Self
 pub const fn rustdoc_json::Builder::quiet(self, quiet: bool) -> Self
-pub fn rustdoc_json::Builder::target(self, target: String) -> Self
-pub fn rustdoc_json::Builder::target_dir(self, target_dir: impl AsRef<Path>) -> Self
-pub fn rustdoc_json::Builder::toolchain(self, toolchain: impl Into<Option<String>>) -> Self
-impl Debug for rustdoc_json::Builder
-pub fn rustdoc_json::Builder::fmt(&self, f: &mut $crate::fmt::Formatter<'_>) -> $crate::fmt::Result
-impl Default for rustdoc_json::Builder
+pub fn rustdoc_json::Builder::target(self, target: alloc::string::String) -> Self
+pub fn rustdoc_json::Builder::target_dir(self, target_dir: impl core::convert::AsRef<std::path::Path>) -> Self
+pub fn rustdoc_json::Builder::toolchain(self, toolchain: impl core::convert::Into<core::option::Option<alloc::string::String>>) -> Self
+impl core::fmt::Debug for rustdoc_json::Builder
+pub fn rustdoc_json::Builder::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::default::Default for rustdoc_json::Builder
 pub fn rustdoc_json::Builder::default() -> Self
-impl RefUnwindSafe for rustdoc_json::Builder
-impl Send for rustdoc_json::Builder
-impl Sync for rustdoc_json::Builder
-impl Unpin for rustdoc_json::Builder
-impl UnwindSafe for rustdoc_json::Builder
-pub fn rustdoc_json::build(options: rustdoc_json::Builder) -> Result<PathBuf, rustdoc_json::BuildError>
+impl core::panic::unwind_safe::RefUnwindSafe for rustdoc_json::Builder
+impl core::marker::Send for rustdoc_json::Builder
+impl core::marker::Sync for rustdoc_json::Builder
+impl core::marker::Unpin for rustdoc_json::Builder
+impl core::panic::unwind_safe::UnwindSafe for rustdoc_json::Builder
+pub fn rustdoc_json::build(options: rustdoc_json::Builder) -> core::result::Result<std::path::PathBuf, rustdoc_json::BuildError>

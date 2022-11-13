@@ -1,199 +1,115 @@
-#[export_name = "something_arbitrary"] pub fn comprehensive_api::attributes::export_name()
-#[no_mangle] #[link_section = ".custom"] pub static comprehensive_api::attributes::NO_MANGLE_WITH_CUSTOM_LINK_SECTION: usize
+pub mod comprehensive_api
+pub extern crate comprehensive_api::example_api
+pub use comprehensive_api::<<example_api::*>>
+pub use comprehensive_api::StructV2
+pub use comprehensive_api::my_i32
+pub use comprehensive_api::u32
+pub mod comprehensive_api::attributes
 #[non_exhaustive] pub enum comprehensive_api::attributes::NonExhaustive
-#[repr(C)] pub struct comprehensive_api::attributes::C
-impl ForUnit for ()
-impl RefUnwindSafe for comprehensive_api::StructInPrivateMod
-impl RefUnwindSafe for comprehensive_api::attributes::C
+pub enum variant comprehensive_api::attributes::NonExhaustive::MoreToCome
 impl RefUnwindSafe for comprehensive_api::attributes::NonExhaustive
-impl RefUnwindSafe for comprehensive_api::enums::DiverseVariants
-impl RefUnwindSafe for comprehensive_api::enums::EnumWithExplicitDiscriminants
-impl RefUnwindSafe for comprehensive_api::enums::EnumWithStrippedTupleVariants
-impl RefUnwindSafe for comprehensive_api::enums::SingleVariant
-impl RefUnwindSafe for comprehensive_api::exports::issue_145::external::External
-impl RefUnwindSafe for comprehensive_api::exports::issue_145::external_2::External
-impl RefUnwindSafe for comprehensive_api::exports::issue_145::external_2::External
-impl RefUnwindSafe for comprehensive_api::exports::issue_145::external_3::External
-impl RefUnwindSafe for comprehensive_api::exports::issue_145::external_3::External
-impl RefUnwindSafe for comprehensive_api::structs::Plain
-impl RefUnwindSafe for comprehensive_api::structs::Plain
-impl RefUnwindSafe for comprehensive_api::structs::Plain
-impl RefUnwindSafe for comprehensive_api::structs::PrivateField
-impl RefUnwindSafe for comprehensive_api::structs::TupleStructDouble
-impl RefUnwindSafe for comprehensive_api::structs::TupleStructDoubleWithHidden
-impl RefUnwindSafe for comprehensive_api::structs::TupleStructDoubleWithPrivate
-impl RefUnwindSafe for comprehensive_api::structs::TupleStructSingle
-impl RefUnwindSafe for comprehensive_api::structs::Unit
-impl RefUnwindSafe for comprehensive_api::unions::Basic
-impl Send for comprehensive_api::StructInPrivateMod
-impl Send for comprehensive_api::attributes::C
 impl Send for comprehensive_api::attributes::NonExhaustive
-impl Send for comprehensive_api::enums::DiverseVariants
-impl Send for comprehensive_api::enums::EnumWithExplicitDiscriminants
-impl Send for comprehensive_api::enums::EnumWithStrippedTupleVariants
-impl Send for comprehensive_api::enums::SingleVariant
-impl Send for comprehensive_api::exports::issue_145::external::External
-impl Send for comprehensive_api::exports::issue_145::external_2::External
-impl Send for comprehensive_api::exports::issue_145::external_2::External
-impl Send for comprehensive_api::exports::issue_145::external_3::External
-impl Send for comprehensive_api::exports::issue_145::external_3::External
-impl Send for comprehensive_api::structs::Plain
-impl Send for comprehensive_api::structs::Plain
-impl Send for comprehensive_api::structs::Plain
-impl Send for comprehensive_api::structs::PrivateField
-impl Send for comprehensive_api::structs::TupleStructDouble
-impl Send for comprehensive_api::structs::TupleStructDoubleWithHidden
-impl Send for comprehensive_api::structs::TupleStructDoubleWithPrivate
-impl Send for comprehensive_api::structs::TupleStructSingle
-impl Send for comprehensive_api::structs::Unit
-impl Send for comprehensive_api::unions::Basic
-impl Simple for comprehensive_api::structs::Unit
-impl Simple for comprehensive_api::structs::Unit
-impl Sync for comprehensive_api::StructInPrivateMod
-impl Sync for comprehensive_api::attributes::C
 impl Sync for comprehensive_api::attributes::NonExhaustive
-impl Sync for comprehensive_api::enums::DiverseVariants
-impl Sync for comprehensive_api::enums::EnumWithExplicitDiscriminants
-impl Sync for comprehensive_api::enums::EnumWithStrippedTupleVariants
-impl Sync for comprehensive_api::enums::SingleVariant
-impl Sync for comprehensive_api::exports::issue_145::external::External
-impl Sync for comprehensive_api::exports::issue_145::external_2::External
-impl Sync for comprehensive_api::exports::issue_145::external_2::External
-impl Sync for comprehensive_api::exports::issue_145::external_3::External
-impl Sync for comprehensive_api::exports::issue_145::external_3::External
-impl Sync for comprehensive_api::structs::Plain
-impl Sync for comprehensive_api::structs::Plain
-impl Sync for comprehensive_api::structs::Plain
-impl Sync for comprehensive_api::structs::PrivateField
-impl Sync for comprehensive_api::structs::TupleStructDouble
-impl Sync for comprehensive_api::structs::TupleStructDoubleWithHidden
-impl Sync for comprehensive_api::structs::TupleStructDoubleWithPrivate
-impl Sync for comprehensive_api::structs::TupleStructSingle
-impl Sync for comprehensive_api::structs::Unit
-impl Sync for comprehensive_api::unions::Basic
-impl Unpin for comprehensive_api::StructInPrivateMod
-impl Unpin for comprehensive_api::attributes::C
 impl Unpin for comprehensive_api::attributes::NonExhaustive
-impl Unpin for comprehensive_api::enums::DiverseVariants
-impl Unpin for comprehensive_api::enums::EnumWithExplicitDiscriminants
-impl Unpin for comprehensive_api::enums::EnumWithStrippedTupleVariants
-impl Unpin for comprehensive_api::enums::SingleVariant
-impl Unpin for comprehensive_api::exports::issue_145::external::External
-impl Unpin for comprehensive_api::exports::issue_145::external_2::External
-impl Unpin for comprehensive_api::exports::issue_145::external_2::External
-impl Unpin for comprehensive_api::exports::issue_145::external_3::External
-impl Unpin for comprehensive_api::exports::issue_145::external_3::External
-impl Unpin for comprehensive_api::structs::Plain
-impl Unpin for comprehensive_api::structs::Plain
-impl Unpin for comprehensive_api::structs::Plain
-impl Unpin for comprehensive_api::structs::PrivateField
-impl Unpin for comprehensive_api::structs::TupleStructDouble
-impl Unpin for comprehensive_api::structs::TupleStructDoubleWithHidden
-impl Unpin for comprehensive_api::structs::TupleStructDoubleWithPrivate
-impl Unpin for comprehensive_api::structs::TupleStructSingle
-impl Unpin for comprehensive_api::structs::Unit
-impl Unpin for comprehensive_api::unions::Basic
-impl UnwindSafe for comprehensive_api::StructInPrivateMod
-impl UnwindSafe for comprehensive_api::attributes::C
 impl UnwindSafe for comprehensive_api::attributes::NonExhaustive
+#[repr(C)] pub struct comprehensive_api::attributes::C
+pub struct field comprehensive_api::attributes::C::b: bool
+impl RefUnwindSafe for comprehensive_api::attributes::C
+impl Send for comprehensive_api::attributes::C
+impl Sync for comprehensive_api::attributes::C
+impl Unpin for comprehensive_api::attributes::C
+impl UnwindSafe for comprehensive_api::attributes::C
+#[no_mangle] #[link_section = ".custom"] pub static comprehensive_api::attributes::NO_MANGLE_WITH_CUSTOM_LINK_SECTION: usize
+#[export_name = "something_arbitrary"] pub fn comprehensive_api::attributes::export_name()
+pub fn comprehensive_api::attributes::must_use() -> usize
+pub mod comprehensive_api::constants
+pub const comprehensive_api::constants::CONST: &'static str
+pub mod comprehensive_api::enums
+pub enum comprehensive_api::enums::DiverseVariants
+pub enum variant comprehensive_api::enums::DiverseVariants::Recursive
+pub struct field comprehensive_api::enums::DiverseVariants::Recursive::child: Box<comprehensive_api::enums::DiverseVariants>
+pub enum variant comprehensive_api::enums::DiverseVariants::Simple
+pub enum variant comprehensive_api::enums::DiverseVariants::Struct
+pub struct field comprehensive_api::enums::DiverseVariants::Struct::x: usize
+pub struct field comprehensive_api::enums::DiverseVariants::Struct::y: comprehensive_api::enums::SingleVariant
+pub enum variant comprehensive_api::enums::DiverseVariants::Tuple(usize, bool)
+impl RefUnwindSafe for comprehensive_api::enums::DiverseVariants
+impl Send for comprehensive_api::enums::DiverseVariants
+impl Sync for comprehensive_api::enums::DiverseVariants
+impl Unpin for comprehensive_api::enums::DiverseVariants
 impl UnwindSafe for comprehensive_api::enums::DiverseVariants
+pub enum comprehensive_api::enums::EnumWithExplicitDiscriminants
+pub enum variant comprehensive_api::enums::EnumWithExplicitDiscriminants::First = 1
+pub enum variant comprehensive_api::enums::EnumWithExplicitDiscriminants::Second = 2
+pub enum variant comprehensive_api::enums::EnumWithExplicitDiscriminants::TenPlusTen = 20
+impl RefUnwindSafe for comprehensive_api::enums::EnumWithExplicitDiscriminants
+impl Send for comprehensive_api::enums::EnumWithExplicitDiscriminants
+impl Sync for comprehensive_api::enums::EnumWithExplicitDiscriminants
+impl Unpin for comprehensive_api::enums::EnumWithExplicitDiscriminants
 impl UnwindSafe for comprehensive_api::enums::EnumWithExplicitDiscriminants
-impl UnwindSafe for comprehensive_api::enums::EnumWithStrippedTupleVariants
-impl UnwindSafe for comprehensive_api::enums::SingleVariant
-impl UnwindSafe for comprehensive_api::exports::issue_145::external::External
-impl UnwindSafe for comprehensive_api::exports::issue_145::external_2::External
-impl UnwindSafe for comprehensive_api::exports::issue_145::external_2::External
-impl UnwindSafe for comprehensive_api::exports::issue_145::external_3::External
-impl UnwindSafe for comprehensive_api::exports::issue_145::external_3::External
-impl UnwindSafe for comprehensive_api::structs::Plain
-impl UnwindSafe for comprehensive_api::structs::Plain
-impl UnwindSafe for comprehensive_api::structs::Plain
-impl UnwindSafe for comprehensive_api::structs::PrivateField
-impl UnwindSafe for comprehensive_api::structs::TupleStructDouble
-impl UnwindSafe for comprehensive_api::structs::TupleStructDoubleWithHidden
-impl UnwindSafe for comprehensive_api::structs::TupleStructDoubleWithPrivate
-impl UnwindSafe for comprehensive_api::structs::TupleStructSingle
-impl UnwindSafe for comprehensive_api::structs::Unit
-impl UnwindSafe for comprehensive_api::unions::Basic
-impl comprehensive_api::structs::Plain
-impl comprehensive_api::structs::Plain
-impl comprehensive_api::structs::Plain
+pub enum comprehensive_api::enums::EnumWithGenerics<'a, T, D: Debug> where T: Display
+pub enum variant comprehensive_api::enums::EnumWithGenerics::Variant
+pub struct field comprehensive_api::enums::EnumWithGenerics::Variant::d: D
+pub struct field comprehensive_api::enums::EnumWithGenerics::Variant::t: &'a T
 impl<'a, T, D> RefUnwindSafe for comprehensive_api::enums::EnumWithGenerics<'a, T, D> where D: RefUnwindSafe, T: RefUnwindSafe
 impl<'a, T, D> Send for comprehensive_api::enums::EnumWithGenerics<'a, T, D> where D: Send, T: Sync
 impl<'a, T, D> Sync for comprehensive_api::enums::EnumWithGenerics<'a, T, D> where D: Sync, T: Sync
 impl<'a, T, D> Unpin for comprehensive_api::enums::EnumWithGenerics<'a, T, D> where D: Unpin
 impl<'a, T, D> UnwindSafe for comprehensive_api::enums::EnumWithGenerics<'a, T, D> where D: UnwindSafe, T: RefUnwindSafe
-impl<'a, T> RefUnwindSafe for comprehensive_api::structs::WithLifetimeAndGenericParam<'a, T> where T: RefUnwindSafe
-impl<'a, T> Send for comprehensive_api::structs::WithLifetimeAndGenericParam<'a, T> where T: Send
-impl<'a, T> Sync for comprehensive_api::structs::WithLifetimeAndGenericParam<'a, T> where T: Sync
-impl<'a, T> Unpin for comprehensive_api::structs::WithLifetimeAndGenericParam<'a, T> where T: Unpin
-impl<'a, T> UnwindSafe for comprehensive_api::structs::WithLifetimeAndGenericParam<'a, T> where T: UnwindSafe
-impl<'a> !RefUnwindSafe for comprehensive_api::higher_ranked_trait_bounds::Bar<'a>
-impl<'a> !RefUnwindSafe for comprehensive_api::higher_ranked_trait_bounds::Foo<'a>
-impl<'a> !Send for comprehensive_api::higher_ranked_trait_bounds::Bar<'a>
-impl<'a> !Send for comprehensive_api::higher_ranked_trait_bounds::Foo<'a>
-impl<'a> !Sync for comprehensive_api::higher_ranked_trait_bounds::Bar<'a>
-impl<'a> !Sync for comprehensive_api::higher_ranked_trait_bounds::Foo<'a>
-impl<'a> !UnwindSafe for comprehensive_api::higher_ranked_trait_bounds::Bar<'a>
-impl<'a> !UnwindSafe for comprehensive_api::higher_ranked_trait_bounds::Foo<'a>
-impl<'a> B<'a> for dyn for<'b> comprehensive_api::higher_ranked_trait_bounds::Trait<'b>
-impl<'a> Unpin for comprehensive_api::higher_ranked_trait_bounds::Bar<'a>
-impl<'a> Unpin for comprehensive_api::higher_ranked_trait_bounds::Foo<'a>
-impl<'a> comprehensive_api::higher_ranked_trait_bounds::Foo<'a>
-impl<'a> comprehensive_api::structs::Plain
-impl<'a> comprehensive_api::structs::Plain
-impl<'a> comprehensive_api::structs::Plain
-impl<'b> comprehensive_api::structs::WithLifetimeAndGenericParam<'b, String>
-impl<T, const N: usize> RefUnwindSafe for comprehensive_api::structs::ConstArg<T, N> where T: RefUnwindSafe
-impl<T, const N: usize> Send for comprehensive_api::structs::ConstArg<T, N> where T: Send
-impl<T, const N: usize> Sync for comprehensive_api::structs::ConstArg<T, N> where T: Sync
-impl<T, const N: usize> Unpin for comprehensive_api::structs::ConstArg<T, N> where T: Unpin
-impl<T, const N: usize> UnwindSafe for comprehensive_api::structs::ConstArg<T, N> where T: UnwindSafe
-impl<T> RefUnwindSafe for comprehensive_api::structs::WithTraitBounds<T> where T: RefUnwindSafe
-impl<T> Send for comprehensive_api::structs::WithTraitBounds<T> where T: Send
-impl<T> Sync for comprehensive_api::structs::WithTraitBounds<T> where T: Sync
-impl<T> Unpin for comprehensive_api::structs::WithTraitBounds<T> where T: Unpin
-impl<T> UnwindSafe for comprehensive_api::structs::WithTraitBounds<T> where T: UnwindSafe
-pub async fn comprehensive_api::functions::async_fn() -> ()
-pub async fn comprehensive_api::functions::async_fn_ret_bool() -> bool
-pub const comprehensive_api::constants::CONST: &'static str
-pub const comprehensive_api::traits::AssociatedConst::CONST: bool
-pub const comprehensive_api::traits::AssociatedConstDefault::CONST_WITH_DEFAULT: bool
-pub const fn comprehensive_api::functions::const_fn()
-pub enum comprehensive_api::enums::DiverseVariants
-pub enum comprehensive_api::enums::EnumWithExplicitDiscriminants
-pub enum comprehensive_api::enums::EnumWithGenerics<'a, T, D: Debug> where T: Display
 pub enum comprehensive_api::enums::EnumWithStrippedTupleVariants
-pub enum comprehensive_api::enums::SingleVariant
-pub enum variant comprehensive_api::attributes::NonExhaustive::MoreToCome
-pub enum variant comprehensive_api::enums::DiverseVariants::Recursive
-pub enum variant comprehensive_api::enums::DiverseVariants::Simple
-pub enum variant comprehensive_api::enums::DiverseVariants::Struct
-pub enum variant comprehensive_api::enums::DiverseVariants::Tuple(usize, bool)
-pub enum variant comprehensive_api::enums::EnumWithExplicitDiscriminants::First = 1
-pub enum variant comprehensive_api::enums::EnumWithExplicitDiscriminants::Second = 2
-pub enum variant comprehensive_api::enums::EnumWithExplicitDiscriminants::TenPlusTen = 20
-pub enum variant comprehensive_api::enums::EnumWithGenerics::Variant
 pub enum variant comprehensive_api::enums::EnumWithStrippedTupleVariants::Double(bool, bool)
 pub enum variant comprehensive_api::enums::EnumWithStrippedTupleVariants::DoubleFirstHidden(_, bool)
 pub enum variant comprehensive_api::enums::EnumWithStrippedTupleVariants::DoubleSecondHidden(bool, _)
 pub enum variant comprehensive_api::enums::EnumWithStrippedTupleVariants::Single(usize)
 pub enum variant comprehensive_api::enums::EnumWithStrippedTupleVariants::SingleHidden(_)
+impl RefUnwindSafe for comprehensive_api::enums::EnumWithStrippedTupleVariants
+impl Send for comprehensive_api::enums::EnumWithStrippedTupleVariants
+impl Sync for comprehensive_api::enums::EnumWithStrippedTupleVariants
+impl Unpin for comprehensive_api::enums::EnumWithStrippedTupleVariants
+impl UnwindSafe for comprehensive_api::enums::EnumWithStrippedTupleVariants
+pub enum comprehensive_api::enums::SingleVariant
 pub enum variant comprehensive_api::enums::SingleVariant::Variant
-pub extern crate comprehensive_api::example_api
-pub fn comprehensive_api::Plain::f()
-pub fn comprehensive_api::Plain::new() -> comprehensive_api::structs::Plain
-pub fn comprehensive_api::Plain::s1(self)
-pub fn comprehensive_api::Plain::s2(&self)
-pub fn comprehensive_api::Plain::s3(&mut self)
-pub fn comprehensive_api::Plain::s4(&'a self)
-pub fn comprehensive_api::RenamedPlain::f()
-pub fn comprehensive_api::RenamedPlain::new() -> comprehensive_api::structs::Plain
-pub fn comprehensive_api::RenamedPlain::s1(self)
-pub fn comprehensive_api::RenamedPlain::s2(&self)
-pub fn comprehensive_api::RenamedPlain::s3(&mut self)
-pub fn comprehensive_api::RenamedPlain::s4(&'a self)
-pub fn comprehensive_api::attributes::must_use() -> usize
+impl RefUnwindSafe for comprehensive_api::enums::SingleVariant
+impl Send for comprehensive_api::enums::SingleVariant
+impl Sync for comprehensive_api::enums::SingleVariant
+impl Unpin for comprehensive_api::enums::SingleVariant
+impl UnwindSafe for comprehensive_api::enums::SingleVariant
+pub mod comprehensive_api::exports
+pub mod comprehensive_api::exports::issue_145
+pub mod comprehensive_api::exports::issue_145::external
+pub struct comprehensive_api::exports::issue_145::external::External
+impl RefUnwindSafe for comprehensive_api::exports::issue_145::external::External
+impl Send for comprehensive_api::exports::issue_145::external::External
+impl Sync for comprehensive_api::exports::issue_145::external::External
+impl Unpin for comprehensive_api::exports::issue_145::external::External
+impl UnwindSafe for comprehensive_api::exports::issue_145::external::External
+pub mod comprehensive_api::exports::issue_145::external_2
+pub struct comprehensive_api::exports::issue_145::external_2::External
+impl RefUnwindSafe for comprehensive_api::exports::issue_145::external_2::External
+impl Send for comprehensive_api::exports::issue_145::external_2::External
+impl Sync for comprehensive_api::exports::issue_145::external_2::External
+impl Unpin for comprehensive_api::exports::issue_145::external_2::External
+impl UnwindSafe for comprehensive_api::exports::issue_145::external_2::External
+pub mod comprehensive_api::exports::issue_145::external_3
+pub struct comprehensive_api::exports::issue_145::external_3::External
+impl RefUnwindSafe for comprehensive_api::exports::issue_145::external_3::External
+impl Send for comprehensive_api::exports::issue_145::external_3::External
+impl Sync for comprehensive_api::exports::issue_145::external_3::External
+impl Unpin for comprehensive_api::exports::issue_145::external_3::External
+impl UnwindSafe for comprehensive_api::exports::issue_145::external_3::External
+pub mod comprehensive_api::exports::issue_145::publicly_renamed
+pub struct comprehensive_api::exports::issue_145::publicly_renamed::External
+impl RefUnwindSafe for comprehensive_api::exports::issue_145::external_2::External
+impl Send for comprehensive_api::exports::issue_145::external_2::External
+impl Sync for comprehensive_api::exports::issue_145::external_2::External
+impl Unpin for comprehensive_api::exports::issue_145::external_2::External
+impl UnwindSafe for comprehensive_api::exports::issue_145::external_2::External
+pub struct comprehensive_api::exports::issue_145::PubliclyRenamedFromPrivateMod
+impl RefUnwindSafe for comprehensive_api::exports::issue_145::external_3::External
+impl Send for comprehensive_api::exports::issue_145::external_3::External
+impl Sync for comprehensive_api::exports::issue_145::external_3::External
+impl Unpin for comprehensive_api::exports::issue_145::external_3::External
+impl UnwindSafe for comprehensive_api::exports::issue_145::external_3::External
 pub fn comprehensive_api::exports::issue_145::external_arg_type(_transform: comprehensive_api::exports::issue_145::external::External)
 pub fn comprehensive_api::exports::issue_145::external_external_arg_type(_transform: comprehensive_api::exports::issue_145::external::External)
 pub fn comprehensive_api::exports::issue_145::privately_renamed_2_arg_type(_transform: comprehensive_api::exports::issue_145::external_2::External)
@@ -201,9 +117,25 @@ pub fn comprehensive_api::exports::issue_145::privately_renamed_arg_type(_transf
 pub fn comprehensive_api::exports::issue_145::privately_renamed_external_arg_type(_transform: comprehensive_api::exports::issue_145::external::External)
 pub fn comprehensive_api::exports::issue_145::publicly_renamed_external(_transform: comprehensive_api::exports::issue_145::external_2::External)
 pub fn comprehensive_api::exports::issue_145::publicly_renamed_from_private_mod_arg_type(_transform: comprehensive_api::exports::issue_145::external_3::External)
+pub mod comprehensive_api::exports::recursion_1
+pub mod comprehensive_api::exports::recursion_1::recursion_2
+pub use comprehensive_api::exports::recursion_1::recursion_2::recursion_1
+pub mod comprehensive_api::exports::recursion_2
+pub mod comprehensive_api::exports::recursion_2::recursion_1
+pub use comprehensive_api::exports::recursion_2::recursion_1::recursion_2
+pub mod comprehensive_api::exports::recursion_glob_1
+pub use comprehensive_api::exports::recursion_glob_1::<<super::recursion_glob_1::*>>
+pub mod comprehensive_api::exports::recursion_glob_2
+pub use comprehensive_api::exports::recursion_glob_2::<<super::recursion_glob_2::*>>
+pub mod comprehensive_api::exports::v0
 pub fn comprehensive_api::exports::v0::foo()
+pub mod comprehensive_api::exports::v1
 pub fn comprehensive_api::exports::v1::foo()
 pub fn comprehensive_api::exports::v1::foo2()
+pub mod comprehensive_api::functions
+pub async fn comprehensive_api::functions::async_fn() -> ()
+pub async fn comprehensive_api::functions::async_fn_ret_bool() -> bool
+pub const fn comprehensive_api::functions::const_fn()
 pub fn comprehensive_api::functions::dyn_arg_one_trait(d: &dyn std::io::Write)
 pub fn comprehensive_api::functions::dyn_arg_one_trait_one_lifetime(d: &(dyn std::io::Write + 'static))
 pub fn comprehensive_api::functions::dyn_arg_two_traits(d: &(dyn std::io::Write + Send))
@@ -227,119 +159,207 @@ pub fn comprehensive_api::functions::return_tuple() -> (bool, comprehensive_api:
 pub fn comprehensive_api::functions::somewhere<T, U>(t: T, u: U) where T: Display, U: Debug
 pub fn comprehensive_api::functions::struct_arg(s: comprehensive_api::structs::PrivateField)
 pub fn comprehensive_api::functions::synthetic_arg(t: impl comprehensive_api::traits::Simple) -> impl comprehensive_api::traits::Simple
+pub unsafe fn comprehensive_api::functions::unsafe_fn()
+pub mod comprehensive_api::higher_ranked_trait_bounds
+pub struct comprehensive_api::higher_ranked_trait_bounds::Bar<'a>
+pub struct field comprehensive_api::higher_ranked_trait_bounds::Bar::bar: &'a (dyn for<'b> comprehensive_api::higher_ranked_trait_bounds::Trait<'b> + Unpin)
+pub struct field comprehensive_api::higher_ranked_trait_bounds::Bar::baz: &'a (dyn Unpin + for<'b> comprehensive_api::higher_ranked_trait_bounds::Trait<'b>)
+impl<'a> !RefUnwindSafe for comprehensive_api::higher_ranked_trait_bounds::Bar<'a>
+impl<'a> !Send for comprehensive_api::higher_ranked_trait_bounds::Bar<'a>
+impl<'a> !Sync for comprehensive_api::higher_ranked_trait_bounds::Bar<'a>
+impl<'a> Unpin for comprehensive_api::higher_ranked_trait_bounds::Bar<'a>
+impl<'a> !UnwindSafe for comprehensive_api::higher_ranked_trait_bounds::Bar<'a>
+pub struct comprehensive_api::higher_ranked_trait_bounds::Foo<'a>
+pub struct field comprehensive_api::higher_ranked_trait_bounds::Foo::some_func: for<'c> fn(val: &'c i32) -> i32
+pub struct field comprehensive_api::higher_ranked_trait_bounds::Foo::some_trait: &'a dyn for<'b> comprehensive_api::higher_ranked_trait_bounds::Trait<'b>
+impl<'a> comprehensive_api::higher_ranked_trait_bounds::Foo<'a>
 pub fn comprehensive_api::higher_ranked_trait_bounds::Foo::bar<T>() where T: comprehensive_api::higher_ranked_trait_bounds::Trait<'a>
+impl<'a> !RefUnwindSafe for comprehensive_api::higher_ranked_trait_bounds::Foo<'a>
+impl<'a> !Send for comprehensive_api::higher_ranked_trait_bounds::Foo<'a>
+impl<'a> !Sync for comprehensive_api::higher_ranked_trait_bounds::Foo<'a>
+impl<'a> Unpin for comprehensive_api::higher_ranked_trait_bounds::Foo<'a>
+impl<'a> !UnwindSafe for comprehensive_api::higher_ranked_trait_bounds::Foo<'a>
+pub trait comprehensive_api::higher_ranked_trait_bounds::B<'x>
+impl<'a> B<'a> for dyn for<'b> comprehensive_api::higher_ranked_trait_bounds::Trait<'b>
+pub trait comprehensive_api::higher_ranked_trait_bounds::Trait<'x>
 pub fn comprehensive_api::higher_ranked_trait_bounds::test1<T>() where for<'a> &'a T: Iterator
 pub fn comprehensive_api::higher_ranked_trait_bounds::test2<T>() where for<'a, 'b> &'a T: comprehensive_api::higher_ranked_trait_bounds::Trait<'b>
 pub fn comprehensive_api::higher_ranked_trait_bounds::test3<F>() where F: for<'a, 'b> Fn(&'a u8, &'b u8)
+pub mod comprehensive_api::impls
+pub struct comprehensive_api::impls::TestItemGrouping
+impl TraitReferencingOwnAssociatedType for comprehensive_api::impls::TestItemGrouping
+pub type comprehensive_api::impls::TestItemGrouping::OwnAssociatedType = bool
+pub fn comprehensive_api::impls::TestItemGrouping::own_associated_type_output(&self) -> Self::OwnAssociatedType
+pub fn comprehensive_api::impls::TestItemGrouping::own_associated_type_output_explicit_as(&self) -> <Self as comprehensive_api::traits::TraitReferencingOwnAssociatedType>::OwnAssociatedType
+impl<T, U> TraitWithGenerics<T, U> for comprehensive_api::impls::TestItemGrouping
+pub type comprehensive_api::impls::TestItemGrouping::Foo = u8
+pub fn comprehensive_api::impls::TestItemGrouping::bar() -> <Self as comprehensive_api::traits::TraitWithGenerics<T, U>>::Foo
+impl RefUnwindSafe for comprehensive_api::impls::TestItemGrouping
+impl Send for comprehensive_api::impls::TestItemGrouping
+impl Sync for comprehensive_api::impls::TestItemGrouping
+impl Unpin for comprehensive_api::impls::TestItemGrouping
+impl UnwindSafe for comprehensive_api::impls::TestItemGrouping
+pub trait comprehensive_api::impls::ForUnit
 pub fn comprehensive_api::impls::ForUnit::for_unit()
+impl ForUnit for ()
 pub fn comprehensive_api::impls::ForUnit::for_unit()
+pub mod comprehensive_api::macros
+pub mod comprehensive_api::statics
+pub static comprehensive_api::statics::ANSWER: i8
+pub static comprehensive_api::statics::FUNCTION_POINTER: Option<fn(usize, i8) -> String>
+pub mut static comprehensive_api::statics::MUT_ANSWER: i8
+pub mod comprehensive_api::structs
+pub struct comprehensive_api::structs::ConstArg<T, const N: usize>
+pub struct field comprehensive_api::structs::ConstArg::items: [T; N]
+impl<T, const N: usize> RefUnwindSafe for comprehensive_api::structs::ConstArg<T, N> where T: RefUnwindSafe
+impl<T, const N: usize> Send for comprehensive_api::structs::ConstArg<T, N> where T: Send
+impl<T, const N: usize> Sync for comprehensive_api::structs::ConstArg<T, N> where T: Sync
+impl<T, const N: usize> Unpin for comprehensive_api::structs::ConstArg<T, N> where T: Unpin
+impl<T, const N: usize> UnwindSafe for comprehensive_api::structs::ConstArg<T, N> where T: UnwindSafe
+pub struct comprehensive_api::structs::Plain
+pub struct field comprehensive_api::structs::Plain::x: usize
+impl comprehensive_api::structs::Plain
+impl<'a> comprehensive_api::structs::Plain
 pub fn comprehensive_api::structs::Plain::f()
 pub fn comprehensive_api::structs::Plain::new() -> comprehensive_api::structs::Plain
 pub fn comprehensive_api::structs::Plain::s1(self)
 pub fn comprehensive_api::structs::Plain::s2(&self)
 pub fn comprehensive_api::structs::Plain::s3(&mut self)
 pub fn comprehensive_api::structs::Plain::s4(&'a self)
-pub fn comprehensive_api::structs::Unit::act()
-pub fn comprehensive_api::structs::WithLifetimeAndGenericParam::new(unit_ref: &'b comprehensive_api::structs::Unit, t: String) -> Self
-pub fn comprehensive_api::traits::Simple::act()
-pub fn comprehensive_api::traits::Simple::act()
-pub fn comprehensive_api::traits::TraitReferencingOwnAssociatedType::own_associated_type_output(&self) -> Self::OwnAssociatedType
-pub fn comprehensive_api::traits::TraitReferencingOwnAssociatedType::own_associated_type_output_explicit_as(&self) -> <Self as comprehensive_api::traits::TraitReferencingOwnAssociatedType>::OwnAssociatedType
-pub fn comprehensive_api::traits::TraitWithGenerics::bar() -> <Self as comprehensive_api::traits::TraitWithGenerics<T, U>>::Foo
-pub macro comprehensive_api::simple_macro!
-pub mod comprehensive_api
-pub mod comprehensive_api::attributes
-pub mod comprehensive_api::constants
-pub mod comprehensive_api::enums
-pub mod comprehensive_api::exports
-pub mod comprehensive_api::exports::issue_145
-pub mod comprehensive_api::exports::issue_145::external
-pub mod comprehensive_api::exports::issue_145::external_2
-pub mod comprehensive_api::exports::issue_145::external_3
-pub mod comprehensive_api::exports::issue_145::publicly_renamed
-pub mod comprehensive_api::exports::recursion_1
-pub mod comprehensive_api::exports::recursion_1::recursion_2
-pub mod comprehensive_api::exports::recursion_2
-pub mod comprehensive_api::exports::recursion_2::recursion_1
-pub mod comprehensive_api::exports::recursion_glob_1
-pub mod comprehensive_api::exports::recursion_glob_2
-pub mod comprehensive_api::exports::v0
-pub mod comprehensive_api::exports::v1
-pub mod comprehensive_api::functions
-pub mod comprehensive_api::higher_ranked_trait_bounds
-pub mod comprehensive_api::impls
-pub mod comprehensive_api::macros
-pub mod comprehensive_api::statics
-pub mod comprehensive_api::structs
-pub mod comprehensive_api::traits
-pub mod comprehensive_api::typedefs
-pub mod comprehensive_api::unions
-pub mut static comprehensive_api::statics::MUT_ANSWER: i8
-pub static comprehensive_api::statics::ANSWER: i8
-pub static comprehensive_api::statics::FUNCTION_POINTER: Option<fn(usize, i8) -> String>
-pub struct comprehensive_api::Plain
-pub struct comprehensive_api::RenamedPlain
-pub struct comprehensive_api::StructInPrivateMod
-pub struct comprehensive_api::exports::issue_145::PubliclyRenamedFromPrivateMod
-pub struct comprehensive_api::exports::issue_145::external::External
-pub struct comprehensive_api::exports::issue_145::external_2::External
-pub struct comprehensive_api::exports::issue_145::external_3::External
-pub struct comprehensive_api::exports::issue_145::publicly_renamed::External
-pub struct comprehensive_api::higher_ranked_trait_bounds::Bar<'a>
-pub struct comprehensive_api::higher_ranked_trait_bounds::Foo<'a>
-pub struct comprehensive_api::structs::ConstArg<T, const N: usize>
-pub struct comprehensive_api::structs::Plain
+impl RefUnwindSafe for comprehensive_api::structs::Plain
+impl Send for comprehensive_api::structs::Plain
+impl Sync for comprehensive_api::structs::Plain
+impl Unpin for comprehensive_api::structs::Plain
+impl UnwindSafe for comprehensive_api::structs::Plain
 pub struct comprehensive_api::structs::PrivateField
+impl RefUnwindSafe for comprehensive_api::structs::PrivateField
+impl Send for comprehensive_api::structs::PrivateField
+impl Sync for comprehensive_api::structs::PrivateField
+impl Unpin for comprehensive_api::structs::PrivateField
+impl UnwindSafe for comprehensive_api::structs::PrivateField
 pub struct comprehensive_api::structs::TupleStructDouble(pub usize, pub bool)
+impl RefUnwindSafe for comprehensive_api::structs::TupleStructDouble
+impl Send for comprehensive_api::structs::TupleStructDouble
+impl Sync for comprehensive_api::structs::TupleStructDouble
+impl Unpin for comprehensive_api::structs::TupleStructDouble
+impl UnwindSafe for comprehensive_api::structs::TupleStructDouble
 pub struct comprehensive_api::structs::TupleStructDoubleWithHidden(_, pub bool)
+impl RefUnwindSafe for comprehensive_api::structs::TupleStructDoubleWithHidden
+impl Send for comprehensive_api::structs::TupleStructDoubleWithHidden
+impl Sync for comprehensive_api::structs::TupleStructDoubleWithHidden
+impl Unpin for comprehensive_api::structs::TupleStructDoubleWithHidden
+impl UnwindSafe for comprehensive_api::structs::TupleStructDoubleWithHidden
 pub struct comprehensive_api::structs::TupleStructDoubleWithPrivate(_, pub bool)
+impl RefUnwindSafe for comprehensive_api::structs::TupleStructDoubleWithPrivate
+impl Send for comprehensive_api::structs::TupleStructDoubleWithPrivate
+impl Sync for comprehensive_api::structs::TupleStructDoubleWithPrivate
+impl Unpin for comprehensive_api::structs::TupleStructDoubleWithPrivate
+impl UnwindSafe for comprehensive_api::structs::TupleStructDoubleWithPrivate
 pub struct comprehensive_api::structs::TupleStructSingle(pub usize)
+impl RefUnwindSafe for comprehensive_api::structs::TupleStructSingle
+impl Send for comprehensive_api::structs::TupleStructSingle
+impl Sync for comprehensive_api::structs::TupleStructSingle
+impl Unpin for comprehensive_api::structs::TupleStructSingle
+impl UnwindSafe for comprehensive_api::structs::TupleStructSingle
 pub struct comprehensive_api::structs::Unit
+impl Simple for comprehensive_api::structs::Unit
+pub fn comprehensive_api::structs::Unit::act()
+impl RefUnwindSafe for comprehensive_api::structs::Unit
+impl Send for comprehensive_api::structs::Unit
+impl Sync for comprehensive_api::structs::Unit
+impl Unpin for comprehensive_api::structs::Unit
+impl UnwindSafe for comprehensive_api::structs::Unit
 pub struct comprehensive_api::structs::WithLifetimeAndGenericParam<'a, T>
-pub struct comprehensive_api::structs::WithTraitBounds<T: Display + Debug>
-pub struct field comprehensive_api::Plain::x: usize
-pub struct field comprehensive_api::RenamedPlain::x: usize
-pub struct field comprehensive_api::attributes::C::b: bool
-pub struct field comprehensive_api::enums::DiverseVariants::Recursive::child: Box<comprehensive_api::enums::DiverseVariants>
-pub struct field comprehensive_api::enums::DiverseVariants::Struct::x: usize
-pub struct field comprehensive_api::enums::DiverseVariants::Struct::y: comprehensive_api::enums::SingleVariant
-pub struct field comprehensive_api::enums::EnumWithGenerics::Variant::d: D
-pub struct field comprehensive_api::enums::EnumWithGenerics::Variant::t: &'a T
-pub struct field comprehensive_api::higher_ranked_trait_bounds::Bar::bar: &'a (dyn for<'b> comprehensive_api::higher_ranked_trait_bounds::Trait<'b> + Unpin)
-pub struct field comprehensive_api::higher_ranked_trait_bounds::Bar::baz: &'a (dyn Unpin + for<'b> comprehensive_api::higher_ranked_trait_bounds::Trait<'b>)
-pub struct field comprehensive_api::higher_ranked_trait_bounds::Foo::some_func: for<'c> fn(val: &'c i32) -> i32
-pub struct field comprehensive_api::higher_ranked_trait_bounds::Foo::some_trait: &'a dyn for<'b> comprehensive_api::higher_ranked_trait_bounds::Trait<'b>
-pub struct field comprehensive_api::structs::ConstArg::items: [T; N]
-pub struct field comprehensive_api::structs::Plain::x: usize
 pub struct field comprehensive_api::structs::WithLifetimeAndGenericParam::t: T
 pub struct field comprehensive_api::structs::WithLifetimeAndGenericParam::unit_ref: &'a comprehensive_api::structs::Unit
-pub struct field comprehensive_api::unions::Basic::x: usize
-pub struct field comprehensive_api::unions::Basic::y: usize
-pub trait comprehensive_api::higher_ranked_trait_bounds::B<'x>
-pub trait comprehensive_api::higher_ranked_trait_bounds::Trait<'x>
-pub trait comprehensive_api::impls::ForUnit
+impl<'b> comprehensive_api::structs::WithLifetimeAndGenericParam<'b, String>
+pub fn comprehensive_api::structs::WithLifetimeAndGenericParam::new(unit_ref: &'b comprehensive_api::structs::Unit, t: String) -> Self
+impl<'a, T> RefUnwindSafe for comprehensive_api::structs::WithLifetimeAndGenericParam<'a, T> where T: RefUnwindSafe
+impl<'a, T> Send for comprehensive_api::structs::WithLifetimeAndGenericParam<'a, T> where T: Send
+impl<'a, T> Sync for comprehensive_api::structs::WithLifetimeAndGenericParam<'a, T> where T: Sync
+impl<'a, T> Unpin for comprehensive_api::structs::WithLifetimeAndGenericParam<'a, T> where T: Unpin
+impl<'a, T> UnwindSafe for comprehensive_api::structs::WithLifetimeAndGenericParam<'a, T> where T: UnwindSafe
+pub struct comprehensive_api::structs::WithTraitBounds<T: Display + Debug>
+impl<T> RefUnwindSafe for comprehensive_api::structs::WithTraitBounds<T> where T: RefUnwindSafe
+impl<T> Send for comprehensive_api::structs::WithTraitBounds<T> where T: Send
+impl<T> Sync for comprehensive_api::structs::WithTraitBounds<T> where T: Sync
+impl<T> Unpin for comprehensive_api::structs::WithTraitBounds<T> where T: Unpin
+impl<T> UnwindSafe for comprehensive_api::structs::WithTraitBounds<T> where T: UnwindSafe
+pub mod comprehensive_api::traits
 pub trait comprehensive_api::traits::AssociatedConst
+pub const comprehensive_api::traits::AssociatedConst::CONST: bool
 pub trait comprehensive_api::traits::AssociatedConstDefault
+pub const comprehensive_api::traits::AssociatedConstDefault::CONST_WITH_DEFAULT: bool
 pub trait comprehensive_api::traits::AssociatedType
+pub type comprehensive_api::traits::AssociatedType::Type
 pub trait comprehensive_api::traits::Empty
 pub trait comprehensive_api::traits::Simple
+pub fn comprehensive_api::traits::Simple::act()
+impl Simple for comprehensive_api::structs::Unit
+pub fn comprehensive_api::traits::Simple::act()
 pub trait comprehensive_api::traits::TraitReferencingOwnAssociatedType
+pub type comprehensive_api::traits::TraitReferencingOwnAssociatedType::OwnAssociatedType
+pub fn comprehensive_api::traits::TraitReferencingOwnAssociatedType::own_associated_type_output(&self) -> Self::OwnAssociatedType
+pub fn comprehensive_api::traits::TraitReferencingOwnAssociatedType::own_associated_type_output_explicit_as(&self) -> <Self as comprehensive_api::traits::TraitReferencingOwnAssociatedType>::OwnAssociatedType
+impl TraitReferencingOwnAssociatedType for comprehensive_api::impls::TestItemGrouping
+pub type comprehensive_api::traits::TraitReferencingOwnAssociatedType::OwnAssociatedType = bool
+pub fn comprehensive_api::traits::TraitReferencingOwnAssociatedType::own_associated_type_output(&self) -> Self::OwnAssociatedType
+pub fn comprehensive_api::traits::TraitReferencingOwnAssociatedType::own_associated_type_output_explicit_as(&self) -> <Self as comprehensive_api::traits::TraitReferencingOwnAssociatedType>::OwnAssociatedType
 pub trait comprehensive_api::traits::TraitWithBounds: private_mod::PubTraitInPrivateMod + comprehensive_api::traits::Simple + Send
 pub trait comprehensive_api::traits::TraitWithBoundsAndGenerics<U>: comprehensive_api::traits::Simple
 pub trait comprehensive_api::traits::TraitWithGenerics<T, U>
-pub type comprehensive_api::traits::AssociatedType::Type
-pub type comprehensive_api::traits::TraitReferencingOwnAssociatedType::OwnAssociatedType
 pub type comprehensive_api::traits::TraitWithGenerics::Foo
+pub fn comprehensive_api::traits::TraitWithGenerics::bar() -> <Self as comprehensive_api::traits::TraitWithGenerics<T, U>>::Foo
+impl<T, U> TraitWithGenerics<T, U> for comprehensive_api::impls::TestItemGrouping
+pub type comprehensive_api::traits::TraitWithGenerics::Foo = u8
+pub fn comprehensive_api::traits::TraitWithGenerics::bar() -> <Self as comprehensive_api::traits::TraitWithGenerics<T, U>>::Foo
+pub unsafe trait comprehensive_api::traits::UnsafeTrait
+pub mod comprehensive_api::typedefs
 pub type comprehensive_api::typedefs::RedefinedResult<T, E> = Result<T, E>
 pub type comprehensive_api::typedefs::TypedefPlain = comprehensive_api::structs::Plain
+pub mod comprehensive_api::unions
 pub union comprehensive_api::unions::Basic
-pub unsafe fn comprehensive_api::functions::unsafe_fn()
-pub unsafe trait comprehensive_api::traits::UnsafeTrait
-pub use comprehensive_api::<<example_api::*>>
-pub use comprehensive_api::StructV2
-pub use comprehensive_api::exports::recursion_1::recursion_2::recursion_1
-pub use comprehensive_api::exports::recursion_2::recursion_1::recursion_2
-pub use comprehensive_api::exports::recursion_glob_1::<<super::recursion_glob_1::*>>
-pub use comprehensive_api::exports::recursion_glob_2::<<super::recursion_glob_2::*>>
-pub use comprehensive_api::my_i32
-pub use comprehensive_api::u32
+pub struct field comprehensive_api::unions::Basic::x: usize
+pub struct field comprehensive_api::unions::Basic::y: usize
+impl RefUnwindSafe for comprehensive_api::unions::Basic
+impl Send for comprehensive_api::unions::Basic
+impl Sync for comprehensive_api::unions::Basic
+impl Unpin for comprehensive_api::unions::Basic
+impl UnwindSafe for comprehensive_api::unions::Basic
+pub macro comprehensive_api::simple_macro!
+pub struct comprehensive_api::Plain
+pub struct field comprehensive_api::Plain::x: usize
+impl comprehensive_api::structs::Plain
+impl<'a> comprehensive_api::structs::Plain
+pub fn comprehensive_api::Plain::f()
+pub fn comprehensive_api::Plain::new() -> comprehensive_api::structs::Plain
+pub fn comprehensive_api::Plain::s1(self)
+pub fn comprehensive_api::Plain::s2(&self)
+pub fn comprehensive_api::Plain::s3(&mut self)
+pub fn comprehensive_api::Plain::s4(&'a self)
+impl RefUnwindSafe for comprehensive_api::structs::Plain
+impl Send for comprehensive_api::structs::Plain
+impl Sync for comprehensive_api::structs::Plain
+impl Unpin for comprehensive_api::structs::Plain
+impl UnwindSafe for comprehensive_api::structs::Plain
+pub struct comprehensive_api::RenamedPlain
+pub struct field comprehensive_api::RenamedPlain::x: usize
+impl comprehensive_api::structs::Plain
+impl<'a> comprehensive_api::structs::Plain
+pub fn comprehensive_api::RenamedPlain::f()
+pub fn comprehensive_api::RenamedPlain::new() -> comprehensive_api::structs::Plain
+pub fn comprehensive_api::RenamedPlain::s1(self)
+pub fn comprehensive_api::RenamedPlain::s2(&self)
+pub fn comprehensive_api::RenamedPlain::s3(&mut self)
+pub fn comprehensive_api::RenamedPlain::s4(&'a self)
+impl RefUnwindSafe for comprehensive_api::structs::Plain
+impl Send for comprehensive_api::structs::Plain
+impl Sync for comprehensive_api::structs::Plain
+impl Unpin for comprehensive_api::structs::Plain
+impl UnwindSafe for comprehensive_api::structs::Plain
+pub struct comprehensive_api::StructInPrivateMod
+impl RefUnwindSafe for comprehensive_api::StructInPrivateMod
+impl Send for comprehensive_api::StructInPrivateMod
+impl Sync for comprehensive_api::StructInPrivateMod
+impl Unpin for comprehensive_api::StructInPrivateMod
+impl UnwindSafe for comprehensive_api::StructInPrivateMod

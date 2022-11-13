@@ -1,4 +1,4 @@
-use rustdoc_types::Item;
+use rustdoc_types::{Impl, Item, ItemEnum};
 
 use crate::{public_item::PublicItemPath, render::RenderingContext, tokens::Token};
 
@@ -14,13 +14,42 @@ pub struct NameableItem<'c> {
     /// We can't calculate this on-demand, because we can't know the final name
     /// until we have checked if we need to break import recursion.
     pub overridden_name: Option<String>,
+
+    /// See [`crate::item_processor::sorting_prefix()`] docs for an explanation why we have this.
+    pub sorting_prefix: u8,
 }
 
 impl<'c> NameableItem<'c> {
+    /// The regular name of the item. Shown to users.
     pub fn name(&self) -> Option<&str> {
         self.overridden_name
             .as_deref()
             .or(self.item.name.as_deref())
+    }
+
+    /// The name that, when sorted on, will group items nicely. Is never shown
+    /// to a user.
+    pub fn sortable_name(&self) -> String {
+        let mut perceived_name = "";
+
+        if let ItemEnum::Impl(Impl {
+            trait_: Some(trait_path),
+            ..
+        }) = &self.item.inner
+        {
+            // In order for items of impls to be grouped together with its impl, add
+            // the "name" of the impl to the sorting prefix.
+            perceived_name = &trait_path.name;
+        }
+
+        // Note that in order for the prefix to sort properly lexicographically,
+        // we need to pad it with leading zeroes.
+        let mut sortable_name = format!("{:0>3}{}", self.sorting_prefix, perceived_name);
+        if let Some(name) = self.name() {
+            sortable_name.push('-');
+            sortable_name.push_str(name);
+        }
+        sortable_name
     }
 }
 
@@ -48,12 +77,12 @@ impl<'c> IntermediatePublicItem<'c> {
         &self.path
     }
 
+    /// See [`crate::item_processor::sorting_prefix()`] docs for an explanation why we have this.
     #[must_use]
-    pub fn path_vec(&self) -> PublicItemPath {
+    pub fn sortable_path(&self) -> PublicItemPath {
         self.path()
             .iter()
-            .filter_map(NameableItem::name)
-            .map(ToOwned::to_owned)
+            .map(NameableItem::sortable_name)
             .collect()
     }
 

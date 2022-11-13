@@ -1,3 +1,4 @@
+use std::cmp::Ordering;
 use std::fmt::Display;
 
 use crate::intermediate_public_item::IntermediatePublicItem;
@@ -17,8 +18,8 @@ pub(crate) type PublicItemPath = Vec<String>;
 /// will change in later versions.
 #[derive(Clone, Eq, PartialEq, Hash)]
 pub struct PublicItem {
-    /// The "your_crate::mod_a::mod_b" part of an item. Split by "::"
-    pub(crate) path: PublicItemPath,
+    /// Read [`crate::item_processor::sorting_prefix()`] docs for more info
+    pub(crate) sortable_path: PublicItemPath,
 
     /// The rendered item as a stream of [`Token`]s
     pub(crate) tokens: Vec<Token>,
@@ -30,7 +31,7 @@ impl PublicItem {
         public_item: &IntermediatePublicItem<'_>,
     ) -> PublicItem {
         PublicItem {
-            path: public_item.path_vec(),
+            sortable_path: public_item.sortable_path(),
             tokens: public_item.render_token_stream(context),
         }
     }
@@ -63,8 +64,22 @@ impl PartialOrd for PublicItem {
     }
 }
 
+/// Returns `None` if two items are equal. Otherwise their ordering is returned.
+fn different_or_none<T: Ord>(a: &T, b: &T) -> Option<Ordering> {
+    match a.cmp(b) {
+        Ordering::Equal => None,
+        c => Some(c),
+    }
+}
+
 impl Ord for PublicItem {
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        // This will make e.g. struct and struct fields be grouped together.
+        if let Some(ordering) = different_or_none(&self.sortable_path, &other.sortable_path) {
+            return ordering;
+        }
+
+        // Fall back to lexical sorting if the above is not sufficient
         self.to_string().cmp(&other.to_string())
     }
 }

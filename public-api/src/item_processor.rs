@@ -245,6 +245,7 @@ impl<'c> UnprocessedItem<'c> {
         path.push(NameableItem {
             item,
             overridden_name,
+            sorting_prefix: sorting_prefix(item),
         });
 
         // Done
@@ -252,8 +253,58 @@ impl<'c> UnprocessedItem<'c> {
     }
 }
 
+/// In order for items in the output to be nicely grouped, we add a prefix to
+/// each item in the path to an item. That way, sorting on the name (with this
+/// prefix) will group items. But we don't want this prefix to be be visible to
+/// users of course, so we do this "behind the scenes".
+pub(crate) fn sorting_prefix(item: &Item) -> u8 {
+    match &item.inner {
+        ItemEnum::ExternCrate { .. } => 1,
+        ItemEnum::Import(_) => 2,
+
+        ItemEnum::Primitive(_) => 3,
+
+        ItemEnum::Module(_) => 4,
+
+        ItemEnum::Macro(_) => 5,
+        ItemEnum::ProcMacro(_) => 6,
+
+        ItemEnum::Enum(_) => 7,
+        ItemEnum::Union(_) => 8,
+        ItemEnum::Struct(_) => 9,
+        ItemEnum::StructField(_) => 10,
+        ItemEnum::Variant(_) => 11,
+
+        ItemEnum::Constant(_) => 12,
+
+        ItemEnum::Static(_) => 13,
+
+        ItemEnum::Trait(_) => 14,
+
+        ItemEnum::AssocType { .. } => 15,
+        ItemEnum::AssocConst { .. } => 16,
+
+        ItemEnum::Function(_) => 17,
+        ItemEnum::Method(_) => 18,
+
+        ItemEnum::Typedef(_) => 19,
+
+        ItemEnum::Impl(impl_) => match ImplKind::from(impl_) {
+            ImplKind::Normal => 20,
+            ImplKind::AutoTrait => 21,
+            ImplKind::Blanket => 22,
+        },
+
+        ItemEnum::ForeignType => 23,
+
+        ItemEnum::OpaqueTy(_) => 24,
+
+        ItemEnum::TraitAlias(_) => 25,
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq)]
-enum ImplKind {
+pub(crate) enum ImplKind {
     Normal,
     AutoTrait,
     Blanket,
@@ -318,6 +369,7 @@ pub fn public_api_in_crate(crate_: &Crate, options: Options) -> super::PublicApi
     let context = RenderingContext {
         crate_,
         id_to_items: item_processor.id_to_items(),
+        options,
     };
 
     PublicApi {

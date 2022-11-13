@@ -1,6 +1,9 @@
 #![allow(clippy::unused_self)]
-use crate::intermediate_public_item::{IntermediatePublicItem, NameableItem};
-use std::{cmp::Ordering, collections::HashMap};
+use crate::{
+    intermediate_public_item::{IntermediatePublicItem, NameableItem},
+    Options,
+};
+use std::{cmp::Ordering, collections::HashMap, vec};
 
 use rustdoc_types::{
     Abi, Constant, Crate, FnDecl, FunctionPointer, GenericArg, GenericArgs, GenericBound,
@@ -27,6 +30,8 @@ pub struct RenderingContext<'c> {
 
     /// Given a rustdoc JSON ID, keeps track of what public items that have this Id.
     pub id_to_items: HashMap<&'c Id, Vec<&'c IntermediatePublicItem<'c>>>,
+
+    pub options: Options,
 }
 
 impl<'c> RenderingContext<'c> {
@@ -102,7 +107,7 @@ impl<'c> RenderingContext<'c> {
             ),
             ItemEnum::Trait(trait_) => self.render_trait(trait_, item_path),
             ItemEnum::TraitAlias(_) => self.render_simple(&["trait", "alias"], item_path),
-            ItemEnum::Impl(impl_) => self.render_impl(impl_),
+            ItemEnum::Impl(impl_) => self.render_impl(impl_, item_path),
             ItemEnum::Typedef(inner) => {
                 let mut output = self.render_simple(&["type"], item_path);
                 output.extend(self.render_generics(&inner.generics));
@@ -244,8 +249,16 @@ impl<'c> RenderingContext<'c> {
             } else {
                 Token::identifier
             };
-            if let Some(name) = item.name() {
-                output.push(token_fn(name));
+
+            if self.options.debug_sorting {
+                // There is always a sortable name, so we can push the name
+                // unconditionally
+                output.push(token_fn(item.sortable_name()));
+                output.push(Token::symbol("::"));
+            } else if let Some(name) = item.name() {
+                // If we are not debugging, some items (read: impls) do not have
+                // a name, so only push a name if it exists
+                output.push(token_fn(name.to_string()));
                 output.push(Token::symbol("::"));
             }
         }
@@ -583,8 +596,13 @@ impl<'c> RenderingContext<'c> {
         output
     }
 
-    fn render_impl(&self, impl_: &Impl) -> Vec<Token> {
+    fn render_impl(&self, impl_: &Impl, path: &[NameableItem]) -> Vec<Token> {
         let mut output = vec![];
+
+        if self.options.debug_sorting {
+            output.extend(self.render_path(path));
+            output.push(ws!());
+        }
 
         if impl_.is_unsafe {
             output.extend(vec![Token::keyword("unsafe"), ws!()]);
@@ -1307,6 +1325,7 @@ mod test {
         let context = RenderingContext {
             crate_: &crate_,
             id_to_items: HashMap::new(),
+            options: Options::default(),
         };
 
         let actual = render_fn(context);

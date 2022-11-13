@@ -618,10 +618,7 @@ impl<'c> RenderingContext<'c> {
             if impl_.negative {
                 output.push(Token::symbol("!"));
             }
-            output.push(Token::identifier(&trait_.name));
-            if let Some(args) = &trait_.args {
-                output.extend(self.render_generic_args(args));
-            }
+            output.extend(self.render_resolved_path(trait_));
             output.extend(vec![ws!(), Token::keyword("for"), ws!()]);
             output.extend(self.render_type(&impl_.for_));
         } else {

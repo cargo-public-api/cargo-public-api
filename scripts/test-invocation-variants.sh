@@ -82,7 +82,7 @@ assert_progress_and_output() {
 # any args at all. This assumptions allows us to run tests fast. We do arg-less
 # tests further down.
 assert_progress_and_output \
-    "cargo run -- --manifest-path test-apis/comprehensive_api/Cargo.toml" \
+    "cargo run -- --manifest-path test-apis/comprehensive_api/Cargo.toml --simplified" \
     public-api/tests/expected-output/comprehensive_api.txt \
     "Documenting comprehensive_api"
 
@@ -93,20 +93,20 @@ cargo install --debug --path cargo-public-api
 (
     cd test-apis/comprehensive_api
     assert_progress_and_output \
-        "cargo public-api" \
+        "cargo public-api --simplified" \
         ../../public-api/tests/expected-output/comprehensive_api.txt \
         "Documenting comprehensive_api"
 )
 
 # Make sure we can run the tool on an external directory as a cargo sub-command
 assert_progress_and_output \
-    "cargo public-api --manifest-path test-apis/comprehensive_api/Cargo.toml" \
+    "cargo public-api --manifest-path test-apis/comprehensive_api/Cargo.toml --simplified" \
     public-api/tests/expected-output/comprehensive_api.txt \
     "Documenting comprehensive_api"
 
 # Make sure cargo subcommand args filtering of 'public-api' is not too aggressive
 assert_progress_and_output \
-    "cargo public-api -p public-api" \
+    "cargo public-api -p public-api --simplified " \
     cargo-public-api/tests/expected-output/public_api_list.txt \
     "Documenting public-api"
 
@@ -114,7 +114,7 @@ assert_progress_and_output \
 # comprehensive_api, because we want any rustdoc JSON format incompatibilities
 # to be detected
 assert_progress_and_output \
-    "cargo +${minimal_toolchain} public-api --manifest-path test-apis/comprehensive_api/Cargo.toml" \
+    "cargo +${minimal_toolchain} public-api --manifest-path test-apis/comprehensive_api/Cargo.toml --simplified" \
     public-api/tests/expected-output/comprehensive_api.txt \
     "Documenting comprehensive_api"
 
@@ -124,7 +124,7 @@ assert_progress_and_output \
 # test uses a too old nightly toolchain, which should make the tool fail if it's used.
 # Test against comprehensive_api, because we want any rustdoc JSON format
 # incompatibilities to be detected
-cmd="cargo public-api --toolchain ${unusable_toolchain} --manifest-path test-apis/comprehensive_api/Cargo.toml"
+cmd="cargo public-api --toolchain ${unusable_toolchain} --manifest-path test-apis/comprehensive_api/Cargo.toml --simplified"
 echo -n "${cmd} ... "
 if ${cmd} >/dev/null 2>/dev/null; then
     echo "FAIL: Using '${unusable_toolchain}' to build rustdoc JSON should have failed!"
@@ -135,7 +135,7 @@ fi
 
 # Test against comprehensive_api, because we want any rustdoc JSON format
 # incompatibilities to be detected
-cmd="cargo +${unusable_toolchain} public-api --manifest-path test-apis/comprehensive_api/Cargo.toml"
+cmd="cargo +${unusable_toolchain} public-api --manifest-path test-apis/comprehensive_api/Cargo.toml --simplified"
 echo -n "${cmd} ... "
 if ${cmd} >/dev/null 2>/dev/null; then
     echo "FAIL: Using '${unusable_toolchain}' to build rustdoc JSON should have failed!"
@@ -146,7 +146,7 @@ fi
 
 # Test against comprehensive_api, because we want any rustdoc JSON format
 # incompatibilities to be detected
-cmd="cargo +beta public-api --manifest-path test-apis/comprehensive_api/Cargo.toml"
+cmd="cargo +beta public-api --manifest-path test-apis/comprehensive_api/Cargo.toml --simplified"
 echo -n "${cmd} ... "
 if n=$(${cmd} 2>&1 | grep "Warning: using the \`beta.*\` toolchain for gathering the public api is not possible"); then
     echo "PASS"

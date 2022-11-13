@@ -326,8 +326,8 @@ impl From<&Impl> for ImplKind {
 impl ImplKind {
     fn is_active(&self, options: Options) -> bool {
         match self {
-            ImplKind::Blanket => options.with_blanket_implementations,
-            ImplKind::AutoTrait | ImplKind::Normal => true,
+            ImplKind::Blanket | ImplKind::AutoTrait => !options.simplified,
+            ImplKind::Normal => true,
         }
     }
 }

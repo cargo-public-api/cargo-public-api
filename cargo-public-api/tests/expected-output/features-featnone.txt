@@ -1,7 +1,2 @@
 pub mod features
 #[non_exhaustive] pub struct features::AStruct
-impl core::panic::unwind_safe::RefUnwindSafe for features::AStruct
-impl core::marker::Send for features::AStruct
-impl core::marker::Sync for features::AStruct
-impl core::marker::Unpin for features::AStruct
-impl core::panic::unwind_safe::UnwindSafe for features::AStruct

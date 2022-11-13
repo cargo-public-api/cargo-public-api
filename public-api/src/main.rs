@@ -23,7 +23,7 @@ type Result<T> = std::result::Result<T, Error>;
 #[derive(Default)]
 struct Args {
     help: bool,
-    with_blanket_implementations: bool,
+    simplified: bool,
     print_minimum_rustdoc_json_version: bool,
     files: Vec<PathBuf>,
 }
@@ -36,7 +36,7 @@ fn main_() -> Result<()> {
     }
 
     let mut options = Options::default();
-    options.with_blanket_implementations = args.with_blanket_implementations;
+    options.simplified = args.simplified;
     options.sorted = true;
 
     let files = args.files;
@@ -138,7 +138,6 @@ commit and then pass the path of both files to this utility:
 
     public-api <RUSTDOC_JSON_FILE_OLD> <RUSTDOC_JSON_FILE_NEW>
 
-To include blanket implementations, pass --with-blanket-implementations.
 ",
         env!("CARGO_PKG_VERSION"),
         MINIMUM_RUSTDOC_JSON_VERSION,
@@ -158,8 +157,8 @@ fn args() -> Args {
     let mut args = Args::default();
 
     for arg in std::env::args_os().skip(1) {
-        if arg == "--with-blanket-implementations" {
-            args.with_blanket_implementations = true;
+        if arg == "--simplified" {
+            args.simplified = true;
         } else if arg == "--print-minimum-rustdoc-json-version" {
             args.print_minimum_rustdoc_json_version = true;
         } else if arg == "--help" || arg == "-h" {

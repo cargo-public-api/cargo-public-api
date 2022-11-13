@@ -48,7 +48,7 @@ fn create_test_repo_with_dirty_git_tree() -> TestRepo {
 #[test]
 #[cfg_attr(all(target_family = "windows", in_ci), ignore)]
 fn list_public_items() {
-    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    let mut cmd = cargo_public_api_cmd_simplified();
     cmd.args(["--manifest-path", "../public-api/Cargo.toml"]);
     cmd.assert()
         .stdout_or_bless("./tests/expected-output/public_api_list.txt")
@@ -57,7 +57,7 @@ fn list_public_items() {
 
 #[test]
 fn list_public_items_with_lint_error() {
-    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    let mut cmd = cargo_public_api_cmd_simplified();
     cmd.args(["--manifest-path", "../test-apis/lint_error/Cargo.toml"]);
     cmd.assert()
         .stdout_or_bless("./tests/expected-output/lint_error_list.txt")
@@ -84,7 +84,7 @@ fn list_public_items_explicit_manifest_path() {
     let mut test_repo_manifest = PathBuf::from(test_repo.path());
     test_repo_manifest.push("Cargo.toml");
 
-    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    let mut cmd = cargo_public_api_cmd_simplified();
     cmd.arg("--manifest-path");
     cmd.arg(&test_repo_manifest);
     cmd.assert()
@@ -96,7 +96,7 @@ fn list_public_items_explicit_manifest_path() {
 /// manifest. Use the smallest crate in our workspace to make tests run fast
 #[test]
 fn list_public_items_via_package_spec() {
-    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    let mut cmd = cargo_public_api_cmd_simplified();
     cmd.arg("--package");
     cmd.arg("rustdoc-json");
     cmd.assert()
@@ -131,7 +131,7 @@ fn target_arg() {
 
 #[test]
 fn virtual_manifest_error() {
-    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    let mut cmd = cargo_public_api_cmd_simplified();
     cmd.arg("--manifest-path");
     cmd.arg(current_dir_and("../test-apis/virtual-manifest/Cargo.toml"));
     cmd.assert()
@@ -182,7 +182,7 @@ fn diff_public_items_detached_head() {
     assert_eq!(None, git_utils::current_branch(path).unwrap());
     let before = git_utils::current_commit(path).unwrap();
 
-    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    let mut cmd = cargo_public_api_cmd_simplified();
     cmd.current_dir(path);
     cmd.arg("--color=never");
     cmd.arg("--diff-git-checkouts");
@@ -203,7 +203,7 @@ fn diff_public_items_with_dirty_tree_fails() {
     let test_repo = create_test_repo_with_dirty_git_tree();
 
     // Make sure diffing does not destroy uncommitted data!
-    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    let mut cmd = cargo_public_api_cmd_simplified();
     cmd.current_dir(&test_repo.path);
     cmd.arg("--color=never");
     cmd.arg("--diff-git-checkouts");
@@ -223,7 +223,7 @@ fn diff_public_items_with_dirty_tree_fails() {
 fn diff_public_items_with_dirty_tree_succeedes_with_force_option() {
     let test_repo = create_test_repo_with_dirty_git_tree();
 
-    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    let mut cmd = cargo_public_api_cmd_simplified();
     cmd.current_dir(&test_repo.path);
     cmd.arg("--color=never");
     cmd.arg("--diff-git-checkouts");
@@ -247,7 +247,7 @@ fn diff_public_items_relative_refs() {
     assert_eq!(None, git_utils::current_branch(path).unwrap());
     let before = git_utils::current_commit(path).unwrap();
 
-    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    let mut cmd = cargo_public_api_cmd_simplified();
     cmd.current_dir(path);
     cmd.arg("--color=never");
     cmd.arg("--diff-git-checkouts");
@@ -381,7 +381,7 @@ fn deny_with_invalid_arg() {
 #[test]
 fn diff_public_items_with_manifest_path() {
     let test_repo = TestRepo::new();
-    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    let mut cmd = cargo_public_api_cmd_simplified();
     cmd.arg("--manifest-path");
     cmd.arg(format!(
         "{}/Cargo.toml",
@@ -398,7 +398,7 @@ fn diff_public_items_with_manifest_path() {
 
 #[test]
 fn diff_public_items_without_git_root() {
-    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    let mut cmd = cargo_public_api_cmd_simplified();
     cmd.arg("--manifest-path");
     cmd.arg("/does/not/exist/Cargo.toml");
     cmd.arg("--color=never");
@@ -447,7 +447,7 @@ fn diff_public_items_from_files_smart_diff() {
 fn diff_public_items_from_files_impl(diff_arg: &str) {
     let old = rustdoc_json_path_for_crate("../test-apis/example_api-v0.1.0");
     let new = rustdoc_json_path_for_crate("../test-apis/example_api-v0.2.0");
-    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    let mut cmd = cargo_public_api_cmd_simplified();
     cmd.arg(diff_arg);
     cmd.arg(old);
     cmd.arg(new);
@@ -482,7 +482,7 @@ fn diff_published_impl(diff_arg: &str) {
 #[test]
 fn list_public_items_from_json_file() {
     let json_file = rustdoc_json_path_for_crate("../test-apis/example_api-v0.3.0");
-    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    let mut cmd = cargo_public_api_cmd_simplified();
     cmd.arg("--rustdoc-json");
     cmd.arg(json_file);
     cmd.assert()
@@ -504,7 +504,7 @@ fn diff_public_items_missing_one_arg() {
 
 #[test]
 fn verbose() {
-    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    let mut cmd = cargo_public_api_cmd_simplified();
     cmd.arg("--manifest-path");
     cmd.arg("../test-apis/lint_error/Cargo.toml");
     cmd.arg("--verbose");
@@ -516,21 +516,21 @@ fn verbose() {
 
 #[test]
 fn long_help() {
-    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    let mut cmd = cargo_public_api_cmd_simplified();
     cmd.arg("--help");
     assert_presence_of_args_in_help(cmd);
 }
 
 #[test]
 fn short_help() {
-    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    let mut cmd = cargo_public_api_cmd_simplified();
     cmd.arg("-h");
     assert_presence_of_args_in_help(cmd);
 }
 
 fn assert_presence_of_args_in_help(mut cmd: Command) {
     cmd.assert()
-        .stdout(contains("--with-blanket-implementations"))
+        .stdout(contains("--simplified"))
         .stdout(contains("--manifest-path"))
         .stdout(contains("--diff-git-checkouts"))
         .success();
@@ -548,6 +548,18 @@ fn current_dir_and<P: AsRef<Path>>(path: P) -> PathBuf {
 /// to use so that tests can run in parallel.
 fn initialize_test_repo(dest: &Path) {
     test_utils::create_test_git_repo(dest, "../test-apis");
+}
+
+fn cargo_public_api_cmd_simplified() -> Command {
+    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+
+    // Simplify output by default since if we render all of our own items
+    // properly, the risk is low that we will render Blanket Implementations and
+    // Auto Trait Implementations items wrong. Instead we choose to have
+    // dedicated tests for the rendering of such items.
+    cmd.arg("--simplified");
+
+    cmd
 }
 
 #[test]
@@ -608,7 +620,7 @@ fn cargo_public_api_with_features() -> Result<(), Box<dyn std::error::Error>> {
             "cargo-public-api/tests/expected-output/features-feat{features}.txt"
         ));
 
-        let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+        let mut cmd = cargo_public_api_cmd_simplified();
         cmd.current_dir(root.join("test-apis/features"));
 
         if features.none {
@@ -666,7 +678,7 @@ impl TestCmd {
     fn new() -> Self {
         let test_repo = TestRepo::new();
 
-        let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+        let mut cmd = cargo_public_api_cmd_simplified();
         cmd.current_dir(&test_repo.path);
 
         Self { cmd, test_repo }

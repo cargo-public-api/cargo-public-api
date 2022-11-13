@@ -3,8 +3,3 @@ pub mod features
 pub struct field features::AStruct::feature_a: ()
 pub struct field features::AStruct::feature_b: ()
 pub struct field features::AStruct::feature_c: ()
-impl core::panic::unwind_safe::RefUnwindSafe for features::AStruct
-impl core::marker::Send for features::AStruct
-impl core::marker::Sync for features::AStruct
-impl core::marker::Unpin for features::AStruct
-impl core::panic::unwind_safe::UnwindSafe for features::AStruct

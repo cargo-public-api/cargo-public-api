@@ -28,18 +28,6 @@ pub struct Args {
     #[clap(long, name = "PATH", default_value = "Cargo.toml", parse(from_os_str))]
     manifest_path: PathBuf,
 
-    /// Raise this flag to make items part of blanket implementations such as
-    /// `impl<T> Any for T`, `impl<T> Borrow<T> for T`, and `impl<T, U> Into<U>
-    /// for T where U: From<T>` be included in the list of public items of a
-    /// crate.
-    ///
-    /// Blanket implementations are not included by default since the vast
-    /// majority of users will find the presence of these items to just
-    /// constitute noise, even if they formally are part of the public API of a
-    /// crate.
-    #[clap(long)]
-    with_blanket_implementations: bool,
-
     /// Usage: --diff-git-checkouts <COMMIT_1> <COMMIT_2>
     ///
     /// Allows to diff the public API across two different commits. The
@@ -150,6 +138,18 @@ pub struct Args {
     /// the output to a file, colors will be disabled by default.
     #[clap(long, arg_enum, default_value = "auto")]
     color: Color,
+
+    /// Omit items that belong to Blanket Implementations and Auto Trait
+    /// Implementations. This makes the output significantly less noisy and
+    /// repetitive, at the cost of not fully describing the public API.
+    ///
+    /// Examples of Blanket Implementations: `impl<T> Any for T`, `impl<T>
+    /// Borrow<T> for T`, and `impl<T, U> Into<U> for T where U: From<T>`
+    ///
+    /// Examples of Auto Trait Implementations: `impl Send for Foo`, `impl Sync
+    /// for Foo`, and `impl Unpin for Foo`
+    #[clap(long)]
+    simplified: bool,
 
     /// Show detailed info about processing. For debugging purposes. The output
     /// is not stable and can change across patch versions.
@@ -427,8 +427,8 @@ fn resolve_diff_shorthand(args: &mut Args) {
 /// [`Args`]
 fn get_options(args: &Args) -> Options {
     let mut options = Options::default();
-    options.with_blanket_implementations = args.with_blanket_implementations;
     options.debug_sorting = args.debug_sorting;
+    options.simplified = args.simplified;
     options
 }
 

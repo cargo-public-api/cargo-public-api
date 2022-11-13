@@ -7,18 +7,8 @@ pub use comprehensive_api::u32
 pub mod comprehensive_api::attributes
 #[non_exhaustive] pub enum comprehensive_api::attributes::NonExhaustive
 pub enum variant comprehensive_api::attributes::NonExhaustive::MoreToCome
-impl core::panic::unwind_safe::RefUnwindSafe for comprehensive_api::attributes::NonExhaustive
-impl core::marker::Send for comprehensive_api::attributes::NonExhaustive
-impl core::marker::Sync for comprehensive_api::attributes::NonExhaustive
-impl core::marker::Unpin for comprehensive_api::attributes::NonExhaustive
-impl core::panic::unwind_safe::UnwindSafe for comprehensive_api::attributes::NonExhaustive
 #[repr(C)] pub struct comprehensive_api::attributes::C
 pub struct field comprehensive_api::attributes::C::b: bool
-impl core::panic::unwind_safe::RefUnwindSafe for comprehensive_api::attributes::C
-impl core::marker::Send for comprehensive_api::attributes::C
-impl core::marker::Sync for comprehensive_api::attributes::C
-impl core::marker::Unpin for comprehensive_api::attributes::C
-impl core::panic::unwind_safe::UnwindSafe for comprehensive_api::attributes::C
 #[no_mangle] #[link_section = ".custom"] pub static comprehensive_api::attributes::NO_MANGLE_WITH_CUSTOM_LINK_SECTION: usize
 #[export_name = "something_arbitrary"] pub fn comprehensive_api::attributes::export_name()
 pub fn comprehensive_api::attributes::must_use() -> usize
@@ -33,83 +23,33 @@ pub enum variant comprehensive_api::enums::DiverseVariants::Struct
 pub struct field comprehensive_api::enums::DiverseVariants::Struct::x: usize
 pub struct field comprehensive_api::enums::DiverseVariants::Struct::y: comprehensive_api::enums::SingleVariant
 pub enum variant comprehensive_api::enums::DiverseVariants::Tuple(usize, bool)
-impl core::panic::unwind_safe::RefUnwindSafe for comprehensive_api::enums::DiverseVariants
-impl core::marker::Send for comprehensive_api::enums::DiverseVariants
-impl core::marker::Sync for comprehensive_api::enums::DiverseVariants
-impl core::marker::Unpin for comprehensive_api::enums::DiverseVariants
-impl core::panic::unwind_safe::UnwindSafe for comprehensive_api::enums::DiverseVariants
 pub enum comprehensive_api::enums::EnumWithExplicitDiscriminants
 pub enum variant comprehensive_api::enums::EnumWithExplicitDiscriminants::First = 1
 pub enum variant comprehensive_api::enums::EnumWithExplicitDiscriminants::Second = 2
 pub enum variant comprehensive_api::enums::EnumWithExplicitDiscriminants::TenPlusTen = 20
-impl core::panic::unwind_safe::RefUnwindSafe for comprehensive_api::enums::EnumWithExplicitDiscriminants
-impl core::marker::Send for comprehensive_api::enums::EnumWithExplicitDiscriminants
-impl core::marker::Sync for comprehensive_api::enums::EnumWithExplicitDiscriminants
-impl core::marker::Unpin for comprehensive_api::enums::EnumWithExplicitDiscriminants
-impl core::panic::unwind_safe::UnwindSafe for comprehensive_api::enums::EnumWithExplicitDiscriminants
 pub enum comprehensive_api::enums::EnumWithGenerics<'a, T, D: core::fmt::Debug> where T: core::fmt::Display
 pub enum variant comprehensive_api::enums::EnumWithGenerics::Variant
 pub struct field comprehensive_api::enums::EnumWithGenerics::Variant::d: D
 pub struct field comprehensive_api::enums::EnumWithGenerics::Variant::t: &'a T
-impl<'a, T, D> core::panic::unwind_safe::RefUnwindSafe for comprehensive_api::enums::EnumWithGenerics<'a, T, D> where D: core::panic::unwind_safe::RefUnwindSafe, T: core::panic::unwind_safe::RefUnwindSafe
-impl<'a, T, D> core::marker::Send for comprehensive_api::enums::EnumWithGenerics<'a, T, D> where D: core::marker::Send, T: core::marker::Sync
-impl<'a, T, D> core::marker::Sync for comprehensive_api::enums::EnumWithGenerics<'a, T, D> where D: core::marker::Sync, T: core::marker::Sync
-impl<'a, T, D> core::marker::Unpin for comprehensive_api::enums::EnumWithGenerics<'a, T, D> where D: core::marker::Unpin
-impl<'a, T, D> core::panic::unwind_safe::UnwindSafe for comprehensive_api::enums::EnumWithGenerics<'a, T, D> where D: core::panic::unwind_safe::UnwindSafe, T: core::panic::unwind_safe::RefUnwindSafe
 pub enum comprehensive_api::enums::EnumWithStrippedTupleVariants
 pub enum variant comprehensive_api::enums::EnumWithStrippedTupleVariants::Double(bool, bool)
 pub enum variant comprehensive_api::enums::EnumWithStrippedTupleVariants::DoubleFirstHidden(_, bool)
 pub enum variant comprehensive_api::enums::EnumWithStrippedTupleVariants::DoubleSecondHidden(bool, _)
 pub enum variant comprehensive_api::enums::EnumWithStrippedTupleVariants::Single(usize)
 pub enum variant comprehensive_api::enums::EnumWithStrippedTupleVariants::SingleHidden(_)
-impl core::panic::unwind_safe::RefUnwindSafe for comprehensive_api::enums::EnumWithStrippedTupleVariants
-impl core::marker::Send for comprehensive_api::enums::EnumWithStrippedTupleVariants
-impl core::marker::Sync for comprehensive_api::enums::EnumWithStrippedTupleVariants
-impl core::marker::Unpin for comprehensive_api::enums::EnumWithStrippedTupleVariants
-impl core::panic::unwind_safe::UnwindSafe for comprehensive_api::enums::EnumWithStrippedTupleVariants
 pub enum comprehensive_api::enums::SingleVariant
 pub enum variant comprehensive_api::enums::SingleVariant::Variant
-impl core::panic::unwind_safe::RefUnwindSafe for comprehensive_api::enums::SingleVariant
-impl core::marker::Send for comprehensive_api::enums::SingleVariant
-impl core::marker::Sync for comprehensive_api::enums::SingleVariant
-impl core::marker::Unpin for comprehensive_api::enums::SingleVariant
-impl core::panic::unwind_safe::UnwindSafe for comprehensive_api::enums::SingleVariant
 pub mod comprehensive_api::exports
 pub mod comprehensive_api::exports::issue_145
 pub mod comprehensive_api::exports::issue_145::external
 pub struct comprehensive_api::exports::issue_145::external::External
-impl core::panic::unwind_safe::RefUnwindSafe for comprehensive_api::exports::issue_145::external::External
-impl core::marker::Send for comprehensive_api::exports::issue_145::external::External
-impl core::marker::Sync for comprehensive_api::exports::issue_145::external::External
-impl core::marker::Unpin for comprehensive_api::exports::issue_145::external::External
-impl core::panic::unwind_safe::UnwindSafe for comprehensive_api::exports::issue_145::external::External
 pub mod comprehensive_api::exports::issue_145::external_2
 pub struct comprehensive_api::exports::issue_145::external_2::External
-impl core::panic::unwind_safe::RefUnwindSafe for comprehensive_api::exports::issue_145::external_2::External
-impl core::marker::Send for comprehensive_api::exports::issue_145::external_2::External
-impl core::marker::Sync for comprehensive_api::exports::issue_145::external_2::External
-impl core::marker::Unpin for comprehensive_api::exports::issue_145::external_2::External
-impl core::panic::unwind_safe::UnwindSafe for comprehensive_api::exports::issue_145::external_2::External
 pub mod comprehensive_api::exports::issue_145::external_3
 pub struct comprehensive_api::exports::issue_145::external_3::External
-impl core::panic::unwind_safe::RefUnwindSafe for comprehensive_api::exports::issue_145::external_3::External
-impl core::marker::Send for comprehensive_api::exports::issue_145::external_3::External
-impl core::marker::Sync for comprehensive_api::exports::issue_145::external_3::External
-impl core::marker::Unpin for comprehensive_api::exports::issue_145::external_3::External
-impl core::panic::unwind_safe::UnwindSafe for comprehensive_api::exports::issue_145::external_3::External
 pub mod comprehensive_api::exports::issue_145::publicly_renamed
 pub struct comprehensive_api::exports::issue_145::publicly_renamed::External
-impl core::panic::unwind_safe::RefUnwindSafe for comprehensive_api::exports::issue_145::external_2::External
-impl core::marker::Send for comprehensive_api::exports::issue_145::external_2::External
-impl core::marker::Sync for comprehensive_api::exports::issue_145::external_2::External
-impl core::marker::Unpin for comprehensive_api::exports::issue_145::external_2::External
-impl core::panic::unwind_safe::UnwindSafe for comprehensive_api::exports::issue_145::external_2::External
 pub struct comprehensive_api::exports::issue_145::PubliclyRenamedFromPrivateMod
-impl core::panic::unwind_safe::RefUnwindSafe for comprehensive_api::exports::issue_145::external_3::External
-impl core::marker::Send for comprehensive_api::exports::issue_145::external_3::External
-impl core::marker::Sync for comprehensive_api::exports::issue_145::external_3::External
-impl core::marker::Unpin for comprehensive_api::exports::issue_145::external_3::External
-impl core::panic::unwind_safe::UnwindSafe for comprehensive_api::exports::issue_145::external_3::External
 pub fn comprehensive_api::exports::issue_145::external_arg_type(_transform: comprehensive_api::exports::issue_145::external::External)
 pub fn comprehensive_api::exports::issue_145::external_external_arg_type(_transform: comprehensive_api::exports::issue_145::external::External)
 pub fn comprehensive_api::exports::issue_145::privately_renamed_2_arg_type(_transform: comprehensive_api::exports::issue_145::external_2::External)
@@ -164,21 +104,11 @@ pub mod comprehensive_api::higher_ranked_trait_bounds
 pub struct comprehensive_api::higher_ranked_trait_bounds::Bar<'a>
 pub struct field comprehensive_api::higher_ranked_trait_bounds::Bar::bar: &'a (dyn for<'b> comprehensive_api::higher_ranked_trait_bounds::Trait<'b> + core::marker::Unpin)
 pub struct field comprehensive_api::higher_ranked_trait_bounds::Bar::baz: &'a (dyn core::marker::Unpin + for<'b> comprehensive_api::higher_ranked_trait_bounds::Trait<'b>)
-impl<'a> !core::panic::unwind_safe::RefUnwindSafe for comprehensive_api::higher_ranked_trait_bounds::Bar<'a>
-impl<'a> !core::marker::Send for comprehensive_api::higher_ranked_trait_bounds::Bar<'a>
-impl<'a> !core::marker::Sync for comprehensive_api::higher_ranked_trait_bounds::Bar<'a>
-impl<'a> core::marker::Unpin for comprehensive_api::higher_ranked_trait_bounds::Bar<'a>
-impl<'a> !core::panic::unwind_safe::UnwindSafe for comprehensive_api::higher_ranked_trait_bounds::Bar<'a>
 pub struct comprehensive_api::higher_ranked_trait_bounds::Foo<'a>
 pub struct field comprehensive_api::higher_ranked_trait_bounds::Foo::some_func: for<'c> fn(val: &'c i32) -> i32
 pub struct field comprehensive_api::higher_ranked_trait_bounds::Foo::some_trait: &'a dyn for<'b> comprehensive_api::higher_ranked_trait_bounds::Trait<'b>
 impl<'a> comprehensive_api::higher_ranked_trait_bounds::Foo<'a>
 pub fn comprehensive_api::higher_ranked_trait_bounds::Foo::bar<T>() where T: comprehensive_api::higher_ranked_trait_bounds::Trait<'a>
-impl<'a> !core::panic::unwind_safe::RefUnwindSafe for comprehensive_api::higher_ranked_trait_bounds::Foo<'a>
-impl<'a> !core::marker::Send for comprehensive_api::higher_ranked_trait_bounds::Foo<'a>
-impl<'a> !core::marker::Sync for comprehensive_api::higher_ranked_trait_bounds::Foo<'a>
-impl<'a> core::marker::Unpin for comprehensive_api::higher_ranked_trait_bounds::Foo<'a>
-impl<'a> !core::panic::unwind_safe::UnwindSafe for comprehensive_api::higher_ranked_trait_bounds::Foo<'a>
 pub trait comprehensive_api::higher_ranked_trait_bounds::B<'x>
 impl<'a> comprehensive_api::higher_ranked_trait_bounds::B<'a> for dyn for<'b> comprehensive_api::higher_ranked_trait_bounds::Trait<'b>
 pub trait comprehensive_api::higher_ranked_trait_bounds::Trait<'x>
@@ -194,11 +124,6 @@ pub fn comprehensive_api::impls::TestItemGrouping::own_associated_type_output_ex
 impl<T, U> comprehensive_api::traits::TraitWithGenerics<T, U> for comprehensive_api::impls::TestItemGrouping
 pub type comprehensive_api::impls::TestItemGrouping::Foo = u8
 pub fn comprehensive_api::impls::TestItemGrouping::bar() -> <Self as comprehensive_api::traits::TraitWithGenerics<T, U>>::Foo
-impl core::panic::unwind_safe::RefUnwindSafe for comprehensive_api::impls::TestItemGrouping
-impl core::marker::Send for comprehensive_api::impls::TestItemGrouping
-impl core::marker::Sync for comprehensive_api::impls::TestItemGrouping
-impl core::marker::Unpin for comprehensive_api::impls::TestItemGrouping
-impl core::panic::unwind_safe::UnwindSafe for comprehensive_api::impls::TestItemGrouping
 pub trait comprehensive_api::impls::ForUnit
 pub fn comprehensive_api::impls::ForUnit::for_unit()
 impl comprehensive_api::impls::ForUnit for ()
@@ -211,11 +136,6 @@ pub mut static comprehensive_api::statics::MUT_ANSWER: i8
 pub mod comprehensive_api::structs
 pub struct comprehensive_api::structs::ConstArg<T, const N: usize>
 pub struct field comprehensive_api::structs::ConstArg::items: [T; N]
-impl<T, const N: usize> core::panic::unwind_safe::RefUnwindSafe for comprehensive_api::structs::ConstArg<T, N> where T: core::panic::unwind_safe::RefUnwindSafe
-impl<T, const N: usize> core::marker::Send for comprehensive_api::structs::ConstArg<T, N> where T: core::marker::Send
-impl<T, const N: usize> core::marker::Sync for comprehensive_api::structs::ConstArg<T, N> where T: core::marker::Sync
-impl<T, const N: usize> core::marker::Unpin for comprehensive_api::structs::ConstArg<T, N> where T: core::marker::Unpin
-impl<T, const N: usize> core::panic::unwind_safe::UnwindSafe for comprehensive_api::structs::ConstArg<T, N> where T: core::panic::unwind_safe::UnwindSafe
 pub struct comprehensive_api::structs::Plain
 pub struct field comprehensive_api::structs::Plain::x: usize
 impl comprehensive_api::structs::Plain
@@ -226,65 +146,20 @@ pub fn comprehensive_api::structs::Plain::s1(self)
 pub fn comprehensive_api::structs::Plain::s2(&self)
 pub fn comprehensive_api::structs::Plain::s3(&mut self)
 pub fn comprehensive_api::structs::Plain::s4(&'a self)
-impl core::panic::unwind_safe::RefUnwindSafe for comprehensive_api::structs::Plain
-impl core::marker::Send for comprehensive_api::structs::Plain
-impl core::marker::Sync for comprehensive_api::structs::Plain
-impl core::marker::Unpin for comprehensive_api::structs::Plain
-impl core::panic::unwind_safe::UnwindSafe for comprehensive_api::structs::Plain
 pub struct comprehensive_api::structs::PrivateField
-impl core::panic::unwind_safe::RefUnwindSafe for comprehensive_api::structs::PrivateField
-impl core::marker::Send for comprehensive_api::structs::PrivateField
-impl core::marker::Sync for comprehensive_api::structs::PrivateField
-impl core::marker::Unpin for comprehensive_api::structs::PrivateField
-impl core::panic::unwind_safe::UnwindSafe for comprehensive_api::structs::PrivateField
 pub struct comprehensive_api::structs::TupleStructDouble(pub usize, pub bool)
-impl core::panic::unwind_safe::RefUnwindSafe for comprehensive_api::structs::TupleStructDouble
-impl core::marker::Send for comprehensive_api::structs::TupleStructDouble
-impl core::marker::Sync for comprehensive_api::structs::TupleStructDouble
-impl core::marker::Unpin for comprehensive_api::structs::TupleStructDouble
-impl core::panic::unwind_safe::UnwindSafe for comprehensive_api::structs::TupleStructDouble
 pub struct comprehensive_api::structs::TupleStructDoubleWithHidden(_, pub bool)
-impl core::panic::unwind_safe::RefUnwindSafe for comprehensive_api::structs::TupleStructDoubleWithHidden
-impl core::marker::Send for comprehensive_api::structs::TupleStructDoubleWithHidden
-impl core::marker::Sync for comprehensive_api::structs::TupleStructDoubleWithHidden
-impl core::marker::Unpin for comprehensive_api::structs::TupleStructDoubleWithHidden
-impl core::panic::unwind_safe::UnwindSafe for comprehensive_api::structs::TupleStructDoubleWithHidden
 pub struct comprehensive_api::structs::TupleStructDoubleWithPrivate(_, pub bool)
-impl core::panic::unwind_safe::RefUnwindSafe for comprehensive_api::structs::TupleStructDoubleWithPrivate
-impl core::marker::Send for comprehensive_api::structs::TupleStructDoubleWithPrivate
-impl core::marker::Sync for comprehensive_api::structs::TupleStructDoubleWithPrivate
-impl core::marker::Unpin for comprehensive_api::structs::TupleStructDoubleWithPrivate
-impl core::panic::unwind_safe::UnwindSafe for comprehensive_api::structs::TupleStructDoubleWithPrivate
 pub struct comprehensive_api::structs::TupleStructSingle(pub usize)
-impl core::panic::unwind_safe::RefUnwindSafe for comprehensive_api::structs::TupleStructSingle
-impl core::marker::Send for comprehensive_api::structs::TupleStructSingle
-impl core::marker::Sync for comprehensive_api::structs::TupleStructSingle
-impl core::marker::Unpin for comprehensive_api::structs::TupleStructSingle
-impl core::panic::unwind_safe::UnwindSafe for comprehensive_api::structs::TupleStructSingle
 pub struct comprehensive_api::structs::Unit
 impl comprehensive_api::traits::Simple for comprehensive_api::structs::Unit
 pub fn comprehensive_api::structs::Unit::act()
-impl core::panic::unwind_safe::RefUnwindSafe for comprehensive_api::structs::Unit
-impl core::marker::Send for comprehensive_api::structs::Unit
-impl core::marker::Sync for comprehensive_api::structs::Unit
-impl core::marker::Unpin for comprehensive_api::structs::Unit
-impl core::panic::unwind_safe::UnwindSafe for comprehensive_api::structs::Unit
 pub struct comprehensive_api::structs::WithLifetimeAndGenericParam<'a, T>
 pub struct field comprehensive_api::structs::WithLifetimeAndGenericParam::t: T
 pub struct field comprehensive_api::structs::WithLifetimeAndGenericParam::unit_ref: &'a comprehensive_api::structs::Unit
 impl<'b> comprehensive_api::structs::WithLifetimeAndGenericParam<'b, alloc::string::String>
 pub fn comprehensive_api::structs::WithLifetimeAndGenericParam::new(unit_ref: &'b comprehensive_api::structs::Unit, t: alloc::string::String) -> Self
-impl<'a, T> core::panic::unwind_safe::RefUnwindSafe for comprehensive_api::structs::WithLifetimeAndGenericParam<'a, T> where T: core::panic::unwind_safe::RefUnwindSafe
-impl<'a, T> core::marker::Send for comprehensive_api::structs::WithLifetimeAndGenericParam<'a, T> where T: core::marker::Send
-impl<'a, T> core::marker::Sync for comprehensive_api::structs::WithLifetimeAndGenericParam<'a, T> where T: core::marker::Sync
-impl<'a, T> core::marker::Unpin for comprehensive_api::structs::WithLifetimeAndGenericParam<'a, T> where T: core::marker::Unpin
-impl<'a, T> core::panic::unwind_safe::UnwindSafe for comprehensive_api::structs::WithLifetimeAndGenericParam<'a, T> where T: core::panic::unwind_safe::UnwindSafe
 pub struct comprehensive_api::structs::WithTraitBounds<T: core::fmt::Display + core::fmt::Debug>
-impl<T> core::panic::unwind_safe::RefUnwindSafe for comprehensive_api::structs::WithTraitBounds<T> where T: core::panic::unwind_safe::RefUnwindSafe
-impl<T> core::marker::Send for comprehensive_api::structs::WithTraitBounds<T> where T: core::marker::Send
-impl<T> core::marker::Sync for comprehensive_api::structs::WithTraitBounds<T> where T: core::marker::Sync
-impl<T> core::marker::Unpin for comprehensive_api::structs::WithTraitBounds<T> where T: core::marker::Unpin
-impl<T> core::panic::unwind_safe::UnwindSafe for comprehensive_api::structs::WithTraitBounds<T> where T: core::panic::unwind_safe::UnwindSafe
 pub mod comprehensive_api::traits
 pub trait comprehensive_api::traits::AssociatedConst
 pub const comprehensive_api::traits::AssociatedConst::CONST: bool
@@ -321,11 +196,6 @@ pub mod comprehensive_api::unions
 pub union comprehensive_api::unions::Basic
 pub struct field comprehensive_api::unions::Basic::x: usize
 pub struct field comprehensive_api::unions::Basic::y: usize
-impl core::panic::unwind_safe::RefUnwindSafe for comprehensive_api::unions::Basic
-impl core::marker::Send for comprehensive_api::unions::Basic
-impl core::marker::Sync for comprehensive_api::unions::Basic
-impl core::marker::Unpin for comprehensive_api::unions::Basic
-impl core::panic::unwind_safe::UnwindSafe for comprehensive_api::unions::Basic
 pub macro comprehensive_api::simple_macro!
 pub struct comprehensive_api::Plain
 pub struct field comprehensive_api::Plain::x: usize
@@ -337,11 +207,6 @@ pub fn comprehensive_api::Plain::s1(self)
 pub fn comprehensive_api::Plain::s2(&self)
 pub fn comprehensive_api::Plain::s3(&mut self)
 pub fn comprehensive_api::Plain::s4(&'a self)
-impl core::panic::unwind_safe::RefUnwindSafe for comprehensive_api::structs::Plain
-impl core::marker::Send for comprehensive_api::structs::Plain
-impl core::marker::Sync for comprehensive_api::structs::Plain
-impl core::marker::Unpin for comprehensive_api::structs::Plain
-impl core::panic::unwind_safe::UnwindSafe for comprehensive_api::structs::Plain
 pub struct comprehensive_api::RenamedPlain
 pub struct field comprehensive_api::RenamedPlain::x: usize
 impl comprehensive_api::structs::Plain
@@ -352,14 +217,4 @@ pub fn comprehensive_api::RenamedPlain::s1(self)
 pub fn comprehensive_api::RenamedPlain::s2(&self)
 pub fn comprehensive_api::RenamedPlain::s3(&mut self)
 pub fn comprehensive_api::RenamedPlain::s4(&'a self)
-impl core::panic::unwind_safe::RefUnwindSafe for comprehensive_api::structs::Plain
-impl core::marker::Send for comprehensive_api::structs::Plain
-impl core::marker::Sync for comprehensive_api::structs::Plain
-impl core::marker::Unpin for comprehensive_api::structs::Plain
-impl core::panic::unwind_safe::UnwindSafe for comprehensive_api::structs::Plain
 pub struct comprehensive_api::StructInPrivateMod
-impl core::panic::unwind_safe::RefUnwindSafe for comprehensive_api::StructInPrivateMod
-impl core::marker::Send for comprehensive_api::StructInPrivateMod
-impl core::marker::Sync for comprehensive_api::StructInPrivateMod
-impl core::marker::Unpin for comprehensive_api::StructInPrivateMod
-impl core::panic::unwind_safe::UnwindSafe for comprehensive_api::StructInPrivateMod

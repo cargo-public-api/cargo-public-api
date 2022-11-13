@@ -186,6 +186,19 @@ pub fn comprehensive_api::higher_ranked_trait_bounds::test1<T>() where for<'a> &
 pub fn comprehensive_api::higher_ranked_trait_bounds::test2<T>() where for<'a, 'b> &'a T: comprehensive_api::higher_ranked_trait_bounds::Trait<'b>
 pub fn comprehensive_api::higher_ranked_trait_bounds::test3<F>() where F: for<'a, 'b> Fn(&'a u8, &'b u8)
 pub mod comprehensive_api::impls
+pub struct comprehensive_api::impls::TestItemGrouping
+impl TraitReferencingOwnAssociatedType for comprehensive_api::impls::TestItemGrouping
+pub type comprehensive_api::impls::TestItemGrouping::OwnAssociatedType = bool
+pub fn comprehensive_api::impls::TestItemGrouping::own_associated_type_output(&self) -> Self::OwnAssociatedType
+pub fn comprehensive_api::impls::TestItemGrouping::own_associated_type_output_explicit_as(&self) -> <Self as comprehensive_api::traits::TraitReferencingOwnAssociatedType>::OwnAssociatedType
+impl<T, U> TraitWithGenerics<T, U> for comprehensive_api::impls::TestItemGrouping
+pub type comprehensive_api::impls::TestItemGrouping::Foo = u8
+pub fn comprehensive_api::impls::TestItemGrouping::bar() -> <Self as comprehensive_api::traits::TraitWithGenerics<T, U>>::Foo
+impl RefUnwindSafe for comprehensive_api::impls::TestItemGrouping
+impl Send for comprehensive_api::impls::TestItemGrouping
+impl Sync for comprehensive_api::impls::TestItemGrouping
+impl Unpin for comprehensive_api::impls::TestItemGrouping
+impl UnwindSafe for comprehensive_api::impls::TestItemGrouping
 pub trait comprehensive_api::impls::ForUnit
 pub fn comprehensive_api::impls::ForUnit::for_unit()
 impl ForUnit for ()
@@ -285,14 +298,21 @@ pub fn comprehensive_api::traits::Simple::act()
 impl Simple for comprehensive_api::structs::Unit
 pub fn comprehensive_api::traits::Simple::act()
 pub trait comprehensive_api::traits::TraitReferencingOwnAssociatedType
+pub type comprehensive_api::traits::TraitReferencingOwnAssociatedType::OwnAssociatedType
 pub fn comprehensive_api::traits::TraitReferencingOwnAssociatedType::own_associated_type_output(&self) -> Self::OwnAssociatedType
 pub fn comprehensive_api::traits::TraitReferencingOwnAssociatedType::own_associated_type_output_explicit_as(&self) -> <Self as comprehensive_api::traits::TraitReferencingOwnAssociatedType>::OwnAssociatedType
-pub type comprehensive_api::traits::TraitReferencingOwnAssociatedType::OwnAssociatedType
+impl TraitReferencingOwnAssociatedType for comprehensive_api::impls::TestItemGrouping
+pub type comprehensive_api::traits::TraitReferencingOwnAssociatedType::OwnAssociatedType = bool
+pub fn comprehensive_api::traits::TraitReferencingOwnAssociatedType::own_associated_type_output(&self) -> Self::OwnAssociatedType
+pub fn comprehensive_api::traits::TraitReferencingOwnAssociatedType::own_associated_type_output_explicit_as(&self) -> <Self as comprehensive_api::traits::TraitReferencingOwnAssociatedType>::OwnAssociatedType
 pub trait comprehensive_api::traits::TraitWithBounds: private_mod::PubTraitInPrivateMod + comprehensive_api::traits::Simple + Send
 pub trait comprehensive_api::traits::TraitWithBoundsAndGenerics<U>: comprehensive_api::traits::Simple
 pub trait comprehensive_api::traits::TraitWithGenerics<T, U>
-pub fn comprehensive_api::traits::TraitWithGenerics::bar() -> <Self as comprehensive_api::traits::TraitWithGenerics<T, U>>::Foo
 pub type comprehensive_api::traits::TraitWithGenerics::Foo
+pub fn comprehensive_api::traits::TraitWithGenerics::bar() -> <Self as comprehensive_api::traits::TraitWithGenerics<T, U>>::Foo
+impl<T, U> TraitWithGenerics<T, U> for comprehensive_api::impls::TestItemGrouping
+pub type comprehensive_api::traits::TraitWithGenerics::Foo = u8
+pub fn comprehensive_api::traits::TraitWithGenerics::bar() -> <Self as comprehensive_api::traits::TraitWithGenerics<T, U>>::Foo
 pub unsafe trait comprehensive_api::traits::UnsafeTrait
 pub mod comprehensive_api::typedefs
 pub type comprehensive_api::typedefs::RedefinedResult<T, E> = Result<T, E>

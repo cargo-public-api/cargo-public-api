@@ -1,6 +1,6 @@
 use crate::{
     structs::{Plain, Unit, WithLifetimeAndGenericParam},
-    traits::Simple,
+    traits::{Simple, TraitReferencingOwnAssociatedType, TraitWithGenerics},
 };
 
 impl Plain {
@@ -37,4 +37,30 @@ pub trait ForUnit {
 
 impl ForUnit for () {
     fn for_unit() {}
+}
+
+/// Main purpose is to make it easier to detect regression in how we group items
+/// in the (sorted) output
+pub struct TestItemGrouping;
+
+impl TraitReferencingOwnAssociatedType for TestItemGrouping {
+    type OwnAssociatedType = bool;
+
+    fn own_associated_type_output(&self) -> Self::OwnAssociatedType {
+        true
+    }
+
+    fn own_associated_type_output_explicit_as(
+        &self,
+    ) -> <Self as TraitReferencingOwnAssociatedType>::OwnAssociatedType {
+        false
+    }
+}
+
+impl<T, U> TraitWithGenerics<T, U> for TestItemGrouping {
+    type Foo = u8;
+
+    fn bar() -> <Self as TraitWithGenerics<T, U>>::Foo {
+        1
+    }
 }

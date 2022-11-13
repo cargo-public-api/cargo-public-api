@@ -281,18 +281,19 @@ pub(crate) fn sorting_prefix(item: &Item) -> u8 {
 
         ItemEnum::Trait(_) => 14,
 
-        ItemEnum::Function(_) => 15,
-        ItemEnum::Method(_) => 16,
+        ItemEnum::AssocType { .. } => 15,
+        ItemEnum::AssocConst { .. } => 16,
 
-        ItemEnum::Typedef(_) => 17,
+        ItemEnum::Function(_) => 17,
+        ItemEnum::Method(_) => 18,
+
+        ItemEnum::Typedef(_) => 19,
 
         ItemEnum::Impl(impl_) => match ImplKind::from(impl_) {
-            ImplKind::Normal => 18,
-            ImplKind::AutoTrait => 19,
-            ImplKind::Blanket => 20,
+            ImplKind::Normal => 20,
+            ImplKind::AutoTrait => 21,
+            ImplKind::Blanket => 22,
         },
-        ItemEnum::AssocType { .. } => 21,
-        ItemEnum::AssocConst { .. } => 22,
 
         ItemEnum::ForeignType => 23,
 

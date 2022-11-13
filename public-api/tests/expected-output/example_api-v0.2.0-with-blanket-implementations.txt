@@ -20,11 +20,11 @@ pub fn example_api::Struct::from(t: T) -> T
 impl<T, U> Into<U> for example_api::Struct where U: From<T>
 pub fn example_api::Struct::into(self) -> U
 impl<T, U> TryFrom<U> for example_api::Struct where U: Into<T>
-pub fn example_api::Struct::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
 pub type example_api::Struct::Error = Infallible
+pub fn example_api::Struct::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
 impl<T, U> TryInto<U> for example_api::Struct where U: TryFrom<T>
-pub fn example_api::Struct::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
 pub type example_api::Struct::Error = <U as TryFrom<T>>::Error
+pub fn example_api::Struct::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
 pub struct example_api::StructV2
 pub struct field example_api::StructV2::field: usize
 impl RefUnwindSafe for example_api::StructV2
@@ -43,9 +43,9 @@ pub fn example_api::StructV2::from(t: T) -> T
 impl<T, U> Into<U> for example_api::StructV2 where U: From<T>
 pub fn example_api::StructV2::into(self) -> U
 impl<T, U> TryFrom<U> for example_api::StructV2 where U: Into<T>
-pub fn example_api::StructV2::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
 pub type example_api::StructV2::Error = Infallible
+pub fn example_api::StructV2::try_from(value: U) -> Result<T, <T as TryFrom<U>>::Error>
 impl<T, U> TryInto<U> for example_api::StructV2 where U: TryFrom<T>
-pub fn example_api::StructV2::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
 pub type example_api::StructV2::Error = <U as TryFrom<T>>::Error
+pub fn example_api::StructV2::try_into(self) -> Result<U, <U as TryFrom<T>>::Error>
 pub fn example_api::function(v1_param: example_api::Struct, v2_param: usize)

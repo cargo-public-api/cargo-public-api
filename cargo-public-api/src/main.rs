@@ -82,8 +82,8 @@ pub struct Args {
     #[arg(long)]
     diff_published: Option<String>,
 
-    /// Automatically resolves to either `--diff-git-checkouts` or
-    /// `--diff-rustdoc-json` depending on if args ends
+    /// Automatically resolves to either `--diff-git-checkouts`,
+    /// `--diff-rustdoc-json`, or `--diff-published` depending on if args ends
     /// in `.json` or not, or if they contain `@`.
     ///
     /// Examples:
@@ -124,18 +124,9 @@ pub struct Args {
     #[arg(long, value_name = "RUSTDOC_JSON_PATH")]
     rustdoc_json: Option<String>,
 
-    /// Exit with failure if the specified API diff is detected.
-    ///
-    /// * all = deny added, changed, and removed public items in the API
-    ///
-    /// * added = deny added public items to the API
-    ///
-    /// * changed = deny changed public items in the API
-    ///
-    /// * removed = deny removed public items from the API
-    ///
-    /// They can also be combined. For example, to only allow additions to the
-    /// API, use `--deny=added --deny=changed`.
+    /// Exit with failure if the specified API diff is detected. Can be
+    /// combined. For example, to only allow additions to the API, use
+    /// `--deny=added --deny=changed`.
     #[arg(long, value_enum)]
     deny: Option<Vec<DenyMethod>>,
 

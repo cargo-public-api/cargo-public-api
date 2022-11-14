@@ -374,7 +374,7 @@ fn deny_with_invalid_arg() {
     cmd.arg("v0.3.0");
     cmd.arg("--deny=invalid");
     cmd.assert()
-        .stderr(contains("\"invalid\" isn't a valid value"))
+        .stderr(contains("'invalid' isn't a valid value"))
         .failure();
 }
 
@@ -496,9 +496,7 @@ fn diff_public_items_missing_one_arg() {
     cmd.arg("--diff-git-checkouts");
     cmd.arg("v0.2.0");
     cmd.assert()
-        .stderr(contains(
-            "requires at least 2 values but only 1 was provided",
-        ))
+        .stderr(contains("requires 2 values, but 1 was provided"))
         .failure();
 }
 

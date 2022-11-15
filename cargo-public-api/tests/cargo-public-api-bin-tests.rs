@@ -520,6 +520,24 @@ fn long_help() {
 }
 
 #[test]
+fn long_help_wraps() {
+    let max_allowed_line_length = 105; // 100 with some margin
+
+    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    cmd.arg("--help");
+
+    let output = cmd.output().unwrap();
+    let stdout = String::from_utf8_lossy(&output.stdout);
+
+    for line in stdout.lines() {
+        assert!(
+            line.len() <= max_allowed_line_length,
+            "Found line larger than {max_allowed_line_length} chars! Text wrapping seems broken? Line: '{line}'"
+        );
+    }
+}
+
+#[test]
 fn short_help() {
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
     cmd.arg("-h");

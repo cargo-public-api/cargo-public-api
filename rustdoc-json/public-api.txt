@@ -19,6 +19,26 @@ impl core::marker::Send for rustdoc_json::BuildError
 impl core::marker::Sync for rustdoc_json::BuildError
 impl core::marker::Unpin for rustdoc_json::BuildError
 impl !core::panic::unwind_safe::UnwindSafe for rustdoc_json::BuildError
+impl<T> core::any::Any for rustdoc_json::BuildError where T: 'static + core::marker::Sized
+pub fn rustdoc_json::BuildError::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for rustdoc_json::BuildError where T: core::marker::Sized
+pub fn rustdoc_json::BuildError::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for rustdoc_json::BuildError where T: core::marker::Sized
+pub fn rustdoc_json::BuildError::borrow_mut(&mut self) -> &mut T
+impl<T> core::convert::From<T> for rustdoc_json::BuildError
+pub fn rustdoc_json::BuildError::from(t: T) -> T
+impl<T, U> core::convert::Into<U> for rustdoc_json::BuildError where U: core::convert::From<T>
+pub fn rustdoc_json::BuildError::into(self) -> U
+impl<E> core::any::Provider for rustdoc_json::BuildError where E: core::error::Error + core::marker::Sized
+pub fn rustdoc_json::BuildError::provide<'a>(&'a self, demand: &mut core::any::Demand<'a>)
+impl<T> alloc::string::ToString for rustdoc_json::BuildError where T: core::fmt::Display + core::marker::Sized
+pub fn rustdoc_json::BuildError::to_string(&self) -> alloc::string::String
+impl<T, U> core::convert::TryFrom<U> for rustdoc_json::BuildError where U: core::convert::Into<T>
+pub type rustdoc_json::BuildError::Error = core::convert::Infallible
+pub fn rustdoc_json::BuildError::try_from(value: U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for rustdoc_json::BuildError where U: core::convert::TryFrom<T>
+pub type rustdoc_json::BuildError::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn rustdoc_json::BuildError::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
 pub struct rustdoc_json::Builder
 impl rustdoc_json::Builder
 pub const fn rustdoc_json::Builder::all_features(self, all_features: bool) -> Self
@@ -41,3 +61,19 @@ impl core::marker::Send for rustdoc_json::Builder
 impl core::marker::Sync for rustdoc_json::Builder
 impl core::marker::Unpin for rustdoc_json::Builder
 impl core::panic::unwind_safe::UnwindSafe for rustdoc_json::Builder
+impl<T> core::any::Any for rustdoc_json::Builder where T: 'static + core::marker::Sized
+pub fn rustdoc_json::Builder::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for rustdoc_json::Builder where T: core::marker::Sized
+pub fn rustdoc_json::Builder::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for rustdoc_json::Builder where T: core::marker::Sized
+pub fn rustdoc_json::Builder::borrow_mut(&mut self) -> &mut T
+impl<T> core::convert::From<T> for rustdoc_json::Builder
+pub fn rustdoc_json::Builder::from(t: T) -> T
+impl<T, U> core::convert::Into<U> for rustdoc_json::Builder where U: core::convert::From<T>
+pub fn rustdoc_json::Builder::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for rustdoc_json::Builder where U: core::convert::Into<T>
+pub type rustdoc_json::Builder::Error = core::convert::Infallible
+pub fn rustdoc_json::Builder::try_from(value: U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for rustdoc_json::Builder where U: core::convert::TryFrom<T>
+pub type rustdoc_json::Builder::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn rustdoc_json::Builder::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>

@@ -25,13 +25,10 @@ fn print_public_api() {
 }
 
 #[test]
-fn print_public_api_with_blanket_implementations() {
-    cmd_with_rustdoc_json_args(&["../test-apis/example_api-v0.2.0"], |mut cmd| {
-        cmd.arg("--with-blanket-implementations");
+fn print_public_api_not_simplified() {
+    cmd_with_rustdoc_json_args_not_simplified(&["../test-apis/example_api-v0.2.0"], |mut cmd| {
         cmd.assert()
-            .stdout_or_bless(
-                "./tests/expected-output/example_api-v0.2.0-with-blanket-implementations.txt",
-            )
+            .stdout_or_bless("./tests/expected-output/example_api-v0.2.0-not-simplified")
             .stderr("")
             .success();
     });
@@ -185,7 +182,6 @@ commit and then pass the path of both files to this utility:
 
     public-api <RUSTDOC_JSON_FILE_OLD> <RUSTDOC_JSON_FILE_NEW>
 
-To include blanket implementations, pass --with-blanket-implementations.
 
 ",
         env!("CARGO_PKG_VERSION"),
@@ -193,11 +189,26 @@ To include blanket implementations, pass --with-blanket-implementations.
     )
 }
 
+fn cmd_with_rustdoc_json_args(crates: &[&str], final_steps: impl FnOnce(Command)) {
+    cmd_with_rustdoc_json_args_impl(crates, true, final_steps);
+}
+
+fn cmd_with_rustdoc_json_args_not_simplified(crates: &[&str], final_steps: impl FnOnce(Command)) {
+    cmd_with_rustdoc_json_args_impl(crates, false, final_steps);
+}
+
 /// Helper to setup a `public-api` [`Command`] with rustdoc JSON path args
 /// corresponding to the given crates. Use `final_steps` to specify the
 /// remaining steps in the test.
-fn cmd_with_rustdoc_json_args(crates: &[&str], final_steps: impl FnOnce(Command)) {
+fn cmd_with_rustdoc_json_args_impl(
+    crates: &[&str],
+    simplified: bool,
+    final_steps: impl FnOnce(Command),
+) {
     let mut cmd = Command::cargo_bin("public-api").unwrap();
+    if simplified {
+        cmd.arg("--simplified");
+    }
 
     let mut temp_dirs = vec![];
 

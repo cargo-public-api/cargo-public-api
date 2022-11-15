@@ -19,11 +19,6 @@ Removed items from the public API
 -pub fn rustdoc_json::BuildError::from(source: cargo_metadata::errors::Error) -> Self
 -pub fn rustdoc_json::BuildError::from(source: cargo_toml::error::Error) -> Self
 -pub fn rustdoc_json::BuildError::from(source: std::io::error::Error) -> Self
--impl !core::panic::unwind_safe::RefUnwindSafe for rustdoc_json::BuildError
--impl core::marker::Send for rustdoc_json::BuildError
--impl core::marker::Sync for rustdoc_json::BuildError
--impl core::marker::Unpin for rustdoc_json::BuildError
--impl !core::panic::unwind_safe::UnwindSafe for rustdoc_json::BuildError
 -pub fn rustdoc_json::build(toolchain: impl core::convert::AsRef<std::ffi::os_str::OsStr>, manifest_path: impl core::convert::AsRef<std::path::Path>) -> core::result::Result<std::path::PathBuf, rustdoc_json::BuildError>
 -pub fn rustdoc_json::build_quietly(toolchain: impl core::convert::AsRef<std::ffi::os_str::OsStr>, manifest_path: impl core::convert::AsRef<std::path::Path>) -> core::result::Result<std::path::PathBuf, rustdoc_json::BuildError>
 
@@ -39,16 +34,6 @@ Added items to the public API
 +pub struct field example_api::Struct::v2_field: usize
 +impl core::fmt::Debug for example_api::Struct
 +pub fn example_api::Struct::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
-+impl core::panic::unwind_safe::RefUnwindSafe for example_api::Struct
-+impl core::marker::Send for example_api::Struct
-+impl core::marker::Sync for example_api::Struct
-+impl core::marker::Unpin for example_api::Struct
-+impl core::panic::unwind_safe::UnwindSafe for example_api::Struct
 +pub struct example_api::StructV2
 +pub struct field example_api::StructV2::field: usize
-+impl core::panic::unwind_safe::RefUnwindSafe for example_api::StructV2
-+impl core::marker::Send for example_api::StructV2
-+impl core::marker::Sync for example_api::StructV2
-+impl core::marker::Unpin for example_api::StructV2
-+impl core::panic::unwind_safe::UnwindSafe for example_api::StructV2
 

@@ -14,11 +14,6 @@ impl core::convert::From<cargo_metadata::errors::Error> for rustdoc_json::BuildE
 impl core::convert::From<std::io::error::Error> for rustdoc_json::BuildError
 pub fn rustdoc_json::BuildError::from(source: cargo_metadata::errors::Error) -> Self
 pub fn rustdoc_json::BuildError::from(source: std::io::error::Error) -> Self
-impl !core::panic::unwind_safe::RefUnwindSafe for rustdoc_json::BuildError
-impl core::marker::Send for rustdoc_json::BuildError
-impl core::marker::Sync for rustdoc_json::BuildError
-impl core::marker::Unpin for rustdoc_json::BuildError
-impl !core::panic::unwind_safe::UnwindSafe for rustdoc_json::BuildError
 pub struct rustdoc_json::Builder
 impl rustdoc_json::Builder
 pub const fn rustdoc_json::Builder::all_features(self, all_features: bool) -> Self
@@ -36,8 +31,3 @@ impl core::fmt::Debug for rustdoc_json::Builder
 pub fn rustdoc_json::Builder::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::default::Default for rustdoc_json::Builder
 pub fn rustdoc_json::Builder::default() -> Self
-impl core::panic::unwind_safe::RefUnwindSafe for rustdoc_json::Builder
-impl core::marker::Send for rustdoc_json::Builder
-impl core::marker::Sync for rustdoc_json::Builder
-impl core::marker::Unpin for rustdoc_json::Builder
-impl core::panic::unwind_safe::UnwindSafe for rustdoc_json::Builder

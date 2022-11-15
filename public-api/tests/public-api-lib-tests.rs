@@ -12,14 +12,10 @@ use test_utils::assert_eq_or_bless;
 use test_utils::rustdoc_json_path_for_crate;
 
 #[test]
-fn with_blanket_implementations() {
-    if std::env::var("BLESS").is_ok() {
-        return; // To not race with include_str!()
-    }
-
-    assert_public_api_with_blanket_implementations(
+fn not_simplified() {
+    assert_public_api_not_simplified(
         rustdoc_json_path_for_crate("../test-apis/example_api-v0.2.0"),
-        "./tests/expected-output/example_api-v0.2.0-with-blanket-implementations.txt",
+        "./tests/expected-output/example_api-v0.2.0-not-simplified.txt",
     );
 }
 
@@ -99,23 +95,20 @@ fn assert_public_api_diff(
 }
 
 fn assert_public_api(json: impl AsRef<Path>, expected: impl AsRef<Path>) {
-    assert_public_api_impl(json, expected, false);
+    assert_public_api_impl(json, expected, true);
 }
 
-fn assert_public_api_with_blanket_implementations(
-    json: impl AsRef<Path>,
-    expected: impl AsRef<Path>,
-) {
-    assert_public_api_impl(json, expected, true);
+fn assert_public_api_not_simplified(json: impl AsRef<Path>, expected: impl AsRef<Path>) {
+    assert_public_api_impl(json, expected, false);
 }
 
 fn assert_public_api_impl(
     rustdoc_json: impl AsRef<Path>,
     expected_output: impl AsRef<Path>,
-    with_blanket_implementations: bool,
+    simplified: bool,
 ) {
     let mut options = Options::default();
-    options.with_blanket_implementations = with_blanket_implementations;
+    options.simplified = simplified;
     options.sorted = true;
 
     let api = PublicApi::from_rustdoc_json(rustdoc_json, options).unwrap();

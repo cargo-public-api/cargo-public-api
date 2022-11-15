@@ -91,13 +91,13 @@ pub fn                     input_files<I, P>(&mut self, paths: I) -> &mut Self w
 pub fn bat::PrettyPrinter::input_files<I, P>(&mut self, paths: I) -> &mut Self where I: IntoIterator<Item = P>, P: AsRef<Path>
 ```
 
-## Blanket Implementations
+## Less Noisy Output
 
-By default, blanket implementations such as `impl<T> Any for T`, `impl<T> Borrow<T> for T`, and `impl<T, U> Into<U> for T where U: From<T>` are omitted from the list of public items of a crate. For the vast majority of use cases, blanket implementations are not of interest, and just creates noise.
+By default, items belonging to Blanket Implementations and Auto Trait Implementations such as `impl<T> Borrow<T> for T`, `impl<T, U> Into<U> for T where U: From<T>`, `impl Send for Foo` and `impl Sync for Foo` are included in the list of public items of a crate.
 
-Use `--with-blanket-implementations` if you want to include items of blanket implementations in the output:
+For casual uses of this tool, it can be helpful to omit such items from the output, as that makes the output much less noisy and repetitive. This is done with `--simplified`:
 ```bash
-cargo public-api --with-blanket-implementations
+cargo public-api --simplified
 ```
 
 # Compatibility Matrix

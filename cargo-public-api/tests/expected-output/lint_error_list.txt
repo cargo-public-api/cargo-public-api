@@ -1,8 +1,3 @@
 pub mod lint_error
 pub use lint_error::example_api
 pub struct lint_error::MissingDocs
-impl core::panic::unwind_safe::RefUnwindSafe for lint_error::MissingDocs
-impl core::marker::Send for lint_error::MissingDocs
-impl core::marker::Sync for lint_error::MissingDocs
-impl core::marker::Unpin for lint_error::MissingDocs
-impl core::panic::unwind_safe::UnwindSafe for lint_error::MissingDocs

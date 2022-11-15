@@ -36,7 +36,7 @@ See `cargo public-api --help` for more variants of `--deny`.
 Sometimes you want CI to prevent accidental changes to your public API while still allowing you to easily bless changes to the public API. To do this, first write the current public API to a file:
 
 ```bash
-cargo +nightly-2022-08-15 public-api > public-api.txt
+cargo +nightly-2022-09-28 public-api > public-api.txt
 ```
 
 > NOTE: This example uses a fixed nightly toolchain. See [Locking](#locking) for more info.
@@ -55,7 +55,7 @@ jobs:
           profile: minimal
 
       # Install and run cargo public-api and deny any API diff
-      - run: cargo install cargo-public-api@0.14.0
+      - run: cargo install cargo-public-api@0.22.0
       - run: |
           diff -u public-api.txt <(cargo +nightly-2022-08-15 public-api) ||
               (echo '\nFAIL: Public API changed! To bless, `git commit` the result of `cargo +nightly-2022-08-15 public-api > public-api.txt`' && exit 1)

@@ -25,12 +25,6 @@ use std::path::PathBuf;
 mod build;
 mod manifest_parser;
 
-/// replace `rustdoc_json::build(BuildOptions::default().option1().option2().build())` with `rustdoc_json::Builder::default().option1().option2().build()`
-#[deprecated(
-    note = "replace `rustdoc_json::build(BuildOptions::default().option1().option2().build())` with `rustdoc_json::Builder::default().option1().option2().build()`"
-)]
-pub struct BuildOptions;
-
 /// Represents all errors that can occur when using [`Builder::build()`].
 #[derive(thiserror::Error, Debug)]
 #[non_exhaustive]
@@ -67,18 +61,4 @@ pub struct Builder {
     features: Vec<String>,
     package: Option<String>,
     cap_lints: Option<String>,
-}
-
-/// Generate rustdoc JSON for a library crate. Returns the path to the freshly
-/// built rustdoc JSON file.
-///
-/// See [crate] for an example on how to use it.
-///
-/// # Errors
-///
-/// E.g. if building the JSON fails or if the manifest path does not exist or is
-/// invalid.
-#[deprecated(note = "use `rustdoc_json::Builder::build()` instead")]
-pub fn build(options: Builder) -> Result<PathBuf, BuildError> {
-    options.build()
 }

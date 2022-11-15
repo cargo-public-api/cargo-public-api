@@ -19,12 +19,6 @@ impl core::marker::Send for rustdoc_json::BuildError
 impl core::marker::Sync for rustdoc_json::BuildError
 impl core::marker::Unpin for rustdoc_json::BuildError
 impl !core::panic::unwind_safe::UnwindSafe for rustdoc_json::BuildError
-pub struct rustdoc_json::BuildOptions
-impl core::panic::unwind_safe::RefUnwindSafe for rustdoc_json::BuildOptions
-impl core::marker::Send for rustdoc_json::BuildOptions
-impl core::marker::Sync for rustdoc_json::BuildOptions
-impl core::marker::Unpin for rustdoc_json::BuildOptions
-impl core::panic::unwind_safe::UnwindSafe for rustdoc_json::BuildOptions
 pub struct rustdoc_json::Builder
 impl rustdoc_json::Builder
 pub const fn rustdoc_json::Builder::all_features(self, all_features: bool) -> Self
@@ -47,4 +41,3 @@ impl core::marker::Send for rustdoc_json::Builder
 impl core::marker::Sync for rustdoc_json::Builder
 impl core::marker::Unpin for rustdoc_json::Builder
 impl core::panic::unwind_safe::UnwindSafe for rustdoc_json::Builder
-pub fn rustdoc_json::build(options: rustdoc_json::Builder) -> core::result::Result<std::path::PathBuf, rustdoc_json::BuildError>

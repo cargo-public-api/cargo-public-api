@@ -8,7 +8,7 @@ use anyhow::{anyhow, Context, Result};
 /// Synchronously do a `git checkout` of `commit`.
 /// Returns the name of the original branch/commit.
 pub fn git_checkout(commit: &str, git_root: &Path, quiet: bool, force: bool) -> Result<String> {
-    let original_branch = current_branch_or_commit(&git_root)?;
+    let original_branch = current_branch_or_commit(git_root)?;
 
     let mut command = Command::new("git");
     command.current_dir(git_root);

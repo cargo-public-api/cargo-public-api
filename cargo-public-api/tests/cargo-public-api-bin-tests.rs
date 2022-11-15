@@ -374,7 +374,7 @@ fn deny_with_invalid_arg() {
     cmd.arg("v0.3.0");
     cmd.arg("--deny=invalid");
     cmd.assert()
-        .stderr(contains("\"invalid\" isn't a valid value"))
+        .stderr(contains("'invalid' isn't a valid value"))
         .failure();
 }
 
@@ -496,9 +496,7 @@ fn diff_public_items_missing_one_arg() {
     cmd.arg("--diff-git-checkouts");
     cmd.arg("v0.2.0");
     cmd.assert()
-        .stderr(contains(
-            "requires at least 2 values but only 1 was provided",
-        ))
+        .stderr(contains("requires 2 values, but 1 was provided"))
         .failure();
 }
 
@@ -519,6 +517,24 @@ fn long_help() {
     let mut cmd = cargo_public_api_cmd_simplified();
     cmd.arg("--help");
     assert_presence_of_args_in_help(cmd);
+}
+
+#[test]
+fn long_help_wraps() {
+    let max_allowed_line_length = 105; // 100 with some margin
+
+    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    cmd.arg("--help");
+
+    let output = cmd.output().unwrap();
+    let stdout = String::from_utf8_lossy(&output.stdout);
+
+    for line in stdout.lines() {
+        assert!(
+            line.len() <= max_allowed_line_length,
+            "Found line larger than {max_allowed_line_length} chars! Text wrapping seems broken? Line: '{line}'"
+        );
+    }
 }
 
 #[test]

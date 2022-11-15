@@ -39,28 +39,6 @@ pub fn rustdoc_json::BuildError::try_from(value: U) -> core::result::Result<T, <
 impl<T, U> core::convert::TryInto<U> for rustdoc_json::BuildError where U: core::convert::TryFrom<T>
 pub type rustdoc_json::BuildError::Error = <U as core::convert::TryFrom<T>>::Error
 pub fn rustdoc_json::BuildError::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
-pub struct rustdoc_json::BuildOptions
-impl core::panic::unwind_safe::RefUnwindSafe for rustdoc_json::BuildOptions
-impl core::marker::Send for rustdoc_json::BuildOptions
-impl core::marker::Sync for rustdoc_json::BuildOptions
-impl core::marker::Unpin for rustdoc_json::BuildOptions
-impl core::panic::unwind_safe::UnwindSafe for rustdoc_json::BuildOptions
-impl<T> core::any::Any for rustdoc_json::BuildOptions where T: 'static + core::marker::Sized
-pub fn rustdoc_json::BuildOptions::type_id(&self) -> core::any::TypeId
-impl<T> core::borrow::Borrow<T> for rustdoc_json::BuildOptions where T: core::marker::Sized
-pub fn rustdoc_json::BuildOptions::borrow(&self) -> &T
-impl<T> core::borrow::BorrowMut<T> for rustdoc_json::BuildOptions where T: core::marker::Sized
-pub fn rustdoc_json::BuildOptions::borrow_mut(&mut self) -> &mut T
-impl<T> core::convert::From<T> for rustdoc_json::BuildOptions
-pub fn rustdoc_json::BuildOptions::from(t: T) -> T
-impl<T, U> core::convert::Into<U> for rustdoc_json::BuildOptions where U: core::convert::From<T>
-pub fn rustdoc_json::BuildOptions::into(self) -> U
-impl<T, U> core::convert::TryFrom<U> for rustdoc_json::BuildOptions where U: core::convert::Into<T>
-pub type rustdoc_json::BuildOptions::Error = core::convert::Infallible
-pub fn rustdoc_json::BuildOptions::try_from(value: U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
-impl<T, U> core::convert::TryInto<U> for rustdoc_json::BuildOptions where U: core::convert::TryFrom<T>
-pub type rustdoc_json::BuildOptions::Error = <U as core::convert::TryFrom<T>>::Error
-pub fn rustdoc_json::BuildOptions::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
 pub struct rustdoc_json::Builder
 impl rustdoc_json::Builder
 pub const fn rustdoc_json::Builder::all_features(self, all_features: bool) -> Self
@@ -99,4 +77,3 @@ pub fn rustdoc_json::Builder::try_from(value: U) -> core::result::Result<T, <T a
 impl<T, U> core::convert::TryInto<U> for rustdoc_json::Builder where U: core::convert::TryFrom<T>
 pub type rustdoc_json::Builder::Error = <U as core::convert::TryFrom<T>>::Error
 pub fn rustdoc_json::Builder::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
-pub fn rustdoc_json::build(options: rustdoc_json::Builder) -> core::result::Result<std::path::PathBuf, rustdoc_json::BuildError>

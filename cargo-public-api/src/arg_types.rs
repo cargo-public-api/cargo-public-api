@@ -1,5 +1,5 @@
-#[derive(Copy, Clone, Debug, Eq, PartialEq, clap::ArgEnum)]
-#[clap(rename_all = "lower")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, clap::ValueEnum)]
+#[value(rename_all = "lower")]
 pub enum DenyMethod {
     /// All forms of API diffs are denied: additions, changes, deletions.
     All,
@@ -28,8 +28,8 @@ impl DenyMethod {
     }
 }
 
-#[derive(Copy, Clone, Debug, Eq, PartialEq, clap::ArgEnum)]
-#[clap(rename_all = "lower")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, clap::ValueEnum)]
+#[value(rename_all = "lower")]
 pub enum Color {
     Auto,
     Never,

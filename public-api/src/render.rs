@@ -164,7 +164,7 @@ impl<'c> RenderingContext<'c> {
             ItemEnum::ProcMacro(inner) => {
                 let mut output = self.render_simple(&["proc", "macro"], item_path);
                 output.pop(); // Remove name of macro to possibly wrap it in `#[]`
-                let name = Token::identifier(item.name.as_ref().unwrap_or(&"".to_string()));
+                let name = Token::identifier(item.name.as_deref().unwrap_or(""));
                 match inner.kind {
                     MacroKind::Bang => output.extend(vec![name, Token::symbol("!()")]),
                     MacroKind::Attr => {

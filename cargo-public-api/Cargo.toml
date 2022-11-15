@@ -25,7 +25,7 @@ version = "0.6.0"
 
 [dependencies.public-api]
 path = "../public-api"
-version = "0.22.0"
+version = "0.23.0"
 
 [dev-dependencies]
 assert_cmd = "2.0.4"

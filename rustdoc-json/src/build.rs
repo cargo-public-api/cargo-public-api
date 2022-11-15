@@ -119,7 +119,7 @@ fn rustdoc_json_path_for_manifest_path(
     let mut rustdoc_json_path = target_dir;
     // if one has specified a target explicitly then Cargo appends that target triple name as a subfolder
     if let Some(target) = target {
-        rustdoc_json_path.push(&target);
+        rustdoc_json_path.push(target);
     }
     rustdoc_json_path.push("doc");
     rustdoc_json_path.push(lib_name.replace('-', "_"));

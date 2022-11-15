@@ -3,6 +3,7 @@ use crate::{
     intermediate_public_item::{IntermediatePublicItem, NameableItem},
     Options,
 };
+use std::ops::Deref;
 use std::{cmp::Ordering, collections::HashMap, vec};
 
 use rustdoc_types::{
@@ -163,7 +164,7 @@ impl<'c> RenderingContext<'c> {
             ItemEnum::ProcMacro(inner) => {
                 let mut output = self.render_simple(&["proc", "macro"], item_path);
                 output.pop(); // Remove name of macro to possibly wrap it in `#[]`
-                let name = Token::identifier(item.name.as_ref().unwrap_or(&"".to_string()));
+                let name = Token::identifier(item.name.as_deref().unwrap_or(""));
                 match inner.kind {
                     MacroKind::Bang => output.extend(vec![name, Token::symbol("!()")]),
                     MacroKind::Attr => {
@@ -503,12 +504,11 @@ impl<'c> RenderingContext<'c> {
         let mut output = vec![];
         if let Some(item) = self.best_item_for_id(&path.id) {
             output.extend(self.render_path(item.path()));
+        } else if let Some(item) = self.crate_.paths.get(&path.id) {
+            output.extend(self.render_path_components(item.path.iter().map(Deref::deref)));
         } else if !path.name.is_empty() {
             // If we get here it means there was no item for this Path in the
             // rustdoc JSON. Examples of when this happens:
-            //
-            // * The resolved path is for an external item; e.g. from std or an
-            //   external crate.
             //
             // * The resolved path is for a public item inside a private mod
             //   (and thus effectively the item is not public)
@@ -526,16 +526,21 @@ impl<'c> RenderingContext<'c> {
     }
 
     fn render_path_name(&self, name: &str) -> Vec<Token> {
+        self.render_path_components(name.split("::"))
+    }
+
+    fn render_path_components(
+        &self,
+        path_iter: impl Iterator<Item = impl AsRef<str>>,
+    ) -> Vec<Token> {
         let mut output = vec![];
-        let path: Vec<_> = name.split("::").collect();
+        let path: Vec<_> = path_iter.collect();
         let len = path.len();
         for (index, part) in path.into_iter().enumerate() {
-            if index == 0 && part == "$crate" {
-                output.push(Token::identifier("$crate"));
-            } else if index == len - 1 {
-                output.push(Token::type_(part));
+            if index == len - 1 {
+                output.push(Token::type_(part.as_ref()));
             } else {
-                output.push(Token::identifier(part));
+                output.push(Token::identifier(part.as_ref()));
             }
             output.push(Token::symbol("::"));
         }
@@ -618,10 +623,7 @@ impl<'c> RenderingContext<'c> {
             if impl_.negative {
                 output.push(Token::symbol("!"));
             }
-            output.push(Token::identifier(&trait_.name));
-            if let Some(args) = &trait_.args {
-                output.extend(self.render_generic_args(args));
-            }
+            output.extend(self.render_resolved_path(trait_));
             output.extend(vec![ws!(), Token::keyword("for"), ws!()]);
             output.extend(self.render_type(&impl_.for_));
         } else {

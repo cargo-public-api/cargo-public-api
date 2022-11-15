@@ -151,7 +151,7 @@ fn print_minimum_rustdoc_json_version() {
 #[test]
 fn too_many_args_shows_help() {
     let mut cmd = Command::cargo_bin("public-api").unwrap();
-    cmd.args(&["too", "many", "args"]);
+    cmd.args(["too", "many", "args"]);
     cmd.assert()
         .stdout(expected_help_text())
         .stderr("")

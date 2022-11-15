@@ -21,11 +21,11 @@ mod published_crate;
 mod toolchain;
 
 #[derive(Parser, Debug)]
-#[clap(author, version, about, long_about = None)]
+#[command(author, version, about, long_about = None)]
 #[allow(clippy::struct_excessive_bools)]
 pub struct Args {
     /// Path to `Cargo.toml`.
-    #[clap(long, name = "PATH", default_value = "Cargo.toml", parse(from_os_str))]
+    #[arg(long, value_name = "PATH", default_value = "Cargo.toml")]
     manifest_path: PathBuf,
 
     /// Raise this flag to make items part of blanket implementations such as
@@ -37,11 +37,9 @@ pub struct Args {
     /// majority of users will find the presence of these items to just
     /// constitute noise, even if they formally are part of the public API of a
     /// crate.
-    #[clap(long)]
+    #[arg(long)]
     with_blanket_implementations: bool,
 
-    /// Usage: --diff-git-checkouts <COMMIT_1> <COMMIT_2>
-    ///
     /// Allows to diff the public API across two different commits. The
     /// following steps are performed:
     ///
@@ -66,28 +64,26 @@ pub struct Args {
     /// build to succeed. If we e.g. were to git clone a temporary copy of a
     /// commit ourselves, the risk is high that additional steps are needed
     /// before a build can succeed. Such as the need to set up git submodules.
-    #[clap(long, min_values = 2, max_values = 2)]
+    #[arg(long, num_args = 2, value_names = ["COMMIT_1", "COMMIT_2"])]
     diff_git_checkouts: Option<Vec<String>>,
 
     /// Raise this flag to discard working tree changes during git checkouts when
     /// `--diff-git-checkouts` is used.
-    #[clap(long)]
+    #[arg(long)]
     force_git_checkouts: bool,
 
-    /// Usage: --diff-rustdoc-json <RUSTDOC_JSON_PATH_1> <RUSTDOC_JSON_PATH_2>
-    ///
     /// Diff the public API across two different rustdoc JSON files.
-    #[clap(long, min_values = 2, max_values = 2)]
+    #[arg(long, num_args = 2, value_names = ["RUSTDOC_JSON_PATH_1", "RUSTDOC_JSON_PATH_2"])]
     diff_rustdoc_json: Option<Vec<String>>,
 
     /// Usage: --diff-published some-crate@1.2.3
     ///
     /// Diff the current API against the API in a published version.
-    #[clap(long)]
+    #[arg(long)]
     diff_published: Option<String>,
 
-    /// Automatically resolves to either `--diff-git-checkouts` or
-    /// `--diff-rustdoc-json` or `--diff-rustdoc-json` depending on if args ends
+    /// Automatically resolves to either `--diff-git-checkouts`,
+    /// `--diff-rustdoc-json`, or `--diff-published` depending on if args ends
     /// in `.json` or not, or if they contain `@`.
     ///
     /// Examples:
@@ -114,11 +110,9 @@ pub struct Args {
     ///
     ///   cargo public-api --diff-published some-crate@1.2.3
     ///
-    #[clap(long, min_values = 1, max_values = 2)]
+    #[arg(long, num_args = 1..=2, value_name = "TARGET")]
     diff: Option<Vec<String>>,
 
-    /// Usage: --rustdoc-json <RUSTDOC_JSON_PATH>
-    ///
     /// List the public API based on the given rustdoc JSON file. Try for example
     ///
     ///     rustup component add rust-docs-json --toolchain  nightly
@@ -127,38 +121,29 @@ pub struct Args {
     ///
     ///     cargo public-api --rustdoc-json ~/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/share/doc/rust/json/std.json
     ///
-    #[clap(long)]
+    #[arg(long, value_name = "RUSTDOC_JSON_PATH")]
     rustdoc_json: Option<String>,
 
-    /// Exit with failure if the specified API diff is detected.
-    ///
-    /// * all = deny added, changed, and removed public items in the API
-    ///
-    /// * added = deny added public items to the API
-    ///
-    /// * changed = deny changed public items in the API
-    ///
-    /// * removed = deny removed public items from the API
-    ///
-    /// They can also be combined. For example, to only allow additions to the
-    /// API, use `--deny=added --deny=changed`.
-    #[clap(long, arg_enum)]
+    /// Exit with failure if the specified API diff is detected. Can be
+    /// combined. For example, to only allow additions to the API, use
+    /// `--deny=added --deny=changed`.
+    #[arg(long, value_enum)]
     deny: Option<Vec<DenyMethod>>,
 
     /// Whether or not to use colors. You can select between "auto", "never", "always".
     /// If "auto" (the default), colors will be used if stdout is a terminal. If you pipe
     /// the output to a file, colors will be disabled by default.
-    #[clap(long, arg_enum, default_value = "auto")]
+    #[arg(long, value_enum, default_value_t = Color::Auto)]
     color: Color,
 
     /// Show detailed info about processing. For debugging purposes. The output
     /// is not stable and can change across patch versions.
-    #[clap(long, hide = true)]
+    #[arg(long, hide = true)]
     verbose: bool,
 
     /// If `true`, item paths include the so called "sorting prefix" that makes
     /// them grouped in a nice way. Only intended for debugging this tool.
-    #[clap(long, hide = true)]
+    #[arg(long, hide = true)]
     debug_sorting: bool,
 
     /// Allows you to build rustdoc JSON with a toolchain other than `nightly`.
@@ -167,31 +152,31 @@ pub struct Args {
     ///
     /// Useful if you have built a toolchain from source for example, or if you
     /// want to use a fixed toolchain in CI.
-    #[clap(long, validator = |s: &str| if !s.starts_with('+') { Ok(()) } else { Err("toolchain must not start with a `+`")} )]
+    #[arg(long, value_parser = parse_toolchain)]
     toolchain: Option<String>,
 
     /// Build for the target triple
-    #[clap(long)]
+    #[arg(long)]
     target: Option<String>,
 
     /// Space or comma separated list of features to activate
-    #[clap(long, short = 'F', min_values = 1)]
+    #[arg(long, short = 'F', num_args = 1..)]
     features: Vec<String>,
 
-    #[clap(long)]
+    #[arg(long)]
     /// Activate all available features
     all_features: bool,
 
-    #[clap(long)]
+    #[arg(long)]
     /// Do not activate the `default` feature
     no_default_features: bool,
 
     /// Package to document
-    #[clap(long, short)]
+    #[arg(long, short)]
     package: Option<String>,
 
     /// Forwarded to rustdoc JSON build command
-    #[clap(long, hide = true)]
+    #[arg(long, hide = true)]
     cap_lints: Option<String>,
 }
 
@@ -205,6 +190,15 @@ pub enum Action {
     /// Afterwards, we want to restore the original branch the user was on, to
     /// not mess up their work tree.
     RestoreBranch(String),
+}
+
+// Validate that the toolchain does not start with a `+` character.
+fn parse_toolchain(s: &str) -> Result<String, &'static str> {
+    if s.starts_with('+') {
+        Err("toolchain must not start with a `+`")
+    } else {
+        Ok(s.to_owned())
+    }
 }
 
 fn main_() -> Result<()> {
@@ -546,5 +540,16 @@ fn main() -> Result<()> {
             _ => Err(e),
         },
         result => result,
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::Args;
+
+    #[test]
+    fn verify_cli() {
+        use clap::CommandFactory;
+        Args::command().debug_assert();
     }
 }

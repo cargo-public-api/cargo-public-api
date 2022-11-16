@@ -28,8 +28,9 @@ pub struct Args {
     #[arg(long, value_name = "PATH", default_value = "Cargo.toml")]
     manifest_path: PathBuf,
 
-    /// Allows to diff the public API across two different commits. The
-    /// following steps are performed:
+    /// Diff the public API across two different commits.
+    ///
+    /// The following steps are performed:
     ///
     /// 1. Remember the current branch/commit
     ///
@@ -55,7 +56,7 @@ pub struct Args {
     #[arg(long, num_args = 2, value_names = ["COMMIT_1", "COMMIT_2"])]
     diff_git_checkouts: Option<Vec<String>>,
 
-    /// Raise this flag to discard working tree changes during git checkouts when
+    /// Discard working tree changes during git checkouts when
     /// `--diff-git-checkouts` is used.
     #[arg(long)]
     force_git_checkouts: bool,
@@ -64,10 +65,12 @@ pub struct Args {
     #[arg(long, num_args = 2, value_names = ["RUSTDOC_JSON_PATH_1", "RUSTDOC_JSON_PATH_2"])]
     diff_rustdoc_json: Option<Vec<String>>,
 
-    /// Usage: --diff-published some-crate@1.2.3
-    ///
     /// Diff the current API against the API in a published version.
-    #[arg(long)]
+    ///
+    /// Example:
+    ///
+    ///   cargo public-api --diff-published your-crate@1.2.3
+    #[arg(long, value_name = "CRATE_NAME@VERSION")]
     diff_published: Option<String>,
 
     /// Automatically resolves to either `--diff-git-checkouts`,
@@ -101,7 +104,11 @@ pub struct Args {
     #[arg(long, num_args = 1..=2, value_name = "TARGET")]
     diff: Option<Vec<String>>,
 
-    /// List the public API based on the given rustdoc JSON file. Try for example
+    /// List the public API based on the given rustdoc JSON file.
+    ///
+    /// Example:
+    ///
+    /// First do
     ///
     ///     rustup component add rust-docs-json --toolchain  nightly
     ///
@@ -112,21 +119,26 @@ pub struct Args {
     #[arg(long, value_name = "RUSTDOC_JSON_PATH")]
     rustdoc_json: Option<String>,
 
-    /// Exit with failure if the specified API diff is detected. Can be
-    /// combined. For example, to only allow additions to the API, use
+    /// Exit with failure if the specified API diff is detected.
+    ///
+    /// Can be combined. For example, to only allow additions to the API, use
     /// `--deny=added --deny=changed`.
     #[arg(long, value_enum)]
     deny: Option<Vec<DenyMethod>>,
 
-    /// Whether or not to use colors. You can select between "auto", "never", "always".
-    /// If "auto" (the default), colors will be used if stdout is a terminal. If you pipe
-    /// the output to a file, colors will be disabled by default.
+    /// Whether or not to use colors.
+    ///
+    /// You can select between "auto", "never", "always". If "auto" (the
+    /// default), colors will be used if stdout is a terminal. If you pipe the
+    /// output to a file, colors will be disabled by default.
     #[arg(long, value_enum, default_value_t = Color::Auto)]
     color: Color,
 
     /// Omit items that belong to Blanket Implementations and Auto Trait
-    /// Implementations. This makes the output significantly less noisy and
-    /// repetitive, at the cost of not fully describing the public API.
+    /// Implementations.
+    ///
+    /// This makes the output significantly less noisy and repetitive, at the
+    /// cost of not fully describing the public API.
     ///
     /// Examples of Blanket Implementations: `impl<T> Any for T`, `impl<T>
     /// Borrow<T> for T`, and `impl<T, U> Into<U> for T where U: From<T>`
@@ -136,17 +148,21 @@ pub struct Args {
     #[arg(long)]
     simplified: bool,
 
-    /// Show detailed info about processing. For debugging purposes. The output
-    /// is not stable and can change across patch versions.
+    /// Show detailed info about processing.
+    ///
+    /// For debugging purposes. The output is not stable and can change across
+    /// patch versions.
     #[arg(long, hide = true)]
     verbose: bool,
 
-    /// If `true`, item paths include the so called "sorting prefix" that makes
-    /// them grouped in a nice way. Only intended for debugging this tool.
+    /// Include the so called "sorting prefix" that makes items grouped in a
+    /// nice way.
+    ///
+    /// Only intended for debugging this tool.
     #[arg(long, hide = true)]
     debug_sorting: bool,
 
-    /// Allows you to build rustdoc JSON with a toolchain other than `nightly`.
+    /// Build rustdoc JSON with a toolchain other than `nightly`.
     ///
     /// Consider using `cargo +toolchain public-api` instead.
     ///

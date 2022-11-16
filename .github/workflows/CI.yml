@@ -30,13 +30,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: Swatinem/rust-cache@v2
       - run: RUSTDOCFLAGS='--deny warnings' cargo doc --locked --no-deps --document-private-items
+      - run: cargo run --locked -- -h
+      - run: cargo run --locked -- --help
 
   cargo-clippy:
     name: cargo clippy -- --deny clippy::all --deny clippy::pedantic ...
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: Swatinem/rust-cache@v2
       - run: scripts/cargo-clippy.sh
 
   cargo-test:
@@ -68,6 +72,7 @@ jobs:
         with:
           toolchain: nightly
           profile: minimal
+      - uses: Swatinem/rust-cache@v2
       - run: |
           scripts/check-public-apis.sh
 

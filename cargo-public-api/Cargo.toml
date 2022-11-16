@@ -7,6 +7,7 @@ description = "List and diff the public API of Rust library crates between relea
 homepage = "https://github.com/Enselic/cargo-public-api"
 documentation = "https://docs.rs/cargo-public-api"
 readme = "../README.md"
+categories = ["command-line-utilities", "development-tools::cargo-plugins"]
 license = "MIT"
 repository = "https://github.com/Enselic/cargo-public-api"
 

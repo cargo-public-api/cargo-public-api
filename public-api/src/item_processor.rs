@@ -285,7 +285,6 @@ pub(crate) fn sorting_prefix(item: &Item) -> u8 {
         ItemEnum::AssocConst { .. } => 16,
 
         ItemEnum::Function(_) => 17,
-        ItemEnum::Method(_) => 18,
 
         ItemEnum::Typedef(_) => 19,
 

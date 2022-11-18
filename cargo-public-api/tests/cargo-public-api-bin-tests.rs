@@ -48,7 +48,11 @@ fn create_test_repo_with_dirty_git_tree() -> TestRepo {
 #[test]
 #[cfg_attr(all(target_family = "windows", in_ci), ignore)]
 fn list_public_items() {
-    let mut cmd = cargo_public_api_cmd_simplified();
+    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+
+    // Other tests use --simplified. Here we use -s to make sure that also works
+    cmd.arg("-s");
+
     cmd.args(["--manifest-path", "../public-api/Cargo.toml"]);
     cmd.assert()
         .stdout_or_bless("./tests/expected-output/public_api_list.txt")

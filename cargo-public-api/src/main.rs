@@ -145,7 +145,7 @@ pub struct Args {
     ///
     /// Examples of Auto Trait Implementations: `impl Send for Foo`, `impl Sync
     /// for Foo`, and `impl Unpin for Foo`
-    #[arg(long)]
+    #[arg(short, long)]
     simplified: bool,
 
     /// Show detailed info about processing.

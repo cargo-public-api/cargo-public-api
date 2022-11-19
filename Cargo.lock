@@ -583,6 +583,7 @@ dependencies = [
  "cargo-manifest",
  "cargo_metadata",
  "serde",
+ "tempfile",
  "thiserror",
  "toml",
 ]

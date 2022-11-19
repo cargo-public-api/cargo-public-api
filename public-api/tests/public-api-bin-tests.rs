@@ -9,10 +9,10 @@ use public_api::MINIMUM_RUSTDOC_JSON_VERSION;
 // rust-analyzer bug: https://github.com/rust-lang/rust-analyzer/issues/9173
 #[path = "../../test-utils/src/lib.rs"]
 mod test_utils;
+use tempfile::tempdir;
 use tempfile::TempDir;
 use test_utils::assert_or_bless::AssertOrBless;
 use test_utils::rustdoc_json_path_for_crate;
-use test_utils::rustdoc_json_path_for_crate_with_target_dir;
 
 #[test]
 fn print_public_api() {
@@ -87,9 +87,12 @@ fn print_no_diff() {
 #[test]
 #[cfg_attr(target_family = "windows", ignore)] // Because test uses bash
 fn broken_pipe() {
+    // Create independent build dir so all tests can run in parallel
+    let build_dir = tempdir().unwrap();
+
     // Use the JSON for a somewhat large API so the pipe has time to become closed
     // before all output has been written to stdout
-    let large_api = rustdoc_json_path_for_crate("../test-apis/comprehensive_api");
+    let large_api = rustdoc_json_path_for_crate("../test-apis/comprehensive_api", &build_dir);
 
     // Now setup the actual one-liner
     let mut cmd = std::process::Command::new("bash");
@@ -218,10 +221,7 @@ fn cmd_with_rustdoc_json_args_impl(
         // sporadically.
         let temp_dir = TempDir::new().unwrap();
 
-        cmd.arg(rustdoc_json_path_for_crate_with_target_dir(
-            crate_,
-            temp_dir.path(),
-        ));
+        cmd.arg(rustdoc_json_path_for_crate(crate_, temp_dir.path()));
 
         // We need one dir per crate, because in the case of example_api-v0.1.0 and
         // example_api-v0.2.0 for example, the same JSON file name example_api.json

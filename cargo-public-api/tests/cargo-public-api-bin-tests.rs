@@ -20,6 +20,7 @@ use predicates::str::contains;
 // rust-analyzer bug: https://github.com/rust-lang/rust-analyzer/issues/9173
 #[path = "../../test-utils/src/lib.rs"]
 mod test_utils;
+use tempfile::tempdir;
 use test_utils::assert_or_bless::AssertOrBless;
 use test_utils::rustdoc_json_path_for_crate;
 
@@ -449,8 +450,12 @@ fn diff_public_items_from_files_smart_diff() {
 }
 
 fn diff_public_items_from_files_impl(diff_arg: &str) {
-    let old = rustdoc_json_path_for_crate("../test-apis/example_api-v0.1.0");
-    let new = rustdoc_json_path_for_crate("../test-apis/example_api-v0.2.0");
+    // Create independent build dirs so all tests can run in parallel
+    let build_dir = tempdir().unwrap();
+    let build_dir2 = tempdir().unwrap();
+
+    let old = rustdoc_json_path_for_crate("../test-apis/example_api-v0.1.0", &build_dir);
+    let new = rustdoc_json_path_for_crate("../test-apis/example_api-v0.2.0", &build_dir2);
     let mut cmd = cargo_public_api_cmd_simplified();
     cmd.arg(diff_arg);
     cmd.arg(old);
@@ -485,7 +490,10 @@ fn diff_published_impl(diff_arg: &str) {
 
 #[test]
 fn list_public_items_from_json_file() {
-    let json_file = rustdoc_json_path_for_crate("../test-apis/example_api-v0.3.0");
+    // Create independent build dir so all tests can run in parallel
+    let build_dir = tempdir().unwrap();
+
+    let json_file = rustdoc_json_path_for_crate("../test-apis/example_api-v0.3.0", &build_dir);
     let mut cmd = cargo_public_api_cmd_simplified();
     cmd.arg("--rustdoc-json");
     cmd.arg(json_file);

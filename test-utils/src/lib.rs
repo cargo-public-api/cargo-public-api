@@ -14,15 +14,7 @@ pub use assert_or_bless::assert_eq_or_bless;
 pub use assert_or_bless::write_to_file_atomically;
 
 #[must_use]
-pub fn rustdoc_json_path_for_crate(test_crate: &str) -> PathBuf {
-    rustdoc_json_path_for_crate_impl(test_crate, None)
-}
-
-#[must_use]
-pub fn rustdoc_json_path_for_crate_with_target_dir(
-    test_crate: &str,
-    target_dir: impl AsRef<Path>,
-) -> PathBuf {
+pub fn rustdoc_json_path_for_crate(test_crate: &str, target_dir: impl AsRef<Path>) -> PathBuf {
     rustdoc_json_path_for_crate_impl(test_crate, Some(target_dir.as_ref()))
 }
 

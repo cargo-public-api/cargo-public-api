@@ -8,57 +8,79 @@ use public_api::{Error, Options, PublicApi};
 // rust-analyzer bug: https://github.com/rust-lang/rust-analyzer/issues/9173
 #[path = "../../test-utils/src/lib.rs"]
 mod test_utils;
+use tempfile::tempdir;
 use test_utils::assert_eq_or_bless;
 use test_utils::rustdoc_json_path_for_crate;
 
 #[test]
 fn not_simplified() {
+    // Create independent build dir so all tests can run in parallel
+    let build_dir = tempdir().unwrap();
+
     assert_public_api_not_simplified(
-        rustdoc_json_path_for_crate("../test-apis/example_api-v0.2.0"),
+        rustdoc_json_path_for_crate("../test-apis/example_api-v0.2.0", &build_dir),
         "./tests/expected-output/example_api-v0.2.0-not-simplified.txt",
     );
 }
 
 #[test]
 fn diff_with_added_items() {
+    // Create independent build dirs so all tests can run in parallel
+    let build_dir = tempdir().unwrap();
+    let build_dir2 = tempdir().unwrap();
+
     assert_public_api_diff(
-        rustdoc_json_path_for_crate("../test-apis/example_api-v0.1.0"),
-        rustdoc_json_path_for_crate("../test-apis/example_api-v0.2.0"),
+        rustdoc_json_path_for_crate("../test-apis/example_api-v0.1.0", &build_dir),
+        rustdoc_json_path_for_crate("../test-apis/example_api-v0.2.0", &build_dir2),
         "./tests/expected-output/diff_with_added_items.txt",
     );
 }
 
 #[test]
 fn no_diff() {
+    // Create independent build dirs so all tests can run in parallel
+    let build_dir = tempdir().unwrap();
+    let build_dir2 = tempdir().unwrap();
+
     // No change to the public API
     assert_public_api_diff(
-        rustdoc_json_path_for_crate("../test-apis/comprehensive_api"),
-        rustdoc_json_path_for_crate("../test-apis/comprehensive_api"),
+        rustdoc_json_path_for_crate("../test-apis/comprehensive_api", &build_dir),
+        rustdoc_json_path_for_crate("../test-apis/comprehensive_api", &build_dir2),
         "./tests/expected-output/no_diff.txt",
     );
 }
 
 #[test]
 fn diff_with_removed_items() {
+    // Create independent build dirs so all tests can run in parallel
+    let build_dir = tempdir().unwrap();
+    let build_dir2 = tempdir().unwrap();
+
     assert_public_api_diff(
-        rustdoc_json_path_for_crate("../test-apis/example_api-v0.2.0"),
-        rustdoc_json_path_for_crate("../test-apis/example_api-v0.1.0"),
+        rustdoc_json_path_for_crate("../test-apis/example_api-v0.2.0", &build_dir2),
+        rustdoc_json_path_for_crate("../test-apis/example_api-v0.1.0", &build_dir),
         "./tests/expected-output/diff_with_removed_items.txt",
     );
 }
 
 #[test]
 fn comprehensive_api() {
+    // Create independent build dir so all tests can run in parallel
+    let build_dir = tempdir().unwrap();
+
     assert_public_api(
-        rustdoc_json_path_for_crate("../test-apis/comprehensive_api"),
+        rustdoc_json_path_for_crate("../test-apis/comprehensive_api", &build_dir),
         "./tests/expected-output/comprehensive_api.txt",
     );
 }
 
 #[test]
 fn comprehensive_api_proc_macro() {
+    // Create independent build dir so all tests can run in parallel
+    let build_dir = tempdir().unwrap();
+
     assert_public_api(
-        rustdoc_json_path_for_crate("../test-apis/comprehensive_api_proc_macro"),
+        rustdoc_json_path_for_crate("../test-apis/comprehensive_api_proc_macro", &build_dir),
         "./tests/expected-output/comprehensive_api_proc_macro.txt",
     );
 }

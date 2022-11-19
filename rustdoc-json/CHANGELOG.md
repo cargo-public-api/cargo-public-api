@@ -1,5 +1,6 @@
 ## v0.7.0
 * Remove deprecated `BuildOptions` and `fn build(...)`. Use `Builder` and `Builder::build()` instead.
+* Use `cargo-manifest` to parse Cargo manifests
 
 ## v0.6.0
 * Remove `BuildError::CargoTomlError` (and `cargo_toml` dependency)

@@ -15,6 +15,7 @@ repository = "https://github.com/Enselic/cargo-public-api"
 nu-ansi-term = "0.46.0"
 anyhow = "1.0.53"
 atty = "0.2.14"
+cargo-manifest = "0.4.0"
 clap = { version = "4.0.23", features = ["derive", "wrap_help"] }
 diff = "0.1.12"
 dirs = "4.0.0"

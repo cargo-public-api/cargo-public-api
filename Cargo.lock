@@ -100,6 +100,7 @@ dependencies = [
  "anyhow",
  "assert_cmd",
  "atty",
+ "cargo-manifest",
  "cargo_metadata",
  "clap",
  "diff",

@@ -467,22 +467,43 @@ fn diff_public_items_from_files_impl(diff_arg: &str) {
 
 #[test]
 fn diff_published() {
-    diff_published_impl("--diff-published");
+    diff_published_impl("--diff-published", "example_api@0.1.0");
 }
 
 #[test]
 fn diff_published_smart_diff() {
-    diff_published_impl("--diff");
+    diff_published_impl("--diff", "example_api@0.1.0");
 }
 
-/// Diff against a published crate. Note that we diff two completely unrelated
-/// libraries. But for testing purposes, we only need to test that there IS a
-/// diff. It does not matter how it looks.
-fn diff_published_impl(diff_arg: &str) {
+#[test]
+fn diff_published_fallback() {
+    diff_published_impl("--diff-published", "@0.1.0");
+}
+
+#[test]
+fn diff_published_smart_diff_fallback() {
+    diff_published_impl("--diff", "@0.1.0");
+}
+
+/// Diff against a published crate.
+fn diff_published_impl(diff_arg: &str, spec: &str) {
     let mut cmd = TestCmd::new();
     cmd.arg("--color=never");
     cmd.arg(diff_arg);
-    cmd.arg("example_api@0.1.0");
+    cmd.arg(spec);
+    cmd.assert()
+        .stdout_or_bless("./tests/expected-output/diff_published.txt")
+        .success();
+}
+
+#[test]
+fn diff_published_explicit_package() {
+    let mut cmd = TestCmd::new();
+    cmd.arg("--color=never");
+    cmd.arg("-p");
+    cmd.arg("example_api");
+    cmd.arg("--diff-published");
+    cmd.arg("@0.1.0");
     cmd.assert()
         .stdout_or_bless("./tests/expected-output/diff_published.txt")
         .success();

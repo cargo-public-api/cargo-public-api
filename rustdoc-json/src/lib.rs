@@ -23,7 +23,6 @@
 use std::path::PathBuf;
 
 mod build;
-mod manifest_parser;
 
 /// Represents all errors that can occur when using [`Builder::build()`].
 #[derive(thiserror::Error, Debug)]
@@ -37,6 +36,10 @@ pub enum BuildError {
     /// A general error. Refer to the attached error message for more info.
     #[error("Failed to build rustdoc JSON. Stderr: {0}")]
     General(String),
+
+    /// An error originating from `cargo-manifest`.
+    #[error(transparent)]
+    CargoManifestError(#[from] cargo_manifest::Error),
 
     /// An error originating from `cargo_metadata`.
     #[error(transparent)]

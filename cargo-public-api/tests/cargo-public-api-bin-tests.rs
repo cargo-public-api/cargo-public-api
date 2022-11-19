@@ -477,7 +477,7 @@ fn diff_published_impl(diff_arg: &str) {
     let mut cmd = TestCmd::new();
     cmd.arg("--color=never");
     cmd.arg(diff_arg);
-    cmd.arg("rustdoc-json@0.2.0");
+    cmd.arg("example_api@0.1.0");
     cmd.assert()
         .stdout_or_bless("./tests/expected-output/diff_published.txt")
         .success();

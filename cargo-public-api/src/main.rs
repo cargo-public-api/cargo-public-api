@@ -28,82 +28,6 @@ pub struct Args {
     #[arg(long, value_name = "PATH", default_value = "Cargo.toml")]
     manifest_path: PathBuf,
 
-    /// Diff the public API across two different commits.
-    ///
-    /// The following steps are performed:
-    ///
-    /// 1. Remember the current branch/commit
-    ///
-    /// 2. Do a literal in-tree, in-place `git checkout` of the first commit
-    ///
-    /// 3. Collect public API
-    ///
-    /// 4. Do a literal in-tree, in-place `git checkout` of the second commit
-    ///
-    /// 5. Collect public API
-    ///
-    /// 6. Print the diff between public API in step 2 and step 4
-    ///
-    /// 7. Restore the original branch/commit
-    ///
-    /// If you have local changes, git will refuse to do `git checkout`, so your
-    /// work will not be discarded.
-    ///
-    /// Using the current git repo has the benefit of making it likely for the
-    /// build to succeed. If we e.g. were to git clone a temporary copy of a
-    /// commit ourselves, the risk is high that additional steps are needed
-    /// before a build can succeed. Such as the need to set up git submodules.
-    #[arg(long, num_args = 2, value_names = ["COMMIT_1", "COMMIT_2"])]
-    diff_git_checkouts: Option<Vec<String>>,
-
-    /// Discard working tree changes during git checkouts when
-    /// `--diff-git-checkouts` is used.
-    #[arg(long)]
-    force_git_checkouts: bool,
-
-    /// Diff the public API across two different rustdoc JSON files.
-    #[arg(long, num_args = 2, value_names = ["RUSTDOC_JSON_PATH_1", "RUSTDOC_JSON_PATH_2"])]
-    diff_rustdoc_json: Option<Vec<String>>,
-
-    /// Diff the current API against the API in a published version.
-    ///
-    /// Example:
-    ///
-    ///   cargo public-api --diff-published your-crate@1.2.3
-    #[arg(long, value_name = "CRATE_NAME@VERSION")]
-    diff_published: Option<String>,
-
-    /// Automatically resolves to either `--diff-git-checkouts`,
-    /// `--diff-rustdoc-json`, or `--diff-published` depending on if args ends
-    /// in `.json` or not, or if they contain `@`.
-    ///
-    /// Examples:
-    ///
-    ///   cargo public-api --diff v0.2.0 v0.3.0
-    ///
-    /// resolves to
-    ///
-    ///   cargo public-api --diff-git-checkouts v0.2.0 v0.3.0
-    ///
-    /// but
-    ///
-    ///   cargo public-api --diff v0.2.0.json v0.3.0.json
-    ///
-    /// resolves to
-    ///
-    ///   cargo public-api --diff-rustdoc-json v0.2.0.json v0.3.0.json
-    ///
-    /// and
-    ///
-    ///   cargo public-api --diff some-crate@1.2.3
-    ///
-    /// resolves to
-    ///
-    ///   cargo public-api --diff-published some-crate@1.2.3
-    ///
-    #[arg(long, num_args = 1..=2, value_name = "TARGET")]
-    diff: Option<Vec<String>>,
-
     /// List the public API based on the given rustdoc JSON file.
     ///
     /// Example:
@@ -118,13 +42,6 @@ pub struct Args {
     ///
     #[arg(long, value_name = "RUSTDOC_JSON_PATH")]
     rustdoc_json: Option<String>,
-
-    /// Exit with failure if the specified API diff is detected.
-    ///
-    /// Can be combined. For example, to only allow additions to the API, use
-    /// `--deny=added --deny=changed`.
-    #[arg(long, value_enum)]
-    deny: Option<Vec<DenyMethod>>,
 
     /// Whether or not to use colors.
     ///
@@ -194,6 +111,101 @@ pub struct Args {
     /// Forwarded to rustdoc JSON build command
     #[arg(long, hide = true)]
     cap_lints: Option<String>,
+
+    #[command(subcommand)]
+    subcommand: Option<Subcommand>,
+}
+
+#[derive(Parser, Debug)]
+#[allow(clippy::struct_excessive_bools)]
+struct DiffArgs {
+    /// Exit with failure if the specified API diff is detected.
+    ///
+    /// Can be combined. For example, to only allow additions to the API, use
+    /// `--deny=added --deny=changed`.
+    #[arg(long, value_enum)]
+    deny: Option<Vec<DenyMethod>>,
+
+    /// Diff the public API across two different commits.
+    ///
+    /// The following steps are performed:
+    ///
+    /// 1. Remember the current branch/commit
+    ///
+    /// 2. Do a literal in-tree, in-place `git checkout` of the first commit
+    ///
+    /// 3. Collect public API
+    ///
+    /// 4. Do a literal in-tree, in-place `git checkout` of the second commit
+    ///
+    /// 5. Collect public API
+    ///
+    /// 6. Print the diff between public API in step 2 and step 4
+    ///
+    /// 7. Restore the original branch/commit
+    ///
+    /// If you have local changes, git will refuse to do `git checkout`, so your
+    /// work will not be discarded.
+    ///
+    /// Using the current git repo has the benefit of making it likely for the
+    /// build to succeed. If we e.g. were to git clone a temporary copy of a
+    /// commit ourselves, the risk is high that additional steps are needed
+    /// before a build can succeed. Such as the need to set up git submodules.
+    #[arg(long)]
+    git_checkouts: bool,
+
+    /// Discard working tree changes during git checkouts when
+    /// `--git-checkouts` is used.
+    #[arg(long)]
+    force_git_checkouts: bool,
+
+    /// Diff the public API across two different rustdoc JSON files.
+    #[arg(long)]
+    rustdoc_json: bool,
+
+    /// Diff the current API against the API in a published version.
+    ///
+    /// Example:
+    ///
+    ///   cargo public-api diff --published your-crate@1.2.3
+    #[arg(long)]
+    published: bool,
+
+    /// Automatically resolves to either `--git-checkouts`,
+    /// `--rustdoc-json`, or `--published` depending on if args ends
+    /// in `.json` or not, or if they contain `@`.
+    ///
+    /// Examples:
+    ///
+    ///   cargo public-api diff v0.2.0 v0.3.0
+    ///
+    /// resolves to
+    ///
+    ///   cargo public-api diff-git-checkouts v0.2.0 v0.3.0
+    ///
+    /// but
+    ///
+    ///   cargo public-api diff v0.2.0.json v0.3.0.json
+    ///
+    /// resolves to
+    ///
+    ///   cargo public-api diff-rustdoc-json v0.2.0.json v0.3.0.json
+    ///
+    /// and
+    ///
+    ///   cargo public-api diff some-crate@1.2.3
+    ///
+    /// resolves to
+    ///
+    ///   cargo public-api diff-published some-crate@1.2.3
+    ///
+    args: Vec<String>,
+}
+
+#[derive(clap::Subcommand, Debug)]
+enum Subcommand {
+    /// Diffing of public APIs
+    Diff(DiffArgs),
 }
 
 /// This represents an action that we want to do at some point.
@@ -205,7 +217,7 @@ pub enum Action {
         deny: Vec<DenyMethod>,
     },
 
-    /// Doing a `--diff-git-checkouts` involves doing `git checkout`s.
+    /// Doing a `diff --git-checkouts` involves doing `git checkout`s.
     /// Afterwards, we want to restore the original branch the user was on, to
     /// not mess up their work tree.
     RestoreBranch { name: String, force: bool },
@@ -221,7 +233,7 @@ fn parse_toolchain(s: &str) -> Result<String, &'static str> {
 }
 
 fn main_() -> Result<()> {
-    let args = get_args()?;
+    let args = get_args();
 
     // A list of actions to perform after we have listed or diffed. Typical
     // examples: restore a git branch or check that a diff is allowed
@@ -236,28 +248,44 @@ fn main_() -> Result<()> {
     result
 }
 
-fn list_or_diff(args: &Args, final_actions: &mut Vec<Action>) -> Result<()> {
-    if let Some(commits) = &args.diff_git_checkouts {
-        print_diff_between_two_commits(args, commits, final_actions)
-    } else if let Some(files) = &args.diff_rustdoc_json {
+fn diff(args: &Args, diff_args: &DiffArgs, final_actions: &mut Vec<Action>) -> Result<()> {
+    if diff_args.git_checkouts {
+        print_diff_between_two_commits(args, diff_args, &diff_args.args, final_actions)
+    } else if diff_args.rustdoc_json {
         // clap ensures both args exists if we get here
         print_diff_between_two_rustdoc_json_files(
             args,
-            files.get(0).unwrap(),
-            files.get(1).unwrap(),
+            diff_args,
+            diff_args.args.get(0).unwrap(),
+            diff_args.args.get(1).unwrap(),
             final_actions,
         )
-    } else if let Some(package_spec) = &args.diff_published {
+    } else if diff_args.published {
         print_diff_between_two_rustdoc_json_files(
             args,
-            &published_crate::build_rustdoc_json(package_spec, args)?,
+            diff_args,
+            &published_crate::build_rustdoc_json(diff_args.args.first().unwrap(), args)?,
             &rustdoc_json_for_current_dir(args)?,
             final_actions,
         )
-    } else if let Some(rustdoc_json) = &args.rustdoc_json {
+    } else {
+        Err(anyhow!("No diff method specified"))
+    }
+}
+
+fn list(args: &Args) -> Result<()> {
+    if let Some(rustdoc_json) = &args.rustdoc_json {
         print_public_items_from_json(args, rustdoc_json)
     } else {
         print_public_items_of_current_dir(args)
+    }
+}
+
+fn list_or_diff(args: &Args, final_actions: &mut Vec<Action>) -> Result<()> {
+    if let Some(Subcommand::Diff(diff_args)) = &args.subcommand {
+        diff(args, diff_args, final_actions)
+    } else {
+        list(args)
     }
 }
 
@@ -301,6 +329,7 @@ fn print_public_items(args: &Args, public_api: &PublicApi) -> Result<()> {
 
 fn print_diff_between_two_commits(
     args: &Args,
+    diff_args: &DiffArgs,
     commits: &[String],
     final_actions: &mut Vec<Action>,
 ) -> Result<()> {
@@ -316,7 +345,7 @@ fn print_diff_between_two_commits(
     let new_commit = git_utils::resolve_ref(&args.git_root()?, new_commit)?;
 
     // Checkout the first commit and remember the branch so we can restore it
-    let force = args.force_git_checkouts;
+    let force = diff_args.force_git_checkouts;
     let original_branch = git_checkout(args, force, &old_commit)?;
     let old = public_api_for_current_dir(args)?;
     final_actions.push(Action::RestoreBranch {
@@ -329,13 +358,14 @@ fn print_diff_between_two_commits(
     let new = public_api_for_current_dir(args)?;
 
     // Calculate the diff
-    print_diff(args, old, new, final_actions)?;
+    print_diff(args, diff_args, old, new, final_actions)?;
 
     Ok(())
 }
 
 fn print_diff_between_two_rustdoc_json_files(
     args: &Args,
+    diff_args: &DiffArgs,
     old_file: impl AsRef<Path>,
     new_file: impl AsRef<Path>,
     final_actions: &mut Vec<Action>,
@@ -343,13 +373,14 @@ fn print_diff_between_two_rustdoc_json_files(
     let old = public_api_from_rustdoc_json_path(old_file, args)?;
     let new = public_api_from_rustdoc_json_path(new_file, args)?;
 
-    print_diff(args, old, new, final_actions)?;
+    print_diff(args, diff_args, old, new, final_actions)?;
 
     Ok(())
 }
 
 fn print_diff(
     args: &Args,
+    diff_args: &DiffArgs,
     old: PublicApi,
     new: PublicApi,
     final_actions: &mut Vec<Action>,
@@ -358,7 +389,7 @@ fn print_diff(
 
     Plain::print_diff(&mut stdout(), args, &diff)?;
 
-    if let Some(deny) = &args.deny {
+    if let Some(deny) = &diff_args.deny {
         final_actions.push(Action::CheckDiff {
             diff,
             deny: deny.clone(),
@@ -391,29 +422,19 @@ impl Args {
 /// Get CLI args via `clap` while also handling when we are invoked as a cargo
 /// subcommand. When the user runs `cargo public-api -a -b -c` our args will be
 /// `cargo-public-api public-api -a -b -c`.
-fn get_args() -> Result<Args> {
+fn get_args() -> Args {
     let args_os = std::env::args_os()
         .enumerate()
         .filter(|(index, arg)| *index != 1 || arg != "public-api")
         .map(|(_, arg)| arg);
 
     let mut args = Args::parse_from(args_os);
-    if let Some(diff_args) = args.diff.clone() {
-        resolve_diff_shorthand(&mut args, diff_args);
+    if let Some(Subcommand::Diff(diff_args)) = &mut args.subcommand {
+        resolve_diff_shorthand(diff_args);
     }
     resolve_toolchain(&mut args);
 
-    // Manually check this until a `cargo public-api diff ...` subcommand is in
-    // place, which will enable clap to perform this check
-    if args.deny.is_some()
-        && args.diff_git_checkouts.is_none()
-        && args.diff_published.is_none()
-        && args.diff_rustdoc_json.is_none()
-    {
-        Err(anyhow!("`--deny` can only be used when diffing"))
-    } else {
-        Ok(args)
-    }
+    args
 }
 
 /// Check if using a stable compiler, and use nightly if it is.
@@ -426,18 +447,21 @@ fn resolve_toolchain(args: &mut Args) {
     }
 }
 
-/// Resolve `--diff` to either `--diff-git-checkouts` or `--diff-rustdoc-json`
-fn resolve_diff_shorthand(args: &mut Args, diff_args: Vec<String>) {
+/// Resolve `diff` to one of the explicit diffing variants
+fn resolve_diff_shorthand(diff_args: &mut DiffArgs) {
     fn is_json_file(file_name: &String) -> bool {
         Path::extension(Path::new(file_name)).map_or(false, |a| a.eq_ignore_ascii_case("json"))
     }
 
-    if diff_args.iter().all(is_json_file) {
-        args.diff_rustdoc_json = Some(diff_args);
-    } else if diff_args.iter().any(|a| a.contains('@')) {
-        args.diff_published = diff_args.first().cloned();
+    if diff_args.args.iter().all(is_json_file) {
+        diff_args.rustdoc_json = true;
+        diff_args.args = diff_args.args.clone();
+    } else if diff_args.args.iter().any(|a| a.contains('@')) {
+        diff_args.published = true;
+        diff_args.args = diff_args.args.clone();
     } else {
-        args.diff_git_checkouts = Some(diff_args);
+        diff_args.git_checkouts = true;
+        diff_args.args = diff_args.args.clone();
     }
 }
 

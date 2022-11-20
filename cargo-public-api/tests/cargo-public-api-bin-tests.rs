@@ -149,20 +149,23 @@ fn virtual_manifest_error() {
 
 #[test]
 fn diff_public_items() {
-    diff_public_items_impl("--diff-git-checkouts");
+    diff_public_items_impl(Some("--git-checkouts"));
 }
 
 #[test]
 fn diff_public_items_smart_diff() {
-    diff_public_items_impl("--diff");
+    diff_public_items_impl(None);
 }
 
-fn diff_public_items_impl(diff_arg: &str) {
+fn diff_public_items_impl(diff_arg: Option<&str>) {
     let mut cmd = TestCmd::new();
     let test_repo_path = cmd.test_repo_path().to_owned();
     let branch_before = git_utils::current_branch(&test_repo_path).unwrap().unwrap();
     cmd.arg("--color=never");
-    cmd.arg(diff_arg);
+    cmd.arg("diff");
+    if let Some(diff_arg) = diff_arg {
+        cmd.arg(diff_arg);
+    }
     cmd.arg("v0.2.0");
     cmd.arg("v0.3.0");
     cmd.assert()
@@ -190,7 +193,8 @@ fn diff_public_items_detached_head() {
     let mut cmd = cargo_public_api_cmd_simplified();
     cmd.current_dir(path);
     cmd.arg("--color=never");
-    cmd.arg("--diff-git-checkouts");
+    cmd.arg("diff");
+    cmd.arg("--git-checkouts");
     cmd.arg("v0.2.0");
     cmd.arg("v0.3.0");
     cmd.assert()
@@ -211,7 +215,8 @@ fn diff_public_items_with_dirty_tree_fails() {
     let mut cmd = cargo_public_api_cmd_simplified();
     cmd.current_dir(&test_repo.path);
     cmd.arg("--color=never");
-    cmd.arg("--diff-git-checkouts");
+    cmd.arg("diff");
+    cmd.arg("--git-checkouts");
     cmd.arg("v0.2.0");
     cmd.arg("v0.3.0");
     cmd.assert()
@@ -231,7 +236,8 @@ fn diff_public_items_with_dirty_tree_succeedes_with_force_option() {
     let mut cmd = cargo_public_api_cmd_simplified();
     cmd.current_dir(&test_repo.path);
     cmd.arg("--color=never");
-    cmd.arg("--diff-git-checkouts");
+    cmd.arg("diff");
+    cmd.arg("--git-checkouts");
     cmd.arg("v0.2.0");
     cmd.arg("v0.3.0");
     cmd.arg("--force-git-checkouts");
@@ -255,7 +261,8 @@ fn diff_public_items_relative_refs() {
     let mut cmd = cargo_public_api_cmd_simplified();
     cmd.current_dir(path);
     cmd.arg("--color=never");
-    cmd.arg("--diff-git-checkouts");
+    cmd.arg("diff");
+    cmd.arg("--git-checkouts");
     cmd.arg("HEAD^");
     cmd.arg("HEAD");
     cmd.assert()
@@ -297,14 +304,15 @@ fn test_deny_not_allowed(args: impl IntoIterator<Item = &'static str>) {
         cmd.arg(arg);
     }
     cmd.assert()
-        .stderr(contains("`--deny` can only be used when diffing"))
+        .stderr(contains("Found argument \'--deny\' which wasn\'t expected"))
         .failure();
 }
 
 #[test]
 fn deny_without_diff() {
     let mut cmd = TestCmd::new();
-    cmd.arg("--diff-git-checkouts");
+    cmd.arg("diff");
+    cmd.arg("--git-checkouts");
     cmd.arg("v0.1.0");
     cmd.arg("v0.1.1");
     cmd.arg("--deny=all");
@@ -314,7 +322,8 @@ fn deny_without_diff() {
 #[test]
 fn deny_with_diff() {
     let mut cmd = TestCmd::new();
-    cmd.arg("--diff-git-checkouts");
+    cmd.arg("diff");
+    cmd.arg("--git-checkouts");
     cmd.arg("v0.1.0");
     cmd.arg("v0.2.0");
     cmd.arg("--deny=all");
@@ -326,7 +335,8 @@ fn deny_with_diff() {
 #[test]
 fn deny_added_with_diff() {
     let mut cmd = TestCmd::new();
-    cmd.arg("--diff-git-checkouts");
+    cmd.arg("diff");
+    cmd.arg("--git-checkouts");
     cmd.arg("v0.1.0");
     cmd.arg("v0.2.0");
     cmd.arg("--deny=added");
@@ -338,7 +348,8 @@ fn deny_added_with_diff() {
 #[test]
 fn deny_changed_with_diff() {
     let mut cmd = TestCmd::new();
-    cmd.arg("--diff-git-checkouts");
+    cmd.arg("diff");
+    cmd.arg("--git-checkouts");
     cmd.arg("v0.1.0");
     cmd.arg("v0.2.0");
     cmd.arg("--deny=changed");
@@ -348,7 +359,8 @@ fn deny_changed_with_diff() {
 #[test]
 fn deny_removed_with_diff() {
     let mut cmd = TestCmd::new();
-    cmd.arg("--diff-git-checkouts");
+    cmd.arg("diff");
+    cmd.arg("--git-checkouts");
     cmd.arg("v0.2.0");
     cmd.arg("v0.3.0");
     cmd.arg("--deny=removed");
@@ -362,7 +374,8 @@ fn deny_removed_with_diff() {
 #[test]
 fn deny_with_invalid_arg() {
     let mut cmd = TestCmd::new();
-    cmd.arg("--diff-git-checkouts");
+    cmd.arg("diff");
+    cmd.arg("--git-checkouts");
     cmd.arg("v0.2.0");
     cmd.arg("v0.3.0");
     cmd.arg("--deny=invalid");
@@ -381,7 +394,8 @@ fn diff_public_items_with_manifest_path() {
         &test_repo.path.path().to_string_lossy()
     ));
     cmd.arg("--color=never");
-    cmd.arg("--diff-git-checkouts");
+    cmd.arg("diff");
+    cmd.arg("--git-checkouts");
     cmd.arg("v0.2.0");
     cmd.arg("v0.3.0");
     cmd.assert()
@@ -395,7 +409,8 @@ fn diff_public_items_without_git_root() {
     cmd.arg("--manifest-path");
     cmd.arg("/does/not/exist/Cargo.toml");
     cmd.arg("--color=never");
-    cmd.arg("--diff-git-checkouts");
+    cmd.arg("diff");
+    cmd.arg("--git-checkouts");
     cmd.arg("v0.2.0");
     cmd.arg("v0.3.0");
     cmd.assert()
@@ -409,7 +424,8 @@ fn diff_public_items_without_git_root() {
 fn diff_public_items_with_color() {
     let mut cmd = TestCmd::new();
     cmd.arg("--color=always");
-    cmd.arg("--diff-git-checkouts");
+    cmd.arg("diff");
+    cmd.arg("--git-checkouts");
     cmd.arg("v0.1.0");
     cmd.arg("v0.2.0");
     cmd.assert()
@@ -430,14 +446,14 @@ fn list_public_items_with_color() {
 
 #[test]
 fn diff_public_items_from_files() {
-    diff_public_items_from_files_impl("--diff-rustdoc-json");
+    diff_public_items_from_files_impl(Some("--rustdoc-json"));
 }
 #[test]
 fn diff_public_items_from_files_smart_diff() {
-    diff_public_items_from_files_impl("--diff");
+    diff_public_items_from_files_impl(None);
 }
 
-fn diff_public_items_from_files_impl(diff_arg: &str) {
+fn diff_public_items_from_files_impl(diff_arg: Option<&str>) {
     // Create independent build dirs so all tests can run in parallel
     let build_dir = tempdir().unwrap();
     let build_dir2 = tempdir().unwrap();
@@ -445,7 +461,10 @@ fn diff_public_items_from_files_impl(diff_arg: &str) {
     let old = rustdoc_json_path_for_crate("../test-apis/example_api-v0.1.0", &build_dir);
     let new = rustdoc_json_path_for_crate("../test-apis/example_api-v0.2.0", &build_dir2);
     let mut cmd = cargo_public_api_cmd_simplified();
-    cmd.arg(diff_arg);
+    cmd.arg("diff");
+    if let Some(diff_arg) = diff_arg {
+        cmd.arg(diff_arg);
+    }
     cmd.arg(old);
     cmd.arg(new);
     cmd.assert()
@@ -455,29 +474,32 @@ fn diff_public_items_from_files_impl(diff_arg: &str) {
 
 #[test]
 fn diff_published() {
-    diff_published_impl("--diff-published", "example_api@0.1.0");
+    diff_published_impl(Some("--published"), "example_api@0.1.0");
 }
 
 #[test]
 fn diff_published_smart_diff() {
-    diff_published_impl("--diff", "example_api@0.1.0");
+    diff_published_impl(None, "example_api@0.1.0");
 }
 
 #[test]
 fn diff_published_fallback() {
-    diff_published_impl("--diff-published", "@0.1.0");
+    diff_published_impl(Some("--published"), "@0.1.0");
 }
 
 #[test]
 fn diff_published_smart_diff_fallback() {
-    diff_published_impl("--diff", "@0.1.0");
+    diff_published_impl(None, "@0.1.0");
 }
 
 /// Diff against a published crate.
-fn diff_published_impl(diff_arg: &str, spec: &str) {
+fn diff_published_impl(diff_arg: Option<&str>, spec: &str) {
     let mut cmd = TestCmd::new();
     cmd.arg("--color=never");
-    cmd.arg(diff_arg);
+    cmd.arg("diff");
+    if let Some(diff_arg) = diff_arg {
+        cmd.arg(diff_arg);
+    }
     cmd.arg(spec);
     cmd.assert()
         .stdout_or_bless("./tests/expected-output/diff_published.txt")
@@ -490,7 +512,8 @@ fn diff_published_explicit_package() {
     cmd.arg("--color=never");
     cmd.arg("-p");
     cmd.arg("example_api");
-    cmd.arg("--diff-published");
+    cmd.arg("diff");
+    cmd.arg("--published");
     cmd.arg("@0.1.0");
     cmd.assert()
         .stdout_or_bless("./tests/expected-output/diff_published.txt")
@@ -514,10 +537,11 @@ fn list_public_items_from_json_file() {
 #[test]
 fn diff_public_items_missing_one_arg() {
     let mut cmd = TestCmd::new();
-    cmd.arg("--diff-git-checkouts");
+    cmd.arg("diff");
+    cmd.arg("--git-checkouts");
     cmd.arg("v0.2.0");
     cmd.assert()
-        .stderr(contains("requires 2 values, but 1 was provided"))
+        .stderr(contains("Missing second commit!"))
         .failure();
 }
 
@@ -569,7 +593,7 @@ fn assert_presence_of_args_in_help(mut cmd: Command) {
     cmd.assert()
         .stdout(contains("--simplified"))
         .stdout(contains("--manifest-path"))
-        .stdout(contains("--diff-git-checkouts"))
+        // FIXME: Requires `cargo public-api diff --help`: .stdout(contains("--git-checkouts"))
         .success();
 }
 

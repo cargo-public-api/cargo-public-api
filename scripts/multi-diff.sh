@@ -11,6 +11,6 @@ shift
 
 for new_version in $@; do
     echo "$base_version -> $new_version"
-    cargo public-api --diff-git-checkouts $base_version $new_version 2>/dev/null || echo "(Failed)"
+    cargo public-api diff --git-checkouts $base_version $new_version 2>/dev/null || echo "(Failed)"
     base_version=$new_version
 done

@@ -6,7 +6,7 @@ This document describes different ways to make use of `cargo public-api` in CI. 
 
 ### With a Public API Set in Stone
 
-If the API is set in stone, you can use the `--deny=all` flag together with `--diff-git-checkouts` to deny all kinds of changes (additions, changes, removals) to your public API. A GitHub Actions job to do this for PRs would look something like this:
+If the API is set in stone, you can use the `--deny=all` flag together with `diff ...` to deny all kinds of changes (additions, changes, removals) to your public API. A GitHub Actions job to do this for PRs would look something like this:
 
 ```yaml
 jobs:
@@ -26,7 +26,7 @@ jobs:
 
       # Install and run cargo public-api and deny any API diff
       - run: cargo install cargo-public-api
-      - run: cargo public-api --diff-git-checkouts ${GITHUB_BASE_REF} ${GITHUB_HEAD_REF} --deny=all
+      - run: cargo public-api diff --git-checkouts ${GITHUB_BASE_REF} ${GITHUB_HEAD_REF} --deny=all
 ```
 
 See `cargo public-api --help` for more variants of `--deny`.

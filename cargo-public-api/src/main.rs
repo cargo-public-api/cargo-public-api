@@ -304,8 +304,12 @@ fn print_diff_between_two_commits(
     commits: &[String],
     final_actions: &mut Vec<Action>,
 ) -> Result<()> {
-    let old_commit = commits.get(0).expect("clap makes sure first commit exist");
-    let new_commit = commits.get(1).expect("missing second commit!");
+    let old_commit = commits
+        .get(0)
+        .ok_or_else(|| anyhow!("Missing first commit! See --help"))?;
+    let new_commit = commits
+        .get(1)
+        .ok_or_else(|| anyhow!("Missing second commit! See --help"))?;
 
     // Validate provided commits and resolve relative refs like HEAD to actual commits
     let old_commit = git_utils::resolve_ref(&args.git_root()?, old_commit)?;

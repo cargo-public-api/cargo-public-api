@@ -268,46 +268,34 @@ fn diff_public_items_relative_refs() {
 
 #[test]
 fn deny_when_not_diffing() {
-    let mut cmd = TestCmd::new();
-    cmd.arg("--deny=all");
-    cmd.assert()
-        .stderr(contains("`--deny` can only be used when diffing"))
-        .failure();
+    test_deny_not_allowed(["--deny=all"]);
 }
 
 #[test]
 fn deny_added_when_not_diffing() {
-    let mut cmd = TestCmd::new();
-    cmd.arg("--deny=added");
-    cmd.assert()
-        .stderr(contains("`--deny` can only be used when diffing"))
-        .failure();
+    test_deny_not_allowed(["--deny=added"]);
 }
 
 #[test]
 fn deny_changed_when_not_diffing() {
-    let mut cmd = TestCmd::new();
-    cmd.arg("--deny=changed");
-    cmd.assert()
-        .stderr(contains("`--deny` can only be used when diffing"))
-        .failure();
+    test_deny_not_allowed(["--deny=changed"]);
 }
 
 #[test]
 fn deny_removed_when_not_diffing() {
-    let mut cmd = TestCmd::new();
-    cmd.arg("--deny=removed");
-    cmd.assert()
-        .stderr(contains("`--deny` can only be used when diffing"))
-        .failure();
+    test_deny_not_allowed(["--deny=removed"]);
 }
 
 #[test]
 fn deny_combination_when_not_diffing() {
+    test_deny_not_allowed(["--deny=added", "--deny=changed", "--deny=removed"]);
+}
+
+fn test_deny_not_allowed(args: impl IntoIterator<Item = &'static str>) {
     let mut cmd = TestCmd::new();
-    cmd.arg("--deny=added");
-    cmd.arg("--deny=changed");
-    cmd.arg("--deny=removed");
+    for arg in args {
+        cmd.arg(arg);
+    }
     cmd.assert()
         .stderr(contains("`--deny` can only be used when diffing"))
         .failure();

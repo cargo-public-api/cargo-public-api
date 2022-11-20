@@ -398,7 +398,9 @@ fn get_args() -> Result<Args> {
         .map(|(_, arg)| arg);
 
     let mut args = Args::parse_from(args_os);
-    resolve_diff_shorthand(&mut args);
+    if let Some(diff_args) = args.diff.clone() {
+        resolve_diff_shorthand(&mut args, diff_args);
+    }
     resolve_toolchain(&mut args);
 
     // Manually check this until a `cargo public-api diff ...` subcommand is in
@@ -425,19 +427,17 @@ fn resolve_toolchain(args: &mut Args) {
 }
 
 /// Resolve `--diff` to either `--diff-git-checkouts` or `--diff-rustdoc-json`
-fn resolve_diff_shorthand(args: &mut Args) {
-    if let Some(diff_args) = args.diff.clone() {
-        fn is_json_file(file_name: &String) -> bool {
-            Path::extension(Path::new(file_name)).map_or(false, |a| a.eq_ignore_ascii_case("json"))
-        }
+fn resolve_diff_shorthand(args: &mut Args, diff_args: Vec<String>) {
+    fn is_json_file(file_name: &String) -> bool {
+        Path::extension(Path::new(file_name)).map_or(false, |a| a.eq_ignore_ascii_case("json"))
+    }
 
-        if diff_args.iter().all(is_json_file) {
-            args.diff_rustdoc_json = Some(diff_args);
-        } else if diff_args.iter().any(|a| a.contains('@')) {
-            args.diff_published = diff_args.first().cloned();
-        } else {
-            args.diff_git_checkouts = Some(diff_args);
-        }
+    if diff_args.iter().all(is_json_file) {
+        args.diff_rustdoc_json = Some(diff_args);
+    } else if diff_args.iter().any(|a| a.contains('@')) {
+        args.diff_published = diff_args.first().cloned();
+    } else {
+        args.diff_git_checkouts = Some(diff_args);
     }
 }
 

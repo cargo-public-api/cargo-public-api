@@ -258,32 +258,34 @@ fn list_or_diff(args: &Args, final_actions: &mut Vec<Action>) -> Result<()> {
     }
 }
 
-fn check_diff(args: &Args, diff: &PublicApiDiff) -> Result<()> {
+fn check_some_diff(args: &Args, diff: &PublicApiDiff) -> Result<()> {
     match &args.deny {
         // We were requested to deny diffs, so make sure there is no diff
-        Some(deny) => {
-            let mut violations = crate::error::Violations::new();
-            for d in deny {
-                if d.deny_added() && !diff.added.is_empty() {
-                    violations.extend_added(diff.added.iter().cloned());
-                }
-                if d.deny_changed() && !diff.changed.is_empty() {
-                    violations.extend_changed(diff.changed.iter().cloned());
-                }
-                if d.deny_removed() && !diff.removed.is_empty() {
-                    violations.extend_removed(diff.removed.iter().cloned());
-                }
-            }
-
-            if violations.is_empty() {
-                Ok(())
-            } else {
-                Err(anyhow!(error::Error::DiffDenied(violations)))
-            }
-        }
+        Some(deny) => check_diff(deny, diff),
 
         // No diff related stuff to care about, all is Ok
         _ => Ok(()),
+    }
+}
+
+fn check_diff(deny: &[DenyMethod], diff: &PublicApiDiff) -> Result<()> {
+    let mut violations = crate::error::Violations::new();
+    for d in deny {
+        if d.deny_added() && !diff.added.is_empty() {
+            violations.extend_added(diff.added.iter().cloned());
+        }
+        if d.deny_changed() && !diff.changed.is_empty() {
+            violations.extend_changed(diff.changed.iter().cloned());
+        }
+        if d.deny_removed() && !diff.removed.is_empty() {
+            violations.extend_removed(diff.removed.iter().cloned());
+        }
+    }
+
+    if violations.is_empty() {
+        Ok(())
+    } else {
+        Err(anyhow!(error::Error::DiffDenied(violations)))
     }
 }
 
@@ -363,7 +365,7 @@ impl Action {
     fn perform(&self, args: &Args) -> Result<()> {
         match self {
             Action::CheckDiff(diff) => {
-                check_diff(args, diff)?;
+                check_some_diff(args, diff)?;
             }
             Action::RestoreBranch(name) => {
                 git_checkout(args, name)?;

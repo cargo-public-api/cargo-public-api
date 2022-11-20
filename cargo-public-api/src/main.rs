@@ -200,7 +200,10 @@ pub struct Args {
 pub enum Action {
     /// The `--deny` arg allows the user to disallow the occurrence of API
     /// changes. We are to check that the diff is allowed.
-    CheckDiff(PublicApiDiff),
+    CheckDiff {
+        diff: PublicApiDiff,
+        deny: Vec<DenyMethod>,
+    },
 
     /// Doing a `--diff-git-checkouts` involves doing `git checkout`s.
     /// Afterwards, we want to restore the original branch the user was on, to
@@ -258,16 +261,7 @@ fn list_or_diff(args: &Args, final_actions: &mut Vec<Action>) -> Result<()> {
     }
 }
 
-fn check_some_diff(args: &Args, diff: &PublicApiDiff) -> Result<()> {
-    match &args.deny {
-        // We were requested to deny diffs, so make sure there is no diff
-        Some(deny) => check_diff(deny, diff),
-
-        // No diff related stuff to care about, all is Ok
-        _ => Ok(()),
-    }
-}
-
+/// We were requested to deny diffs, so make sure there is no diff
 fn check_diff(deny: &[DenyMethod], diff: &PublicApiDiff) -> Result<()> {
     let mut violations = crate::error::Violations::new();
     for d in deny {
@@ -356,7 +350,12 @@ fn print_diff(
 
     Plain::print_diff(&mut stdout(), args, &diff)?;
 
-    final_actions.push(Action::CheckDiff(diff));
+    if let Some(deny) = &args.deny {
+        final_actions.push(Action::CheckDiff {
+            diff,
+            deny: deny.clone(),
+        });
+    }
 
     Ok(())
 }
@@ -364,8 +363,8 @@ fn print_diff(
 impl Action {
     fn perform(&self, args: &Args) -> Result<()> {
         match self {
-            Action::CheckDiff(diff) => {
-                check_some_diff(args, diff)?;
+            Action::CheckDiff { deny, diff } => {
+                check_diff(deny, diff)?;
             }
             Action::RestoreBranch(name) => {
                 git_checkout(args, name)?;

@@ -599,81 +599,98 @@ fn cargo_public_api_cmd_simplified() -> Command {
     cmd
 }
 
+#[derive(Debug)]
+struct F<'a> {
+    all: bool,
+    none: bool,
+    features: &'a [&'a str],
+}
+
+impl<'a> F<'a> {
+    fn none(mut self) -> Self {
+        self.none = true;
+        self
+    }
+    fn all(mut self) -> Self {
+        self.all = true;
+        self
+    }
+    fn new(features: &'a [&'a str]) -> Self {
+        F {
+            all: false,
+            none: false,
+            features,
+        }
+    }
+}
+
+impl std::fmt::Display for F<'_> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        if self.all {
+            write!(f, "all")?;
+        }
+        if self.none {
+            write!(f, "none")?;
+        }
+        for feat in self.features {
+            write!(f, "{feat}")?;
+        }
+        Ok(())
+    }
+}
+
 #[test]
-fn cargo_public_api_with_features() -> Result<(), Box<dyn std::error::Error>> {
-    #[derive(Debug)]
-    struct F<'a> {
-        all: bool,
-        none: bool,
-        features: &'a [&'a str],
-    }
+fn features_all() -> Result<(), Box<dyn std::error::Error>> {
+    test_features(&F::new(&[]).all())
+}
 
-    impl<'a> F<'a> {
-        fn none(mut self) -> Self {
-            self.none = true;
-            self
-        }
-        fn all(mut self) -> Self {
-            self.all = true;
-            self
-        }
-        fn new(features: &'a [&'a str]) -> Self {
-            F {
-                all: false,
-                none: false,
-                features,
-            }
-        }
-    }
+#[test]
+fn features_none() -> Result<(), Box<dyn std::error::Error>> {
+    test_features(&F::new(&[]).none())
+}
 
-    impl std::fmt::Display for F<'_> {
-        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-            if self.all {
-                write!(f, "all")?;
-            }
-            if self.none {
-                write!(f, "none")?;
-            }
-            for feat in self.features {
-                write!(f, "{feat}")?;
-            }
-            Ok(())
-        }
-    }
+#[test]
+fn features_a_b_c() -> Result<(), Box<dyn std::error::Error>> {
+    test_features(&F::new(&["feature_a", "feature_b", "feature_c"]).none())
+}
 
+#[test]
+fn features_b() -> Result<(), Box<dyn std::error::Error>> {
+    test_features(&F::new(&["feature_b"]).none())
+}
+
+#[test]
+fn features_b_c() -> Result<(), Box<dyn std::error::Error>> {
+    test_features(&F::new(&["feature_c"]).none()) // includes `feature_b`
+}
+
+fn test_features(features: &F) -> Result<(), Box<dyn std::error::Error>> {
     let root = cargo_metadata::MetadataCommand::new()
         .no_deps()
         .exec()?
         .workspace_root;
 
-    for features in [
-        F::new(&[]).all(),
-        F::new(&[]).none(),
-        F::new(&["feature_a", "feature_b", "feature_c"]).none(),
-        F::new(&["feature_b"]).none(),
-        F::new(&["feature_c"]).none(), // includes `feature_b`
-    ] {
-        let expected_file = root.join(format!(
-            "cargo-public-api/tests/expected-output/features-feat{features}.txt"
-        ));
+    let expected_file = root.join(format!(
+        "cargo-public-api/tests/expected-output/features-feat{features}.txt"
+    ));
 
-        let mut cmd = cargo_public_api_cmd_simplified();
-        cmd.current_dir(root.join("test-apis/features"));
+    let mut cmd = cargo_public_api_cmd_simplified();
+    cmd.current_dir(root.join("test-apis/features"));
 
-        if features.none {
-            cmd.arg("--no-default-features");
-        }
-
-        if features.all {
-            cmd.arg("--all-features");
-        }
-
-        for feature in features.features {
-            cmd.args(["--features", feature]);
-        }
-
-        cmd.assert().stdout_or_bless(expected_file).success();
+    if features.none {
+        cmd.arg("--no-default-features");
     }
+
+    if features.all {
+        cmd.arg("--all-features");
+    }
+
+    for feature in features.features {
+        cmd.args(["--features", feature]);
+    }
+
+    cmd.assert().stdout_or_bless(expected_file).success();
+
     Ok(())
 }
 

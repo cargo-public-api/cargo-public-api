@@ -640,42 +640,33 @@ impl std::fmt::Display for F<'_> {
 }
 
 #[test]
-fn features_all() -> Result<(), Box<dyn std::error::Error>> {
-    test_features(&F::new(&[]).all())
+fn features_all() {
+    test_features(&F::new(&[]).all());
 }
 
 #[test]
-fn features_none() -> Result<(), Box<dyn std::error::Error>> {
-    test_features(&F::new(&[]).none())
+fn features_none() {
+    test_features(&F::new(&[]).none());
 }
 
 #[test]
-fn features_a_b_c() -> Result<(), Box<dyn std::error::Error>> {
-    test_features(&F::new(&["feature_a", "feature_b", "feature_c"]).none())
+fn features_a_b_c() {
+    test_features(&F::new(&["feature_a", "feature_b", "feature_c"]).none());
 }
 
 #[test]
-fn features_b() -> Result<(), Box<dyn std::error::Error>> {
-    test_features(&F::new(&["feature_b"]).none())
+fn features_b() {
+    test_features(&F::new(&["feature_b"]).none());
 }
 
 #[test]
-fn features_b_c() -> Result<(), Box<dyn std::error::Error>> {
-    test_features(&F::new(&["feature_c"]).none()) // includes `feature_b`
+fn features_b_c() {
+    test_features(&F::new(&["feature_c"]).none()); // includes `feature_b`
 }
 
-fn test_features(features: &F) -> Result<(), Box<dyn std::error::Error>> {
-    let root = cargo_metadata::MetadataCommand::new()
-        .no_deps()
-        .exec()?
-        .workspace_root;
-
-    let expected_file = root.join(format!(
-        "cargo-public-api/tests/expected-output/features-feat{features}.txt"
-    ));
-
+fn test_features(features: &F) {
     let mut cmd = cargo_public_api_cmd_simplified();
-    cmd.current_dir(root.join("test-apis/features"));
+    cmd.current_dir("../test-apis/features");
 
     if features.none {
         cmd.arg("--no-default-features");
@@ -689,9 +680,11 @@ fn test_features(features: &F) -> Result<(), Box<dyn std::error::Error>> {
         cmd.args(["--features", feature]);
     }
 
-    cmd.assert().stdout_or_bless(expected_file).success();
-
-    Ok(())
+    cmd.assert()
+        .stdout_or_bless(&format!(
+            "./tests/expected-output/features-feat{features}.txt"
+        ))
+        .success();
 }
 
 /// A git repository that lives during the duration of a test. Having each test

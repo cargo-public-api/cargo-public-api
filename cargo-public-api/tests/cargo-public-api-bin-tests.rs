@@ -161,7 +161,6 @@ fn diff_public_items_impl(diff_arg: &str) {
     let mut cmd = TestCmd::new();
     let test_repo_path = cmd.test_repo_path().to_owned();
     let branch_before = git_utils::current_branch(&test_repo_path).unwrap().unwrap();
-    cmd.arg("--color=never");
     cmd.arg(diff_arg);
     cmd.arg("v0.2.0");
     cmd.arg("v0.3.0");
@@ -189,7 +188,6 @@ fn diff_public_items_detached_head() {
 
     let mut cmd = cargo_public_api_cmd_simplified();
     cmd.current_dir(path);
-    cmd.arg("--color=never");
     cmd.arg("--diff-git-checkouts");
     cmd.arg("v0.2.0");
     cmd.arg("v0.3.0");
@@ -210,7 +208,6 @@ fn diff_public_items_with_dirty_tree_fails() {
     // Make sure diffing does not destroy uncommitted data!
     let mut cmd = cargo_public_api_cmd_simplified();
     cmd.current_dir(&test_repo.path);
-    cmd.arg("--color=never");
     cmd.arg("--diff-git-checkouts");
     cmd.arg("v0.2.0");
     cmd.arg("v0.3.0");
@@ -230,7 +227,6 @@ fn diff_public_items_with_dirty_tree_succeedes_with_force_option() {
 
     let mut cmd = cargo_public_api_cmd_simplified();
     cmd.current_dir(&test_repo.path);
-    cmd.arg("--color=never");
     cmd.arg("--diff-git-checkouts");
     cmd.arg("v0.2.0");
     cmd.arg("v0.3.0");
@@ -254,7 +250,6 @@ fn diff_public_items_relative_refs() {
 
     let mut cmd = cargo_public_api_cmd_simplified();
     cmd.current_dir(path);
-    cmd.arg("--color=never");
     cmd.arg("--diff-git-checkouts");
     cmd.arg("HEAD^");
     cmd.arg("HEAD");
@@ -380,7 +375,6 @@ fn diff_public_items_with_manifest_path() {
         "{}/Cargo.toml",
         &test_repo.path.path().to_string_lossy()
     ));
-    cmd.arg("--color=never");
     cmd.arg("--diff-git-checkouts");
     cmd.arg("v0.2.0");
     cmd.arg("v0.3.0");
@@ -394,7 +388,6 @@ fn diff_public_items_without_git_root() {
     let mut cmd = cargo_public_api_cmd_simplified();
     cmd.arg("--manifest-path");
     cmd.arg("/does/not/exist/Cargo.toml");
-    cmd.arg("--color=never");
     cmd.arg("--diff-git-checkouts");
     cmd.arg("v0.2.0");
     cmd.arg("v0.3.0");
@@ -476,7 +469,6 @@ fn diff_published_smart_diff_fallback() {
 /// Diff against a published crate.
 fn diff_published_impl(diff_arg: &str, spec: &str) {
     let mut cmd = TestCmd::new();
-    cmd.arg("--color=never");
     cmd.arg(diff_arg);
     cmd.arg(spec);
     cmd.assert()
@@ -487,7 +479,6 @@ fn diff_published_impl(diff_arg: &str, spec: &str) {
 #[test]
 fn diff_published_explicit_package() {
     let mut cmd = TestCmd::new();
-    cmd.arg("--color=never");
     cmd.arg("-p");
     cmd.arg("example_api");
     cmd.arg("--diff-published");

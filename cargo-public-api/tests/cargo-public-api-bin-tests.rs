@@ -98,14 +98,15 @@ fn list_public_items_explicit_manifest_path() {
 }
 
 /// Make sure we can run the tool with a specified package from a virtual
-/// manifest. Use the smallest crate in our workspace to make tests run fast
+/// manifest.
 #[test]
 fn list_public_items_via_package_spec() {
     let mut cmd = cargo_public_api_cmd_simplified();
+    cmd.current_dir("../test-apis/virtual-manifest");
     cmd.arg("--package");
-    cmd.arg("rustdoc-json");
+    cmd.arg("specific-crate");
     cmd.assert()
-        .stdout_or_bless("./tests/expected-output/rustdoc_json_list.txt")
+        .stdout_or_bless("./tests/expected-output/specific-crate.txt")
         .success();
 }
 

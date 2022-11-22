@@ -138,7 +138,7 @@ fn target_arg() {
 fn virtual_manifest_error() {
     let mut cmd = cargo_public_api_cmd_simplified();
     cmd.arg("--manifest-path");
-    cmd.arg(current_dir_and("../test-apis/virtual-manifest/Cargo.toml"));
+    cmd.arg("../test-apis/virtual-manifest/Cargo.toml");
     cmd.assert()
         .stdout("")
         .stderr(contains(
@@ -571,14 +571,6 @@ fn assert_presence_of_args_in_help(mut cmd: Command) {
         .stdout(contains("--manifest-path"))
         .stdout(contains("--diff-git-checkouts"))
         .success();
-}
-
-/// Helper to get the absolute path to a given path, relative to the current
-/// path
-fn current_dir_and<P: AsRef<Path>>(path: P) -> PathBuf {
-    let mut cur_dir = std::env::current_dir().unwrap();
-    cur_dir.push(path);
-    cur_dir
 }
 
 /// Helper to initialize a test crate git repo. Each test gets its own git repo

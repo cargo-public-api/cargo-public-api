@@ -45,9 +45,7 @@ fn create_test_repo_with_dirty_git_tree() -> TestRepo {
     test_repo
 }
 
-// FIXME: This tests is ignored in CI due to some unknown issue with windows
 #[test]
-#[cfg_attr(all(target_family = "windows", in_ci), ignore)]
 fn list_public_items() {
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
 
@@ -69,9 +67,7 @@ fn list_public_items_with_lint_error() {
         .success();
 }
 
-// FIXME: This tests is ignored in CI due to some unknown issue with windows
 #[test]
-#[cfg_attr(all(target_family = "windows", in_ci), ignore)]
 fn custom_toolchain() {
     let mut cmd = TestCmd::new();
     cmd.arg("--toolchain");
@@ -81,9 +77,7 @@ fn custom_toolchain() {
         .success();
 }
 
-// FIXME: This tests is ignored in CI due to some unknown issue with windows
 #[test]
-#[cfg_attr(all(target_family = "windows", in_ci), ignore)]
 fn list_public_items_explicit_manifest_path() {
     let test_repo = TestRepo::new();
     let mut test_repo_manifest = PathBuf::from(test_repo.path());
@@ -411,9 +405,7 @@ fn diff_public_items_with_color() {
         .success();
 }
 
-// FIXME: This tests is ignored in CI due to some unknown issue with windows
 #[test]
-#[cfg_attr(all(target_family = "windows", in_ci), ignore)]
 fn list_public_items_with_color() {
     let mut cmd = TestCmd::new();
     cmd.arg("--color=always");

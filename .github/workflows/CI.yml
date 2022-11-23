@@ -60,8 +60,6 @@ jobs:
           profile: minimal
       - uses: Swatinem/rust-cache@v2
       - run: cargo test --locked
-        env:
-          RUSTFLAGS: --cfg in_ci
 
   check-public-apis:
     name: Check public APIs

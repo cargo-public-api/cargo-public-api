@@ -4,7 +4,7 @@
 //!
 //! Use [`rustdoc_json::Builder`][Builder] to build rustdoc JSON. Like this:
 //!
-//! ```
+//! ```no_run
 //! let json_path = rustdoc_json::Builder::default()
 //!     .toolchain("nightly".to_owned())
 //!     .manifest_path("Cargo.toml")

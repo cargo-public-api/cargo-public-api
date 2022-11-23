@@ -5,6 +5,7 @@ fn ensure_workspace_inheritance_works() {
     let path = rustdoc_json::Builder::default()
         .toolchain("nightly".to_owned())
         .manifest_path("../test-apis/workspace-inheritance/package-with-inheritance/Cargo.toml")
+        .quiet(true) // Make it less noisy to run tests
         .build()
         .unwrap();
 

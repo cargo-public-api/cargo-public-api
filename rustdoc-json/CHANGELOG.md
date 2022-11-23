@@ -1,3 +1,6 @@
+## v0.7.1
+* Add `Builder::clear_target_dir()`
+
 ## v0.7.0
 * Remove deprecated `BuildOptions` and `fn build(...)`. Use `Builder` and `Builder::build()` instead.
 * Use `cargo-manifest` to parse Cargo manifests

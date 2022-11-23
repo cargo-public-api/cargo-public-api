@@ -91,6 +91,13 @@ cargo llvm-cov --html && open ../target/llvm-cov/html/index.html
 
 Which requires you to have done `cargo install cargo-llvm-cov` first.
 
+## Finding flaky tests
+
+Run this (WARNING: destructive) command for a while and then scroll back and look at the output. It will find flakiness both in the case of requiring a clean build, and in case of requiring an incremental build. You can also remove the `git clean` of course.
+```bash
+while true ; do git clean -xdf ; cargo --quiet test ; cargo --quiet test ; sleep 1 ; done | grep -v -e '0 failed' -e 'running [0-9]\+ test'
+```
+
 # Maintainer guidelines
 
 Please see [MAINTAINER.md](./MAINTAINER.md).

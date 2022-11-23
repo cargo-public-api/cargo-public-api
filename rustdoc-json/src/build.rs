@@ -196,6 +196,13 @@ impl Builder {
         self
     }
 
+    /// Clear a target dir previously set with [`Self::target_dir`].
+    #[must_use]
+    pub fn clear_target_dir(mut self) -> Self {
+        self.target_dir = None;
+        self
+    }
+
     /// Whether or not to pass `--quiet` to `cargo rustdoc`. Default: `false`
     #[must_use]
     pub const fn quiet(mut self, quiet: bool) -> Self {

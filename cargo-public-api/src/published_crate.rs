@@ -10,7 +10,7 @@ pub fn build_rustdoc_json(package_spec_str: &str, args: &Args) -> Result<PathBuf
     let fallback_name = package_name_from_args(args);
     let spec = PackageSpec::from_str_with_fallback(package_spec_str, fallback_name.as_deref())?;
 
-    let build_dir = build_dir(&spec);
+    let build_dir = build_dir(args, &spec);
     std::fs::create_dir_all(&build_dir)?;
 
     let write_file = |name: &str, contents: &str| -> std::io::Result<PathBuf> {
@@ -23,7 +23,12 @@ pub fn build_rustdoc_json(package_spec_str: &str, args: &Args) -> Result<PathBuf
     write_file("lib.rs", "// empty lib")?;
     let manifest = write_file("Cargo.toml", &manifest_for(&spec))?;
 
+    // Since we used `crate::builder_from_args(args)` above it means that if
+    // `args.target_dir` is set, both the dummy crate and the real crate will
+    // write to the same JSON path since they have the same project name! That
+    // won't work. So always clear the target dir before we use the builder.
     let builder = crate::builder_from_args(args)
+        .clear_target_dir()
         .manifest_path(&manifest)
         .package(&spec.name);
     crate::build_rustdoc_json(builder)
@@ -43,9 +48,16 @@ fn package_name_from_args(args: &Args) -> Option<String> {
     }
 }
 
-/// Prefer a non-temporary dir so repeated builds can be incremental.
-fn build_dir(spec: &PackageSpec) -> PathBuf {
-    let mut build_dir = dirs::cache_dir().unwrap_or_else(std::env::temp_dir);
+/// For users we prefer a non-temporary dir so repeated builds can be
+/// incremental. But when tests run, they will set `args.target_dir` to a
+/// temporary dir so that tests can run in parallel without interference.
+fn build_dir(args: &Args, spec: &PackageSpec) -> PathBuf {
+    let mut build_dir = if let Some(target_dir) = &args.target_dir {
+        target_dir.clone()
+    } else {
+        dirs::cache_dir().unwrap_or_else(std::env::temp_dir)
+    };
+
     build_dir.push("cargo-public-api");
     build_dir.push("build-root-for-published-crates");
     build_dir.push(spec.as_dir_name());

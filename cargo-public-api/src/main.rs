@@ -162,6 +162,12 @@ pub struct Args {
     #[arg(long, hide = true)]
     debug_sorting: bool,
 
+    /// Put rustdoc JSON build artifacts in the specified dir instead of in
+    /// `./target`. Option hidden by default because it will typically not be
+    /// needed by users. Mainly useful to allow tests to run in parallel.
+    #[arg(long, value_name = "PATH", hide = true)]
+    target_dir: Option<PathBuf>,
+
     /// Build rustdoc JSON with a toolchain other than `nightly`.
     ///
     /// Consider using `cargo +toolchain public-api` instead.
@@ -481,6 +487,9 @@ fn builder_from_args(args: &Args) -> rustdoc_json::Builder {
         .all_features(args.all_features)
         .no_default_features(args.no_default_features)
         .features(&args.features);
+    if let Some(target_dir) = &args.target_dir {
+        builder = builder.target_dir(target_dir.clone());
+    }
     if let Some(target) = &args.target {
         builder = builder.target(target.clone());
     }

@@ -62,7 +62,7 @@ fn list_public_items() {
 
 #[test]
 fn list_public_items_with_lint_error() {
-    let mut cmd = cargo_public_api_cmd_simplified();
+    let mut cmd = TestCmd::new_without_test_repo();
     cmd.args(["--manifest-path", "../test-apis/lint_error/Cargo.toml"]);
     cmd.assert()
         .stdout_or_bless("./tests/expected-output/lint_error_list.txt")
@@ -101,7 +101,7 @@ fn list_public_items_explicit_manifest_path() {
 /// manifest.
 #[test]
 fn list_public_items_via_package_spec() {
-    let mut cmd = cargo_public_api_cmd_simplified();
+    let mut cmd = TestCmd::new_without_test_repo();
     cmd.current_dir("../test-apis/virtual-manifest");
     cmd.arg("--package");
     cmd.arg("specific-crate");
@@ -137,7 +137,7 @@ fn target_arg() {
 
 #[test]
 fn virtual_manifest_error() {
-    let mut cmd = cargo_public_api_cmd_simplified();
+    let mut cmd = TestCmd::new_without_test_repo();
     cmd.arg("--manifest-path");
     cmd.arg("../test-apis/virtual-manifest/Cargo.toml");
     cmd.assert()
@@ -438,7 +438,7 @@ fn diff_public_items_from_files_impl(diff_arg: &str) {
 
     let old = rustdoc_json_path_for_crate("../test-apis/example_api-v0.1.0", &build_dir);
     let new = rustdoc_json_path_for_crate("../test-apis/example_api-v0.2.0", &build_dir2);
-    let mut cmd = cargo_public_api_cmd_simplified();
+    let mut cmd = TestCmd::new_without_test_repo();
     cmd.arg(diff_arg);
     cmd.arg(old);
     cmd.arg(new);
@@ -495,7 +495,7 @@ fn list_public_items_from_json_file() {
     let build_dir = tempdir().unwrap();
 
     let json_file = rustdoc_json_path_for_crate("../test-apis/example_api-v0.3.0", &build_dir);
-    let mut cmd = cargo_public_api_cmd_simplified();
+    let mut cmd = TestCmd::new_without_test_repo();
     cmd.arg("--rustdoc-json");
     cmd.arg(json_file);
     cmd.assert()
@@ -515,7 +515,7 @@ fn diff_public_items_missing_one_arg() {
 
 #[test]
 fn verbose() {
-    let mut cmd = cargo_public_api_cmd_simplified();
+    let mut cmd = TestCmd::new_without_test_repo();
     cmd.arg("--manifest-path");
     cmd.arg("../test-apis/lint_error/Cargo.toml");
     cmd.arg("--verbose");
@@ -649,7 +649,7 @@ fn features_b_c() {
 }
 
 fn test_features(features: &F) {
-    let mut cmd = cargo_public_api_cmd_simplified();
+    let mut cmd = TestCmd::new_without_test_repo();
     cmd.current_dir("../test-apis/features");
 
     if features.none {
@@ -690,37 +690,83 @@ impl TestRepo {
     }
 }
 
-/// Frequently a test needs to create a test repo and then run
-/// `cargo-public-api` on that repo. This helper constructs such a pair and
-/// pre-configures it, so that tests becomes shorter and more to-the-point.
+/// To maximize parallelism of tests, each tests should have its own git repo
+/// (if it needs a git repo for testing), as well as its own target (build) dir.
+///
+/// This helper represents a command to test and its (optional) git repo and
+/// target dir.
 ///
 /// It comes with a bunch of convenience methods ([`Self::arg()`], etc) to make
 /// test code simpler.
 struct TestCmd {
-    /// `cargo-public-api`
+    /// The `cargo-public-api` command to run for the test.
     cmd: Command,
 
-    /// A short-lived temporary git repo used for tests. Each test typically has
-    /// its own repo so that tests can run in parallel.
-    test_repo: TestRepo,
+    /// A short-lived temporary git repo used for tests. Note that not all tests
+    /// need a repo, so this is optional.
+    test_repo: Option<TestRepo>,
+
+    /// The `./target` directory for the test. Using one `./target` dir per test
+    /// increases parallelism of tests. A tricker contention issue to solve is
+    /// the fact that cargo also acquires locks on the global package cache:
+    /// https://github.com/rust-lang/cargo/blob/ba607b23db8398723d659249d9abf5536bc322e5/src/cargo/util/config/mod.rs#L1733-L1738
+    target_dir: tempfile::TempDir,
 }
 
 impl TestCmd {
+    /// Create a new test command with its own test repo. The `current_dir` will
+    /// be set to the dir of the repo.
     fn new() -> Self {
-        let test_repo = TestRepo::new();
+        Self::new_impl(true)
+    }
 
-        let mut cmd = cargo_public_api_cmd_simplified();
-        cmd.current_dir(&test_repo.path);
+    /// Create a new test command but do not create a test repo for it.
+    fn new_without_test_repo() -> Self {
+        Self::new_impl(false)
+    }
 
-        Self { cmd, test_repo }
+    /// Create a new test command and set up its repo (if it needs one) and its
+    /// own target dir.
+    fn new_impl(with_test_repo: bool) -> Self {
+        let mut test_cmd = Self {
+            cmd: cargo_public_api_cmd_simplified(),
+            test_repo: None,
+            target_dir: tempfile::tempdir().unwrap(),
+        };
+
+        test_cmd
+            .cmd
+            .arg("--target-dir")
+            .arg(test_cmd.target_dir.path());
+
+        if with_test_repo {
+            let new_test_repo = TestRepo::new();
+            test_cmd.cmd.current_dir(&new_test_repo.path);
+            test_cmd.test_repo = Some(new_test_repo);
+        }
+
+        test_cmd
     }
 
     pub fn test_repo_path(&self) -> &Path {
-        self.test_repo.path()
+        self.test_repo
+            .as_ref()
+            .expect("Test repo must be created first!!")
+            .path()
+    }
+
+    pub fn current_dir(&mut self, current_dir: impl AsRef<Path>) -> &mut Self {
+        self.cmd.current_dir(current_dir);
+        self
     }
 
     pub fn arg(&mut self, arg: impl AsRef<OsStr>) -> &mut Self {
         self.cmd.arg(arg);
+        self
+    }
+
+    pub fn args(&mut self, args: impl IntoIterator<Item = impl AsRef<OsStr>>) -> &mut Self {
+        self.cmd.args(args);
         self
     }
 

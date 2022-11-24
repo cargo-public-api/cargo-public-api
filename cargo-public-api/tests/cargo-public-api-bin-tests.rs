@@ -142,6 +142,52 @@ fn virtual_manifest_error() {
         .failure();
 }
 
+/// Make sure we can run the tool on the current directory as a cargo
+/// sub-command without any args
+#[test]
+fn subcommand_invocation() {
+    let mut cmd = TestCmd::as_subcommand_without_args()
+        .without_cargo_colors()
+        .with_test_repo();
+    cmd.assert()
+        .stdout_or_bless("./tests/expected-output/test_repo_api_latest_not_simplified.txt")
+        // Sanity check that rustdoc JSON build progress is shown to users, i.e.
+        // that we do not swallow stderr from the cargo rustdoc JSON building
+        // subprocess
+        .stderr(contains("Documenting example_api"))
+        .success();
+}
+
+/// Make sure we can run the tool on an external directory as a cargo sub-command
+#[test]
+fn subcommand_invocation_external_manifest() {
+    let mut cmd = TestCmd::as_subcommand().with_separate_target_dir();
+    cmd.args([
+        "--manifest-path",
+        "../test-apis/example_api-v0.3.0/Cargo.toml",
+    ]);
+    cmd.assert()
+        .stdout_or_bless("./tests/expected-output/example_api-v0.3.0.txt")
+        .success();
+}
+
+/// Make sure cargo subcommand args filtering of 'public-api' is not too
+/// aggressive This tests `cargo public-api -p public-api`, and we want to
+/// remove only the first `public-api` when we filter args (see `fn get_args()`
+/// in `cargo-public-api/src/main.rs`)
+#[test]
+fn subcommand_invocation_public_api_arg() {
+    // Don't use a separate target dir, because `public-api` is slow to build
+    // from scratch. This is the only test that uses the root target dir, so
+    // shared-resource contention on the .cargo-lock should not be an issue.
+    let mut cmd = TestCmd::as_subcommand();
+    cmd.current_dir(".."); // Enter git repo root so -p starts working
+    cmd.args(["-p", "public-api"]);
+    cmd.assert()
+        .stdout_or_bless("./tests/expected-output/public_api_list.txt")
+        .success();
+}
+
 #[test]
 fn diff_public_items() {
     diff_public_items_impl("--diff-git-checkouts");
@@ -699,14 +745,44 @@ struct TestCmd {
 }
 
 impl TestCmd {
+    /// `cargo-public-api --simplified`
     fn new() -> Self {
-        let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+        Self::new_impl(false, true)
+    }
 
-        // Simplify output since if we render all other items properly, the
-        // risk is very low that we will render Blanket Implementations and
-        // Auto Trait Implementations items wrong. Instead we choose to have
-        // dedicated tests for the rendering of such items.
-        cmd.arg("--simplified");
+    /// `cargo public-api --simplified`
+    fn as_subcommand() -> Self {
+        Self::new_impl(true, true)
+    }
+
+    /// `cargo public-api`
+    fn as_subcommand_without_args() -> Self {
+        Self::new_impl(false, false)
+    }
+
+    /// Disable colors to make asserts on output insensitive to color codes.
+    fn without_cargo_colors(mut self) -> Self {
+        self.cmd.env("CARGO_TERM_COLOR", "never");
+        self
+    }
+
+    fn new_impl(as_subcommand: bool, simplified: bool) -> Self {
+        let mut cmd = if as_subcommand {
+            test_utils::add_target_debug_to_path();
+            let mut cmd = Command::from_std(std::process::Command::new("cargo"));
+            cmd.arg("public-api");
+            cmd
+        } else {
+            Command::cargo_bin("cargo-public-api").unwrap()
+        };
+
+        if simplified {
+            // Simplify output since if we render all other items properly, the
+            // risk is very low that we will render Blanket Implementations and
+            // Auto Trait Implementations items wrong. Instead we choose to have
+            // dedicated tests for the rendering of such items.
+            cmd.arg("--simplified");
+        }
 
         Self {
             cmd,
@@ -715,6 +791,8 @@ impl TestCmd {
         }
     }
 
+    /// Create a test repo (unique for the current test) and set its dir as the
+    /// current dir.
     fn with_test_repo(mut self) -> Self {
         let test_repo = TestRepo::new();
         self.cmd.current_dir(&test_repo.path);
@@ -727,6 +805,7 @@ impl TestCmd {
         self.with_separate_target_dir()
     }
 
+    /// Setup a separate target dir for the test. Helps with parallelism.
     fn with_separate_target_dir(mut self) -> Self {
         let target_dir = tempfile::tempdir().unwrap();
         self.cmd.arg("--target-dir").arg(target_dir.path());

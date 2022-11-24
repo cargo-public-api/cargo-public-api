@@ -45,6 +45,7 @@ jobs:
 
   cargo-test:
     strategy:
+      fail-fast: false
       matrix:
         os:
           - macos-latest

@@ -60,7 +60,7 @@ fn list_public_items() {
 
 #[test]
 fn list_public_items_with_lint_error() {
-    let mut cmd = TestCmd::new_without_test_repo();
+    let mut cmd = TestCmd::new().with_separate_target_dir();
     cmd.args(["--manifest-path", "../test-apis/lint_error/Cargo.toml"]);
     cmd.assert()
         .stdout_or_bless("./tests/expected-output/lint_error_list.txt")
@@ -69,7 +69,7 @@ fn list_public_items_with_lint_error() {
 
 #[test]
 fn custom_toolchain() {
-    let mut cmd = TestCmd::new();
+    let mut cmd = TestCmd::new().with_test_repo();
     cmd.arg("--toolchain");
     cmd.arg("nightly");
     cmd.assert()
@@ -83,7 +83,7 @@ fn list_public_items_explicit_manifest_path() {
     let mut test_repo_manifest = PathBuf::from(test_repo.path());
     test_repo_manifest.push("Cargo.toml");
 
-    let mut cmd = cargo_public_api_cmd_simplified();
+    let mut cmd = TestCmd::new();
     cmd.arg("--manifest-path");
     cmd.arg(&test_repo_manifest);
     cmd.assert()
@@ -95,7 +95,7 @@ fn list_public_items_explicit_manifest_path() {
 /// manifest.
 #[test]
 fn list_public_items_via_package_spec() {
-    let mut cmd = TestCmd::new_without_test_repo();
+    let mut cmd = TestCmd::new().with_separate_target_dir();
     cmd.current_dir("../test-apis/virtual-manifest");
     cmd.arg("--package");
     cmd.arg("specific-crate");
@@ -121,7 +121,7 @@ fn target_arg() {
 
     // Make sure to use a separate and temporary repo so that this test does not
     // accidentally pass due to files from other tests lying around
-    let mut cmd = TestCmd::new();
+    let mut cmd = TestCmd::new().with_test_repo();
     cmd.arg("--target");
     cmd.arg(get_host_target_triple());
     cmd.assert()
@@ -131,7 +131,7 @@ fn target_arg() {
 
 #[test]
 fn virtual_manifest_error() {
-    let mut cmd = TestCmd::new_without_test_repo();
+    let mut cmd = TestCmd::new().with_separate_target_dir();
     cmd.arg("--manifest-path");
     cmd.arg("../test-apis/virtual-manifest/Cargo.toml");
     cmd.assert()
@@ -153,7 +153,7 @@ fn diff_public_items_smart_diff() {
 }
 
 fn diff_public_items_impl(diff_arg: &str) {
-    let mut cmd = TestCmd::new();
+    let mut cmd = TestCmd::new().with_test_repo();
     let test_repo_path = cmd.test_repo_path().to_owned();
     let branch_before = git_utils::current_branch(&test_repo_path).unwrap().unwrap();
     cmd.arg(diff_arg);
@@ -181,7 +181,7 @@ fn diff_public_items_detached_head() {
     assert_eq!(None, git_utils::current_branch(path).unwrap());
     let before = git_utils::current_commit(path).unwrap();
 
-    let mut cmd = cargo_public_api_cmd_simplified();
+    let mut cmd = TestCmd::new();
     cmd.current_dir(path);
     cmd.arg("--diff-git-checkouts");
     cmd.arg("v0.2.0");
@@ -201,7 +201,7 @@ fn diff_public_items_with_dirty_tree_fails() {
     let test_repo = create_test_repo_with_dirty_git_tree();
 
     // Make sure diffing does not destroy uncommitted data!
-    let mut cmd = cargo_public_api_cmd_simplified();
+    let mut cmd = TestCmd::new();
     cmd.current_dir(&test_repo.path);
     cmd.arg("--diff-git-checkouts");
     cmd.arg("v0.2.0");
@@ -220,7 +220,7 @@ fn diff_public_items_with_dirty_tree_fails() {
 fn diff_public_items_with_dirty_tree_succeedes_with_force_option() {
     let test_repo = create_test_repo_with_dirty_git_tree();
 
-    let mut cmd = cargo_public_api_cmd_simplified();
+    let mut cmd = TestCmd::new();
     cmd.current_dir(&test_repo.path);
     cmd.arg("--diff-git-checkouts");
     cmd.arg("v0.2.0");
@@ -243,7 +243,7 @@ fn diff_public_items_relative_refs() {
     assert_eq!(None, git_utils::current_branch(path).unwrap());
     let before = git_utils::current_commit(path).unwrap();
 
-    let mut cmd = cargo_public_api_cmd_simplified();
+    let mut cmd = TestCmd::new();
     cmd.current_dir(path);
     cmd.arg("--diff-git-checkouts");
     cmd.arg("HEAD^");
@@ -282,7 +282,7 @@ fn deny_combination_when_not_diffing() {
 }
 
 fn test_deny_not_allowed(args: impl IntoIterator<Item = &'static str>) {
-    let mut cmd = TestCmd::new();
+    let mut cmd = TestCmd::new().with_test_repo();
     for arg in args {
         cmd.arg(arg);
     }
@@ -293,7 +293,7 @@ fn test_deny_not_allowed(args: impl IntoIterator<Item = &'static str>) {
 
 #[test]
 fn deny_without_diff() {
-    let mut cmd = TestCmd::new();
+    let mut cmd = TestCmd::new().with_test_repo();
     cmd.arg("--diff-git-checkouts");
     cmd.arg("v0.1.0");
     cmd.arg("v0.1.1");
@@ -303,7 +303,7 @@ fn deny_without_diff() {
 
 #[test]
 fn deny_with_diff() {
-    let mut cmd = TestCmd::new();
+    let mut cmd = TestCmd::new().with_test_repo();
     cmd.arg("--diff-git-checkouts");
     cmd.arg("v0.1.0");
     cmd.arg("v0.2.0");
@@ -315,7 +315,7 @@ fn deny_with_diff() {
 
 #[test]
 fn deny_added_with_diff() {
-    let mut cmd = TestCmd::new();
+    let mut cmd = TestCmd::new().with_test_repo();
     cmd.arg("--diff-git-checkouts");
     cmd.arg("v0.1.0");
     cmd.arg("v0.2.0");
@@ -327,7 +327,7 @@ fn deny_added_with_diff() {
 
 #[test]
 fn deny_changed_with_diff() {
-    let mut cmd = TestCmd::new();
+    let mut cmd = TestCmd::new().with_test_repo();
     cmd.arg("--diff-git-checkouts");
     cmd.arg("v0.1.0");
     cmd.arg("v0.2.0");
@@ -337,7 +337,7 @@ fn deny_changed_with_diff() {
 
 #[test]
 fn deny_removed_with_diff() {
-    let mut cmd = TestCmd::new();
+    let mut cmd = TestCmd::new().with_test_repo();
     cmd.arg("--diff-git-checkouts");
     cmd.arg("v0.2.0");
     cmd.arg("v0.3.0");
@@ -351,7 +351,7 @@ fn deny_removed_with_diff() {
 
 #[test]
 fn deny_with_invalid_arg() {
-    let mut cmd = TestCmd::new();
+    let mut cmd = TestCmd::new().with_test_repo();
     cmd.arg("--diff-git-checkouts");
     cmd.arg("v0.2.0");
     cmd.arg("v0.3.0");
@@ -364,7 +364,7 @@ fn deny_with_invalid_arg() {
 #[test]
 fn diff_public_items_with_manifest_path() {
     let test_repo = TestRepo::new();
-    let mut cmd = cargo_public_api_cmd_simplified();
+    let mut cmd = TestCmd::new();
     cmd.arg("--manifest-path");
     cmd.arg(format!(
         "{}/Cargo.toml",
@@ -380,7 +380,7 @@ fn diff_public_items_with_manifest_path() {
 
 #[test]
 fn diff_public_items_without_git_root() {
-    let mut cmd = cargo_public_api_cmd_simplified();
+    let mut cmd = TestCmd::new();
     cmd.arg("--manifest-path");
     cmd.arg("/does/not/exist/Cargo.toml");
     cmd.arg("--diff-git-checkouts");
@@ -395,7 +395,7 @@ fn diff_public_items_without_git_root() {
 
 #[test]
 fn diff_public_items_with_color() {
-    let mut cmd = TestCmd::new();
+    let mut cmd = TestCmd::new().with_test_repo();
     cmd.arg("--color=always");
     cmd.arg("--diff-git-checkouts");
     cmd.arg("v0.1.0");
@@ -407,7 +407,7 @@ fn diff_public_items_with_color() {
 
 #[test]
 fn list_public_items_with_color() {
-    let mut cmd = TestCmd::new();
+    let mut cmd = TestCmd::new().with_test_repo();
     cmd.arg("--color=always");
     cmd.assert()
         .stdout_or_bless("./tests/expected-output/example_api_v0.3.0_colored.txt")
@@ -430,7 +430,7 @@ fn diff_public_items_from_files_impl(diff_arg: &str) {
 
     let old = rustdoc_json_path_for_crate("../test-apis/example_api-v0.1.0", &build_dir);
     let new = rustdoc_json_path_for_crate("../test-apis/example_api-v0.2.0", &build_dir2);
-    let mut cmd = TestCmd::new_without_test_repo();
+    let mut cmd = TestCmd::new().with_separate_target_dir();
     cmd.arg(diff_arg);
     cmd.arg(old);
     cmd.arg(new);
@@ -461,7 +461,7 @@ fn diff_published_smart_diff_fallback() {
 
 /// Diff against a published crate.
 fn diff_published_impl(diff_arg: &str, spec: &str) {
-    let mut cmd = TestCmd::new();
+    let mut cmd = TestCmd::new().with_test_repo();
     cmd.arg(diff_arg);
     cmd.arg(spec);
     cmd.assert()
@@ -471,7 +471,7 @@ fn diff_published_impl(diff_arg: &str, spec: &str) {
 
 #[test]
 fn diff_published_explicit_package() {
-    let mut cmd = TestCmd::new();
+    let mut cmd = TestCmd::new().with_test_repo();
     cmd.arg("-p");
     cmd.arg("example_api");
     cmd.arg("--diff-published");
@@ -487,7 +487,7 @@ fn list_public_items_from_json_file() {
     let build_dir = tempdir().unwrap();
 
     let json_file = rustdoc_json_path_for_crate("../test-apis/example_api-v0.3.0", &build_dir);
-    let mut cmd = TestCmd::new_without_test_repo();
+    let mut cmd = TestCmd::new().with_separate_target_dir();
     cmd.arg("--rustdoc-json");
     cmd.arg(json_file);
     cmd.assert()
@@ -497,7 +497,7 @@ fn list_public_items_from_json_file() {
 
 #[test]
 fn diff_public_items_missing_one_arg() {
-    let mut cmd = TestCmd::new();
+    let mut cmd = TestCmd::new().with_test_repo();
     cmd.arg("--diff-git-checkouts");
     cmd.arg("v0.2.0");
     cmd.assert()
@@ -507,7 +507,7 @@ fn diff_public_items_missing_one_arg() {
 
 #[test]
 fn verbose() {
-    let mut cmd = TestCmd::new_without_test_repo();
+    let mut cmd = TestCmd::new();
     cmd.arg("--manifest-path");
     cmd.arg("../test-apis/lint_error/Cargo.toml");
     cmd.arg("--verbose");
@@ -519,7 +519,7 @@ fn verbose() {
 
 #[test]
 fn long_help() {
-    let mut cmd = cargo_public_api_cmd_simplified();
+    let mut cmd = TestCmd::new();
     cmd.arg("--help");
     assert_presence_of_args_in_help(cmd);
 }
@@ -544,12 +544,12 @@ fn long_help_wraps() {
 
 #[test]
 fn short_help() {
-    let mut cmd = cargo_public_api_cmd_simplified();
+    let mut cmd = TestCmd::new().with_separate_target_dir();
     cmd.arg("-h");
     assert_presence_of_args_in_help(cmd);
 }
 
-fn assert_presence_of_args_in_help(mut cmd: Command) {
+fn assert_presence_of_args_in_help(mut cmd: TestCmd) {
     cmd.assert()
         .stdout(contains("--simplified"))
         .stdout(contains("--manifest-path"))
@@ -561,18 +561,6 @@ fn assert_presence_of_args_in_help(mut cmd: Command) {
 /// to use so that tests can run in parallel.
 fn initialize_test_repo(dest: &Path) {
     test_utils::create_test_git_repo(dest, "../test-apis");
-}
-
-fn cargo_public_api_cmd_simplified() -> Command {
-    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
-
-    // Simplify output by default since if we render all of our own items
-    // properly, the risk is low that we will render Blanket Implementations and
-    // Auto Trait Implementations items wrong. Instead we choose to have
-    // dedicated tests for the rendering of such items.
-    cmd.arg("--simplified");
-
-    cmd
 }
 
 #[derive(Debug)]
@@ -641,7 +629,7 @@ fn features_b_c() {
 }
 
 fn test_features(features: &F) {
-    let mut cmd = TestCmd::new_without_test_repo();
+    let mut cmd = TestCmd::new().with_separate_target_dir();
     cmd.current_dir("../test-apis/features");
 
     if features.none {
@@ -699,45 +687,51 @@ struct TestCmd {
     test_repo: Option<TestRepo>,
 
     /// The `./target` directory for the test. Using one `./target` dir per test
-    /// increases parallelism of tests. A tricker contention issue to solve is
-    /// the fact that cargo also acquires locks on the global package cache:
+    /// increases parallelism of tests. Note that if `test_repo` is used, no
+    /// separate `./target` dir is needed, since the `./target` dir inside the
+    /// (newly crated) test repo can and will be used.
+    ///
+    /// Note: Tests are not completely independent even with one target-dir per
+    /// test, because `cargo` also makes use of a global shared package cache
+    /// lockfile:
     /// https://github.com/rust-lang/cargo/blob/ba607b23db8398723d659249d9abf5536bc322e5/src/cargo/util/config/mod.rs#L1733-L1738
-    target_dir: tempfile::TempDir,
+    target_dir: Option<tempfile::TempDir>,
 }
 
 impl TestCmd {
-    /// Create a new test command with its own test repo. The `current_dir` will
-    /// be set to the dir of the repo.
     fn new() -> Self {
-        Self::new_impl(true)
-    }
+        let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
 
-    /// Create a new test command but do not create a test repo for it.
-    fn new_without_test_repo() -> Self {
-        Self::new_impl(false)
-    }
+        // Simplify output since if we render all other items properly, the
+        // risk is very low that we will render Blanket Implementations and
+        // Auto Trait Implementations items wrong. Instead we choose to have
+        // dedicated tests for the rendering of such items.
+        cmd.arg("--simplified");
 
-    /// Create a new test command and set up its repo (if it needs one) and its
-    /// own target dir.
-    fn new_impl(with_test_repo: bool) -> Self {
-        let mut test_cmd = Self {
-            cmd: cargo_public_api_cmd_simplified(),
+        Self {
+            cmd,
             test_repo: None,
-            target_dir: tempfile::tempdir().unwrap(),
-        };
-
-        test_cmd
-            .cmd
-            .arg("--target-dir")
-            .arg(test_cmd.target_dir.path());
-
-        if with_test_repo {
-            let new_test_repo = TestRepo::new();
-            test_cmd.cmd.current_dir(&new_test_repo.path);
-            test_cmd.test_repo = Some(new_test_repo);
+            target_dir: None,
         }
+    }
 
-        test_cmd
+    fn with_test_repo(mut self) -> Self {
+        let test_repo = TestRepo::new();
+        self.cmd.current_dir(&test_repo.path);
+        self.test_repo = Some(test_repo);
+
+        // Use a separate target dir even if we have a test repo with its own
+        // ./target dir. Because when we run --diff-published tests, they will
+        // share `.cargo-lock` (via `build-root-for-published-crates`)
+        // otherwise.
+        self.with_separate_target_dir()
+    }
+
+    fn with_separate_target_dir(mut self) -> Self {
+        let target_dir = tempfile::tempdir().unwrap();
+        self.cmd.arg("--target-dir").arg(target_dir.path());
+        self.target_dir = Some(target_dir);
+        self
     }
 
     pub fn test_repo_path(&self) -> &Path {

@@ -7,6 +7,7 @@ use std::path::Path;
 use std::path::PathBuf;
 
 mod create_test_git_repo;
+use assert_cmd::prelude::OutputOkExt;
 pub use create_test_git_repo::create_test_git_repo;
 
 pub mod assert_or_bless;
@@ -53,4 +54,37 @@ fn add_to_path(dir: PathBuf) {
     dirs.insert(0, dir);
     path = std::env::join_paths(dirs).unwrap();
     std::env::set_var("PATH", path);
+}
+
+/// Installs a toolchain if it is not already installed.
+pub fn ensure_toolchain_installed(toolchain: &str) {
+    if !is_toolchain_installed(toolchain) {
+        install_toolchain(toolchain);
+    }
+}
+
+fn is_toolchain_installed(toolchain: &str) -> bool {
+    std::process::Command::new("rustup")
+        .arg("run")
+        .arg(toolchain)
+        .arg("cargo")
+        .arg("--version")
+        .stdout(std::process::Stdio::null())
+        .stderr(std::process::Stdio::null())
+        .status()
+        .unwrap()
+        .success()
+}
+
+fn install_toolchain(toolchain: &str) {
+    eprintln!("Installing toolchain {}", toolchain);
+    std::process::Command::new("rustup")
+        .arg("--quiet")
+        .arg("toolchain")
+        .arg("install")
+        .arg("--no-self-update")
+        .arg("--profile")
+        .arg("minimal")
+        .arg(toolchain)
+        .unwrap();
 }

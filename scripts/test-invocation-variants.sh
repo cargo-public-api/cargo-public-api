@@ -75,40 +75,8 @@ assert_progress_and_output() {
 
 # Now we are ready to run the actual tests
 
-# Make sure we can conveniently run the tool from the source dir. We want the
-# tool to print progress when it builds rustdoc JSON. The presence of
-# "Documenting comprehensive_api" on stderr is what we use to test if that is
-# the case. We assume that if we can pass args, it will also work to not have
-# any args at all. This assumptions allows us to run tests fast. We do arg-less
-# tests further down.
-assert_progress_and_output \
-    "cargo run -- --manifest-path test-apis/comprehensive_api/Cargo.toml --simplified" \
-    public-api/tests/expected-output/comprehensive_api.txt \
-    "Documenting comprehensive_api"
-
 # Install the tool
 cargo install --debug --path cargo-public-api
-
-# Make sure we can run the tool on the current directory as a cargo sub-command
-(
-    cd test-apis/comprehensive_api
-    assert_progress_and_output \
-        "cargo public-api --simplified" \
-        ../../public-api/tests/expected-output/comprehensive_api.txt \
-        "Documenting comprehensive_api"
-)
-
-# Make sure we can run the tool on an external directory as a cargo sub-command
-assert_progress_and_output \
-    "cargo public-api --manifest-path test-apis/comprehensive_api/Cargo.toml --simplified" \
-    public-api/tests/expected-output/comprehensive_api.txt \
-    "Documenting comprehensive_api"
-
-# Make sure cargo subcommand args filtering of 'public-api' is not too aggressive
-assert_progress_and_output \
-    "cargo public-api -p public-api --simplified " \
-    cargo-public-api/tests/expected-output/public_api_list.txt \
-    "Documenting public-api"
 
 # Make sure we can run the tool with MINIMUM_RUSTDOC_JSON_VERSION. Test against
 # comprehensive_api, because we want any rustdoc JSON format incompatibilities

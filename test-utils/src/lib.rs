@@ -7,7 +7,6 @@ use std::path::Path;
 use std::path::PathBuf;
 
 mod create_test_git_repo;
-use assert_cmd::prelude::OutputOkExt;
 pub use create_test_git_repo::create_test_git_repo;
 
 pub mod assert_or_bless;
@@ -56,20 +55,32 @@ fn add_to_path(dir: PathBuf) {
     std::env::set_var("PATH", path);
 }
 
-/// Installs a toolchain if it is not already installed.
+/// Checks if a toolchain is installed and panics if not, with instructions on
+/// how to install the needed toolchains.
 ///
-/// Contains a workaround for <https://github.com/rust-lang/rustup/issues/988>
+/// It would be nice if tests would automatically install a missing toolchain,
+/// but we have not been able to make that work yet. See
+/// <https://github.com/Enselic/cargo-public-api/pull/215#discussion_r1032058851>
+/// and surrounding discussions.
 ///
-/// Since all tests that occasionally needs to install a new toolchain with
-/// `rustup` runs in the same process, use a process-global mutex to prevent
-/// concurrent rustup operations.
+/// If you attempt to fix this, be aware of
+/// <https://github.com/rust-lang/rustup/issues/988>. See commit b54a809ca7784b
+/// in this repo for a workaround.
 pub fn ensure_toolchain_installed(toolchain: &str) {
-    static RUSTUP_MUTEX: std::sync::Mutex<()> = std::sync::Mutex::new(());
-    let _guard = RUSTUP_MUTEX.lock().unwrap();
+    assert!(
+        is_toolchain_installed(toolchain),
+        "
+You must run
 
-    if !is_toolchain_installed(toolchain) {
-        install_toolchain(toolchain);
-    }
+    ./scripts/install-toolchains-for-tests.sh
+
+before running tests. Or simply run
+
+    ./scripts/run-ci-locally.sh
+
+to both install toolchains and run tests in one command.
+"
+    );
 }
 
 fn is_toolchain_installed(toolchain: &str) -> bool {
@@ -83,17 +94,4 @@ fn is_toolchain_installed(toolchain: &str) -> bool {
         .status()
         .unwrap()
         .success()
-}
-
-fn install_toolchain(toolchain: &str) {
-    eprintln!("Installing toolchain {}", toolchain);
-    std::process::Command::new("rustup")
-        .arg("--quiet")
-        .arg("toolchain")
-        .arg("install")
-        .arg("--no-self-update")
-        .arg("--profile")
-        .arg("minimal")
-        .arg(toolchain)
-        .unwrap();
 }

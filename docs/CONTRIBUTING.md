@@ -8,17 +8,13 @@ Just clone the repo. Then you can make changes and run tests:
 
 ```
 git clone https://github.com/Enselic/cargo-public-api.git
+
 cd cargo-public-api
 
-cargo test
-```
-
-This project makes heavy use of CI. To simulate the CI pipeline locally, run
-```
 ./scripts/run-ci-locally.sh
 ```
 
-Note that you can run that script from within your IDE (see `.vscode/tasks.json` for an example configuration)
+Note that you can run `./scripts/run-ci-locally.sh` from from within your IDE. Then you can simply click on errors to navigate to the proper file, line number, and column. See `.vscode/tasks.json` for an example configuration.
 
 ## Blessing new expected output
 

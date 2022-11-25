@@ -60,6 +60,8 @@ jobs:
           toolchain: nightly
           profile: minimal
       - uses: Swatinem/rust-cache@v2
+      - run: ./scripts/install-toolchains-for-tests.sh
+        shell: bash
       - run: cargo test --locked
 
   check-public-apis:

@@ -811,27 +811,37 @@ struct TestCmd {
     target_dir: Option<tempfile::TempDir>,
 }
 
+enum TestCmdType<'str> {
+    Subcommand { toolchain: Option<&'str str> },
+    Bin,
+}
+
 impl TestCmd {
     /// `cargo-public-api --simplified`
     fn new() -> Self {
-        Self::new_impl(None, false, true)
+        Self::new_impl(&TestCmdType::Bin, true)
     }
 
     /// `cargo public-api --simplified`
     fn as_subcommand() -> Self {
-        Self::new_impl(None, true, true)
+        Self::new_impl(&TestCmdType::Subcommand { toolchain: None }, true)
     }
 
     /// `cargo public-api`
     fn as_subcommand_without_args() -> Self {
-        Self::new_impl(None, false, false)
+        Self::new_impl(&TestCmdType::Subcommand { toolchain: None }, false)
     }
 
     /// `cargo +toolchain public-api --simplified`
     /// Also installs the toolchain if it is not installed.
     fn with_proxy_toolchain(toolchain: &str) -> Self {
         ensure_toolchain_installed(toolchain);
-        Self::new_impl(Some(toolchain), true, true)
+        Self::new_impl(
+            &TestCmdType::Subcommand {
+                toolchain: Some(toolchain),
+            },
+            true,
+        )
     }
 
     /// Disable colors to make asserts on output insensitive to color codes.
@@ -846,22 +856,18 @@ impl TestCmd {
         self
     }
 
-    fn new_impl(toolchain: Option<&str>, as_subcommand: bool, simplified: bool) -> Self {
-        assert!(
-            toolchain.is_none() || as_subcommand,
-            "Doesn't make much sense to specify a toolchain without running as a subcommand"
-        );
-
-        let mut cmd = if as_subcommand {
-            test_utils::add_target_debug_to_path();
-            let mut cmd = Command::from_std(std::process::Command::new("cargo"));
-            if let Some(toolchain) = toolchain {
-                cmd.arg(format!("+{}", toolchain));
+    fn new_impl(cmd_type: &TestCmdType, simplified: bool) -> Self {
+        let mut cmd = match cmd_type {
+            TestCmdType::Subcommand { toolchain } => {
+                test_utils::add_target_debug_to_path();
+                let mut cmd = Command::from_std(std::process::Command::new("cargo"));
+                if let Some(toolchain) = toolchain {
+                    cmd.arg(format!("+{}", toolchain));
+                }
+                cmd.arg("public-api");
+                cmd
             }
-            cmd.arg("public-api");
-            cmd
-        } else {
-            Command::cargo_bin("cargo-public-api").unwrap()
+            TestCmdType::Bin => Command::cargo_bin("cargo-public-api").unwrap(),
         };
 
         if simplified {

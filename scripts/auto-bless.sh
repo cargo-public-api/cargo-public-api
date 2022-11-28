@@ -19,8 +19,8 @@ branch_name="auto-bless-${current_nightly}-$(date +%s)"
 git checkout -b "${branch_name}"
 
 # Commit the blessed changes and push the branch
-git config user.email "junta-pixlar0l@github.com"
-git config user.name "EnselicCICD"
+#git config user.email "junta-pixlar0l@github.com"
+#git config user.name "EnselicCICD"
 git commit -a -m "Bless output with ${current_nightly}"
 git push origin "${branch_name}"
 

@@ -19,12 +19,15 @@ branch_name="auto-bless-${current_nightly}-$(date +%s)"
 git checkout -b "${branch_name}"
 
 # Commit the blessed changes and push the branch
+GITHUB_SERVER_URL="http://foo.com"
+GITHUB_REPOSITORY="cargo-public-api"
+GITHUB_RUN_ID="123"
 title='Bless `scripts/auto-bless.sh` output'
 body="Automatically created by ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
 
 To trigger CI checks, please close and re-open the PR."
-git config user.email "junta-pixlar0l@icloud.com"
-git config user.name "EnselicCICD"
+#git config user.email "junta-pixlar0l@icloud.com"
+#git config user.name "EnselicCICD"
 git commit -a -m "${title}"
 git push origin "${branch_name}"
 

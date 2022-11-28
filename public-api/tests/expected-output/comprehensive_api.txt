@@ -13,7 +13,7 @@ pub struct field comprehensive_api::attributes::C::b: bool
 #[export_name = "something_arbitrary"] pub fn comprehensive_api::attributes::export_name()
 pub fn comprehensive_api::attributes::must_use() -> usize
 pub mod comprehensive_api::constants
-pub const comprehensive_api::constants::CONST: &'static str
+pub const comprehensive_api::constants::CONST: &str
 pub mod comprehensive_api::enums
 pub enum comprehensive_api::enums::DiverseVariants
 pub enum variant comprehensive_api::enums::DiverseVariants::Recursive

@@ -3,7 +3,7 @@ name: Nightly
 on:
   workflow_dispatch:
   schedule:
-    - cron: '44 4 * * *'
+    - cron: '33 3 * * *'
 
 env:
   CARGO_TERM_COLOR: always
@@ -16,3 +16,26 @@ jobs:
     steps:
     - run: cargo install public-api
     - run: cargo install cargo-public-api
+
+
+  # The purpose of running every night is to detect when a change to
+  # https://github.com/rust-lang/rust/tree/master/src/rustdoc-json-types
+  # requires that we release a new version of public-api to be compatible with
+  # the latest nightly toolchain
+  ci:
+    uses: ./.github/workflows/CI.yml
+
+  # If Rust nightly changes output, auto-create a PR with the new blessed
+  # output, which maintainers can conveniently merge after manual review
+  auto-bless:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions-rs/toolchain@v1
+      with:
+        toolchain: nightly
+        profile: minimal
+    - uses: Swatinem/rust-cache@v2
+    - run: ./scripts/auto-bless.sh
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

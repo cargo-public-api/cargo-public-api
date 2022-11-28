@@ -19,7 +19,10 @@ branch_name="auto-bless-${current_nightly}-$(date +%s)"
 git checkout -b "${branch_name}"
 
 # Commit the blessed changes and push the branch
-title="Bless output with ${current_nightly}"
+title='Bless `scripts/auto-bless.sh` output'
+body="Automatically created by ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
+
+To trigger CI checks, please close and re-open the PR."
 git config user.email "junta-pixlar0l@icloud.com"
 git config user.name "EnselicCICD"
 git commit -a -m "${title}"
@@ -29,5 +32,5 @@ git push origin "${branch_name}"
 gh pr create \
     --head "${branch_name}" \
     --title "${title}" \
-    --body "" \
+    --body "${body}" \
     --label "category-exclude" \

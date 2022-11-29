@@ -12,8 +12,14 @@ set -o errexit -o nounset -o pipefail
 #
 # This script also runs tests that depend on special toolchains being installed.
 
-# The oldest nightly toolchain that we support
-minimal_toolchain=$(cargo run -p public-api -- --print-minimum-rustdoc-json-version)
+# The oldest nightly toolchain that we support. Sometimes the minimum toolchain
+# required for tests is not the same as required for users, so allow tests to
+# use a different toolchain if needed
+if [ -f test-utils/MINIMUM_RUSTDOC_JSON_VERSION_FOR_TESTS ]; then
+    minimal_toolchain="$(cat test-utils/MINIMUM_RUSTDOC_JSON_VERSION_FOR_TESTS)"
+else
+    minimal_toolchain=$(cargo run -p public-api -- --print-minimum-rustdoc-json-version)
+fi
 if [ -z "${minimal_toolchain}" ]; then
     echo "FAIL: Could not figure out minimal_toolchain"
     exit 1

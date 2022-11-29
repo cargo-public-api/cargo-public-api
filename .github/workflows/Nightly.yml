@@ -48,7 +48,7 @@ jobs:
         title: Bless `${{ steps.latest-nightly.outputs.version }}` output
         commit-message: Bless `${{ steps.latest-nightly.outputs.version }}` output
         author: EnselicCICD <junta-pixlar0l@icloud.com>
-        body: Automatically created by ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        body: Automatically created by ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs/${{ github.job }}
         token: ${{ secrets.ENSELICCICD_GITHUB_TOKEN }}
         push-to-fork: EnselicCICD/cargo-public-api
         branch: create-pull-request/${{ steps.latest-nightly.outputs.version }}

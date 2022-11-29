@@ -27,6 +27,7 @@ jobs:
   # If Rust nightly changes output, auto-create a PR with the new blessed
   # output, which maintainers can conveniently merge after manual review
   auto-bless:
+    environment: CICD-fork
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -35,6 +36,14 @@ jobs:
         toolchain: nightly
         profile: minimal
     - uses: Swatinem/rust-cache@v2
-    - run: ./scripts/auto-bless.sh
-      env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - run: ./scripts/bless.sh
+    - id: latest-nightly
+      run: echo "::set-output name=version::nightly-$(date +'%Y-%m-%d')"
+    - uses: peter-evans/create-pull-request@v4
+      with:
+        title: Bless `${{ steps.latest-nightly.outputs.version }}` output
+        commit-message: Bless `${{ steps.latest-nightly.outputs.version }}` output
+        author: EnselicCICD <junta-pixlar0l@icloud.com>
+        body: Automatically created by ${{ env.GITHUB_SERVER_URL }}/${{ env.GITHUB_REPOSITORY }}/actions/runs/${{ env.GITHUB_RUN_ID }}
+        token: ${{ secrets.ENSELICCICD_GITHUB_TOKEN }}
+        push-to-fork: EnselicCICD/cargo-public-api

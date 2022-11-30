@@ -218,10 +218,20 @@ fn subcommand_invocation_public_api_arg() {
         .success();
 }
 
+/// The oldest nightly toolchain that we support. Sometimes the minimum toolchain
+/// required for tests is not the same as required for users, so allow tests to
+/// use a different toolchain if needed
+fn get_minimum_toolchain() -> String {
+    std::fs::read_to_string("../test-utils/MINIMUM_RUSTDOC_JSON_VERSION_FOR_TESTS")
+        .map(|s| s.trim().to_owned())
+        .ok()
+        .unwrap_or_else(|| MINIMUM_RUSTDOC_JSON_VERSION.to_owned())
+}
+
 #[test]
 fn minimal_toolchain_works() {
     let mut cmd =
-        TestCmd::with_proxy_toolchain(MINIMUM_RUSTDOC_JSON_VERSION).with_separate_target_dir();
+        TestCmd::with_proxy_toolchain(&get_minimum_toolchain()).with_separate_target_dir();
 
     // Test against comprehensive_api, because we want any rustdoc JSON format
     // incompatibilities to be detected

@@ -7,7 +7,6 @@ use std::path::Path;
 use std::path::PathBuf;
 
 mod create_test_git_repo;
-use assert_cmd::prelude::OutputOkExt;
 pub use create_test_git_repo::create_test_git_repo;
 
 pub mod assert_or_bless;
@@ -86,14 +85,13 @@ fn is_toolchain_installed(toolchain: &str) -> bool {
 }
 
 fn install_toolchain(toolchain: &str) {
-    eprintln!("Installing toolchain {}", toolchain);
     std::process::Command::new("rustup")
-        .arg("--quiet")
         .arg("toolchain")
         .arg("install")
         .arg("--no-self-update")
         .arg("--profile")
         .arg("minimal")
         .arg(toolchain)
+        .status()
         .unwrap();
 }

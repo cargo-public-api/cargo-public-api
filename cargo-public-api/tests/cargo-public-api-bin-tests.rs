@@ -826,20 +826,67 @@ enum TestCmdType<'str> {
     Bin,
 }
 
+#[cfg(not(target_family = "windows"))]
+fn cargo_with_toolchain(toolchain: &str) -> std::process::Command {
+    let mut cmd = std::process::Command::new("cargo");
+    cmd.arg(format!("+{}", toolchain));
+    cmd
+}
+
+/// Workaround for [https://github.com/rust-lang/rustup/issues/3036](rustup
+/// 1.25: On Windows, nested cargo invocation with a toolchain specified fails).
+/// We only use it on Windows, because when possible we want this command to be
+/// as similar as possible to what real users use. And most users do
+/// ```bash
+/// cargo +toolchain public-api
+/// ```
+/// rather than
+/// ```bash
+/// rustup run toolchain cargo public-api
+/// ```
+#[cfg(target_family = "windows")]
+fn cargo_with_toolchain(toolchain: &str) -> std::process::Command {
+    let mut cmd = std::process::Command::new("rustup");
+    cmd.arg("run");
+    cmd.arg(toolchain);
+    cmd.arg("cargo");
+    cmd
+}
+
+impl From<TestCmdType<'_>> for Command {
+    fn from(cmd_type: TestCmdType) -> Self {
+        match cmd_type {
+            TestCmdType::Subcommand { toolchain } => {
+                test_utils::add_target_debug_to_path();
+
+                let mut cargo_cmd = if let Some(toolchain) = toolchain {
+                    cargo_with_toolchain(toolchain)
+                } else {
+                    std::process::Command::new("cargo")
+                };
+                cargo_cmd.arg("public-api");
+
+                Command::from_std(cargo_cmd)
+            }
+            TestCmdType::Bin => Command::cargo_bin("cargo-public-api").unwrap(),
+        }
+    }
+}
+
 impl TestCmd {
     /// `cargo-public-api --simplified`
     fn new() -> Self {
-        Self::new_impl(&TestCmdType::Bin, true)
+        Self::new_impl(TestCmdType::Bin, true)
     }
 
     /// `cargo public-api --simplified`
     fn as_subcommand() -> Self {
-        Self::new_impl(&TestCmdType::Subcommand { toolchain: None }, true)
+        Self::new_impl(TestCmdType::Subcommand { toolchain: None }, true)
     }
 
     /// `cargo public-api`
     fn as_subcommand_without_args() -> Self {
-        Self::new_impl(&TestCmdType::Subcommand { toolchain: None }, false)
+        Self::new_impl(TestCmdType::Subcommand { toolchain: None }, false)
     }
 
     /// `cargo +toolchain public-api --simplified`
@@ -847,7 +894,7 @@ impl TestCmd {
     fn with_proxy_toolchain(toolchain: &str) -> Self {
         ensure_toolchain_installed(toolchain);
         Self::new_impl(
-            &TestCmdType::Subcommand {
+            TestCmdType::Subcommand {
                 toolchain: Some(toolchain),
             },
             true,
@@ -866,19 +913,8 @@ impl TestCmd {
         self
     }
 
-    fn new_impl(cmd_type: &TestCmdType, simplified: bool) -> Self {
-        let mut cmd = match cmd_type {
-            TestCmdType::Subcommand { toolchain } => {
-                test_utils::add_target_debug_to_path();
-                let mut cmd = Command::from_std(std::process::Command::new("cargo"));
-                if let Some(toolchain) = toolchain {
-                    cmd.arg(format!("+{}", toolchain));
-                }
-                cmd.arg("public-api");
-                cmd
-            }
-            TestCmdType::Bin => Command::cargo_bin("cargo-public-api").unwrap(),
-        };
+    fn new_impl(cmd_type: TestCmdType, simplified: bool) -> Self {
+        let mut cmd: Command = cmd_type.into();
 
         if simplified {
             // Simplify output since if we render all other items properly, the

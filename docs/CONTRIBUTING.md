@@ -11,6 +11,11 @@ git clone https://github.com/Enselic/cargo-public-api.git
 
 cd cargo-public-api
 
+cargo test
+```
+
+This project makes heavy use of CI. To simulate the CI pipeline locally, run
+```
 ./scripts/run-ci-locally.sh
 ```
 

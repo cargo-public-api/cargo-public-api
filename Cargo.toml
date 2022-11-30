@@ -6,6 +6,9 @@ members = [
     # Helper crate to build rustdoc JSON
     "rustdoc-json",
 
+    # Helper crate for managing rustup toolchains
+    "rustup-toolchain",
+
     # Takes rustdoc JSON as input and outputs the corresponding public API
     "public-api",
 

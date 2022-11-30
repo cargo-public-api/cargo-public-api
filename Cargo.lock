@@ -110,6 +110,7 @@ dependencies = [
  "pretty_assertions",
  "public-api",
  "rustdoc-json",
+ "rustup-toolchain",
  "tempfile",
  "thiserror",
 ]
@@ -610,6 +611,13 @@ dependencies = [
  "libc",
  "linux-raw-sys",
  "windows-sys",
+]
+
+[[package]]
+name = "rustup-toolchain"
+version = "0.1.0"
+dependencies = [
+ "thiserror",
 ]
 
 [[package]]

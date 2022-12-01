@@ -21,6 +21,7 @@ cargo clippy \
     --lib \
     --package rustdoc-json \
     --package public-api \
+    --package rustup-toolchain \
     --all-features \
     -- \
     --deny missing_docs \

@@ -34,7 +34,7 @@ For `public-api` and `cargo-public-api` (which always have the same version numb
 
 ### `public-api` and `cargo-public-api`
 
-1. First release `rustdoc-json` if needed. See below.
+1. First release `rustdoc-json` and `rustup-toolchain` if needed. See below.
 1. Create a PR that targets `main` that
     1. Bumps to the same `version` in
         * **Cargo.toml** `[workspace.package.version]`
@@ -63,6 +63,13 @@ For `public-api` and `cargo-public-api` (which always have the same version numb
 1. Bump the `version` in **rustdoc-json/Cargo.toml** and the dependencies declared in **public-api/Cargo.toml** and **cargo-public-api/Cargo.toml**.
 1. Run https://github.com/Enselic/cargo-public-api/actions/workflows/Release-rustdoc-json.yml workflow from `main` ([instructions](https://github.com/Enselic/cargo-public-api/blob/main/docs/development.md#how-to-trigger-main-branch-workflow))
 1. Double-check that the release ended up at https://crates.io/crates/rustdoc-json/versions
+1. Done!
+
+### `rustup-toolchain`
+
+1. Bump the `version` in **rustup-toolchain/Cargo.toml** and the dependency declared in **cargo-public-api/Cargo.toml**.
+1. Run https://github.com/Enselic/cargo-public-api/actions/workflows/Release-rustup-toolchain.yml workflow from `main` ([instructions](https://github.com/Enselic/cargo-public-api/blob/main/docs/development.md#how-to-trigger-main-branch-workflow))
+1. Double-check that the release ended up at https://crates.io/crates/rustup-toolchain/versions
 1. Done!
 
 ## How to trigger main branch workflow

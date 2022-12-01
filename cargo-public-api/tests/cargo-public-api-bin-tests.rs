@@ -20,12 +20,17 @@ use predicates::str::contains;
 // rust-analyzer bug: https://github.com/rust-lang/rust-analyzer/issues/9173
 #[path = "../../test-utils/src/lib.rs"]
 mod test_utils;
+use public_api::MINIMUM_RUSTDOC_JSON_VERSION;
 use tempfile::tempdir;
 use test_utils::assert_or_bless::AssertOrBless;
+use test_utils::ensure_toolchain_installed;
 use test_utils::rustdoc_json_path_for_crate;
 
 #[path = "../src/git_utils.rs"] // Say NO to copy-paste!
 mod git_utils;
+
+/// A toolchain that produces rustdoc JSON that we do not understand how to parse.
+const UNUSABLE_TOOLCHAIN: &str = "nightly-2022-06-01";
 
 fn create_test_repo_with_dirty_git_tree() -> TestRepo {
     let test_repo = TestRepo::new();
@@ -69,12 +74,37 @@ fn list_public_items_with_lint_error() {
 
 #[test]
 fn custom_toolchain() {
-    let mut cmd = TestCmd::new().with_test_repo();
-    cmd.arg("--toolchain");
-    cmd.arg("nightly");
-    cmd.assert()
-        .stdout_or_bless("./tests/expected-output/example_api-v0.3.0.txt")
-        .success();
+    test_unusable_toolchain(
+        TestCmd::new()
+            .with_toolchain(UNUSABLE_TOOLCHAIN)
+            .with_separate_target_dir(),
+    );
+}
+
+#[test]
+fn custom_toolchain_via_proxy() {
+    test_unusable_toolchain(
+        TestCmd::with_proxy_toolchain(UNUSABLE_TOOLCHAIN).with_separate_target_dir(),
+    );
+}
+
+/// Test to make sure a custom toolchain can be used. Run the test with an
+/// unusable toolchain. If the command fails, we assume that the unusable
+/// toolchain was used, i.e. the test pass.
+///
+/// For more info on the rustup proxy mechanism, see
+/// <https://rust-lang.github.io/rustup/concepts/index.html#how-rustup-works>.
+fn test_unusable_toolchain(mut cmd: TestCmd) {
+    // Test against comprehensive_api, because we want any rustdoc JSON format
+    // incompatibilities to be detected
+    cmd.args([
+        "--manifest-path",
+        "../test-apis/comprehensive_api/Cargo.toml",
+    ]);
+    // The test uses a too old nightly toolchain, which should make the tool
+    // fail if it's used. If it fails, we assume the custom toolchain is being
+    // used.
+    cmd.assert().failure();
 }
 
 #[test]
@@ -185,6 +215,53 @@ fn subcommand_invocation_public_api_arg() {
     cmd.args(["-p", "public-api"]);
     cmd.assert()
         .stdout_or_bless("./tests/expected-output/public_api_list.txt")
+        .success();
+}
+
+/// The oldest nightly toolchain that we support. Sometimes the minimum toolchain
+/// required for tests is not the same as required for users, so allow tests to
+/// use a different toolchain if needed
+fn get_minimum_toolchain() -> String {
+    std::fs::read_to_string("../test-utils/MINIMUM_RUSTDOC_JSON_VERSION_FOR_TESTS")
+        .map(|s| s.trim().to_owned())
+        .ok()
+        .unwrap_or_else(|| MINIMUM_RUSTDOC_JSON_VERSION.to_owned())
+}
+
+#[test]
+fn minimal_toolchain_works() {
+    let mut cmd =
+        TestCmd::with_proxy_toolchain(&get_minimum_toolchain()).with_separate_target_dir();
+
+    // Test against comprehensive_api, because we want any rustdoc JSON format
+    // incompatibilities to be detected
+    cmd.args([
+        "--manifest-path",
+        "../test-apis/comprehensive_api/Cargo.toml",
+    ]);
+
+    cmd.assert()
+        .stdout_or_bless("../public-api/tests/expected-output/comprehensive_api.txt")
+        .success();
+}
+
+#[test]
+fn warn_when_using_beta() {
+    let mut cmd = TestCmd::with_proxy_toolchain("beta").with_separate_target_dir();
+
+    // Test against comprehensive_api, because we want any rustdoc JSON format
+    // incompatibilities to be detected
+    cmd.args([
+        "--manifest-path",
+        "../test-apis/comprehensive_api/Cargo.toml",
+    ]);
+
+    cmd.assert()
+        .stderr(contains("Warning: using the `beta"))
+        .stderr(contains(
+            "` toolchain for gathering the public api is not possible",
+        ))
+        .stdout_or_bless("../public-api/tests/expected-output/comprehensive_api.txt")
         .success();
 }
 
@@ -744,20 +821,84 @@ struct TestCmd {
     target_dir: Option<tempfile::TempDir>,
 }
 
+enum TestCmdType<'str> {
+    Subcommand { toolchain: Option<&'str str> },
+    Bin,
+}
+
+#[cfg(not(target_family = "windows"))]
+fn cargo_with_toolchain(toolchain: &str) -> std::process::Command {
+    let mut cmd = std::process::Command::new("cargo");
+    cmd.arg(format!("+{}", toolchain));
+    cmd
+}
+
+/// Workaround for [https://github.com/rust-lang/rustup/issues/3036](rustup
+/// 1.25: On Windows, nested cargo invocation with a toolchain specified fails).
+/// We only use it on Windows, because when possible we want this command to be
+/// as similar as possible to what real users use. And most users do
+/// ```bash
+/// cargo +toolchain public-api
+/// ```
+/// rather than
+/// ```bash
+/// rustup run toolchain cargo public-api
+/// ```
+#[cfg(target_family = "windows")]
+fn cargo_with_toolchain(toolchain: &str) -> std::process::Command {
+    let mut cmd = std::process::Command::new("rustup");
+    cmd.arg("run");
+    cmd.arg(toolchain);
+    cmd.arg("cargo");
+    cmd
+}
+
+impl From<TestCmdType<'_>> for Command {
+    fn from(cmd_type: TestCmdType) -> Self {
+        match cmd_type {
+            TestCmdType::Subcommand { toolchain } => {
+                test_utils::add_target_debug_to_path();
+
+                let mut cargo_cmd = if let Some(toolchain) = toolchain {
+                    cargo_with_toolchain(toolchain)
+                } else {
+                    std::process::Command::new("cargo")
+                };
+                cargo_cmd.arg("public-api");
+
+                Command::from_std(cargo_cmd)
+            }
+            TestCmdType::Bin => Command::cargo_bin("cargo-public-api").unwrap(),
+        }
+    }
+}
+
 impl TestCmd {
     /// `cargo-public-api --simplified`
     fn new() -> Self {
-        Self::new_impl(false, true)
+        Self::new_impl(TestCmdType::Bin, true)
     }
 
     /// `cargo public-api --simplified`
     fn as_subcommand() -> Self {
-        Self::new_impl(true, true)
+        Self::new_impl(TestCmdType::Subcommand { toolchain: None }, true)
     }
 
     /// `cargo public-api`
     fn as_subcommand_without_args() -> Self {
-        Self::new_impl(false, false)
+        Self::new_impl(TestCmdType::Subcommand { toolchain: None }, false)
+    }
+
+    /// `cargo +toolchain public-api --simplified`
+    /// Also installs the toolchain if it is not installed.
+    fn with_proxy_toolchain(toolchain: &str) -> Self {
+        ensure_toolchain_installed(toolchain);
+        Self::new_impl(
+            TestCmdType::Subcommand {
+                toolchain: Some(toolchain),
+            },
+            true,
+        )
     }
 
     /// Disable colors to make asserts on output insensitive to color codes.
@@ -766,15 +907,14 @@ impl TestCmd {
         self
     }
 
-    fn new_impl(as_subcommand: bool, simplified: bool) -> Self {
-        let mut cmd = if as_subcommand {
-            test_utils::add_target_debug_to_path();
-            let mut cmd = Command::from_std(std::process::Command::new("cargo"));
-            cmd.arg("public-api");
-            cmd
-        } else {
-            Command::cargo_bin("cargo-public-api").unwrap()
-        };
+    fn with_toolchain(mut self, toolchain: &str) -> Self {
+        ensure_toolchain_installed(toolchain);
+        self.cmd.arg("--toolchain").arg(toolchain);
+        self
+    }
+
+    fn new_impl(cmd_type: TestCmdType, simplified: bool) -> Self {
+        let mut cmd: Command = cmd_type.into();
 
         if simplified {
             // Simplify output since if we render all other items properly, the

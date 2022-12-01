@@ -54,3 +54,44 @@ fn add_to_path(dir: PathBuf) {
     path = std::env::join_paths(dirs).unwrap();
     std::env::set_var("PATH", path);
 }
+
+/// Installs a toolchain if it is not already installed.
+///
+/// Contains a workaround for <https://github.com/rust-lang/rustup/issues/988>
+///
+/// Since all tests that occasionally needs to install a new toolchain with
+/// `rustup` runs in the same process, use a process-global mutex to prevent
+/// concurrent rustup operations.
+pub fn ensure_toolchain_installed(toolchain: &str) {
+    static RUSTUP_MUTEX: std::sync::Mutex<()> = std::sync::Mutex::new(());
+    let _guard = RUSTUP_MUTEX.lock().unwrap();
+
+    if !is_toolchain_installed(toolchain) {
+        install_toolchain(toolchain);
+    }
+}
+
+fn is_toolchain_installed(toolchain: &str) -> bool {
+    std::process::Command::new("rustup")
+        .arg("run")
+        .arg(toolchain)
+        .arg("cargo")
+        .arg("--version")
+        .stdout(std::process::Stdio::null())
+        .stderr(std::process::Stdio::null())
+        .status()
+        .unwrap()
+        .success()
+}
+
+fn install_toolchain(toolchain: &str) {
+    std::process::Command::new("rustup")
+        .arg("toolchain")
+        .arg("install")
+        .arg("--no-self-update")
+        .arg("--profile")
+        .arg("minimal")
+        .arg(toolchain)
+        .status()
+        .unwrap();
+}

@@ -1,7 +1,7 @@
 // deny in CI, only warn here
 #![warn(clippy::all, clippy::pedantic)]
 
-use std::{fmt::Write, path::Path};
+use std::path::Path;
 
 use expect_test::expect_file;
 use public_api::{Error, Options, PublicApi};
@@ -11,6 +11,19 @@ use public_api::{Error, Options, PublicApi};
 mod test_utils;
 use tempfile::tempdir;
 use test_utils::rustdoc_json_path_for_crate;
+
+#[test]
+fn public_api() -> Result<(), Box<dyn std::error::Error>> {
+    let rustdoc_json = rustdoc_json::Builder::default()
+        .toolchain("nightly".to_owned())
+        .build()?;
+
+    let public_api = PublicApi::from_rustdoc_json(rustdoc_json, Options::default())?;
+
+    expect_test::expect_file!["../public-api.txt"].assert_eq(&public_api.to_string());
+
+    Ok(())
+}
 
 #[test]
 fn not_simplified() {
@@ -132,14 +145,11 @@ fn assert_public_api_impl(
     options.simplified = simplified;
     options.sorted = true;
 
-    let api = PublicApi::from_rustdoc_json(rustdoc_json, options).unwrap();
+    let api = PublicApi::from_rustdoc_json(rustdoc_json, options)
+        .unwrap()
+        .to_string();
 
-    let mut actual = String::new();
-    for item in api.items() {
-        writeln!(&mut actual, "{}", item).unwrap();
-    }
-
-    expect_file![expected_output.as_ref()].assert_eq(&actual);
+    expect_file![expected_output.as_ref()].assert_eq(&api);
 }
 
 /// To be honest this is mostly to get higher code coverage numbers.

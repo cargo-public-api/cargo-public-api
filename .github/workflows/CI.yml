@@ -55,16 +55,3 @@ jobs:
           profile: minimal
       - uses: Swatinem/rust-cache@v2
       - run: cargo test --locked
-
-  check-public-apis:
-    name: Check public APIs
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: nightly
-          profile: minimal
-      - uses: Swatinem/rust-cache@v2
-      - run: |
-          scripts/check-public-apis.sh

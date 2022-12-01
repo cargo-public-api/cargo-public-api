@@ -38,7 +38,7 @@ jobs:
         toolchain: nightly
         profile: minimal
     - uses: Swatinem/rust-cache@v2
-    - run: ./scripts/bless.sh
+    - run: ./scripts/bless-expected-output-for-tests.sh
     - id: latest-nightly
       run: echo "version=nightly-$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
     - run: |

@@ -3,13 +3,13 @@
 
 use std::{fmt::Write, path::Path};
 
+use expect_test::expect_file;
 use public_api::{Error, Options, PublicApi};
 
 // rust-analyzer bug: https://github.com/rust-lang/rust-analyzer/issues/9173
 #[path = "../../test-utils/src/lib.rs"]
 mod test_utils;
 use tempfile::tempdir;
-use test_utils::assert_eq_or_bless;
 use test_utils::rustdoc_json_path_for_crate;
 
 #[test]
@@ -19,7 +19,7 @@ fn not_simplified() {
 
     assert_public_api_not_simplified(
         rustdoc_json_path_for_crate("../test-apis/example_api-v0.2.0", &build_dir),
-        "./tests/expected-output/example_api-v0.2.0-not-simplified.txt",
+        "./expected-output/example_api-v0.2.0-not-simplified.txt",
     );
 }
 
@@ -32,7 +32,7 @@ fn diff_with_added_items() {
     assert_public_api_diff(
         rustdoc_json_path_for_crate("../test-apis/example_api-v0.1.0", &build_dir),
         rustdoc_json_path_for_crate("../test-apis/example_api-v0.2.0", &build_dir2),
-        "./tests/expected-output/diff_with_added_items.txt",
+        "./expected-output/diff_with_added_items.txt",
     );
 }
 
@@ -46,7 +46,7 @@ fn no_diff() {
     assert_public_api_diff(
         rustdoc_json_path_for_crate("../test-apis/comprehensive_api", &build_dir),
         rustdoc_json_path_for_crate("../test-apis/comprehensive_api", &build_dir2),
-        "./tests/expected-output/no_diff.txt",
+        "./expected-output/no_diff.txt",
     );
 }
 
@@ -59,7 +59,7 @@ fn diff_with_removed_items() {
     assert_public_api_diff(
         rustdoc_json_path_for_crate("../test-apis/example_api-v0.2.0", &build_dir2),
         rustdoc_json_path_for_crate("../test-apis/example_api-v0.1.0", &build_dir),
-        "./tests/expected-output/diff_with_removed_items.txt",
+        "./expected-output/diff_with_removed_items.txt",
     );
 }
 
@@ -70,7 +70,7 @@ fn comprehensive_api() {
 
     assert_public_api(
         rustdoc_json_path_for_crate("../test-apis/comprehensive_api", &build_dir),
-        "./tests/expected-output/comprehensive_api.txt",
+        "./expected-output/comprehensive_api.txt",
     );
 }
 
@@ -81,7 +81,7 @@ fn comprehensive_api_proc_macro() {
 
     assert_public_api(
         rustdoc_json_path_for_crate("../test-apis/comprehensive_api_proc_macro", &build_dir),
-        "./tests/expected-output/comprehensive_api_proc_macro.txt",
+        "./expected-output/comprehensive_api_proc_macro.txt",
     );
 }
 
@@ -112,8 +112,7 @@ fn assert_public_api_diff(
     let new = PublicApi::from_rustdoc_json(new_json, Options::default()).unwrap();
 
     let diff = public_api::diff::PublicApiDiff::between(old, new);
-    let pretty_printed = format!("{:#?}", diff);
-    assert_eq_or_bless(&pretty_printed, expected);
+    expect_file![expected.as_ref()].assert_debug_eq(&diff);
 }
 
 fn assert_public_api(json: impl AsRef<Path>, expected: impl AsRef<Path>) {
@@ -140,7 +139,7 @@ fn assert_public_api_impl(
         writeln!(&mut actual, "{}", item).unwrap();
     }
 
-    assert_eq_or_bless(&actual, expected_output);
+    expect_file![expected_output.as_ref()].assert_eq(&actual);
 }
 
 /// To be honest this is mostly to get higher code coverage numbers.

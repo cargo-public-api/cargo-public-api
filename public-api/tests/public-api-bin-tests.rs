@@ -18,7 +18,7 @@ use test_utils::rustdoc_json_path_for_crate;
 fn print_public_api() {
     cmd_with_rustdoc_json_args(&["../test-apis/comprehensive_api"], |mut cmd| {
         cmd.assert()
-            .stdout_or_bless("./tests/expected-output/comprehensive_api.txt")
+            .stdout_or_bless("../../public-api/tests/expected-output/comprehensive_api.txt")
             .stderr("")
             .success();
     });
@@ -28,7 +28,9 @@ fn print_public_api() {
 fn print_public_api_not_simplified() {
     cmd_with_rustdoc_json_args_not_simplified(&["../test-apis/example_api-v0.2.0"], |mut cmd| {
         cmd.assert()
-            .stdout_or_bless("./tests/expected-output/example_api-v0.2.0-not-simplified")
+            .stdout_or_bless(
+                "../../public-api/tests/expected-output/example_api-v0.2.0-not-simplified",
+            )
             .stderr("")
             .success();
     });
@@ -43,7 +45,7 @@ fn print_diff() {
         ],
         |mut cmd| {
             cmd.assert()
-                .stdout_or_bless("./tests/expected-output/print_diff.txt")
+                .stdout_or_bless("../../public-api/tests/expected-output/print_diff.txt")
                 .stderr("")
                 .success();
         },
@@ -59,7 +61,7 @@ fn print_diff_reversed() {
         ],
         |mut cmd| {
             cmd.assert()
-                .stdout_or_bless("./tests/expected-output/print_diff_reversed.txt")
+                .stdout_or_bless("../../public-api/tests/expected-output/print_diff_reversed.txt")
                 .stderr("")
                 .success();
         },
@@ -75,7 +77,7 @@ fn print_no_diff() {
         ],
         |mut cmd| {
             cmd.assert()
-                .stdout_or_bless("./tests/expected-output/print_no_diff.txt")
+                .stdout_or_bless("../../public-api/tests/expected-output/print_no_diff.txt")
                 .stderr("")
                 .success();
         },

@@ -105,6 +105,7 @@ dependencies = [
  "clap",
  "diff",
  "dirs",
+ "expect-test",
  "nu-ansi-term",
  "predicates",
  "pretty_assertions",
@@ -221,6 +222,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "dissimilar"
+version = "1.0.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8c97b9233581d84b8e1e689cdd3a47b6f69770084fc246e86a7f78b0d9c1d4a5"
+
+[[package]]
 name = "doc-comment"
 version = "0.3.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -251,6 +258,16 @@ checksum = "aa68f1b12764fab894d2755d2518754e71b4fd80ecfb822714a1206c2aab39bf"
 dependencies = [
  "cc",
  "libc",
+]
+
+[[package]]
+name = "expect-test"
+version = "1.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1d4661aca38d826eb7c72fe128e4238220616de4c0cc00db7bfc38e2e1364dd3"
+dependencies = [
+ "dissimilar",
+ "once_cell",
 ]
 
 [[package]]
@@ -506,6 +523,7 @@ version = "0.24.0"
 dependencies = [
  "anyhow",
  "assert_cmd",
+ "expect-test",
  "hashbag",
  "itertools",
  "pretty_assertions",
@@ -728,6 +746,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "assert_cmd",
+ "expect-test",
  "pretty_assertions",
  "rustdoc-json",
  "tempfile",

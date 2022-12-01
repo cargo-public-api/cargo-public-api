@@ -23,7 +23,6 @@ mod test_utils;
 use public_api::MINIMUM_RUSTDOC_JSON_VERSION;
 use tempfile::tempdir;
 use test_utils::assert_or_bless::AssertOrBless;
-use test_utils::ensure_toolchain_installed;
 use test_utils::rustdoc_json_path_for_crate;
 
 #[path = "../src/git_utils.rs"] // Say NO to copy-paste!
@@ -892,7 +891,7 @@ impl TestCmd {
     /// `cargo +toolchain public-api --simplified`
     /// Also installs the toolchain if it is not installed.
     fn with_proxy_toolchain(toolchain: &str) -> Self {
-        ensure_toolchain_installed(toolchain);
+        rustup_toolchain::ensure_installed(toolchain).unwrap();
         Self::new_impl(
             TestCmdType::Subcommand {
                 toolchain: Some(toolchain),
@@ -908,7 +907,7 @@ impl TestCmd {
     }
 
     fn with_toolchain(mut self, toolchain: &str) -> Self {
-        ensure_toolchain_installed(toolchain);
+        rustup_toolchain::ensure_installed(toolchain).unwrap();
         self.cmd.arg("--toolchain").arg(toolchain);
         self
     }

@@ -29,6 +29,10 @@ version = "0.7.0"
 path = "../public-api"
 version = "0.24.0"
 
+[dev-dependencies.rustup-toolchain]
+path = "../rustup-toolchain"
+version = "0.1.0"
+
 [dev-dependencies]
 assert_cmd = "2.0.4"
 predicates = "2.1.1"

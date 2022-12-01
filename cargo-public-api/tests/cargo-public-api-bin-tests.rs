@@ -100,10 +100,13 @@ fn test_unusable_toolchain(mut cmd: TestCmd) {
         "--manifest-path",
         "../test-apis/comprehensive_api/Cargo.toml",
     ]);
+
     // The test uses a too old nightly toolchain, which should make the tool
     // fail if it's used. If it fails, we assume the custom toolchain is being
     // used.
-    cmd.assert().failure();
+    cmd.assert()
+        .stderr(contains("Failed to build rustdoc JSON"))
+        .failure();
 }
 
 #[test]

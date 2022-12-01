@@ -58,7 +58,7 @@ fn list_public_items() {
 
     cmd.args(["--manifest-path", "../public-api/Cargo.toml"]);
     cmd.assert()
-        .stdout_or_bless("./tests/expected-output/public_api_list.txt")
+        .stdout_or_bless("../../cargo-public-api/tests/expected-output/public_api_list.txt")
         .success();
 }
 
@@ -67,7 +67,7 @@ fn list_public_items_with_lint_error() {
     let mut cmd = TestCmd::new().with_separate_target_dir();
     cmd.args(["--manifest-path", "../test-apis/lint_error/Cargo.toml"]);
     cmd.assert()
-        .stdout_or_bless("./tests/expected-output/lint_error_list.txt")
+        .stdout_or_bless("../../cargo-public-api/tests/expected-output/lint_error_list.txt")
         .success();
 }
 
@@ -116,7 +116,7 @@ fn list_public_items_explicit_manifest_path() {
     cmd.arg("--manifest-path");
     cmd.arg(&test_repo_manifest);
     cmd.assert()
-        .stdout_or_bless("./tests/expected-output/example_api-v0.3.0.txt")
+        .stdout_or_bless("../../cargo-public-api/tests/expected-output/example_api-v0.3.0.txt")
         .success();
 }
 
@@ -129,7 +129,7 @@ fn list_public_items_via_package_spec() {
     cmd.arg("--package");
     cmd.arg("specific-crate");
     cmd.assert()
-        .stdout_or_bless("./tests/expected-output/specific-crate.txt")
+        .stdout_or_bless("../../cargo-public-api/tests/expected-output/specific-crate.txt")
         .success();
 }
 
@@ -154,7 +154,7 @@ fn target_arg() {
     cmd.arg("--target");
     cmd.arg(get_host_target_triple());
     cmd.assert()
-        .stdout_or_bless("./tests/expected-output/test_repo_api_latest.txt")
+        .stdout_or_bless("../../cargo-public-api/tests/expected-output/test_repo_api_latest.txt")
         .success();
 }
 
@@ -179,7 +179,9 @@ fn subcommand_invocation() {
         .without_cargo_colors()
         .with_test_repo();
     cmd.assert()
-        .stdout_or_bless("./tests/expected-output/test_repo_api_latest_not_simplified.txt")
+        .stdout_or_bless(
+            "../../cargo-public-api/tests/expected-output/test_repo_api_latest_not_simplified.txt",
+        )
         // Sanity check that rustdoc JSON build progress is shown to users, i.e.
         // that we do not swallow stderr from the cargo rustdoc JSON building
         // subprocess
@@ -196,7 +198,7 @@ fn subcommand_invocation_external_manifest() {
         "../test-apis/example_api-v0.3.0/Cargo.toml",
     ]);
     cmd.assert()
-        .stdout_or_bless("./tests/expected-output/example_api-v0.3.0.txt")
+        .stdout_or_bless("../../cargo-public-api/tests/expected-output/example_api-v0.3.0.txt")
         .success();
 }
 
@@ -213,7 +215,7 @@ fn subcommand_invocation_public_api_arg() {
     cmd.current_dir(".."); // Enter git repo root so -p starts working
     cmd.args(["-p", "public-api"]);
     cmd.assert()
-        .stdout_or_bless("./tests/expected-output/public_api_list.txt")
+        .stdout_or_bless("../../cargo-public-api/tests/expected-output/public_api_list.txt")
         .success();
 }
 
@@ -240,7 +242,7 @@ fn minimal_toolchain_works() {
     ]);
 
     cmd.assert()
-        .stdout_or_bless("../public-api/tests/expected-output/comprehensive_api.txt")
+        .stdout_or_bless("../../public-api/tests/expected-output/comprehensive_api.txt")
         .success();
 }
 
@@ -260,7 +262,7 @@ fn warn_when_using_beta() {
         .stderr(contains(
             "` toolchain for gathering the public api is not possible",
         ))
-        .stdout_or_bless("../public-api/tests/expected-output/comprehensive_api.txt")
+        .stdout_or_bless("../../public-api/tests/expected-output/comprehensive_api.txt")
         .success();
 }
 
@@ -282,7 +284,9 @@ fn diff_public_items_impl(diff_arg: &str) {
     cmd.arg("v0.2.0");
     cmd.arg("v0.3.0");
     cmd.assert()
-        .stdout_or_bless("./tests/expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt")
+        .stdout_or_bless(
+            "../../cargo-public-api/tests/expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt",
+        )
         .success();
     let branch_after = git_utils::current_branch(&test_repo_path).unwrap().unwrap();
 
@@ -309,7 +313,9 @@ fn diff_public_items_detached_head() {
     cmd.arg("v0.2.0");
     cmd.arg("v0.3.0");
     cmd.assert()
-        .stdout_or_bless("./tests/expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt")
+        .stdout_or_bless(
+            "../../cargo-public-api/tests/expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt",
+        )
         .success();
 
     let after = git_utils::current_commit(path).unwrap();
@@ -349,7 +355,9 @@ fn diff_public_items_with_dirty_tree_succeedes_with_force_option() {
     cmd.arg("v0.3.0");
     cmd.arg("--force-git-checkouts");
     cmd.assert()
-        .stdout_or_bless("./tests/expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt")
+        .stdout_or_bless(
+            "../../cargo-public-api/tests/expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt",
+        )
         .success();
 }
 
@@ -371,7 +379,9 @@ fn diff_public_items_relative_refs() {
     cmd.arg("HEAD^");
     cmd.arg("HEAD");
     cmd.assert()
-        .stdout_or_bless("./tests/expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt")
+        .stdout_or_bless(
+            "../../cargo-public-api/tests/expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt",
+        )
         .success();
 
     let after = git_utils::current_commit(path).unwrap();
@@ -443,7 +453,9 @@ fn deny_added_with_diff() {
     cmd.arg("v0.2.0");
     cmd.arg("--deny=added");
     cmd.assert()
-        .stdout_or_bless("./tests/expected-output/example_api_diff_v0.1.0_to_v0.2.0.txt")
+        .stdout_or_bless(
+            "../../cargo-public-api/tests/expected-output/example_api_diff_v0.1.0_to_v0.2.0.txt",
+        )
         .failure();
 }
 
@@ -496,7 +508,9 @@ fn diff_public_items_with_manifest_path() {
     cmd.arg("v0.2.0");
     cmd.arg("v0.3.0");
     cmd.assert()
-        .stdout_or_bless("./tests/expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt")
+        .stdout_or_bless(
+            "../../cargo-public-api/tests/expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt",
+        )
         .success();
 }
 
@@ -523,7 +537,7 @@ fn diff_public_items_with_color() {
     cmd.arg("v0.1.0");
     cmd.arg("v0.2.0");
     cmd.assert()
-        .stdout_or_bless("./tests/expected-output/example_api_diff_v0.1.0_to_v0.2.0_colored.txt")
+        .stdout_or_bless("../../cargo-public-api/tests/expected-output/example_api_diff_v0.1.0_to_v0.2.0_colored.txt")
         .success();
 }
 
@@ -532,7 +546,9 @@ fn list_public_items_with_color() {
     let mut cmd = TestCmd::new().with_test_repo();
     cmd.arg("--color=always");
     cmd.assert()
-        .stdout_or_bless("./tests/expected-output/example_api_v0.3.0_colored.txt")
+        .stdout_or_bless(
+            "../../cargo-public-api/tests/expected-output/example_api_v0.3.0_colored.txt",
+        )
         .success();
 }
 
@@ -557,7 +573,9 @@ fn diff_public_items_from_files_impl(diff_arg: &str) {
     cmd.arg(old);
     cmd.arg(new);
     cmd.assert()
-        .stdout_or_bless("./tests/expected-output/example_api_diff_v0.1.0_to_v0.2.0.txt")
+        .stdout_or_bless(
+            "../../cargo-public-api/tests/expected-output/example_api_diff_v0.1.0_to_v0.2.0.txt",
+        )
         .success();
 }
 
@@ -587,7 +605,7 @@ fn diff_published_impl(diff_arg: &str, spec: &str) {
     cmd.arg(diff_arg);
     cmd.arg(spec);
     cmd.assert()
-        .stdout_or_bless("./tests/expected-output/diff_published.txt")
+        .stdout_or_bless("../../cargo-public-api/tests/expected-output/diff_published.txt")
         .success();
 }
 
@@ -599,7 +617,7 @@ fn diff_published_explicit_package() {
     cmd.arg("--diff-published");
     cmd.arg("@0.1.0");
     cmd.assert()
-        .stdout_or_bless("./tests/expected-output/diff_published.txt")
+        .stdout_or_bless("../../cargo-public-api/tests/expected-output/diff_published.txt")
         .success();
 }
 
@@ -613,7 +631,7 @@ fn list_public_items_from_json_file() {
     cmd.arg("--rustdoc-json");
     cmd.arg(json_file);
     cmd.assert()
-        .stdout_or_bless("./tests/expected-output/example_api-v0.3.0.txt")
+        .stdout_or_bless("../../cargo-public-api/tests/expected-output/example_api-v0.3.0.txt")
         .success();
 }
 
@@ -768,7 +786,7 @@ fn test_features(features: &F) {
 
     cmd.assert()
         .stdout_or_bless(&format!(
-            "./tests/expected-output/features-feat{features}.txt"
+            "../../cargo-public-api/tests/expected-output/features-feat{features}.txt"
         ))
         .success();
 }

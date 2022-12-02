@@ -1,3 +1,5 @@
+#![allow(unused)] // Used from many crates, but not all crates use all functions.
+
 use std::{
     path::{Path, PathBuf},
     process::Command,
@@ -6,10 +8,7 @@ use std::{
 use anyhow::{anyhow, Context, Result};
 
 /// Synchronously do a `git checkout` of `commit`.
-/// Returns the name of the original branch/commit.
-pub fn git_checkout(commit: &str, git_root: &Path, quiet: bool, force: bool) -> Result<String> {
-    let original_branch = current_branch_or_commit(git_root)?;
-
+pub fn git_checkout(git_root: &Path, commit: &str, quiet: bool, force: bool) -> Result<()> {
     let mut command = Command::new("git");
     command.current_dir(git_root);
     command.args(["checkout", commit]);
@@ -20,7 +19,7 @@ pub fn git_checkout(commit: &str, git_root: &Path, quiet: bool, force: bool) -> 
         command.arg("--force");
     }
     if command.spawn()?.wait()?.success() {
-        Ok(original_branch)
+        Ok(())
     } else {
         Err(anyhow!(
             "Failed to `git checkout {}`, see error message on stdout/stderr.",
@@ -30,7 +29,6 @@ pub fn git_checkout(commit: &str, git_root: &Path, quiet: bool, force: bool) -> 
 }
 
 /// Goes up the chain of parents and looks for a `.git` dir.
-#[allow(unused)] // It IS used!
 pub fn git_root_from_manifest_path(manifest_path: &Path) -> Result<PathBuf> {
     let err_fn = || anyhow!("No `.git` dir when starting from `{:?}`.", &manifest_path);
     let start = std::fs::canonicalize(manifest_path).with_context(err_fn)?;
@@ -87,7 +85,6 @@ fn trimmed_stdout(mut cmd: Command) -> Result<String> {
 
 /// Resolves a git reference provided at the CLI to an actual commit, allowing
 /// us to validate refs and use "relative" values like HEAD and more.
-#[allow(unused)] // It IS used!
 pub fn resolve_ref(path: impl AsRef<Path>, committish: &str) -> Result<String> {
     trimmed_git_stdout(path, &["rev-parse", committish])
 }

@@ -306,7 +306,7 @@ fn diff_public_items_detached_head() {
 
     // Detach HEAD
     let path = test_repo.path();
-    git_utils::git_checkout("v0.1.1", path, true, false).unwrap();
+    git_utils::git_checkout(path, "v0.1.1", true, false).unwrap();
     assert_eq!(None, git_utils::current_branch(path).unwrap());
     let before = git_utils::current_commit(path).unwrap();
 
@@ -372,7 +372,7 @@ fn diff_public_items_relative_refs() {
 
     // Pick a specific commit to serve as our HEAD
     let path = test_repo.path();
-    git_utils::git_checkout("v0.3.0", path, true, false).unwrap();
+    git_utils::git_checkout(path, "v0.3.0", true, false).unwrap();
     assert_eq!(None, git_utils::current_branch(path).unwrap());
     let before = git_utils::current_commit(path).unwrap();
 

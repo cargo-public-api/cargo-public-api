@@ -6,6 +6,7 @@ use std::path::{Path, PathBuf};
 
 use anyhow::{anyhow, Context, Result};
 use arg_types::{Color, DenyMethod};
+use git_utils::current_branch_or_commit;
 use plain::Plain;
 use public_api::diff::PublicApiDiff;
 use public_api::{Options, PublicApi, MINIMUM_RUSTDOC_JSON_VERSION};
@@ -321,14 +322,17 @@ fn print_diff_between_two_commits(
     let old_commit = git_utils::resolve_ref(&args.git_root()?, old_commit)?;
     let new_commit = git_utils::resolve_ref(&args.git_root()?, new_commit)?;
 
-    // Checkout the first commit and remember the branch so we can restore it
+    // Remember the branch so we can restore it
     let force = args.force_git_checkouts;
-    let original_branch = git_checkout(args, force, &old_commit)?;
-    let old = public_api_for_current_dir(args)?;
+    let original_branch = current_branch_or_commit(&args.git_root()?)?;
     final_actions.push(Action::RestoreBranch {
         name: original_branch,
         force,
     });
+
+    // Checkout the first commit
+    git_checkout(args, force, &old_commit)?;
+    let old = public_api_for_current_dir(args)?;
 
     // Checkout the second commit
     git_checkout(args, force, &new_commit)?;
@@ -460,8 +464,8 @@ fn get_options(args: &Args) -> Options {
 /// Helper to reduce code duplication. We can't add [`Args`] to
 /// [`git_utils::git_checkout()`] itself, because it is used in contexts where
 /// [`Args`] is not available (namely in tests).
-fn git_checkout(args: &Args, force: bool, commit: &str) -> Result<String> {
-    git_utils::git_checkout(commit, &args.git_root()?, !args.verbose, force)
+fn git_checkout(args: &Args, force: bool, commit: &str) -> Result<()> {
+    git_utils::git_checkout(&args.git_root()?, commit, !args.verbose, force)
 }
 
 /// Builds the public API for the library in the current working directory. Note

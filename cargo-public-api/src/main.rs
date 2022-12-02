@@ -215,7 +215,7 @@ pub enum Action {
     /// Doing a `--diff-git-checkouts` involves doing `git checkout`s.
     /// Afterwards, we want to restore the original branch the user was on, to
     /// not mess up their work tree.
-    RestoreBranch { name: String, force: bool },
+    RestoreBranch { name: String },
 }
 
 // Validate that the toolchain does not start with a `+` character.
@@ -323,19 +323,17 @@ fn print_diff_between_two_commits(
     let new_commit = git_utils::resolve_ref(&args.git_root()?, new_commit)?;
 
     // Remember the branch so we can restore it
-    let force = args.force_git_checkouts;
     let original_branch = current_branch_or_commit(&args.git_root()?)?;
     final_actions.push(Action::RestoreBranch {
         name: original_branch,
-        force,
     });
 
     // Checkout the first commit
-    git_checkout(args, force, &old_commit)?;
+    git_checkout(args, &old_commit)?;
     let old = public_api_for_current_dir(args)?;
 
     // Checkout the second commit
-    git_checkout(args, force, &new_commit)?;
+    git_checkout(args, &new_commit)?;
     let new = public_api_for_current_dir(args)?;
 
     // Calculate the diff
@@ -384,8 +382,8 @@ impl Action {
             Action::CheckDiff { deny, diff } => {
                 check_diff(deny, diff)?;
             }
-            Action::RestoreBranch { name, force } => {
-                git_checkout(args, *force, name)?;
+            Action::RestoreBranch { name } => {
+                git_checkout(args, name)?;
             }
         };
         Ok(())
@@ -464,8 +462,13 @@ fn get_options(args: &Args) -> Options {
 /// Helper to reduce code duplication. We can't add [`Args`] to
 /// [`git_utils::git_checkout()`] itself, because it is used in contexts where
 /// [`Args`] is not available (namely in tests).
-fn git_checkout(args: &Args, force: bool, commit: &str) -> Result<()> {
-    git_utils::git_checkout(&args.git_root()?, commit, !args.verbose, force)
+fn git_checkout(args: &Args, commit: &str) -> Result<()> {
+    git_utils::git_checkout(
+        &args.git_root()?,
+        commit,
+        !args.verbose,
+        args.force_git_checkouts,
+    )
 }
 
 /// Builds the public API for the library in the current working directory. Note

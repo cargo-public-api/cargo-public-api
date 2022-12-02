@@ -4,16 +4,16 @@
 use std::io::stdout;
 use std::path::{Path, PathBuf};
 
-use anyhow::{anyhow, Context, Result};
+use anyhow::{anyhow, Result};
+use api_source::{ApiSource, Commit, CurrentDir, PublishedCrate, RustdocJson};
 use arg_types::{Color, DenyMethod};
 use git_utils::current_branch_or_commit;
 use plain::Plain;
 use public_api::diff::PublicApiDiff;
-use public_api::{Options, PublicApi, MINIMUM_RUSTDOC_JSON_VERSION};
 
 use clap::Parser;
-use rustdoc_json::BuildError;
 
+mod api_source;
 mod arg_types;
 mod error;
 mod git_utils;
@@ -203,6 +203,17 @@ pub struct Args {
     cap_lints: Option<String>,
 }
 
+/// If we should list or diff, and what we should list or diff.
+enum MainTask {
+    PrintList {
+        api: Box<dyn ApiSource>,
+    },
+    PrintDiff {
+        old_api: Box<dyn ApiSource>,
+        new_api: Box<dyn ApiSource>,
+    },
+}
+
 /// This represents an action that we want to do at some point.
 pub enum Action {
     /// The `--deny` arg allows the user to disallow the occurrence of API
@@ -234,8 +245,30 @@ fn main_() -> Result<()> {
     // examples: restore a git branch or check that a diff is allowed
     let mut final_actions = vec![];
 
-    let result = list_or_diff(&args, &mut final_actions);
+    // Now figure out if we should list the public API or diff the public API
+    let main_task = list_or_diff(&args)?;
 
+    // If the task we are going to do shortly involves checking out a different
+    // commit, set up a restoration of the current branch
+    if main_task.changes_commit() {
+        final_actions.push(Action::RestoreBranch {
+            name: current_branch_or_commit(&args.git_root()?)?,
+        });
+    }
+
+    // Now we perform the main task
+    let result = match main_task {
+        MainTask::PrintList { api } => print_public_items(&args, api.as_ref()),
+        MainTask::PrintDiff { old_api, new_api } => print_diff(
+            &args,
+            old_api.as_ref(),
+            new_api.as_ref(),
+            &mut final_actions,
+        ),
+    };
+
+    // Handle any final actions, such as checking the diff and restoring the
+    // original git branch
     for action in final_actions {
         action.perform(&args)?;
     }
@@ -243,29 +276,31 @@ fn main_() -> Result<()> {
     result
 }
 
-fn list_or_diff(args: &Args, final_actions: &mut Vec<Action>) -> Result<()> {
-    if let Some(commits) = &args.diff_git_checkouts {
-        print_diff_between_two_commits(args, commits, final_actions)
+fn list_or_diff(args: &Args) -> Result<MainTask> {
+    let main_task = if let Some(commits) = &args.diff_git_checkouts {
+        let old = commits
+            .get(0)
+            .ok_or_else(|| anyhow!("Missing first commit! See --help"))?;
+        let new = commits
+            .get(1)
+            .ok_or_else(|| anyhow!("Missing second commit! See --help"))?;
+
+        MainTask::print_diff(Commit::new(args, old)?, Commit::new(args, new)?)
     } else if let Some(files) = &args.diff_rustdoc_json {
         // clap ensures both args exists if we get here
-        print_diff_between_two_rustdoc_json_files(
-            args,
-            files.get(0).unwrap(),
-            files.get(1).unwrap(),
-            final_actions,
-        )
+        let old = files.get(0).unwrap();
+        let new = files.get(1).unwrap();
+
+        MainTask::print_diff(RustdocJson::new(old.into()), RustdocJson::new(new.into()))
     } else if let Some(package_spec) = &args.diff_published {
-        print_diff_between_two_rustdoc_json_files(
-            args,
-            &published_crate::build_rustdoc_json(package_spec, args)?,
-            &rustdoc_json_for_current_dir(args)?,
-            final_actions,
-        )
+        MainTask::print_diff(PublishedCrate::new(package_spec), CurrentDir)
     } else if let Some(rustdoc_json) = &args.rustdoc_json {
-        print_public_items_from_json(args, rustdoc_json)
+        MainTask::print_list(RustdocJson::new(rustdoc_json.into()))
     } else {
-        print_public_items_of_current_dir(args)
-    }
+        MainTask::print_list(CurrentDir)
+    };
+
+    Ok(main_task)
 }
 
 /// We were requested to deny diffs, so make sure there is no diff
@@ -290,78 +325,20 @@ fn check_diff(deny: &[DenyMethod], diff: &PublicApiDiff) -> Result<()> {
     }
 }
 
-fn print_public_items_of_current_dir(args: &Args) -> Result<()> {
-    let public_api = public_api_for_current_dir(args)?;
-    print_public_items(args, &public_api)
-}
-
-fn print_public_items_from_json(args: &Args, json_path: &str) -> Result<()> {
-    let public_api = public_api_from_rustdoc_json_path(json_path, args)?;
-    print_public_items(args, &public_api)
-}
-
-fn print_public_items(args: &Args, public_api: &PublicApi) -> Result<()> {
-    Plain::print_items(&mut stdout(), args, public_api.items())?;
-
-    Ok(())
-}
-
-fn print_diff_between_two_commits(
-    args: &Args,
-    commits: &[String],
-    final_actions: &mut Vec<Action>,
-) -> Result<()> {
-    let old_commit = commits
-        .get(0)
-        .ok_or_else(|| anyhow!("Missing first commit! See --help"))?;
-    let new_commit = commits
-        .get(1)
-        .ok_or_else(|| anyhow!("Missing second commit! See --help"))?;
-
-    // Validate provided commits and resolve relative refs like HEAD to actual commits
-    let old_commit = git_utils::resolve_ref(&args.git_root()?, old_commit)?;
-    let new_commit = git_utils::resolve_ref(&args.git_root()?, new_commit)?;
-
-    // Remember the branch so we can restore it
-    let original_branch = current_branch_or_commit(&args.git_root()?)?;
-    final_actions.push(Action::RestoreBranch {
-        name: original_branch,
-    });
-
-    // Checkout the first commit
-    git_checkout(args, &old_commit)?;
-    let old = public_api_for_current_dir(args)?;
-
-    // Checkout the second commit
-    git_checkout(args, &new_commit)?;
-    let new = public_api_for_current_dir(args)?;
-
-    // Calculate the diff
-    print_diff(args, old, new, final_actions)?;
-
-    Ok(())
-}
-
-fn print_diff_between_two_rustdoc_json_files(
-    args: &Args,
-    old_file: impl AsRef<Path>,
-    new_file: impl AsRef<Path>,
-    final_actions: &mut Vec<Action>,
-) -> Result<()> {
-    let old = public_api_from_rustdoc_json_path(old_file, args)?;
-    let new = public_api_from_rustdoc_json_path(new_file, args)?;
-
-    print_diff(args, old, new, final_actions)?;
+fn print_public_items(args: &Args, public_api: &dyn ApiSource) -> Result<()> {
+    Plain::print_items(&mut stdout(), args, public_api.obtain_api(args)?.items())?;
 
     Ok(())
 }
 
 fn print_diff(
     args: &Args,
-    old: PublicApi,
-    new: PublicApi,
+    old: &dyn ApiSource,
+    new: &dyn ApiSource,
     final_actions: &mut Vec<Action>,
 ) -> Result<()> {
+    let old = old.obtain_api(args)?;
+    let new = new.obtain_api(args)?;
     let diff = PublicApiDiff::between(old, new);
 
     Plain::print_diff(&mut stdout(), args, &diff)?;
@@ -374,6 +351,28 @@ fn print_diff(
     }
 
     Ok(())
+}
+
+impl MainTask {
+    fn print_list(api: impl ApiSource + 'static) -> MainTask {
+        Self::PrintList { api: Box::new(api) }
+    }
+
+    fn print_diff(old_api: impl ApiSource + 'static, new_api: impl ApiSource + 'static) -> Self {
+        Self::PrintDiff {
+            old_api: Box::new(old_api),
+            new_api: Box::new(new_api),
+        }
+    }
+
+    fn changes_commit(&self) -> bool {
+        match self {
+            MainTask::PrintDiff { old_api, new_api } => {
+                old_api.changes_commit() || new_api.changes_commit()
+            }
+            MainTask::PrintList { api } => api.changes_commit(),
+        }
+    }
 }
 
 impl Action {
@@ -449,16 +448,6 @@ fn resolve_diff_shorthand(args: &mut Args, diff_args: Vec<String>) {
     }
 }
 
-/// Figure out what [`Options`] to pass to
-/// [`public_api::PublicApi::from_rustdoc_json_str`] based on our
-/// [`Args`]
-fn get_options(args: &Args) -> Options {
-    let mut options = Options::default();
-    options.debug_sorting = args.debug_sorting;
-    options.simplified = args.simplified;
-    options
-}
-
 /// Helper to reduce code duplication. We can't add [`Args`] to
 /// [`git_utils::git_checkout()`] itself, because it is used in contexts where
 /// [`Args`] is not available (namely in tests).
@@ -469,101 +458,6 @@ fn git_checkout(args: &Args, commit: &str) -> Result<()> {
         !args.verbose,
         args.force_git_checkouts,
     )
-}
-
-/// Builds the public API for the library in the current working directory. Note
-/// that we sometimes checkout a different commit before invoking this function,
-/// which means it will return the public API of that commit.
-fn public_api_for_current_dir(args: &Args) -> Result<PublicApi, anyhow::Error> {
-    let json_path = rustdoc_json_for_current_dir(args)?;
-    public_api_from_rustdoc_json_path(json_path, args)
-}
-
-/// Builds the rustdoc JSON for the library in the current working directory.
-/// Also see [`public_api_for_current_dir()`].
-fn rustdoc_json_for_current_dir(args: &Args) -> Result<PathBuf, anyhow::Error> {
-    let builder = builder_from_args(args);
-    build_rustdoc_json(builder)
-}
-
-/// Creates a rustdoc JSON builder based on the args to this program.
-fn builder_from_args(args: &Args) -> rustdoc_json::Builder {
-    let mut builder = rustdoc_json::Builder::default()
-        .toolchain(args.toolchain.clone())
-        .manifest_path(&args.manifest_path)
-        .all_features(args.all_features)
-        .no_default_features(args.no_default_features)
-        .features(&args.features);
-    if let Some(target_dir) = &args.target_dir {
-        builder = builder.target_dir(target_dir.clone());
-    }
-    if let Some(target) = &args.target {
-        builder = builder.target(target.clone());
-    }
-    if let Some(package) = &args.package {
-        builder = builder.package(package);
-    }
-    if let Some(cap_lints) = &args.cap_lints {
-        builder = builder.cap_lints(Some(cap_lints));
-    }
-    builder
-}
-
-/// Helper to build rustdoc JSON with a builder while also handling any virtual
-/// manifest errors.
-fn build_rustdoc_json(builder: rustdoc_json::Builder) -> Result<PathBuf, anyhow::Error> {
-    match builder.build() {
-        Err(BuildError::VirtualManifest(manifest_path)) => virtual_manifest_error(&manifest_path),
-        res => Ok(res?),
-    }
-}
-
-fn public_api_from_rustdoc_json_path<T: AsRef<Path>>(
-    json_path: T,
-    args: &Args,
-) -> Result<PublicApi> {
-    let options = get_options(args);
-
-    let rustdoc_json = &std::fs::read_to_string(&json_path)
-        .with_context(|| format!("Failed to read rustdoc JSON at {:?}", json_path.as_ref()))?;
-
-    if args.verbose {
-        println!("Processing {:?}", json_path.as_ref());
-    }
-
-    let public_api = PublicApi::from_rustdoc_json_str(rustdoc_json, options).with_context(|| {
-        format!(
-            "Failed to parse rustdoc JSON at {:?}.\n\
-            This version of `cargo public-api` requires at least:\n\n    {}\n\n\
-            If you have that, it might be `cargo public-api` that is out of date. Try\n\
-            to install the latest version with `cargo install cargo-public-api`. If the\n\
-            issue remains, please report at\n\n    https://github.com/Enselic/cargo-public-api/issues",
-            json_path.as_ref(),
-            MINIMUM_RUSTDOC_JSON_VERSION,
-        )
-    })?;
-
-    if args.verbose {
-        public_api.missing_item_ids().for_each(|i| {
-            println!("NOTE: rustdoc JSON missing referenced item with ID \"{i}\"");
-        });
-    }
-
-    Ok(public_api)
-}
-
-fn virtual_manifest_error(manifest_path: &Path) -> Result<PathBuf> {
-    Err(anyhow!(
-        "`{:?}` is a virtual manifest.
-
-Listing or diffing the public API of an entire workspace is not supported.
-
-Try
-
-    cargo public-api -p specific-crate
-",
-        manifest_path
-    ))
 }
 
 /// Wrapper to handle <https://github.com/rust-lang/rust/issues/46016>

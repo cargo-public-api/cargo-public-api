@@ -27,11 +27,11 @@ pub fn build_rustdoc_json(package_spec_str: &str, args: &Args) -> Result<PathBuf
     // `args.target_dir` is set, both the dummy crate and the real crate will
     // write to the same JSON path since they have the same project name! That
     // won't work. So always clear the target dir before we use the builder.
-    let builder = crate::builder_from_args(args)
+    let builder = crate::api_source::builder_from_args(args)
         .clear_target_dir()
         .manifest_path(&manifest)
         .package(&spec.name);
-    crate::build_rustdoc_json(builder)
+    crate::api_source::build_rustdoc_json(builder)
 }
 
 /// When diffing against a published crate, we want to allow the user to not

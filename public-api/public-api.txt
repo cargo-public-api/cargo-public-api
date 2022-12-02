@@ -224,6 +224,8 @@ pub fn public_api::PublicApi::items(&self) -> impl core::iter::traits::iterator:
 pub fn public_api::PublicApi::missing_item_ids(&self) -> impl core::iter::traits::iterator::Iterator<Item = &alloc::string::String>
 impl core::fmt::Debug for public_api::PublicApi
 pub fn public_api::PublicApi::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for public_api::PublicApi
+pub fn public_api::PublicApi::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::panic::unwind_safe::RefUnwindSafe for public_api::PublicApi
 impl core::marker::Send for public_api::PublicApi
 impl core::marker::Sync for public_api::PublicApi
@@ -239,6 +241,8 @@ impl<T> core::convert::From<T> for public_api::PublicApi
 pub fn public_api::PublicApi::from(t: T) -> T
 impl<T, U> core::convert::Into<U> for public_api::PublicApi where U: core::convert::From<T>
 pub fn public_api::PublicApi::into(self) -> U
+impl<T> alloc::string::ToString for public_api::PublicApi where T: core::fmt::Display + core::marker::Sized
+pub fn public_api::PublicApi::to_string(&self) -> alloc::string::String
 impl<T, U> core::convert::TryFrom<U> for public_api::PublicApi where U: core::convert::Into<T>
 pub type public_api::PublicApi::Error = core::convert::Infallible
 pub fn public_api::PublicApi::try_from(value: U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>

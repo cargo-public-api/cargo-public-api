@@ -1,5 +1,40 @@
-# Changelog
+# public-api
 
-Please see the [Releases](https://github.com/Enselic/cargo-public-api/releases) page for a list of all releases and what they contain. The changes that affect this library are put under the "public_api library" header.
+If a version is missing it means it had no API changes.
 
-Let me know if you would really like to have that list inside this file, and why so. A dynamically constructed and always up to date list seems like a better approach.
+## v0.24.1
+* Make `PublicApi` implement `Display` to get `.to_string()`. All items on one big multi-line `String`.
+
+## v0.22.0
+* Remove deprecated `fn public_api_from_rustdoc_json_str()`
+
+## v0.21.0
+* Rename `PublicItemsDiff` to `PublicApiDiff`
+* Make `PublicApiDiff::between(...)` take `PublicApi`s instead of `Vec<PublicItem>`s
+* Hide `PublicApi::items` behind `PublicApi::items()` iterator
+* Add `PublicApi::from_rustdoc_json(...)` that takes a rustdoc JSON file `Path`
+
+## v0.20.1
+* Allow to specify `--target-dir` when building rustdoc JSON
+
+## v0.20.0
+* deprecate `public_api_from_rustdoc_json_str` and replace with method on `PublicApi`
+* move `rustdoc_json::build` into a struct fn `BuildOptions::build`
+
+## v0.15.0
+* Introduce `PublicApi` struct
+
+## v0.12.4
+* Add `PublicItemsDiff::is_empty()`
+
+## v0.12.0
+* Add `Token::Annotation`
+
+## v0.11.5
+* impl `Hash` for `PublicItem`
+
+## v0.10.0
+* Remove `TokenStream`
+
+## v0.9.0
+* Rename project from `public_items` to `public-api` and add `Token`s

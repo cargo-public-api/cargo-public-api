@@ -158,6 +158,10 @@ impl Default for Options {
 ///     // here we print the items to stdout, we could also write to a string or a file.
 ///     println!("{}", public_item);
 /// }
+///
+/// // If you want all items of the public API in a single big multi-line String then
+/// // you can do like this:
+/// let public_api_string = public_api.to_string();
 /// # Ok::<(), Box<dyn std::error::Error>>(())
 /// ```
 #[derive(Debug)]
@@ -247,6 +251,15 @@ impl PublicApi {
     /// and must not be be relied on.
     pub fn missing_item_ids(&self) -> impl Iterator<Item = &String> {
         self.missing_item_ids.iter()
+    }
+}
+
+impl std::fmt::Display for PublicApi {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        for item in self.items() {
+            writeln!(f, "{}", item)?;
+        }
+        Ok(())
     }
 }
 

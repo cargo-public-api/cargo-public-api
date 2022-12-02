@@ -99,6 +99,8 @@ pub fn public_api::PublicApi::items(&self) -> impl core::iter::traits::iterator:
 pub fn public_api::PublicApi::missing_item_ids(&self) -> impl core::iter::traits::iterator::Iterator<Item = &alloc::string::String>
 impl core::fmt::Debug for public_api::PublicApi
 pub fn public_api::PublicApi::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for public_api::PublicApi
+pub fn public_api::PublicApi::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 pub struct public_api::PublicItem
 impl public_api::PublicItem
 pub fn public_api::PublicItem::tokens(&self) -> impl core::iter::traits::iterator::Iterator<Item = &public_api::tokens::Token>

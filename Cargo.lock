@@ -602,6 +602,9 @@ version = "0.7.0"
 dependencies = [
  "cargo-manifest",
  "cargo_metadata",
+ "expect-test",
+ "public-api",
+ "rustdoc-json",
  "serde",
  "tempfile",
  "thiserror",
@@ -635,6 +638,9 @@ dependencies = [
 name = "rustup-toolchain"
 version = "0.1.0"
 dependencies = [
+ "expect-test",
+ "public-api",
+ "rustdoc-json",
  "thiserror",
 ]
 

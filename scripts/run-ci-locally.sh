@@ -13,4 +13,3 @@ scripts/cargo-clippy.sh
 
 cargo test --locked
 
-./scripts/check-public-apis.sh

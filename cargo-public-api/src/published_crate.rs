@@ -140,6 +140,15 @@ mod tests {
             }
         );
 
+        assert!(PackageSpec::from_str_with_fallback("1.0.0", None).is_err());
+        assert_eq!(
+            PackageSpec::from_str_with_fallback("1.0.0", Some("fallback")).unwrap(),
+            PackageSpec {
+                name: String::from("fallback"),
+                version: String::from("1.0.0")
+            }
+        );
+
         assert_eq!(
             PackageSpec::from_str_with_fallback("foo@1.0.0", None).unwrap(),
             PackageSpec {

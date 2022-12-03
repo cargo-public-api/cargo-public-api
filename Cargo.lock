@@ -112,6 +112,7 @@ dependencies = [
  "public-api",
  "rustdoc-json",
  "rustup-toolchain",
+ "semver",
  "tempfile",
  "thiserror",
 ]

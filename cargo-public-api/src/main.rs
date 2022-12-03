@@ -4,7 +4,7 @@
 use std::io::stdout;
 use std::path::{Path, PathBuf};
 
-use anyhow::{anyhow, Result};
+use anyhow::{anyhow, bail, Result};
 use api_source::{ApiSource, Commit, CurrentDir, PublishedCrate, RustdocJson};
 use arg_types::{Color, DenyMethod};
 use git_utils::current_branch_or_commit;
@@ -201,6 +201,57 @@ pub struct Args {
     /// Forwarded to rustdoc JSON build command
     #[arg(long, hide = true)]
     cap_lints: Option<String>,
+
+    #[command(subcommand)]
+    subcommand: Option<Subcommand>,
+}
+
+/// Long-term, the only CLI for diffing will be this subcommand. For now, we
+/// support the old CLI for backwards compatibility. The old CLI will be
+/// deprecated and removed in a future version.
+#[derive(Parser, Debug)]
+#[allow(clippy::struct_excessive_bools)]
+struct DiffArgs {
+    /// Exit with failure if the specified API diff is detected.
+    ///
+    /// Can be combined. For example, to only allow additions to the API, use
+    /// `--deny=added --deny=changed`.
+    #[arg(long, value_enum)]
+    deny: Option<Vec<DenyMethod>>,
+
+    /// Force the diff. For example, when diffing commits, enabling this option
+    /// will discard working tree changes during git checkouts of other commits.
+    #[arg(long)]
+    force: bool,
+
+    /// Diff against published crate versions, between commits, or between
+    /// rustdoc JSON files. If the diffing arg looks like a specific version
+    /// string (`x.y.z`) then the diffing will be performed against a published
+    /// version of the crate. The presence of `..` means git commits will be
+    /// diffed. The presence of `.json` means rustdoc JSON file diffing will be
+    /// used.
+    ///
+    /// Examples:
+    ///
+    /// Diffing working tree against a published version of the crate:
+    ///
+    ///   cargo public-api diff 1.2.3
+    ///
+    /// Diffing between commits:
+    ///
+    ///   cargo public-api diff v0.2.0..v0.3.0
+    ///
+    /// Diffing between rustdoc JSON files:
+    ///
+    ///   cargo public-api diff first.json second.json
+    ///
+    args: Vec<String>,
+}
+
+#[derive(clap::Subcommand, Debug)]
+enum Subcommand {
+    /// Diffing of public APIs
+    Diff(DiffArgs),
 }
 
 /// If we should list or diff, and what we should list or diff.
@@ -268,6 +319,13 @@ fn main_() -> Result<()> {
 }
 
 fn list_or_diff(args: &Args) -> Result<MainTask> {
+    match main_task_from_diff_args(args)? {
+        Some(main_task) => Ok(main_task),
+        None => main_task_from_args(args),
+    }
+}
+
+fn main_task_from_args(args: &Args) -> Result<MainTask> {
     let main_task = if let Some(commits) = &args.diff_git_checkouts {
         let old = commits
             .get(0)
@@ -276,22 +334,82 @@ fn list_or_diff(args: &Args) -> Result<MainTask> {
             .get(1)
             .ok_or_else(|| anyhow!("Missing second commit! See --help"))?;
 
-        MainTask::print_diff(Commit::new(args, old)?, Commit::new(args, new)?)
+        MainTask::print_diff(
+            Commit::new(args, old)?.boxed(),
+            Commit::new(args, new)?.boxed(),
+        )
     } else if let Some(files) = &args.diff_rustdoc_json {
         // clap ensures both args exists if we get here
         let old = files.get(0).unwrap();
         let new = files.get(1).unwrap();
 
-        MainTask::print_diff(RustdocJson::new(old.into()), RustdocJson::new(new.into()))
+        MainTask::print_diff(
+            RustdocJson::new(old.into()).boxed(),
+            RustdocJson::new(new.into()).boxed(),
+        )
     } else if let Some(package_spec) = &args.diff_published {
-        MainTask::print_diff(PublishedCrate::new(package_spec), CurrentDir)
+        MainTask::print_diff(
+            PublishedCrate::new(package_spec).boxed(),
+            CurrentDir.boxed(),
+        )
     } else if let Some(rustdoc_json) = &args.rustdoc_json {
-        MainTask::print_list(RustdocJson::new(rustdoc_json.into()))
+        MainTask::print_list(RustdocJson::new(rustdoc_json.into()).boxed())
     } else {
-        MainTask::print_list(CurrentDir)
+        MainTask::print_list(CurrentDir.boxed())
     };
 
     Ok(main_task)
+}
+
+fn arg_to_api_source(arg: &str) -> Result<Box<dyn ApiSource>> {
+    if is_json_file(arg) {
+        Ok(RustdocJson::new(arg.into()).boxed())
+    } else if semver::Version::parse(arg).is_ok() {
+        Ok(PublishedCrate::new(arg).boxed())
+    } else {
+        bail!("Use `ref1..ref2` syntax to diff git commits");
+    }
+}
+
+fn main_task_from_diff_args(args: &Args) -> Result<Option<MainTask>> {
+    let diff_args = match &args.subcommand {
+        Some(Subcommand::Diff(diff_args)) => diff_args,
+        _ => return Ok(None),
+    };
+
+    let first_arg = diff_args.args.get(0);
+    let second_arg = diff_args.args.get(1);
+    if diff_args.args.is_empty() || diff_args.args.len() > 2 {
+        bail!(
+            "Expected 1 or 2 arguments, but got {}",
+            diff_args.args.len()
+        );
+    }
+
+    let main_task = match (first_arg, second_arg) {
+        (Some(first), None) if first.contains("..") => {
+            let commits: Vec<_> = first.split("..").collect();
+            if commits.len() != 2 {
+                bail!("Expected 2 commits, but got {}", commits.len());
+            }
+            MainTask::print_diff(
+                Commit::new(args, commits[0])?.boxed(),
+                Commit::new(args, commits[1])?.boxed(),
+            )
+        }
+        (Some(first), None) if semver::Version::parse(first).is_ok() => {
+            MainTask::print_diff(PublishedCrate::new(first).boxed(), CurrentDir.boxed())
+        }
+        (Some(first), None) => {
+            bail!("Invalid published crate version syntax: {first}");
+        }
+        (Some(first), Some(second)) => {
+            MainTask::print_diff(arg_to_api_source(first)?, arg_to_api_source(second)?)
+        }
+        _ => unreachable!("We should never get here"),
+    };
+
+    Ok(Some(main_task))
 }
 
 /// We were requested to deny diffs, so make sure there is no diff
@@ -328,6 +446,13 @@ fn print_diff(
     new: &dyn ApiSource,
     final_actions: &mut Vec<Action>,
 ) -> Result<()> {
+    fn check_diff(deny: &[DenyMethod], diff: PublicApiDiff) -> Action {
+        Action::CheckDiff {
+            diff,
+            deny: deny.to_owned(),
+        }
+    }
+
     let old = old.obtain_api(args)?;
     let new = new.obtain_api(args)?;
     let diff = PublicApiDiff::between(old, new);
@@ -335,25 +460,21 @@ fn print_diff(
     Plain::print_diff(&mut stdout(), args, &diff)?;
 
     if let Some(deny) = &args.deny {
-        final_actions.push(Action::CheckDiff {
-            diff,
-            deny: deny.clone(),
-        });
+        final_actions.push(check_diff(deny, diff));
+    } else if let Some(Some(deny)) = args.diff_args().map(|a| &a.deny) {
+        final_actions.push(check_diff(deny, diff));
     }
 
     Ok(())
 }
 
 impl MainTask {
-    fn print_list(api: impl ApiSource + 'static) -> MainTask {
-        Self::PrintList { api: Box::new(api) }
+    fn print_list(api: Box<dyn ApiSource>) -> MainTask {
+        Self::PrintList { api }
     }
 
-    fn print_diff(old_api: impl ApiSource + 'static, new_api: impl ApiSource + 'static) -> Self {
-        Self::PrintDiff {
-            old_api: Box::new(old_api),
-            new_api: Box::new(new_api),
-        }
+    fn print_diff(old_api: Box<dyn ApiSource>, new_api: Box<dyn ApiSource>) -> Self {
+        Self::PrintDiff { old_api, new_api }
     }
 
     fn changes_commit(&self) -> bool {
@@ -383,6 +504,13 @@ impl Action {
 impl Args {
     fn git_root(&self) -> Result<PathBuf> {
         git_utils::git_root_from_manifest_path(self.manifest_path.as_path())
+    }
+
+    fn diff_args(&self) -> Option<&DiffArgs> {
+        match &self.subcommand {
+            Some(Subcommand::Diff(diff_args)) => Some(diff_args),
+            _ => None,
+        }
     }
 }
 
@@ -424,12 +552,12 @@ fn resolve_toolchain(args: &mut Args) {
     }
 }
 
+fn is_json_file(file_name: impl AsRef<str>) -> bool {
+    Path::extension(Path::new(file_name.as_ref())).map_or(false, |a| a.eq_ignore_ascii_case("json"))
+}
+
 /// Resolve `--diff` to either `--diff-git-checkouts` or `--diff-rustdoc-json`
 fn resolve_diff_shorthand(args: &mut Args, diff_args: Vec<String>) {
-    fn is_json_file(file_name: &String) -> bool {
-        Path::extension(Path::new(file_name)).map_or(false, |a| a.eq_ignore_ascii_case("json"))
-    }
-
     if diff_args.iter().all(is_json_file) {
         args.diff_rustdoc_json = Some(diff_args);
     } else if diff_args.iter().any(|a| a.contains('@')) {

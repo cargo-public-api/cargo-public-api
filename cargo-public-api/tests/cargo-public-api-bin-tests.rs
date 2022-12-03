@@ -298,6 +298,18 @@ fn diff_public_items_impl(diff_arg: &str) {
     assert_eq!(branch_before, branch_after);
 }
 
+#[test]
+fn diff_public_items_with_subcommand() {
+    let mut cmd = TestCmd::new().with_test_repo();
+    cmd.arg("diff");
+    cmd.arg("v0.2.0..v0.3.0");
+    cmd.assert()
+        .stdout_or_bless(
+            "../../cargo-public-api/tests/expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt",
+        )
+        .success();
+}
+
 /// Test that the mechanism to restore the original git branch works even if
 /// there is no current branch
 #[test]
@@ -449,6 +461,17 @@ fn deny_with_diff() {
 }
 
 #[test]
+fn deny_with_diff_with_subcommand() {
+    let mut cmd = TestCmd::new().with_test_repo();
+    cmd.arg("diff");
+    cmd.arg("v0.1.0..v0.2.0");
+    cmd.arg("--deny=all");
+    cmd.assert()
+        .stderr(contains("The API diff is not allowed as per --deny"))
+        .failure();
+}
+
+#[test]
 fn deny_added_with_diff() {
     let mut cmd = TestCmd::new().with_test_repo();
     cmd.arg("--diff-git-checkouts");
@@ -556,9 +579,15 @@ fn list_public_items_with_color() {
 }
 
 #[test]
+fn diff_public_items_from_files_with_subcommand() {
+    diff_public_items_from_files_impl("diff");
+}
+
+#[test]
 fn diff_public_items_from_files() {
     diff_public_items_from_files_impl("--diff-rustdoc-json");
 }
+
 #[test]
 fn diff_public_items_from_files_smart_diff() {
     diff_public_items_from_files_impl("--diff");
@@ -595,6 +624,11 @@ fn diff_published_smart_diff() {
 #[test]
 fn diff_published_fallback() {
     diff_published_impl("--diff-published", "@0.1.0");
+}
+
+#[test]
+fn diff_published_fallback_with_subcommand() {
+    diff_published_impl("diff", "0.1.0");
 }
 
 #[test]

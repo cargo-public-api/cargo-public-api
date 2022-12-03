@@ -229,15 +229,6 @@ pub enum Action {
     RestoreBranch { name: String },
 }
 
-// Validate that the toolchain does not start with a `+` character.
-fn parse_toolchain(s: &str) -> Result<String, &'static str> {
-    if s.starts_with('+') {
-        Err("toolchain must not start with a `+`")
-    } else {
-        Ok(s.to_owned())
-    }
-}
-
 fn main_() -> Result<()> {
     let args = get_args()?;
 
@@ -458,6 +449,15 @@ fn git_checkout(args: &Args, commit: &str) -> Result<()> {
         !args.verbose,
         args.force_git_checkouts,
     )
+}
+
+// Validate that the toolchain does not start with a `+` character.
+fn parse_toolchain(s: &str) -> Result<String, &'static str> {
+    if s.starts_with('+') {
+        Err("toolchain must not start with a `+`")
+    } else {
+        Ok(s.to_owned())
+    }
 }
 
 /// Wrapper to handle <https://github.com/rust-lang/rust/issues/46016>

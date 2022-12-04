@@ -21,6 +21,13 @@ pub trait ApiSource {
     fn changes_commit(&self) -> bool {
         false
     }
+
+    fn boxed(self) -> Box<dyn ApiSource>
+    where
+        Self: Sized + 'static,
+    {
+        Box::new(self)
+    }
 }
 
 /// The API is obtained by building the crate in the current directory.

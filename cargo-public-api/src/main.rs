@@ -379,14 +379,42 @@ fn main_task_from_diff_args(args: &Args) -> Result<Option<MainTask>> {
 
     let first_arg = diff_args.args.get(0);
     let second_arg = diff_args.args.get(1);
-    if diff_args.args.is_empty() || diff_args.args.len() > 2 {
+    if diff_args.args.is_empty() {
+        bail!(
+            "Must specify what to diff.
+
+Examples:
+
+Diff against a specific version of the crate published to crates.io:
+
+    cargo public-api diff 1.2.3
+
+Diff between two git commits:
+
+    cargo public-api diff v0.2.0..v0.3.0
+
+To select a package in a workspace, use the --package flag:
+
+    cargo public-api --package my-package diff ...
+
+See
+
+    cargo public-api diff --help
+
+for more.
+"
+        );
+    } else if diff_args.args.len() > 2 {
         bail!(
             "Expected 1 or 2 arguments, but got {}",
             diff_args.args.len()
-        );
+        )
     }
 
     let main_task = match (first_arg, second_arg) {
+        (Some(first), None) if first.contains("...") => {
+            bail!("Invalid git diff syntax: {first}. Use: rev1..rev2");
+        }
         (Some(first), None) if first.contains("..") => {
             let commits: Vec<_> = first.split("..").collect();
             if commits.len() != 2 {

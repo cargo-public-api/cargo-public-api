@@ -310,6 +310,78 @@ fn diff_public_items_with_subcommand() {
         .success();
 }
 
+#[test]
+fn diff_without_args() {
+    let mut cmd = TestCmd::new().with_test_repo();
+    cmd.arg("diff");
+    cmd.assert()
+        .stderr(contains("Error: Must specify what to diff"))
+        .failure();
+}
+
+#[test]
+fn diff_with_invalid_published_crate_version() {
+    let mut cmd = TestCmd::new().with_test_repo();
+    cmd.arg("diff");
+    cmd.arg("foo");
+    cmd.assert()
+        .stderr("Error: Invalid published crate version syntax: foo\n")
+        .failure();
+}
+
+#[test]
+fn diff_with_invalid_git_refs() {
+    let mut cmd = TestCmd::new().with_test_repo();
+    cmd.arg("diff");
+    cmd.arg("foo..bar");
+    cmd.assert()
+        .stderr(contains("Error: fatal: ambiguous argument 'foo': unknown revision or path not in the working tree."))
+        .failure();
+}
+
+#[test]
+fn diff_with_invalid_git_refs_three_dots() {
+    let mut cmd = TestCmd::new().with_test_repo();
+    cmd.arg("diff");
+    cmd.arg("foo...bar");
+    cmd.assert()
+        .stderr("Error: Invalid git diff syntax: foo...bar. Use: rev1..rev2\n")
+        .failure();
+}
+
+#[test]
+fn diff_with_invalid_git_refs_four_dots() {
+    let mut cmd = TestCmd::new().with_test_repo();
+    cmd.arg("diff");
+    cmd.arg("foo....bar");
+    cmd.assert()
+        .stderr("Error: Invalid git diff syntax: foo....bar. Use: rev1..rev2\n")
+        .failure();
+}
+
+#[test]
+fn diff_with_three_args() {
+    let mut cmd = TestCmd::new().with_test_repo();
+    cmd.arg("diff");
+    cmd.arg("v0.1.0");
+    cmd.arg("v0.2.0");
+    cmd.arg("v0.3.0");
+    cmd.assert()
+        .stderr("Error: Expected 1 or 2 arguments, but got 3\n")
+        .failure();
+}
+
+#[test]
+fn diff_with_dots_two_times() {
+    let mut cmd = TestCmd::new().with_test_repo();
+    cmd.arg("diff");
+    cmd.arg("v0.1.0..v0.2.0");
+    cmd.arg("v0.2.0..v0.3.0");
+    cmd.assert()
+        .stderr("Error: Use `ref1..ref2` syntax to diff git commits\n")
+        .failure();
+}
+
 /// Test that the mechanism to restore the original git branch works even if
 /// there is no current branch
 #[test]

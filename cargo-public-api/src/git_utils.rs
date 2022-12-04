@@ -79,7 +79,7 @@ fn trimmed_stdout(mut cmd: Command) -> Result<String> {
     if output.status.success() {
         Ok(String::from_utf8_lossy(&output.stdout).trim().to_string())
     } else {
-        Err(anyhow!("Failure: {:?}", output))
+        Err(anyhow!(String::from_utf8_lossy(&output.stderr).to_string()))
     }
 }
 

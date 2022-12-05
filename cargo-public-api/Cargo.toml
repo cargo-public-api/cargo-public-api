@@ -28,7 +28,7 @@ version = "0.7.1"
 
 [dependencies.public-api]
 path = "../public-api"
-version = "0.24.0"
+version = "0.24.1"
 
 [dev-dependencies.rustup-toolchain]
 path = "../rustup-toolchain"

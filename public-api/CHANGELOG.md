@@ -1,9 +1,9 @@
 # public-api
 
-If a version is missing it means it had no API changes.
+If a version is not listed below, it means it had no API changes.
 
 ## v0.24.1
-* Make `PublicApi` implement `Display` to get `.to_string()`. All items on one big multi-line `String`.
+* Make `PublicApi` implement `Display` to get `.to_string()`. All items in one big multi-line `String`.
 
 ## v0.22.0
 * Remove deprecated `fn public_api_from_rustdoc_json_str()`

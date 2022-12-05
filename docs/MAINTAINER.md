@@ -60,7 +60,7 @@ For `public-api` and `cargo-public-api` (which always have the same version numb
 
 ### `rustdoc-json`
 
-1. Bump the `version` in **rustdoc-json/Cargo.toml** and the dependencies declared in **public-api/Cargo.toml** and **cargo-public-api/Cargo.toml**.
+1. Bump the `version` in **rustdoc-json/Cargo.toml** and the dependents that you find with `git grep -A1 'path = "../rustdoc-json"'`.
 1. Run https://github.com/Enselic/cargo-public-api/actions/workflows/Release-rustdoc-json.yml workflow from `main` ([instructions](https://github.com/Enselic/cargo-public-api/blob/main/docs/development.md#how-to-trigger-main-branch-workflow))
 1. Double-check that the release ended up at https://crates.io/crates/rustdoc-json/versions
 1. Done!

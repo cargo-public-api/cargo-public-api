@@ -24,7 +24,7 @@ thiserror = "1.0.29"
 
 [dependencies.rustdoc-json]
 path = "../rustdoc-json"
-version = "0.7.0"
+version = "0.7.1"
 
 [dependencies.public-api]
 path = "../public-api"

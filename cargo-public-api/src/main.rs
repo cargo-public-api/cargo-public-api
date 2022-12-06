@@ -128,10 +128,6 @@ pub struct Args {
     deny: Option<Vec<DenyMethod>>,
 
     /// Whether or not to use colors.
-    ///
-    /// You can select between "auto", "never", "always". If "auto" (the
-    /// default), colors will be used if stdout is a terminal. If you pipe the
-    /// output to a file, colors will be disabled by default.
     #[arg(long, value_enum, default_value_t = Color::Auto)]
     color: Color,
 

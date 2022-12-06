@@ -93,9 +93,14 @@ pub fn bat::PrettyPrinter::input_files<I, P>(&mut self, paths: I) -> &mut Self w
 
 ## Less Noisy Output
 
-By default, items belonging to Blanket Implementations and Auto Trait Implementations such as `impl<T> Borrow<T> for T`, `impl<T, U> Into<U> for T where U: From<T>`, `impl Send for Foo` and `impl Sync for Foo` are included in the list of public items of a crate.
+For completeness, items belonging to _Blanket Implementations_ and _Auto Trait Implementations_ such as
 
-For casual uses of this tool, it can be helpful to omit such items from the output, as that makes the output much less noisy and repetitive. This is done with `--simplified`:
+* `impl<T> Borrow<T> for T`
+* `impl<T, U> Into<U> for T where U: From<T>`
+* `impl Send for ...`
+* `impl Sync for ...`
+
+are included in the list of public items by default. Use `--simplified` (or short form `-s`) to omit such items from the output:
 ```bash
 cargo public-api --simplified
 ```

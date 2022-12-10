@@ -4,9 +4,9 @@ on:
   workflow_call: # From .github/workflows/Release.yml, .github/workflows/Nightly.yml
   workflow_dispatch:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 env:
   CARGO_TERM_COLOR: always

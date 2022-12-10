@@ -3,7 +3,7 @@ name: Nightly
 on:
   workflow_dispatch:
   schedule:
-    - cron: '33 3 * * *'
+    - cron: "33 3 * * *"
 
 env:
   CARGO_TERM_COLOR: always
@@ -14,8 +14,8 @@ jobs:
   cargo-install:
     runs-on: ubuntu-latest
     steps:
-    - run: cargo install public-api
-    - run: cargo install cargo-public-api
+      - run: cargo install public-api
+      - run: cargo install cargo-public-api
 
   # The purpose of running every night is to detect when a change to
   # https://github.com/rust-lang/rust/tree/master/src/rustdoc-json-types
@@ -32,23 +32,23 @@ jobs:
     environment: CICD-fork
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions-rs/toolchain@v1
-      with:
-        toolchain: nightly
-        profile: minimal
-    - uses: Swatinem/rust-cache@v2
-    - run: ./scripts/bless-expected-output-for-tests.sh
-    - id: latest-nightly
-      run: echo "version=nightly-$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
-    - run: |
-        [ -z "$(git status --porcelain)" ] || echo "${{ steps.latest-nightly.outputs.version }}" > test-utils/MINIMUM_RUSTDOC_JSON_VERSION_FOR_TESTS
-    - uses: peter-evans/create-pull-request@v4
-      with:
-        title: Bless `${{ steps.latest-nightly.outputs.version }}` output
-        commit-message: Bless `${{ steps.latest-nightly.outputs.version }}` output
-        author: EnselicCICD <junta-pixlar0l@icloud.com>
-        body: Automatically created by ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs/${{ github.job }}
-        token: ${{ secrets.ENSELICCICD_GITHUB_TOKEN }}
-        push-to-fork: EnselicCICD/cargo-public-api
-        branch: create-pull-request/${{ steps.latest-nightly.outputs.version }}
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: nightly
+          profile: minimal
+      - uses: Swatinem/rust-cache@v2
+      - run: ./scripts/bless-expected-output-for-tests.sh
+      - id: latest-nightly
+        run: echo "version=nightly-$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+      - run: |
+          [ -z "$(git status --porcelain)" ] || echo "${{ steps.latest-nightly.outputs.version }}" > test-utils/MINIMUM_RUSTDOC_JSON_VERSION_FOR_TESTS
+      - uses: peter-evans/create-pull-request@v4
+        with:
+          title: Bless `${{ steps.latest-nightly.outputs.version }}` output
+          commit-message: Bless `${{ steps.latest-nightly.outputs.version }}` output
+          author: EnselicCICD <junta-pixlar0l@icloud.com>
+          body: Automatically created by ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs/${{ github.job }}
+          token: ${{ secrets.ENSELICCICD_GITHUB_TOKEN }}
+          push-to-fork: EnselicCICD/cargo-public-api
+          branch: create-pull-request/${{ steps.latest-nightly.outputs.version }}

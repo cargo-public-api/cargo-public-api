@@ -95,10 +95,9 @@ Options:
           - changed: Deny changed things in API diffs
           - removed: Deny removed things in API diffs
 
-      --color <COLOR>
-          Whether or not to use colors
-          
-          [default: auto]
+      --color [<COLOR>]
+          How to color the output. By default, `--color=auto` is active. Using just `--color`
+          without an arg is equivalent to `--color=always`
 
           Possible values:
           - auto:

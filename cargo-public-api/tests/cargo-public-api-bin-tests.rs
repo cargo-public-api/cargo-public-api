@@ -629,8 +629,17 @@ fn diff_public_items_without_git_root() {
 
 #[test]
 fn diff_public_items_with_color() {
+    diff_public_items_with_color_impl("--color=always");
+}
+
+#[test]
+fn diff_public_items_with_color_implicitly() {
+    diff_public_items_with_color_impl("--color"); // Same as `--color=always`
+}
+
+fn diff_public_items_with_color_impl(color_arg: &str) {
     let mut cmd = TestCmd::new().with_test_repo();
-    cmd.arg("--color=always");
+    cmd.arg(color_arg);
     cmd.arg("--diff-git-checkouts");
     cmd.arg("v0.1.0");
     cmd.arg("v0.2.0");

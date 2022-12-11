@@ -127,9 +127,11 @@ pub struct Args {
     #[arg(long, value_enum)]
     deny: Option<Vec<DenyMethod>>,
 
-    /// Whether or not to use colors.
-    #[arg(long, value_enum, default_value_t = Color::Auto)]
-    color: Color,
+    /// How to color the output. By default, `--color=auto` is active. Using
+    /// just `--color` without an arg is equivalent to `--color=always`.
+    #[allow(clippy::option_option)]
+    #[arg(long, value_enum)]
+    color: Option<Option<Color>>,
 
     /// Omit items that belong to Blanket Implementations and Auto Trait
     /// Implementations.

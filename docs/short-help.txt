@@ -24,8 +24,9 @@ Options:
       --deny <DENY>
           Exit with failure if the specified API diff is detected [possible values: all, added,
           changed, removed]
-      --color <COLOR>
-          Whether or not to use colors [default: auto] [possible values: auto, never, always]
+      --color [<COLOR>]
+          How to color the output. By default, `--color=auto` is active. Using just `--color`
+          without an arg is equivalent to `--color=always` [possible values: auto, never, always]
   -s, --simplified
           Omit items that belong to Blanket Implementations and Auto Trait Implementations
       --toolchain <TOOLCHAIN>

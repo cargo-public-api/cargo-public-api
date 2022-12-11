@@ -21,7 +21,7 @@ impl Plain {
     }
 
     pub fn print_diff(w: &mut dyn Write, args: &Args, diff: &PublicApiDiff) -> Result<()> {
-        let use_color = args.color.active();
+        let use_color = color_active(args.color);
 
         print_items_with_header(
             w,
@@ -78,11 +78,26 @@ impl Plain {
 }
 
 fn print_item(args: &Args, w: &mut dyn Write, item: &PublicItem) -> Result<()> {
-    if args.color.active() {
+    if color_active(args.color) {
         writeln!(w, "{}", color_item(item))
     } else {
         writeln!(w, "{}", item)
     }
+}
+
+#[allow(clippy::option_option)]
+fn color_active(color: Option<Option<crate::arg_types::Color>>) -> bool {
+    match color {
+        // An explicit color was specified: `--color=...`
+        Some(Some(color)) => color,
+
+        // Just `--color`
+        Some(None) => crate::arg_types::Color::Always,
+
+        // No `--color` at all
+        None => crate::arg_types::Color::Auto,
+    }
+    .active()
 }
 
 fn color_item(item: &public_api::PublicItem) -> String {

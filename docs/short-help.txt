@@ -41,7 +41,7 @@ Options:
       --no-default-features
           Do not activate the `default` feature
   -p, --package <PACKAGE>
-          Package to document
+          Name of package in workspace to list or diff the public API for
   -h, --help
           Print help information (use `--help` for more detail)
   -V, --version

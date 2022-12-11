@@ -190,7 +190,7 @@ pub struct Args {
     /// Do not activate the `default` feature
     no_default_features: bool,
 
-    /// Package to document
+    /// Name of package in workspace to list or diff the public API for.
     #[arg(long, short)]
     package: Option<String>,
 

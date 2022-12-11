@@ -767,6 +767,7 @@ fn verbose() {
 }
 
 #[test]
+#[cfg_attr(target_family = "windows", ignore)] // Because help output contains "cargo-public-api.exe"
 fn short_help() {
     let mut cmd = TestCmd::new().with_separate_target_dir();
     cmd.arg("-h");
@@ -776,6 +777,7 @@ fn short_help() {
 }
 
 #[test]
+#[cfg_attr(target_family = "windows", ignore)] // Because help output contains "cargo-public-api.exe"
 fn long_help() {
     let mut cmd = TestCmd::new();
     cmd.arg("--help");

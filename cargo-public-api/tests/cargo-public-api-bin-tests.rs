@@ -767,6 +767,15 @@ fn verbose() {
 }
 
 #[test]
+fn short_help() {
+    let mut cmd = TestCmd::new().with_separate_target_dir();
+    cmd.arg("-h");
+    cmd.assert()
+        .stdout_or_bless("../../docs/short-help.txt")
+        .success();
+}
+
+#[test]
 fn long_help() {
     let mut cmd = TestCmd::new();
     cmd.arg("--help");
@@ -791,15 +800,6 @@ fn long_help_wraps() {
             "Found line larger than {max_allowed_line_length} chars! Text wrapping seems broken? Line: '{line}'"
         );
     }
-}
-
-#[test]
-fn short_help() {
-    let mut cmd = TestCmd::new().with_separate_target_dir();
-    cmd.arg("-h");
-    cmd.assert()
-        .stdout_or_bless("../../docs/short-help.txt")
-        .success();
 }
 
 /// Helper to initialize a test crate git repo. Each test gets its own git repo

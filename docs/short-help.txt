@@ -30,8 +30,6 @@ Options:
           Whether or not to use colors [default: auto] [possible values: auto, never, always]
   -s, --simplified
           Omit items that belong to Blanket Implementations and Auto Trait Implementations
-      --toolchain <TOOLCHAIN>
-          Build rustdoc JSON with a toolchain other than `nightly`
       --target <TARGET>
           Build for the target triple
   -F, --features <FEATURES>...

@@ -26,8 +26,6 @@ jobs:
       - uses: actions/checkout@v2
       - uses: Swatinem/rust-cache@v2
       - run: RUSTDOCFLAGS='--deny warnings' cargo doc --locked --no-deps --document-private-items
-      - run: cargo run --locked -- -h
-      - run: cargo run --locked -- --help
 
   cargo-clippy:
     name: cargo clippy -- --deny clippy::all --deny clippy::pedantic ...

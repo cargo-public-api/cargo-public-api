@@ -767,10 +767,45 @@ fn verbose() {
 }
 
 #[test]
+#[cfg_attr(target_family = "windows", ignore)] // Because help output contains "cargo-public-api.exe"
+fn short_help() {
+    let mut cmd = TestCmd::new().with_separate_target_dir();
+    cmd.arg("-h");
+    cmd.assert()
+        .stdout_or_bless("../../docs/short-help.txt")
+        .success();
+}
+
+#[test]
+#[cfg_attr(target_family = "windows", ignore)] // Because help output contains "cargo-public-api.exe"
+fn short_diff_help() {
+    let mut cmd = TestCmd::new().with_separate_target_dir();
+    cmd.arg("diff");
+    cmd.arg("-h");
+    cmd.assert()
+        .stdout_or_bless("../../docs/short-diff-help.txt")
+        .success();
+}
+
+#[test]
+#[cfg_attr(target_family = "windows", ignore)] // Because help output contains "cargo-public-api.exe"
 fn long_help() {
     let mut cmd = TestCmd::new();
     cmd.arg("--help");
-    assert_presence_of_args_in_help(cmd);
+    cmd.assert()
+        .stdout_or_bless("../../docs/long-help.txt")
+        .success();
+}
+
+#[test]
+#[cfg_attr(target_family = "windows", ignore)] // Because help output contains "cargo-public-api.exe"
+fn long_diff_help() {
+    let mut cmd = TestCmd::new();
+    cmd.arg("diff");
+    cmd.arg("--help");
+    cmd.assert()
+        .stdout_or_bless("../../docs/long-diff-help.txt")
+        .success();
 }
 
 #[test]
@@ -789,21 +824,6 @@ fn long_help_wraps() {
             "Found line larger than {max_allowed_line_length} chars! Text wrapping seems broken? Line: '{line}'"
         );
     }
-}
-
-#[test]
-fn short_help() {
-    let mut cmd = TestCmd::new().with_separate_target_dir();
-    cmd.arg("-h");
-    assert_presence_of_args_in_help(cmd);
-}
-
-fn assert_presence_of_args_in_help(mut cmd: TestCmd) {
-    cmd.assert()
-        .stdout(contains("--simplified"))
-        .stdout(contains("--manifest-path"))
-        .stdout(contains("--diff-git-checkouts"))
-        .success();
 }
 
 /// Helper to initialize a test crate git repo. Each test gets its own git repo

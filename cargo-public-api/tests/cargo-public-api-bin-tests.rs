@@ -445,6 +445,7 @@ fn diff_public_items_with_dirty_tree_succeedes_with_force_option() {
         .stdout_or_bless(
             "../../cargo-public-api/tests/expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt",
         )
+        .stderr(contains("DEPRECATION WARNING"))
         .success();
 }
 
@@ -517,7 +518,11 @@ fn deny_without_diff() {
     cmd.arg("v0.1.0");
     cmd.arg("v0.1.1");
     cmd.arg("--deny=all");
-    cmd.assert().success();
+    cmd.assert()
+        .stderr(contains(
+            "DEPRECATION WARNING: `... --diff --deny` is deprecated, use `... diff --deny` instead",
+        ))
+        .success();
 }
 
 #[test]
@@ -622,7 +627,8 @@ fn diff_public_items_without_git_root() {
     cmd.arg("v0.3.0");
     cmd.assert()
         .stderr(predicates::str::starts_with(
-            "Error: No `.git` dir when starting from `",
+            "DEPRECATION WARNING: `... --diff-git-checkouts v0.2.0 v0.3.0` is deprecated, use `... diff v0.2.0..v0.3.0` instead.
+Error: No `.git` dir when starting from `",
         ))
         .failure();
 }
@@ -736,6 +742,7 @@ fn diff_published_explicit_package() {
     cmd.arg("@0.1.0");
     cmd.assert()
         .stdout_or_bless("../../cargo-public-api/tests/expected-output/diff_published.txt")
+        .stderr(contains("DEPRECATION WARNING"))
         .success();
 }
 

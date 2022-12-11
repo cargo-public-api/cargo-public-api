@@ -770,7 +770,9 @@ fn verbose() {
 fn long_help() {
     let mut cmd = TestCmd::new();
     cmd.arg("--help");
-    assert_presence_of_args_in_help(cmd);
+    cmd.assert()
+        .stdout_or_bless("../../cargo-public-api/tests/expected-output/long_help.txt")
+        .success();
 }
 
 #[test]
@@ -795,14 +797,8 @@ fn long_help_wraps() {
 fn short_help() {
     let mut cmd = TestCmd::new().with_separate_target_dir();
     cmd.arg("-h");
-    assert_presence_of_args_in_help(cmd);
-}
-
-fn assert_presence_of_args_in_help(mut cmd: TestCmd) {
     cmd.assert()
-        .stdout(contains("--simplified"))
-        .stdout(contains("--manifest-path"))
-        .stdout(contains("--diff-git-checkouts"))
+        .stdout_or_bless("../../cargo-public-api/tests/expected-output/short_help.txt")
         .success();
 }
 

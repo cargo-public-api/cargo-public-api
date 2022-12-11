@@ -771,7 +771,7 @@ fn long_help() {
     let mut cmd = TestCmd::new();
     cmd.arg("--help");
     cmd.assert()
-        .stdout_or_bless("../../cargo-public-api/tests/expected-output/long_help.txt")
+        .stdout_or_bless("../../docs/long-help.txt")
         .success();
 }
 
@@ -798,7 +798,7 @@ fn short_help() {
     let mut cmd = TestCmd::new().with_separate_target_dir();
     cmd.arg("-h");
     cmd.assert()
-        .stdout_or_bless("../../cargo-public-api/tests/expected-output/short_help.txt")
+        .stdout_or_bless("../../docs/short-help.txt")
         .success();
 }
 

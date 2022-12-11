@@ -1,0 +1,17 @@
+Diffing of public APIs
+
+Usage: cargo-public-api diff [OPTIONS] [ARGS]...
+
+Arguments:
+  [ARGS]...  Diff against published crate versions, between commits, or between rustdoc JSON files.
+             If the diffing arg looks like a specific version string (`x.y.z`) then the diffing will
+             be performed against a published version of the crate. The presence of `..` means git
+             commits will be diffed. The presence of `.json` means rustdoc JSON file diffing will be
+             used
+
+Options:
+      --deny <DENY>  Exit with failure if the specified API diff is detected [possible values: all,
+                     added, changed, removed]
+      --force        Force the diff. For example, when diffing commits, enabling this option will
+                     discard working tree changes during git checkouts of other commits
+  -h, --help         Print help information (use `--help` for more detail)

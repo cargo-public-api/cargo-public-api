@@ -778,11 +778,33 @@ fn short_help() {
 
 #[test]
 #[cfg_attr(target_family = "windows", ignore)] // Because help output contains "cargo-public-api.exe"
+fn short_diff_help() {
+    let mut cmd = TestCmd::new().with_separate_target_dir();
+    cmd.arg("diff");
+    cmd.arg("-h");
+    cmd.assert()
+        .stdout_or_bless("../../docs/short-diff-help.txt")
+        .success();
+}
+
+#[test]
+#[cfg_attr(target_family = "windows", ignore)] // Because help output contains "cargo-public-api.exe"
 fn long_help() {
     let mut cmd = TestCmd::new();
     cmd.arg("--help");
     cmd.assert()
         .stdout_or_bless("../../docs/long-help.txt")
+        .success();
+}
+
+#[test]
+#[cfg_attr(target_family = "windows", ignore)] // Because help output contains "cargo-public-api.exe"
+fn long_diff_help() {
+    let mut cmd = TestCmd::new();
+    cmd.arg("diff");
+    cmd.arg("--help");
+    cmd.assert()
+        .stdout_or_bless("../../docs/long-diff-help.txt")
         .success();
 }
 

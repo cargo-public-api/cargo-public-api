@@ -173,7 +173,7 @@ pub struct Args {
     ///
     /// Useful if you have built a toolchain from source for example, or if you
     /// want to use a fixed toolchain in CI.
-    #[arg(long, value_parser = parse_toolchain)]
+    #[arg(long, value_parser = parse_toolchain, hide = true)]
     toolchain: Option<String>,
 
     /// Build for the target triple

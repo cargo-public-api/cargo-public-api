@@ -120,14 +120,6 @@ Options:
           Examples of Auto Trait Implementations: `impl Send for Foo`, `impl Sync for Foo`, and
           `impl Unpin for Foo`
 
-      --toolchain <TOOLCHAIN>
-          Build rustdoc JSON with a toolchain other than `nightly`.
-          
-          Consider using `cargo +toolchain public-api` instead.
-          
-          Useful if you have built a toolchain from source for example, or if you want to use a
-          fixed toolchain in CI.
-
       --target <TARGET>
           Build for the target triple
 

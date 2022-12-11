@@ -83,20 +83,6 @@ Options:
           
           cargo public-api --diff-published some-crate@1.2.3
 
-      --rustdoc-json <RUSTDOC_JSON_PATH>
-          List the public API based on the given rustdoc JSON file.
-          
-          Example:
-          
-          First do
-          
-          rustup component add rust-docs-json --toolchain  nightly
-          
-          and then
-          
-          cargo public-api --rustdoc-json
-          ~/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/share/doc/rust/json/std.json
-
       --deny <DENY>
           Exit with failure if the specified API diff is detected.
           

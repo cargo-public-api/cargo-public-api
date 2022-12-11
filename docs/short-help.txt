@@ -21,8 +21,6 @@ Options:
       --diff <TARGET>...
           Automatically resolves to either `--diff-git-checkouts`, `--diff-rustdoc-json`, or
           `--diff-published` depending on if args ends in `.json` or not, or if they contain `@`
-      --rustdoc-json <RUSTDOC_JSON_PATH>
-          List the public API based on the given rustdoc JSON file
       --deny <DENY>
           Exit with failure if the specified API diff is detected [possible values: all, added,
           changed, removed]

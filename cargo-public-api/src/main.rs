@@ -111,13 +111,13 @@ pub struct Args {
     ///
     /// First do
     ///
-    ///     rustup component add rust-docs-json --toolchain  nightly
+    ///     rustup component add rust-docs-json --toolchain nightly
     ///
     /// and then
     ///
     ///     cargo public-api --rustdoc-json ~/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/share/doc/rust/json/std.json
     ///
-    #[arg(long, value_name = "RUSTDOC_JSON_PATH")]
+    #[arg(long, value_name = "RUSTDOC_JSON_PATH", hide = true)]
     rustdoc_json: Option<String>,
 
     /// Exit with failure if the specified API diff is detected.

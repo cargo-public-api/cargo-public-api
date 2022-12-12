@@ -27,7 +27,7 @@ features = ["derive", "wrap_help"]
 
 [dependencies.rustdoc-json]
 path = "../rustdoc-json"
-version = "0.7.1"
+version = "0.7.2"
 
 [dependencies.public-api]
 path = "../public-api"

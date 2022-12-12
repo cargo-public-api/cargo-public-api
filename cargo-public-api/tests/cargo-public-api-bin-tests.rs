@@ -24,6 +24,7 @@ use public_api::MINIMUM_RUSTDOC_JSON_VERSION;
 use tempfile::tempdir;
 use test_utils::assert_or_bless::AssertOrBless;
 use test_utils::rustdoc_json_path_for_crate;
+use test_utils::rustdoc_json_path_for_crate_with_private_items;
 
 #[path = "../src/git_utils.rs"] // Say NO to copy-paste!
 mod git_utils;
@@ -694,6 +695,25 @@ fn diff_public_items_from_files_impl(diff_arg: &str) {
     cmd.assert()
         .stdout_or_bless(
             "../../cargo-public-api/tests/expected-output/example_api_diff_v0.1.0_to_v0.2.0.txt",
+        )
+        .success();
+}
+
+#[test]
+fn document_private_items() {
+    // Create independent build dir so all tests can run in parallel
+    let build_dir = tempdir().unwrap();
+
+    let json = rustdoc_json_path_for_crate_with_private_items(
+        "../test-apis/example_api-v0.3.0",
+        &build_dir,
+    );
+    let mut cmd = TestCmd::new().with_separate_target_dir();
+    cmd.arg("--rustdoc-json");
+    cmd.arg(json);
+    cmd.assert()
+        .stdout_or_bless(
+            "../../cargo-public-api/tests/expected-output/example_api-v0.3.0_document-private-items",
         )
         .success();
 }

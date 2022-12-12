@@ -52,6 +52,7 @@ pub enum BuildError {
 
 /// Builds rustdoc JSON. There are many build options. Refer to the docs to
 /// learn about them all. See [top-level docs](crate) for an example on how to use this builder.
+#[allow(clippy::struct_excessive_bools)]
 #[derive(Debug)]
 pub struct Builder {
     toolchain: Option<String>,
@@ -63,5 +64,6 @@ pub struct Builder {
     all_features: bool,
     features: Vec<String>,
     package: Option<String>,
+    document_private_items: bool,
     cap_lints: Option<String>,
 }

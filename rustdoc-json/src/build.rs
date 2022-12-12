@@ -49,6 +49,7 @@ fn cargo_rustdoc_command(options: &Builder) -> Command {
         features,
         package,
         cap_lints,
+        document_private_items,
     } = options;
 
     let mut command = OVERRIDDEN_TOOLCHAIN
@@ -88,6 +89,9 @@ fn cargo_rustdoc_command(options: &Builder) -> Command {
     }
     if let Some(package) = package {
         command.args(["--package", package]);
+    }
+    if *document_private_items {
+        command.arg("--document-private-items");
     }
     command.arg("--");
     command.args(["-Z", "unstable-options"]);
@@ -156,6 +160,7 @@ impl Default for Builder {
             all_features: false,
             features: vec![],
             package: None,
+            document_private_items: false,
             cap_lints: Some(String::from("warn")),
         }
     }
@@ -245,6 +250,13 @@ impl Builder {
     #[must_use]
     pub fn package(mut self, package: impl AsRef<str>) -> Self {
         self.package = Some(package.as_ref().to_owned());
+        self
+    }
+
+    /// Whether to pass `--document-private-items` to `cargo rustdoc`. Default: `false`
+    #[must_use]
+    pub fn document_private_items(mut self, document_private_items: bool) -> Self {
+        self.document_private_items = document_private_items;
         self
     }
 

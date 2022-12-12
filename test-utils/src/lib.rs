@@ -6,9 +6,6 @@
 use std::path::Path;
 use std::path::PathBuf;
 
-mod create_test_git_repo;
-pub use create_test_git_repo::create_test_git_repo;
-
 #[must_use]
 pub fn rustdoc_json_path_for_crate(test_crate: &str, target_dir: impl AsRef<Path>) -> PathBuf {
     rustdoc_json_path_for_crate_impl(test_crate, Some(target_dir.as_ref()), false)

@@ -28,6 +28,8 @@ use test_utils::rustdoc_json_path_for_crate_with_private_items;
 #[path = "../src/git_utils.rs"] // Say NO to copy-paste!
 mod git_utils;
 
+mod create_test_git_repo;
+
 /// A toolchain that produces rustdoc JSON that we do not understand how to parse.
 const UNUSABLE_TOOLCHAIN: &str = "nightly-2022-06-01";
 
@@ -842,7 +844,7 @@ fn long_help_wraps() {
 /// Helper to initialize a test crate git repo. Each test gets its own git repo
 /// to use so that tests can run in parallel.
 fn initialize_test_repo(dest: &Path) {
-    test_utils::create_test_git_repo(dest, "../test-apis");
+    create_test_git_repo::create_test_git_repo(dest, "../test-apis");
 }
 
 #[derive(Debug)]

@@ -15,18 +15,8 @@ Options:
           
           [default: Cargo.toml]
 
-      --color [<COLOR>]
-          How to color the output. By default, `--color=auto` is active. Using just `--color`
-          without an arg is equivalent to `--color=always`
-
-          Possible values:
-          - auto:
-            Colors will be used if stdout is a terminal. If you pipe the output to a file, colors
-            will be disabled by default
-          - never:
-            Colors will never be used
-          - always:
-            Colors will always be used
+  -p, --package <PACKAGE>
+          Name of package in workspace to list or diff the public API for
 
   -s, --simplified
           Omit items that belong to Blanket Implementations and Auto Trait Implementations.
@@ -40,9 +30,6 @@ Options:
           Examples of Auto Trait Implementations: `impl Send for Foo`, `impl Sync for Foo`, and
           `impl Unpin for Foo`
 
-      --target <TARGET>
-          Build for the target triple
-
   -F, --features <FEATURES>...
           Space or comma separated list of features to activate
 
@@ -52,8 +39,21 @@ Options:
       --no-default-features
           Do not activate the `default` feature
 
-  -p, --package <PACKAGE>
-          Name of package in workspace to list or diff the public API for
+      --target <TARGET>
+          Build for the target triple
+
+      --color [<COLOR>]
+          How to color the output. By default, `--color=auto` is active. Using just `--color`
+          without an arg is equivalent to `--color=always`
+
+          Possible values:
+          - auto:
+            Colors will be used if stdout is a terminal. If you pipe the output to a file, colors
+            will be disabled by default
+          - never:
+            Colors will never be used
+          - always:
+            Colors will always be used
 
   -h, --help
           Print help information (use `-h` for a summary)

@@ -29,6 +29,46 @@ pub struct Args {
     #[arg(long, value_name = "PATH", default_value = "Cargo.toml")]
     manifest_path: PathBuf,
 
+    /// Name of package in workspace to list or diff the public API for.
+    #[arg(long, short)]
+    package: Option<String>,
+
+    /// Omit items that belong to Blanket Implementations and Auto Trait
+    /// Implementations.
+    ///
+    /// This makes the output significantly less noisy and repetitive, at the
+    /// cost of not fully describing the public API.
+    ///
+    /// Examples of Blanket Implementations: `impl<T> Any for T`, `impl<T>
+    /// Borrow<T> for T`, and `impl<T, U> Into<U> for T where U: From<T>`
+    ///
+    /// Examples of Auto Trait Implementations: `impl Send for Foo`, `impl Sync
+    /// for Foo`, and `impl Unpin for Foo`
+    #[arg(short, long)]
+    simplified: bool,
+
+    /// Space or comma separated list of features to activate
+    #[arg(long, short = 'F', num_args = 1..)]
+    features: Vec<String>,
+
+    /// Activate all available features
+    #[arg(long)]
+    all_features: bool,
+
+    /// Do not activate the `default` feature
+    #[arg(long)]
+    no_default_features: bool,
+
+    /// Build for the target triple
+    #[arg(long)]
+    target: Option<String>,
+
+    /// How to color the output. By default, `--color=auto` is active. Using
+    /// just `--color` without an arg is equivalent to `--color=always`.
+    #[allow(clippy::option_option)]
+    #[arg(long, value_enum)]
+    color: Option<Option<Color>>,
+
     /// DEPRECATED: Use `cargo public-api diff <REF1>..<REF2>` instead.
     #[arg(hide = true, long, num_args = 2, value_names = ["COMMIT_1", "COMMIT_2"])]
     diff_git_checkouts: Option<Vec<String>>,
@@ -49,6 +89,10 @@ pub struct Args {
     #[arg(hide = true, long, num_args = 1..=2, value_name = "TARGET")]
     diff: Option<Vec<String>>,
 
+    /// DEPRECATED: Use `cargo public-api diff ... --deny ...` instead.
+    #[arg(hide = true, long, value_enum)]
+    deny: Option<Vec<DenyMethod>>,
+
     /// List the public API based on the given rustdoc JSON file.
     ///
     /// Example:
@@ -63,30 +107,6 @@ pub struct Args {
     ///
     #[arg(long, value_name = "RUSTDOC_JSON_PATH", hide = true)]
     rustdoc_json: Option<String>,
-
-    /// DEPRECATED: Use `cargo public-api diff ... --deny ...` instead.
-    #[arg(hide = true, long, value_enum)]
-    deny: Option<Vec<DenyMethod>>,
-
-    /// How to color the output. By default, `--color=auto` is active. Using
-    /// just `--color` without an arg is equivalent to `--color=always`.
-    #[allow(clippy::option_option)]
-    #[arg(long, value_enum)]
-    color: Option<Option<Color>>,
-
-    /// Omit items that belong to Blanket Implementations and Auto Trait
-    /// Implementations.
-    ///
-    /// This makes the output significantly less noisy and repetitive, at the
-    /// cost of not fully describing the public API.
-    ///
-    /// Examples of Blanket Implementations: `impl<T> Any for T`, `impl<T>
-    /// Borrow<T> for T`, and `impl<T, U> Into<U> for T where U: From<T>`
-    ///
-    /// Examples of Auto Trait Implementations: `impl Send for Foo`, `impl Sync
-    /// for Foo`, and `impl Unpin for Foo`
-    #[arg(short, long)]
-    simplified: bool,
 
     /// Show detailed info about processing.
     ///
@@ -116,26 +136,6 @@ pub struct Args {
     /// want to use a fixed toolchain in CI.
     #[arg(long, value_parser = parse_toolchain, hide = true)]
     toolchain: Option<String>,
-
-    /// Build for the target triple
-    #[arg(long)]
-    target: Option<String>,
-
-    /// Space or comma separated list of features to activate
-    #[arg(long, short = 'F', num_args = 1..)]
-    features: Vec<String>,
-
-    #[arg(long)]
-    /// Activate all available features
-    all_features: bool,
-
-    #[arg(long)]
-    /// Do not activate the `default` feature
-    no_default_features: bool,
-
-    /// Name of package in workspace to list or diff the public API for.
-    #[arg(long, short)]
-    package: Option<String>,
 
     /// Forwarded to rustdoc JSON build command
     #[arg(long, hide = true)]

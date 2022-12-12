@@ -9,15 +9,15 @@ Commands:
 
 Options:
       --manifest-path <PATH>    Path to `Cargo.toml` [default: Cargo.toml]
-      --color [<COLOR>]         How to color the output. By default, `--color=auto` is active. Using
-                                just `--color` without an arg is equivalent to `--color=always` [possible
-                                values: auto, never, always]
+  -p, --package <PACKAGE>       Name of package in workspace to list or diff the public API for
   -s, --simplified              Omit items that belong to Blanket Implementations and Auto Trait
                                 Implementations
-      --target <TARGET>         Build for the target triple
   -F, --features <FEATURES>...  Space or comma separated list of features to activate
       --all-features            Activate all available features
       --no-default-features     Do not activate the `default` feature
-  -p, --package <PACKAGE>       Name of package in workspace to list or diff the public API for
+      --target <TARGET>         Build for the target triple
+      --color [<COLOR>]         How to color the output. By default, `--color=auto` is active. Using
+                                just `--color` without an arg is equivalent to `--color=always` [possible
+                                values: auto, never, always]
   -h, --help                    Print help information (use `--help` for more detail)
   -V, --version                 Print version information

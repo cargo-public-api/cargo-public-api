@@ -1,3 +1,6 @@
+## v0.7.2
+* Add `Builder::document_private_items()`
+
 ## v0.7.1
 * Add `Builder::clear_target_dir()`
 

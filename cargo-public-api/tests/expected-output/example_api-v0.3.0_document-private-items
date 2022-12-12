@@ -1,0 +1,9 @@
+pub mod example_api
+#[non_exhaustive] pub struct example_api::Struct
+pub struct field example_api::Struct::v1_field: usize
+pub struct field example_api::Struct::v2_field: usize
+impl core::fmt::Debug for example_api::Struct
+pub fn example_api::Struct::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct example_api::StructV2
+pub struct field example_api::StructV2::field: usize
+pub struct field example_api::StructV2::private_field: usize

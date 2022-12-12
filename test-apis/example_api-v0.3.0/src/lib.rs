@@ -9,4 +9,5 @@ pub struct Struct {
 
 pub struct StructV2 {
     pub field: usize,
+    private_field: usize,
 }

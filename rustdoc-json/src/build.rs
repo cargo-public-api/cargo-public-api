@@ -48,8 +48,8 @@ fn cargo_rustdoc_command(options: &Builder) -> Command {
         all_features,
         features,
         package,
-        cap_lints,
         document_private_items,
+        cap_lints,
     } = options;
 
     let mut command = OVERRIDDEN_TOOLCHAIN
@@ -90,12 +90,12 @@ fn cargo_rustdoc_command(options: &Builder) -> Command {
     if let Some(package) = package {
         command.args(["--package", package]);
     }
-    if *document_private_items {
-        command.arg("--document-private-items");
-    }
     command.arg("--");
     command.args(["-Z", "unstable-options"]);
     command.args(["--output-format", "json"]);
+    if *document_private_items {
+        command.arg("--document-private-items");
+    }
     if let Some(cap_lints) = cap_lints {
         command.args(["--cap-lints", cap_lints]);
     }

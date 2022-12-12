@@ -36,8 +36,8 @@ pub fn build_rustdoc_json(package_spec_str: &str, args: &Args) -> Result<PathBuf
 
 /// When diffing against a published crate, we want to allow the user to not
 /// specify the package name. Instead, we want to support to figure that out for
-/// the user. So instead of doing `--diff-published crate-name@1.2.3` they can
-/// just do `--diff-published @1.2.3`. This helper function figures out what
+/// the user. So instead of doing `diff --published crate-name@1.2.3` they can
+/// just do `diff --published @1.2.3`. This helper function figures out what
 /// package name to use in this case.
 fn package_name_from_args(args: &Args) -> Option<String> {
     if let Some(package) = &args.package {

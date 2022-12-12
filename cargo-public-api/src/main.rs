@@ -29,80 +29,24 @@ pub struct Args {
     #[arg(long, value_name = "PATH", default_value = "Cargo.toml")]
     manifest_path: PathBuf,
 
-    /// Diff the public API across two different commits.
-    ///
-    /// The following steps are performed:
-    ///
-    /// 1. Remember the current branch/commit
-    ///
-    /// 2. Do a literal in-tree, in-place `git checkout` of the first commit
-    ///
-    /// 3. Collect public API
-    ///
-    /// 4. Do a literal in-tree, in-place `git checkout` of the second commit
-    ///
-    /// 5. Collect public API
-    ///
-    /// 6. Print the diff between public API in step 2 and step 4
-    ///
-    /// 7. Restore the original branch/commit
-    ///
-    /// If you have local changes, git will refuse to do `git checkout`, so your
-    /// work will not be discarded.
-    ///
-    /// Using the current git repo has the benefit of making it likely for the
-    /// build to succeed. If we e.g. were to git clone a temporary copy of a
-    /// commit ourselves, the risk is high that additional steps are needed
-    /// before a build can succeed. Such as the need to set up git submodules.
-    #[arg(long, num_args = 2, value_names = ["COMMIT_1", "COMMIT_2"])]
+    /// DEPRECATED: Use `cargo public-api diff <REF1>..<REF2>` instead.
+    #[arg(hide = true, long, num_args = 2, value_names = ["COMMIT_1", "COMMIT_2"])]
     diff_git_checkouts: Option<Vec<String>>,
 
-    /// Discard working tree changes during git checkouts when
-    /// `--diff-git-checkouts` is used.
-    #[arg(long)]
+    /// DEPRECATED: Use `cargo public-api diff --force <REF1>..<REF2>` instead.
+    #[arg(hide = true, long)]
     force_git_checkouts: bool,
 
-    /// Diff the public API across two different rustdoc JSON files.
-    #[arg(long, num_args = 2, value_names = ["RUSTDOC_JSON_PATH_1", "RUSTDOC_JSON_PATH_2"])]
+    /// DEPRECATED: Use `cargo public-api diff file1.json file2.json` instead.
+    #[arg(hide = true, long, num_args = 2, value_names = ["RUSTDOC_JSON_PATH_1", "RUSTDOC_JSON_PATH_2"])]
     diff_rustdoc_json: Option<Vec<String>>,
 
-    /// Diff the current API against the API in a published version.
-    ///
-    /// Example:
-    ///
-    ///   cargo public-api --diff-published your-crate@1.2.3
-    #[arg(long, value_name = "CRATE_NAME@VERSION")]
+    /// DEPRECATED: Use `cargo public-api diff <VERSION>` or `cargo public-api diff -p some-package <VERSION>` instead.
+    #[arg(hide = true, long, value_name = "CRATE_NAME@VERSION")]
     diff_published: Option<String>,
 
-    /// Automatically resolves to either `--diff-git-checkouts`,
-    /// `--diff-rustdoc-json`, or `--diff-published` depending on if args ends
-    /// in `.json` or not, or if they contain `@`.
-    ///
-    /// Examples:
-    ///
-    ///   cargo public-api --diff v0.2.0 v0.3.0
-    ///
-    /// resolves to
-    ///
-    ///   cargo public-api --diff-git-checkouts v0.2.0 v0.3.0
-    ///
-    /// but
-    ///
-    ///   cargo public-api --diff v0.2.0.json v0.3.0.json
-    ///
-    /// resolves to
-    ///
-    ///   cargo public-api --diff-rustdoc-json v0.2.0.json v0.3.0.json
-    ///
-    /// and
-    ///
-    ///   cargo public-api --diff some-crate@1.2.3
-    ///
-    /// resolves to
-    ///
-    ///   cargo public-api --diff-published some-crate@1.2.3
-    ///
-    #[arg(long, num_args = 1..=2, value_name = "TARGET")]
+    /// DEPRECATED: Use `cargo public-api diff ...` instead.
+    #[arg(hide = true, long, num_args = 1..=2, value_name = "TARGET")]
     diff: Option<Vec<String>>,
 
     /// List the public API based on the given rustdoc JSON file.
@@ -120,11 +64,8 @@ pub struct Args {
     #[arg(long, value_name = "RUSTDOC_JSON_PATH", hide = true)]
     rustdoc_json: Option<String>,
 
-    /// Exit with failure if the specified API diff is detected.
-    ///
-    /// Can be combined. For example, to only allow additions to the API, use
-    /// `--deny=added --deny=changed`.
-    #[arg(long, value_enum)]
+    /// DEPRECATED: Use `cargo public-api diff ... --deny ...` instead.
+    #[arg(hide = true, long, value_enum)]
     deny: Option<Vec<DenyMethod>>,
 
     /// How to color the output. By default, `--color=auto` is active. Using
@@ -222,33 +163,67 @@ struct DiffArgs {
     #[arg(long)]
     force: bool,
 
-    /// Diff against published crate versions, between commits, or between
-    /// rustdoc JSON files. If the diffing arg looks like a specific version
-    /// string (`x.y.z`) then the diffing will be performed against a published
-    /// version of the crate. The presence of `..` means git commits will be
-    /// diffed. The presence of `.json` means rustdoc JSON file diffing will be
-    /// used.
-    ///
-    /// Examples:
-    ///
-    /// Diffing working tree against a published version of the crate:
-    ///
-    ///   cargo public-api diff 1.2.3
-    ///
-    /// Diffing between commits:
-    ///
-    ///   cargo public-api diff v0.2.0..v0.3.0
-    ///
-    /// Diffing between rustdoc JSON files:
-    ///
-    ///   cargo public-api diff first.json second.json
-    ///
+    /// What to diff. See `cargo public-api diff --help` for examples and more
+    /// info.
     args: Vec<String>,
 }
 
 #[derive(clap::Subcommand, Debug)]
 enum Subcommand {
-    /// Diffing of public APIs
+    /// Diff the public API against a published version of the crate, or between commits.
+    ///
+    /// If the diffing
+    ///
+    /// * arg looks like a specific version string (`x.y.z`) then the diff will be between that published
+    ///   version of the crate and the working directory.
+    ///
+    /// * arg has `..` like in `tag1..tag2` then the public API of each individual git commit will be
+    ///   diffed. See below for how that works.
+    ///
+    /// * args end with `.json` like in `file1.json file2.json` then rustdoc JSON file diffing will be
+    ///   performed.
+    ///
+    ///
+    /// EXAMPLES:
+    /// =========
+    ///
+    /// Diffing working tree against a published version of the crate:
+    ///
+    ///     cargo public-api diff 1.2.3
+    ///
+    /// Diffing working tree against a published version of a specific crate in the workspace:
+    ///
+    ///     cargo public-api -p specific-crate diff 1.2.3
+    ///
+    /// Diffing between commits:
+    ///
+    ///     cargo public-api diff v0.2.0..v0.3.0
+    ///
+    /// Diffing between rustdoc JSON files:
+    ///
+    ///     cargo public-api diff first.json second.json
+    ///
+    ///
+    /// HOW COMMIT DIFFING WORKS:
+    /// =========================
+    ///
+    /// When diffing commits, the following steps are performed:
+    ///
+    /// 1. Remember the current branch/commit
+    /// 2. Do a literal in-tree, in-place `git checkout` of the first commit
+    /// 3. Collect public API
+    /// 4. Do a literal in-tree, in-place `git checkout` of the second commit
+    /// 5. Collect public API
+    /// 6. Print the diff between public API in step 2 and step 4
+    /// 7. Restore the original branch/commit
+    ///
+    /// If you have local changes, git will refuse to do `git checkout`, so your work will not be discarded.
+    /// To force `git checkout`, use `--force`.
+    ///
+    /// Using the current git repo has the benefit of making it likely for the build to succeed. If we e.g.
+    /// were to git clone a temporary copy of a commit ourselves, the risk is high that additional steps are
+    /// needed before a build can succeed. Such as the need to set up git submodules.
+    #[clap(verbatim_doc_comment)]
     Diff(DiffArgs),
 }
 
@@ -550,6 +525,7 @@ fn get_args() -> Result<Args> {
         .map(|(_, arg)| arg);
 
     let mut args = Args::parse_from(args_os);
+    warn_about_deprecated_options(&args);
     if let Some(diff_args) = args.diff.clone() {
         resolve_diff_shorthand(&mut args, diff_args);
     }
@@ -565,6 +541,33 @@ fn get_args() -> Result<Args> {
         Err(anyhow!("`--deny` can only be used when diffing"))
     } else {
         Ok(args)
+    }
+}
+
+fn warn_about_deprecated_options(args: &Args) {
+    if let Some(args) = &args.diff_git_checkouts {
+        let first = args.get(0).unwrap();
+        let second = args.get(1).unwrap();
+        eprintln!("DEPRECATION WARNING: `... --diff-git-checkouts {first} {second}` is deprecated, use `... diff {first}..{second}` instead.");
+    }
+    if args.force_git_checkouts {
+        eprintln!("DEPRECATION WARNING: `... --diff-git-checkouts --force-git-checkouts` is deprecated, use `... diff --force` instead.");
+    }
+    if let Some(args) = &args.diff_rustdoc_json {
+        let first = args.get(0).unwrap();
+        let second = args.get(1).unwrap();
+        eprintln!("DEPRECATION WARNING: `... --diff-rustdoc-json {first} {second}` is deprecated, use `... diff {first} {second}` instead.");
+    }
+    if let Some(arg) = &args.diff_published {
+        eprintln!("DEPRECATION WARNING: `... --diff-published {arg}` is deprecated, use `... diff {arg}` instead.");
+    }
+    if let Some(args) = &args.diff {
+        eprintln!("DEPRECATION WARNING: `... --diff {args:?}` is deprecated, use `... diff {args:?}` instead.");
+    }
+    if args.deny.is_some() {
+        eprintln!(
+            "DEPRECATION WARNING: `... --diff --deny` is deprecated, use `... diff --deny` instead"
+        );
     }
 }
 

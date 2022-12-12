@@ -35,10 +35,10 @@ which will print the public API of `regex` with one line per public item in the 
 
 ## Diff the Public API
 
-To diff the API between say **0.2.2** and **0.2.3** of `regex`, use `--diff-git-checkouts 0.2.2 0.2.3` while standing in the git repo. Like this:
+To diff the API between say **0.2.2** and **0.2.3** of `regex`, use `diff 0.2.2..0.2.3` while standing in the git repo. Like this:
 
 ```bash
-cargo public-api --diff-git-checkouts 0.2.2 0.2.3
+cargo public-api diff 0.2.2..0.2.3
 ```
 
 and the API diff will be printed:
@@ -50,7 +50,7 @@ and the API diff will be printed:
 When you make changes to your library you often want to make sure that you do not accidentally change the public API of your library, or that the API change you are making looks like you expect. For this use case, first git commit your work in progress, and then run
 
 ```bash
-cargo public-api --diff-git-checkouts origin/main your-current-branch
+cargo public-api diff origin/main..your-current-branch
 ```
 
 which will print the diff of your public API changes compared to `origin/main`.
@@ -61,10 +61,10 @@ This tool can be put to good use in CI pipelines to e.g. help you make sure your
 
 ### … Against Published Version
 
-Before you `cargo publish` a new version of your crate, you can diff the public API of your local code against the public API of the version you last published. Use the `--diff-published` arg for that. Like this:
+Before you `cargo publish` a new version of your crate, you can diff the public API of your local code against the public API of the version you last published. Use the `diff <VERSION>` syntax for that. Like this:
 
 ```bash
-cargo public-api --diff-published regex@0.2.2
+cargo public-api diff 0.2.2
 ```
 
 ## Expected Output

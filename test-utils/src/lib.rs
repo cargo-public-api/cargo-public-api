@@ -42,21 +42,3 @@ fn rustdoc_json_path_for_crate_impl(
 
     builder.build().unwrap()
 }
-
-/// Adds `./target/debug` to `PATH` so that the subcommand `cargo public-api`
-/// starts working (since `./target/debug` contains the `cargo-public-api`
-/// binary).
-pub fn add_target_debug_to_path() {
-    let mut bin_dir = std::env::current_exe().unwrap(); // ".../target/debug/deps/cargo_public_api_bin_tests-d0f2f926b349fbb9"
-    bin_dir.pop(); // Pop "cargo_public_api_bin_tests-d0f2f926b349fbb9"
-    bin_dir.pop(); // Pop "deps"
-    add_to_path(bin_dir); // ".../target/debug"
-}
-
-fn add_to_path(dir: PathBuf) {
-    let mut path = std::env::var_os("PATH").unwrap();
-    let mut dirs: Vec<_> = std::env::split_paths(&path).collect();
-    dirs.insert(0, dir);
-    path = std::env::join_paths(dirs).unwrap();
-    std::env::set_var("PATH", path);
-}

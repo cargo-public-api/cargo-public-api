@@ -1,8 +1,10 @@
 // deny in CI, only warn here
 #![warn(clippy::all, clippy::pedantic)]
 
+use std::path::Path;
 use std::{io::BufRead, str::from_utf8};
 
+use assert_cmd::assert::Assert;
 use assert_cmd::Command;
 use public_api::MINIMUM_RUSTDOC_JSON_VERSION;
 
@@ -11,14 +13,13 @@ use public_api::MINIMUM_RUSTDOC_JSON_VERSION;
 mod test_utils;
 use tempfile::tempdir;
 use tempfile::TempDir;
-use test_utils::assert_or_bless::AssertOrBless;
 use test_utils::rustdoc_json_path_for_crate;
 
 #[test]
 fn print_public_api() {
     cmd_with_rustdoc_json_args(&["../test-apis/comprehensive_api"], |mut cmd| {
         cmd.assert()
-            .stdout_or_bless("../../public-api/tests/expected-output/comprehensive_api.txt")
+            .stdout_or_update("./expected-output/comprehensive_api.txt")
             .stderr("")
             .success();
     });
@@ -28,9 +29,7 @@ fn print_public_api() {
 fn print_public_api_not_simplified() {
     cmd_with_rustdoc_json_args_not_simplified(&["../test-apis/example_api-v0.2.0"], |mut cmd| {
         cmd.assert()
-            .stdout_or_bless(
-                "../../public-api/tests/expected-output/example_api-v0.2.0-not-simplified",
-            )
+            .stdout_or_update("./expected-output/example_api-v0.2.0-not-simplified")
             .stderr("")
             .success();
     });
@@ -45,7 +44,7 @@ fn print_diff() {
         ],
         |mut cmd| {
             cmd.assert()
-                .stdout_or_bless("../../public-api/tests/expected-output/print_diff.txt")
+                .stdout_or_update("./expected-output/print_diff.txt")
                 .stderr("")
                 .success();
         },
@@ -61,7 +60,7 @@ fn print_diff_reversed() {
         ],
         |mut cmd| {
             cmd.assert()
-                .stdout_or_bless("../../public-api/tests/expected-output/print_diff_reversed.txt")
+                .stdout_or_update("./expected-output/print_diff_reversed.txt")
                 .stderr("")
                 .success();
         },
@@ -77,7 +76,7 @@ fn print_no_diff() {
         ],
         |mut cmd| {
             cmd.assert()
-                .stdout_or_bless("../../public-api/tests/expected-output/print_no_diff.txt")
+                .stdout_or_update("./expected-output/print_no_diff.txt")
                 .stderr("")
                 .success();
         },
@@ -236,4 +235,16 @@ fn cmd_with_rustdoc_json_args_impl(
 
     // Here temp_dirs are dropped/removed. To prevent that for debugging
     // purposes, use `TempDir::into_path()`.
+}
+
+pub trait AssertOrUpdate {
+    fn stdout_or_update(self, expected_file: impl AsRef<Path>) -> Assert;
+}
+
+impl AssertOrUpdate for Assert {
+    fn stdout_or_update(self, expected_file: impl AsRef<Path>) -> Assert {
+        let stdout = String::from_utf8_lossy(&self.get_output().stdout);
+        expect_test::expect_file![expected_file.as_ref()].assert_eq(&stdout);
+        self
+    }
 }

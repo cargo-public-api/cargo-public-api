@@ -17,13 +17,8 @@ use assert_cmd::assert::Assert;
 use assert_cmd::Command;
 use predicates::str::contains;
 
-// rust-analyzer bug: https://github.com/rust-lang/rust-analyzer/issues/9173
-#[path = "../../test-utils/src/lib.rs"]
-mod test_utils;
 use public_api::MINIMUM_RUSTDOC_JSON_VERSION;
 use tempfile::tempdir;
-use test_utils::rustdoc_json_path_for_crate;
-use test_utils::rustdoc_json_path_for_crate_with_private_items;
 
 #[path = "../src/git_utils.rs"] // Say NO to copy-paste!
 mod git_utils;
@@ -685,10 +680,10 @@ fn document_private_items() {
     // Create independent build dir so all tests can run in parallel
     let build_dir = tempdir().unwrap();
 
-    let json = rustdoc_json_path_for_crate_with_private_items(
-        "../test-apis/example_api-v0.3.0",
-        &build_dir,
-    );
+    let json = rustdoc_json_builder_for_crate("../test-apis/example_api-v0.3.0", &build_dir)
+        .document_private_items(true)
+        .build()
+        .unwrap();
     let mut cmd = TestCmd::new().with_separate_target_dir();
     cmd.arg("--rustdoc-json");
     cmd.arg(json);
@@ -931,6 +926,23 @@ fn test_features(features: &F) {
     cmd.assert()
         .stdout_or_update(&format!("./expected-output/features-feat{features}.txt"))
         .success();
+}
+
+fn rustdoc_json_path_for_crate(test_crate: &str, target_dir: impl AsRef<Path>) -> PathBuf {
+    rustdoc_json_builder_for_crate(test_crate, target_dir)
+        .build()
+        .unwrap()
+}
+
+fn rustdoc_json_builder_for_crate(
+    test_crate: &str,
+    target_dir: impl AsRef<Path>,
+) -> rustdoc_json::Builder {
+    rustdoc_json::Builder::default()
+        .manifest_path(&format!("{}/Cargo.toml", test_crate))
+        .toolchain("nightly".to_owned())
+        .target_dir(target_dir)
+        .quiet(true)
 }
 
 /// A git repository that lives during the duration of a test. Having each test

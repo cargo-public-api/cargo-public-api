@@ -6,11 +6,10 @@ use std::path::Path;
 use expect_test::expect_file;
 use public_api::{Error, Options, PublicApi};
 
-// rust-analyzer bug: https://github.com/rust-lang/rust-analyzer/issues/9173
-#[path = "../../test-utils/src/lib.rs"]
-mod test_utils;
 use tempfile::tempdir;
-use test_utils::rustdoc_json_path_for_crate;
+
+mod common;
+use common::rustdoc_json_path_for_crate;
 
 #[test]
 fn public_api() -> Result<(), Box<dyn std::error::Error>> {

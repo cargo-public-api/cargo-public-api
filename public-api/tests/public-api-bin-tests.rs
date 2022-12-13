@@ -8,12 +8,10 @@ use assert_cmd::assert::Assert;
 use assert_cmd::Command;
 use public_api::MINIMUM_RUSTDOC_JSON_VERSION;
 
-// rust-analyzer bug: https://github.com/rust-lang/rust-analyzer/issues/9173
-#[path = "../../test-utils/src/lib.rs"]
-mod test_utils;
-use tempfile::tempdir;
-use tempfile::TempDir;
-use test_utils::rustdoc_json_path_for_crate;
+use tempfile::{tempdir, TempDir};
+
+mod common;
+use common::rustdoc_json_path_for_crate;
 
 #[test]
 fn print_public_api() {

@@ -57,6 +57,8 @@ pub const fn rustdoc_json::Builder::quiet(self, quiet: bool) -> Self
 pub fn rustdoc_json::Builder::target(self, target: alloc::string::String) -> Self
 pub fn rustdoc_json::Builder::target_dir(self, target_dir: impl core::convert::AsRef<std::path::Path>) -> Self
 pub fn rustdoc_json::Builder::toolchain(self, toolchain: impl core::convert::Into<core::option::Option<alloc::string::String>>) -> Self
+impl core::clone::Clone for rustdoc_json::Builder
+pub fn rustdoc_json::Builder::clone(&self) -> rustdoc_json::Builder
 impl core::fmt::Debug for rustdoc_json::Builder
 pub fn rustdoc_json::Builder::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::default::Default for rustdoc_json::Builder
@@ -76,6 +78,10 @@ impl<T> core::convert::From<T> for rustdoc_json::Builder
 pub fn rustdoc_json::Builder::from(t: T) -> T
 impl<T, U> core::convert::Into<U> for rustdoc_json::Builder where U: core::convert::From<T>
 pub fn rustdoc_json::Builder::into(self) -> U
+impl<T> alloc::borrow::ToOwned for rustdoc_json::Builder where T: core::clone::Clone
+pub type rustdoc_json::Builder::Owned = T
+pub fn rustdoc_json::Builder::clone_into(&self, target: &mut T)
+pub fn rustdoc_json::Builder::to_owned(&self) -> T
 impl<T, U> core::convert::TryFrom<U> for rustdoc_json::Builder where U: core::convert::Into<T>
 pub type rustdoc_json::Builder::Error = core::convert::Infallible
 pub fn rustdoc_json::Builder::try_from(value: U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>

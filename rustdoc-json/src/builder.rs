@@ -1,5 +1,4 @@
 use super::BuildError;
-use super::Builder;
 
 use std::{
     path::{Path, PathBuf},
@@ -146,6 +145,24 @@ fn package_name(manifest_path: impl AsRef<Path>) -> Result<String, BuildError> {
         .package
         .ok_or_else(|| BuildError::VirtualManifest(manifest_path.as_ref().to_owned()))?
         .name)
+}
+
+/// Builds rustdoc JSON. There are many build options. Refer to the docs to
+/// learn about them all. See [top-level docs](crate) for an example on how to use this builder.
+#[allow(clippy::struct_excessive_bools)]
+#[derive(Debug)]
+pub struct Builder {
+    toolchain: Option<String>,
+    manifest_path: PathBuf,
+    target_dir: Option<PathBuf>,
+    target: Option<String>,
+    quiet: bool,
+    no_default_features: bool,
+    all_features: bool,
+    features: Vec<String>,
+    package: Option<String>,
+    document_private_items: bool,
+    cap_lints: Option<String>,
 }
 
 impl Default for Builder {

@@ -9,10 +9,11 @@
         * **Cargo.toml** `[workspace.package.version]`
         * Dependents that you find with `git grep -A1 'path = "../public-api"'`
     2. If you bump 0.x.0 version, also update the [compatibility matrix](https://github.com/Enselic/cargo-public-api#compatibility-matrix).
-    1. If `MINIMUM_RUSTDOC_JSON_VERSION` must be bumped, bump it. If you bump it, also bump it in
-        * [compatibility matrix](https://github.com/Enselic/cargo-public-api#compatibility-matrix)
-        * `cargo-public-api` [installation instructions](https://github.com/Enselic/cargo-public-api#installation)
-        * `public-api` [installation instructions](https://github.com/Enselic/cargo-public-api/tree/main/public-api#usage)
+    1. If `MINIMUM_RUSTDOC_JSON_VERSION` must be bumped, bump it. If you bump it, also
+        *  bump it in [compatibility matrix](https://github.com/Enselic/cargo-public-api#compatibility-matrix)
+        *  bump it in `cargo-public-api` [installation instructions](https://github.com/Enselic/cargo-public-api#installation)
+        *  bump it in `public-api` [installation instructions](https://github.com/Enselic/cargo-public-api/tree/main/public-api#usage)
+        * `rm cargo-public-api/MINIMUM_RUSTDOC_JSON_VERSION_FOR_TESTS`
 
 1. Preview what the auto-generated release-notes will look like by going [here](https://github.com/cargo-public-api/cargo-public-api.github.io/blob/main/release-notes-preview.md). It is automatically updated, but you can also trigger manually [here](https://github.com/Enselic/cargo-public-api/actions/workflows/Peek-release-notes.yml)
 1. For each PR included in the release:

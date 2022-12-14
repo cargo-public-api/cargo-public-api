@@ -17,17 +17,13 @@ use assert_cmd::assert::Assert;
 use assert_cmd::Command;
 use predicates::str::contains;
 
-// rust-analyzer bug: https://github.com/rust-lang/rust-analyzer/issues/9173
-#[path = "../../test-utils/src/lib.rs"]
-mod test_utils;
 use public_api::MINIMUM_RUSTDOC_JSON_VERSION;
 use tempfile::tempdir;
-use test_utils::assert_or_bless::AssertOrBless;
-use test_utils::rustdoc_json_path_for_crate;
-use test_utils::rustdoc_json_path_for_crate_with_private_items;
 
 #[path = "../src/git_utils.rs"] // Say NO to copy-paste!
 mod git_utils;
+
+mod create_test_git_repo;
 
 /// A toolchain that produces rustdoc JSON that we do not understand how to parse.
 const UNUSABLE_TOOLCHAIN: &str = "nightly-2022-06-01";
@@ -59,7 +55,7 @@ fn list_public_items() {
 
     cmd.args(["--manifest-path", "../public-api/Cargo.toml"]);
     cmd.assert()
-        .stdout_or_bless("../../cargo-public-api/tests/expected-output/public_api_list.txt")
+        .stdout_or_update("./expected-output/public_api_list.txt")
         .success();
 }
 
@@ -68,7 +64,7 @@ fn list_public_items_with_lint_error() {
     let mut cmd = TestCmd::new().with_separate_target_dir();
     cmd.args(["--manifest-path", "../test-apis/lint_error/Cargo.toml"]);
     cmd.assert()
-        .stdout_or_bless("../../cargo-public-api/tests/expected-output/lint_error_list.txt")
+        .stdout_or_update("./expected-output/lint_error_list.txt")
         .success();
 }
 
@@ -120,7 +116,7 @@ fn list_public_items_explicit_manifest_path() {
     cmd.arg("--manifest-path");
     cmd.arg(&test_repo_manifest);
     cmd.assert()
-        .stdout_or_bless("../../cargo-public-api/tests/expected-output/example_api-v0.3.0.txt")
+        .stdout_or_update("./expected-output/example_api-v0.3.0.txt")
         .success();
 }
 
@@ -133,7 +129,7 @@ fn list_public_items_via_package_spec() {
     cmd.arg("--package");
     cmd.arg("specific-crate");
     cmd.assert()
-        .stdout_or_bless("../../cargo-public-api/tests/expected-output/specific-crate.txt")
+        .stdout_or_update("./expected-output/specific-crate.txt")
         .success();
 }
 
@@ -158,7 +154,7 @@ fn target_arg() {
     cmd.arg("--target");
     cmd.arg(get_host_target_triple());
     cmd.assert()
-        .stdout_or_bless("../../cargo-public-api/tests/expected-output/test_repo_api_latest.txt")
+        .stdout_or_update("./expected-output/test_repo_api_latest.txt")
         .success();
 }
 
@@ -183,9 +179,7 @@ fn subcommand_invocation() {
         .without_cargo_colors()
         .with_test_repo();
     cmd.assert()
-        .stdout_or_bless(
-            "../../cargo-public-api/tests/expected-output/test_repo_api_latest_not_simplified.txt",
-        )
+        .stdout_or_update("./expected-output/test_repo_api_latest_not_simplified.txt")
         // Sanity check that rustdoc JSON build progress is shown to users, i.e.
         // that we do not swallow stderr from the cargo rustdoc JSON building
         // subprocess
@@ -202,7 +196,7 @@ fn subcommand_invocation_external_manifest() {
         "../test-apis/example_api-v0.3.0/Cargo.toml",
     ]);
     cmd.assert()
-        .stdout_or_bless("../../cargo-public-api/tests/expected-output/example_api-v0.3.0.txt")
+        .stdout_or_update("./expected-output/example_api-v0.3.0.txt")
         .success();
 }
 
@@ -219,7 +213,7 @@ fn subcommand_invocation_public_api_arg() {
     cmd.current_dir(".."); // Enter git repo root so -p starts working
     cmd.args(["-p", "public-api"]);
     cmd.assert()
-        .stdout_or_bless("../../cargo-public-api/tests/expected-output/public_api_list.txt")
+        .stdout_or_update("./expected-output/public_api_list.txt")
         .success();
 }
 
@@ -227,7 +221,7 @@ fn subcommand_invocation_public_api_arg() {
 /// required for tests is not the same as required for users, so allow tests to
 /// use a different toolchain if needed
 fn get_minimum_toolchain() -> String {
-    std::fs::read_to_string("../test-utils/MINIMUM_RUSTDOC_JSON_VERSION_FOR_TESTS")
+    std::fs::read_to_string("../cargo-public-api/MINIMUM_RUSTDOC_JSON_VERSION_FOR_TESTS")
         .map(|s| s.trim().to_owned())
         .ok()
         .unwrap_or_else(|| MINIMUM_RUSTDOC_JSON_VERSION.to_owned())
@@ -246,7 +240,7 @@ fn minimal_toolchain_works() {
     ]);
 
     cmd.assert()
-        .stdout_or_bless("../../public-api/tests/expected-output/comprehensive_api.txt")
+        .stdout_or_update("../../public-api/tests/expected-output/comprehensive_api.txt")
         .success();
 }
 
@@ -266,7 +260,7 @@ fn warn_when_using_beta() {
         .stderr(contains(
             "` toolchain for gathering the public api is not possible",
         ))
-        .stdout_or_bless("../../public-api/tests/expected-output/comprehensive_api.txt")
+        .stdout_or_update("../../public-api/tests/expected-output/comprehensive_api.txt")
         .success();
 }
 
@@ -288,9 +282,7 @@ fn diff_public_items_impl(diff_arg: &str) {
     cmd.arg("v0.2.0");
     cmd.arg("v0.3.0");
     cmd.assert()
-        .stdout_or_bless(
-            "../../cargo-public-api/tests/expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt",
-        )
+        .stdout_or_update("./expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt")
         .success();
     let branch_after = git_utils::current_branch(&test_repo_path).unwrap().unwrap();
 
@@ -305,9 +297,7 @@ fn diff_public_items_with_subcommand() {
     cmd.arg("diff");
     cmd.arg("v0.2.0..v0.3.0");
     cmd.assert()
-        .stdout_or_bless(
-            "../../cargo-public-api/tests/expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt",
-        )
+        .stdout_or_update("./expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt")
         .success();
 }
 
@@ -401,9 +391,7 @@ fn diff_public_items_detached_head() {
     cmd.arg("v0.2.0");
     cmd.arg("v0.3.0");
     cmd.assert()
-        .stdout_or_bless(
-            "../../cargo-public-api/tests/expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt",
-        )
+        .stdout_or_update("./expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt")
         .success();
 
     let after = git_utils::current_commit(path).unwrap();
@@ -443,9 +431,7 @@ fn diff_public_items_with_dirty_tree_succeedes_with_force_option() {
     cmd.arg("v0.3.0");
     cmd.arg("--force-git-checkouts");
     cmd.assert()
-        .stdout_or_bless(
-            "../../cargo-public-api/tests/expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt",
-        )
+        .stdout_or_update("./expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt")
         .stderr(contains("DEPRECATION WARNING"))
         .success();
 }
@@ -468,9 +454,7 @@ fn diff_public_items_relative_refs() {
     cmd.arg("HEAD^");
     cmd.arg("HEAD");
     cmd.assert()
-        .stdout_or_bless(
-            "../../cargo-public-api/tests/expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt",
-        )
+        .stdout_or_update("./expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt")
         .success();
 
     let after = git_utils::current_commit(path).unwrap();
@@ -557,9 +541,7 @@ fn deny_added_with_diff() {
     cmd.arg("v0.2.0");
     cmd.arg("--deny=added");
     cmd.assert()
-        .stdout_or_bless(
-            "../../cargo-public-api/tests/expected-output/example_api_diff_v0.1.0_to_v0.2.0.txt",
-        )
+        .stdout_or_update("./expected-output/example_api_diff_v0.1.0_to_v0.2.0.txt")
         .failure();
 }
 
@@ -612,9 +594,7 @@ fn diff_public_items_with_manifest_path() {
     cmd.arg("v0.2.0");
     cmd.arg("v0.3.0");
     cmd.assert()
-        .stdout_or_bless(
-            "../../cargo-public-api/tests/expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt",
-        )
+        .stdout_or_update("./expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt")
         .success();
 }
 
@@ -651,7 +631,7 @@ fn diff_public_items_with_color_impl(color_arg: &str) {
     cmd.arg("v0.1.0");
     cmd.arg("v0.2.0");
     cmd.assert()
-        .stdout_or_bless("../../cargo-public-api/tests/expected-output/example_api_diff_v0.1.0_to_v0.2.0_colored.txt")
+        .stdout_or_update("./expected-output/example_api_diff_v0.1.0_to_v0.2.0_colored.txt")
         .success();
 }
 
@@ -660,9 +640,7 @@ fn list_public_items_with_color() {
     let mut cmd = TestCmd::new().with_test_repo();
     cmd.arg("--color=always");
     cmd.assert()
-        .stdout_or_bless(
-            "../../cargo-public-api/tests/expected-output/example_api_v0.3.0_colored.txt",
-        )
+        .stdout_or_update("./expected-output/example_api_v0.3.0_colored.txt")
         .success();
 }
 
@@ -693,9 +671,7 @@ fn diff_public_items_from_files_impl(diff_arg: &str) {
     cmd.arg(old);
     cmd.arg(new);
     cmd.assert()
-        .stdout_or_bless(
-            "../../cargo-public-api/tests/expected-output/example_api_diff_v0.1.0_to_v0.2.0.txt",
-        )
+        .stdout_or_update("./expected-output/example_api_diff_v0.1.0_to_v0.2.0.txt")
         .success();
 }
 
@@ -704,17 +680,15 @@ fn document_private_items() {
     // Create independent build dir so all tests can run in parallel
     let build_dir = tempdir().unwrap();
 
-    let json = rustdoc_json_path_for_crate_with_private_items(
-        "../test-apis/example_api-v0.3.0",
-        &build_dir,
-    );
+    let json = rustdoc_json_builder_for_crate("../test-apis/example_api-v0.3.0", &build_dir)
+        .document_private_items(true)
+        .build()
+        .unwrap();
     let mut cmd = TestCmd::new().with_separate_target_dir();
     cmd.arg("--rustdoc-json");
     cmd.arg(json);
     cmd.assert()
-        .stdout_or_bless(
-            "../../cargo-public-api/tests/expected-output/example_api-v0.3.0_document-private-items",
-        )
+        .stdout_or_update("./expected-output/example_api-v0.3.0_document-private-items")
         .success();
 }
 
@@ -749,7 +723,7 @@ fn diff_published_impl(diff_arg: &str, spec: &str) {
     cmd.arg(diff_arg);
     cmd.arg(spec);
     cmd.assert()
-        .stdout_or_bless("../../cargo-public-api/tests/expected-output/diff_published.txt")
+        .stdout_or_update("./expected-output/diff_published.txt")
         .success();
 }
 
@@ -761,7 +735,7 @@ fn diff_published_explicit_package() {
     cmd.arg("--diff-published");
     cmd.arg("@0.1.0");
     cmd.assert()
-        .stdout_or_bless("../../cargo-public-api/tests/expected-output/diff_published.txt")
+        .stdout_or_update("./expected-output/diff_published.txt")
         .stderr(contains("DEPRECATION WARNING"))
         .success();
 }
@@ -776,7 +750,7 @@ fn list_public_items_from_json_file() {
     cmd.arg("--rustdoc-json");
     cmd.arg(json_file);
     cmd.assert()
-        .stdout_or_bless("../../cargo-public-api/tests/expected-output/example_api-v0.3.0.txt")
+        .stdout_or_update("./expected-output/example_api-v0.3.0.txt")
         .success();
 }
 
@@ -808,7 +782,7 @@ fn short_help() {
     let mut cmd = TestCmd::new().with_separate_target_dir();
     cmd.arg("-h");
     cmd.assert()
-        .stdout_or_bless("../../docs/short-help.txt")
+        .stdout_or_update("../../docs/short-help.txt")
         .success();
 }
 
@@ -819,7 +793,7 @@ fn short_diff_help() {
     cmd.arg("diff");
     cmd.arg("-h");
     cmd.assert()
-        .stdout_or_bless("../../docs/short-diff-help.txt")
+        .stdout_or_update("../../docs/short-diff-help.txt")
         .success();
 }
 
@@ -829,7 +803,7 @@ fn long_help() {
     let mut cmd = TestCmd::new();
     cmd.arg("--help");
     cmd.assert()
-        .stdout_or_bless("../../docs/long-help.txt")
+        .stdout_or_update("../../docs/long-help.txt")
         .success();
 }
 
@@ -840,7 +814,7 @@ fn long_diff_help() {
     cmd.arg("diff");
     cmd.arg("--help");
     cmd.assert()
-        .stdout_or_bless("../../docs/long-diff-help.txt")
+        .stdout_or_update("../../docs/long-diff-help.txt")
         .success();
 }
 
@@ -865,7 +839,7 @@ fn long_help_wraps() {
 /// Helper to initialize a test crate git repo. Each test gets its own git repo
 /// to use so that tests can run in parallel.
 fn initialize_test_repo(dest: &Path) {
-    test_utils::create_test_git_repo(dest, "../test-apis");
+    create_test_git_repo::create_test_git_repo(dest, "../test-apis");
 }
 
 #[derive(Debug)]
@@ -950,10 +924,25 @@ fn test_features(features: &F) {
     }
 
     cmd.assert()
-        .stdout_or_bless(&format!(
-            "../../cargo-public-api/tests/expected-output/features-feat{features}.txt"
-        ))
+        .stdout_or_update(&format!("./expected-output/features-feat{features}.txt"))
         .success();
+}
+
+fn rustdoc_json_path_for_crate(test_crate: &str, target_dir: impl AsRef<Path>) -> PathBuf {
+    rustdoc_json_builder_for_crate(test_crate, target_dir)
+        .build()
+        .unwrap()
+}
+
+fn rustdoc_json_builder_for_crate(
+    test_crate: &str,
+    target_dir: impl AsRef<Path>,
+) -> rustdoc_json::Builder {
+    rustdoc_json::Builder::default()
+        .manifest_path(&format!("{}/Cargo.toml", test_crate))
+        .toolchain("nightly".to_owned())
+        .target_dir(target_dir)
+        .quiet(true)
 }
 
 /// A git repository that lives during the duration of a test. Having each test
@@ -1039,7 +1028,7 @@ impl From<TestCmdType<'_>> for Command {
     fn from(cmd_type: TestCmdType) -> Self {
         match cmd_type {
             TestCmdType::Subcommand { toolchain } => {
-                test_utils::add_target_debug_to_path();
+                add_target_debug_to_path();
 
                 let mut cargo_cmd = if let Some(toolchain) = toolchain {
                     cargo_with_toolchain(toolchain)
@@ -1160,4 +1149,34 @@ impl TestCmd {
     pub fn assert(&mut self) -> Assert {
         self.cmd.assert()
     }
+}
+
+pub trait AssertOrUpdate {
+    fn stdout_or_update(self, expected_file: impl AsRef<Path>) -> Assert;
+}
+
+impl AssertOrUpdate for Assert {
+    fn stdout_or_update(self, expected_file: impl AsRef<Path>) -> Assert {
+        let stdout = String::from_utf8_lossy(&self.get_output().stdout);
+        expect_test::expect_file![expected_file.as_ref()].assert_eq(&stdout);
+        self
+    }
+}
+
+/// Adds `./target/debug` to `PATH` so that the subcommand `cargo public-api`
+/// starts working (since `./target/debug` contains the `cargo-public-api`
+/// binary).
+fn add_target_debug_to_path() {
+    let mut bin_dir = std::env::current_exe().unwrap(); // ".../target/debug/deps/cargo_public_api_bin_tests-d0f2f926b349fbb9"
+    bin_dir.pop(); // Pop "cargo_public_api_bin_tests-d0f2f926b349fbb9"
+    bin_dir.pop(); // Pop "deps"
+    add_to_path(bin_dir); // ".../target/debug"
+}
+
+fn add_to_path(dir: PathBuf) {
+    let mut path = std::env::var_os("PATH").unwrap();
+    let mut dirs: Vec<_> = std::env::split_paths(&path).collect();
+    dirs.insert(0, dir);
+    path = std::env::join_paths(dirs).unwrap();
+    std::env::set_var("PATH", path);
 }

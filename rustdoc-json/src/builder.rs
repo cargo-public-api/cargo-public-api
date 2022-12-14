@@ -150,7 +150,7 @@ fn package_name(manifest_path: impl AsRef<Path>) -> Result<String, BuildError> {
 /// Builds rustdoc JSON. There are many build options. Refer to the docs to
 /// learn about them all. See [top-level docs](crate) for an example on how to use this builder.
 #[allow(clippy::struct_excessive_bools)]
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct Builder {
     toolchain: Option<String>,
     manifest_path: PathBuf,

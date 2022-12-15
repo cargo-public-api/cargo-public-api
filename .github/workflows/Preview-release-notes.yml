@@ -14,8 +14,8 @@ on:
     branches: [main]
 
 jobs:
-  show-release-notes:
-    if: github.event_name != 'pull_request' || github.event.pull_request.merged == true
+  preview-release-notes:
+    if: github.repository == 'Enselic/cargo-public-api' && (github.event_name != 'pull_request' || github.event.pull_request.merged == true)
     environment: preview-release-notes
     runs-on: ubuntu-latest
     steps:

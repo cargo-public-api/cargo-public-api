@@ -15,7 +15,7 @@
         *  bump it in `public-api` [installation instructions](https://github.com/Enselic/cargo-public-api/tree/main/public-api#usage)
         * `rm cargo-public-api/MINIMUM_RUSTDOC_JSON_VERSION_FOR_TESTS`
 
-1. Preview what the auto-generated release-notes will look like by going [here](https://github.com/cargo-public-api/cargo-public-api.github.io/blob/main/release-notes-preview.md). It is automatically updated, but you can also trigger manually [here](https://github.com/Enselic/cargo-public-api/actions/workflows/Peek-release-notes.yml)
+1. Preview what the auto-generated release-notes will look like by going [here](https://github.com/cargo-public-api/cargo-public-api.github.io/blob/main/release-notes-preview.md). It is automatically updated, but you can also trigger manually [here](https://github.com/Enselic/cargo-public-api/actions/workflows/Preview-release-notes.yml)
 1. For each PR included in the release:
     1. Label with `[category-exclude]` if it shall not be mentioned in the release notes.
     1. Label with `[category-enhancement]` if it shall be in the "New Features" section in the auto-generated release notes.

@@ -599,7 +599,7 @@ dependencies = [
 
 [[package]]
 name = "rustdoc-json"
-version = "0.7.2"
+version = "0.7.3"
 dependencies = [
  "cargo-manifest",
  "cargo_metadata",

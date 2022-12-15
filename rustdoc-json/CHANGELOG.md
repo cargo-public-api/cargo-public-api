@@ -1,3 +1,6 @@
+## v0.7.3
+* Derive `Clone` for `rustdoc_json::Builder`
+
 ## v0.7.2
 * Add `Builder::document_private_items()`
 

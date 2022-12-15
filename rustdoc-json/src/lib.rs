@@ -23,7 +23,7 @@
 use std::path::PathBuf;
 
 mod builder;
-pub use builder::Builder;
+pub use builder::{Builder, PackageTarget};
 
 /// Represents all errors that can occur when using [`Builder::build()`].
 #[derive(thiserror::Error, Debug)]

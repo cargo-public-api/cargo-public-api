@@ -21,4 +21,4 @@ version = "0.7.2"
 
 [dev-dependencies.public-api]
 path = "../public-api"
-version = "0.24.1"
+version = "0.24.2"

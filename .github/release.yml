@@ -11,9 +11,15 @@ changelog:
     - title: Bugfixes
       labels:
         - category-bugfix
-    - title: public_api library
+    - title: '`public-api` library'
       labels:
-        - category-public_api
+        - category-public-api
+    - title: '`rustdoc-json` library'
+      labels:
+        - category-rustdoc-json
+    - title: '`rustup-toolchain` library'
+      labels:
+        - category-rustup-toolchain
     - title: Other Changes
       labels:
         - "*"

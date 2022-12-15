@@ -25,7 +25,7 @@ For `public-api` and `cargo-public-api` (which always have the same version numb
 * **x.0.0**: We bump to 1.0.0 earliest when the rustdoc JSON format has stabilized, which probably will take many more months, maybe years.
 
 * **0.x.0**: We bump it when
-  * The `public_api` lib or the `cargo-public-api` CLI has had backwards incompatible changes.
+  * The `public-api` lib or the `cargo-public-api` CLI has had backwards incompatible changes.
   * When the rustdoc JSON parsing code changes in a backwards incompatible way.
 
 * **0.0.x**: We bump it whenever we want to make a release but we don't have to/want to bump 0.x.0

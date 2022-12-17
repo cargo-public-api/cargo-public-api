@@ -42,41 +42,41 @@ pub fn rustdoc_json::BuildError::try_from(value: U) -> core::result::Result<T, <
 impl<T, U> core::convert::TryInto<U> for rustdoc_json::BuildError where U: core::convert::TryFrom<T>
 pub type rustdoc_json::BuildError::Error = <U as core::convert::TryFrom<T>>::Error
 pub fn rustdoc_json::BuildError::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
-#[non_exhaustive] pub enum rustdoc_json::PackageTarget<T: core::convert::AsRef<str>>
-pub enum variant rustdoc_json::PackageTarget::Bench(T)
-pub enum variant rustdoc_json::PackageTarget::Bin(T)
-pub enum variant rustdoc_json::PackageTarget::Example(T)
+#[non_exhaustive] pub enum rustdoc_json::PackageTarget
+pub enum variant rustdoc_json::PackageTarget::Bench(alloc::string::String)
+pub enum variant rustdoc_json::PackageTarget::Bin(alloc::string::String)
+pub enum variant rustdoc_json::PackageTarget::Example(alloc::string::String)
 pub enum variant rustdoc_json::PackageTarget::Lib
-pub enum variant rustdoc_json::PackageTarget::Test(T)
-impl<T: core::clone::Clone + core::convert::AsRef<str>> core::clone::Clone for rustdoc_json::PackageTarget<T>
-pub fn rustdoc_json::PackageTarget::clone(&self) -> rustdoc_json::PackageTarget<T>
-impl<T: core::fmt::Debug + core::convert::AsRef<str>> core::fmt::Debug for rustdoc_json::PackageTarget<T>
+pub enum variant rustdoc_json::PackageTarget::Test(alloc::string::String)
+impl core::clone::Clone for rustdoc_json::PackageTarget
+pub fn rustdoc_json::PackageTarget::clone(&self) -> rustdoc_json::PackageTarget
+impl core::fmt::Debug for rustdoc_json::PackageTarget
 pub fn rustdoc_json::PackageTarget::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
-impl<T: core::convert::AsRef<str>> core::default::Default for rustdoc_json::PackageTarget<T>
-pub fn rustdoc_json::PackageTarget::default() -> rustdoc_json::PackageTarget<T>
-impl<T> core::panic::unwind_safe::RefUnwindSafe for rustdoc_json::PackageTarget<T> where T: core::panic::unwind_safe::RefUnwindSafe
-impl<T> core::marker::Send for rustdoc_json::PackageTarget<T> where T: core::marker::Send
-impl<T> core::marker::Sync for rustdoc_json::PackageTarget<T> where T: core::marker::Sync
-impl<T> core::marker::Unpin for rustdoc_json::PackageTarget<T> where T: core::marker::Unpin
-impl<T> core::panic::unwind_safe::UnwindSafe for rustdoc_json::PackageTarget<T> where T: core::panic::unwind_safe::UnwindSafe
-impl<T> core::any::Any for rustdoc_json::PackageTarget<T> where T: 'static + core::marker::Sized
+impl core::default::Default for rustdoc_json::PackageTarget
+pub fn rustdoc_json::PackageTarget::default() -> rustdoc_json::PackageTarget
+impl core::panic::unwind_safe::RefUnwindSafe for rustdoc_json::PackageTarget
+impl core::marker::Send for rustdoc_json::PackageTarget
+impl core::marker::Sync for rustdoc_json::PackageTarget
+impl core::marker::Unpin for rustdoc_json::PackageTarget
+impl core::panic::unwind_safe::UnwindSafe for rustdoc_json::PackageTarget
+impl<T> core::any::Any for rustdoc_json::PackageTarget where T: 'static + core::marker::Sized
 pub fn rustdoc_json::PackageTarget::type_id(&self) -> core::any::TypeId
-impl<T> core::borrow::Borrow<T> for rustdoc_json::PackageTarget<T> where T: core::marker::Sized
+impl<T> core::borrow::Borrow<T> for rustdoc_json::PackageTarget where T: core::marker::Sized
 pub fn rustdoc_json::PackageTarget::borrow(&self) -> &T
-impl<T> core::borrow::BorrowMut<T> for rustdoc_json::PackageTarget<T> where T: core::marker::Sized
+impl<T> core::borrow::BorrowMut<T> for rustdoc_json::PackageTarget where T: core::marker::Sized
 pub fn rustdoc_json::PackageTarget::borrow_mut(&mut self) -> &mut T
-impl<T> core::convert::From<T> for rustdoc_json::PackageTarget<T>
+impl<T> core::convert::From<T> for rustdoc_json::PackageTarget
 pub fn rustdoc_json::PackageTarget::from(t: T) -> T
-impl<T, U> core::convert::Into<U> for rustdoc_json::PackageTarget<T> where U: core::convert::From<T>
+impl<T, U> core::convert::Into<U> for rustdoc_json::PackageTarget where U: core::convert::From<T>
 pub fn rustdoc_json::PackageTarget::into(self) -> U
-impl<T> alloc::borrow::ToOwned for rustdoc_json::PackageTarget<T> where T: core::clone::Clone
+impl<T> alloc::borrow::ToOwned for rustdoc_json::PackageTarget where T: core::clone::Clone
 pub type rustdoc_json::PackageTarget::Owned = T
 pub fn rustdoc_json::PackageTarget::clone_into(&self, target: &mut T)
 pub fn rustdoc_json::PackageTarget::to_owned(&self) -> T
-impl<T, U> core::convert::TryFrom<U> for rustdoc_json::PackageTarget<T> where U: core::convert::Into<T>
+impl<T, U> core::convert::TryFrom<U> for rustdoc_json::PackageTarget where U: core::convert::Into<T>
 pub type rustdoc_json::PackageTarget::Error = core::convert::Infallible
 pub fn rustdoc_json::PackageTarget::try_from(value: U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
-impl<T, U> core::convert::TryInto<U> for rustdoc_json::PackageTarget<T> where U: core::convert::TryFrom<T>
+impl<T, U> core::convert::TryInto<U> for rustdoc_json::PackageTarget where U: core::convert::TryFrom<T>
 pub type rustdoc_json::PackageTarget::Error = <U as core::convert::TryFrom<T>>::Error
 pub fn rustdoc_json::PackageTarget::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
 pub struct rustdoc_json::Builder
@@ -90,7 +90,7 @@ pub fn rustdoc_json::Builder::features<I: core::iter::traits::collect::IntoItera
 pub fn rustdoc_json::Builder::manifest_path(self, manifest_path: impl core::convert::AsRef<std::path::Path>) -> Self
 pub const fn rustdoc_json::Builder::no_default_features(self, no_default_features: bool) -> Self
 pub fn rustdoc_json::Builder::package(self, package: impl core::convert::AsRef<str>) -> Self
-pub fn rustdoc_json::Builder::package_target<T: core::convert::AsRef<str>>(self, package_target: rustdoc_json::PackageTarget<T>) -> Self
+pub fn rustdoc_json::Builder::package_target(self, package_target: rustdoc_json::PackageTarget) -> Self
 pub const fn rustdoc_json::Builder::quiet(self, quiet: bool) -> Self
 pub fn rustdoc_json::Builder::target(self, target: alloc::string::String) -> Self
 pub fn rustdoc_json::Builder::target_dir(self, target_dir: impl core::convert::AsRef<std::path::Path>) -> Self

@@ -291,14 +291,8 @@ impl Builder {
 
     /// What part of the package to document. Default: `PackageTarget::Lib`
     #[must_use]
-    pub fn package_target<T: AsRef<str>>(mut self, package_target: PackageTarget<T>) -> Self {
-        self.package_target = match package_target {
-            PackageTarget::Lib => PackageTarget::Lib,
-            PackageTarget::Bin(target) => PackageTarget::Bin(target.as_ref().to_string()),
-            PackageTarget::Example(target) => PackageTarget::Example(target.as_ref().to_string()),
-            PackageTarget::Test(target) => PackageTarget::Test(target.as_ref().to_string()),
-            PackageTarget::Bench(target) => PackageTarget::Bench(target.as_ref().to_string()),
-        };
+    pub fn package_target(mut self, package_target: PackageTarget) -> Self {
+        self.package_target = package_target;
         self
     }
 
@@ -333,18 +327,18 @@ impl Builder {
 /// The part of of the package to document
 #[derive(Default, Debug, Clone)]
 #[non_exhaustive]
-pub enum PackageTarget<T: AsRef<str> = String> {
+pub enum PackageTarget {
     /// Document the package as a library, i.e. pass `--lib`
     #[default]
     Lib,
     /// Document the given binary, i.e. pass `--bin <name>`
-    Bin(T),
+    Bin(String),
     /// Document the given binary, i.e. pass `--example <name>`
-    Example(T),
+    Example(String),
     /// Document the given binary, i.e. pass `--test <name>`
-    Test(T),
+    Test(String),
     /// Document the given binary, i.e. pass `--bench <name>`
-    Bench(T),
+    Bench(String),
 }
 
 #[cfg(test)]

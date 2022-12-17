@@ -1,0 +1,5 @@
+[package]
+description = "For testing rustdoc-json"
+name = "test_crate"
+version = "0.1.0"
+edition = "2021"

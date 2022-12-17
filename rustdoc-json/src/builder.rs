@@ -195,7 +195,7 @@ impl Default for Builder {
             all_features: false,
             features: vec![],
             package: None,
-            package_target: PackageTarget::Lib,
+            package_target: PackageTarget::default(),
             document_private_items: false,
             cap_lints: Some(String::from("warn")),
         }
@@ -332,6 +332,7 @@ impl Builder {
 
 /// The part of of the package to document
 #[derive(Default, Debug, Clone)]
+#[non_exhaustive]
 pub enum PackageTarget<T: AsRef<str> = String> {
     /// Document the package as a library, i.e. pass `--lib`
     #[default]

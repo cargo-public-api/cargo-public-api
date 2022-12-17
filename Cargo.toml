@@ -50,4 +50,7 @@ exclude = [
 
     # Test for feature flags
     "test-apis/features",
+
+    # rustdoc-json specific tests
+    "rustdoc-json/tests/test_crate"
 ]

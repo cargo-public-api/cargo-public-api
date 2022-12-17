@@ -42,7 +42,7 @@ pub fn rustdoc_json::BuildError::try_from(value: U) -> core::result::Result<T, <
 impl<T, U> core::convert::TryInto<U> for rustdoc_json::BuildError where U: core::convert::TryFrom<T>
 pub type rustdoc_json::BuildError::Error = <U as core::convert::TryFrom<T>>::Error
 pub fn rustdoc_json::BuildError::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
-pub enum rustdoc_json::PackageTarget<T: core::convert::AsRef<str>>
+#[non_exhaustive] pub enum rustdoc_json::PackageTarget<T: core::convert::AsRef<str>>
 pub enum variant rustdoc_json::PackageTarget::Bench(T)
 pub enum variant rustdoc_json::PackageTarget::Bin(T)
 pub enum variant rustdoc_json::PackageTarget::Example(T)

@@ -42,7 +42,7 @@ jobs:
       - id: latest-nightly
         run: echo "version=nightly-$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
       - run: |
-          [ -z "$(git status --porcelain)" ] || echo "${{ steps.latest-nightly.outputs.version }}" > test-utils/MINIMUM_RUSTDOC_JSON_VERSION_FOR_TESTS
+          [ -z "$(git status --porcelain)" ] || echo "${{ steps.latest-nightly.outputs.version }}" > cargo-public-api/MINIMUM_RUSTDOC_JSON_VERSION_FOR_TESTS
       - uses: peter-evans/create-pull-request@v4
         with:
           title: Bless `${{ steps.latest-nightly.outputs.version }}` output

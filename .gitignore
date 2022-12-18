@@ -6,4 +6,4 @@ target
 **/*.rs.bk
 
 /test-apis/*/Cargo.lock
-/rustdoc-json/tests/test_crate/Cargo.lock
+/rustdoc-json/tests/test_crates/*/Cargo.lock

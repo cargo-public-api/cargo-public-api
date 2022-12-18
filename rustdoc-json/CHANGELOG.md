@@ -1,3 +1,6 @@
+## Unreleased
+* Add `Builder::package_target` and `PackageTarget`
+
 ## v0.7.3
 * Derive `Clone` for `rustdoc_json::Builder`
 

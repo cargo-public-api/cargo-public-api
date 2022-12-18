@@ -18,6 +18,7 @@ pub fn run_cargo_rustdoc(options: Builder) -> Result<PathBuf, BuildError> {
         rustdoc_json_path_for_manifest_path(
             options.manifest_path,
             options.package.as_deref(),
+            &options.package_target,
             options.target_dir.as_deref(),
             options.target.as_deref(),
         )
@@ -47,6 +48,7 @@ fn cargo_rustdoc_command(options: &Builder) -> Command {
         all_features,
         features,
         package,
+        package_target,
         document_private_items,
         cap_lints,
     } = options;
@@ -63,7 +65,13 @@ fn cargo_rustdoc_command(options: &Builder) -> Command {
         );
 
     command.arg("rustdoc");
-    command.arg("--lib");
+    match package_target {
+        PackageTarget::Lib => command.arg("--lib"),
+        PackageTarget::Bin(target) => command.args(["--bin", target]),
+        PackageTarget::Example(target) => command.args(["--example", target]),
+        PackageTarget::Test(target) => command.args(["--test", target]),
+        PackageTarget::Bench(target) => command.args(["--bench", target]),
+    };
     if let Some(target_dir) = target_dir {
         command.arg("--target-dir");
         command.arg(target_dir);
@@ -106,6 +114,7 @@ fn cargo_rustdoc_command(options: &Builder) -> Command {
 fn rustdoc_json_path_for_manifest_path(
     manifest_path: impl AsRef<Path>,
     package: Option<&str>,
+    package_target: &PackageTarget,
     target_dir: Option<&Path>,
     target: Option<&str>,
 ) -> Result<PathBuf, BuildError> {
@@ -113,9 +122,17 @@ fn rustdoc_json_path_for_manifest_path(
         Some(target_dir) => target_dir.to_owned(),
         None => target_directory(&manifest_path)?,
     };
-    let lib_name = package
-        .map(ToOwned::to_owned)
-        .map_or_else(|| package_name(&manifest_path), Ok)?;
+
+    // get the name of the crate/binary/example/test/bench
+    let package_target_name = match package_target {
+        PackageTarget::Lib => package
+            .map(ToOwned::to_owned)
+            .map_or_else(|| package_name(&manifest_path), Ok)?,
+        PackageTarget::Bin(package)
+        | PackageTarget::Example(package)
+        | PackageTarget::Test(package)
+        | PackageTarget::Bench(package) => package.clone(),
+    };
 
     let mut rustdoc_json_path = target_dir;
     // if one has specified a target explicitly then Cargo appends that target triple name as a subfolder
@@ -123,7 +140,7 @@ fn rustdoc_json_path_for_manifest_path(
         rustdoc_json_path.push(target);
     }
     rustdoc_json_path.push("doc");
-    rustdoc_json_path.push(lib_name.replace('-', "_"));
+    rustdoc_json_path.push(package_target_name.replace('-', "_"));
     rustdoc_json_path.set_extension("json");
     Ok(rustdoc_json_path)
 }
@@ -161,6 +178,7 @@ pub struct Builder {
     all_features: bool,
     features: Vec<String>,
     package: Option<String>,
+    package_target: PackageTarget,
     document_private_items: bool,
     cap_lints: Option<String>,
 }
@@ -177,6 +195,7 @@ impl Default for Builder {
             all_features: false,
             features: vec![],
             package: None,
+            package_target: PackageTarget::default(),
             document_private_items: false,
             cap_lints: Some(String::from("warn")),
         }
@@ -270,6 +289,13 @@ impl Builder {
         self
     }
 
+    /// What part of the package to document. Default: `PackageTarget::Lib`
+    #[must_use]
+    pub fn package_target(mut self, package_target: PackageTarget) -> Self {
+        self.package_target = package_target;
+        self
+    }
+
     /// Whether to pass `--document-private-items` to `cargo rustdoc`. Default: `false`
     #[must_use]
     pub fn document_private_items(mut self, document_private_items: bool) -> Self {
@@ -296,6 +322,23 @@ impl Builder {
     pub fn build(self) -> Result<PathBuf, BuildError> {
         run_cargo_rustdoc(self)
     }
+}
+
+/// The part of of the package to document
+#[derive(Default, Debug, Clone)]
+#[non_exhaustive]
+pub enum PackageTarget {
+    /// Document the package as a library, i.e. pass `--lib`
+    #[default]
+    Lib,
+    /// Document the given binary, i.e. pass `--bin <name>`
+    Bin(String),
+    /// Document the given binary, i.e. pass `--example <name>`
+    Example(String),
+    /// Document the given binary, i.e. pass `--test <name>`
+    Test(String),
+    /// Document the given binary, i.e. pass `--bench <name>`
+    Bench(String),
 }
 
 #[cfg(test)]

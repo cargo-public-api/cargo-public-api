@@ -125,9 +125,20 @@ fn rustdoc_json_path_for_manifest_path(
 
     // get the name of the crate/binary/example/test/bench
     let package_target_name = match package_target {
-        PackageTarget::Lib => package
-            .map(ToOwned::to_owned)
-            .map_or_else(|| package_name(&manifest_path), Ok)?,
+        PackageTarget::Lib => {
+            let lib_name = match package {
+                Some(package) => {
+                    // a package `crate@1.0.0` will be documented as `crate.json`
+                    package
+                        .split_once('@')
+                        .map_or(package, |(start, _end)| start)
+                        .to_owned()
+                }
+                None => package_name(&manifest_path)?,
+            };
+
+            lib_name.replace('-', "_")
+        }
         PackageTarget::Bin(package)
         | PackageTarget::Example(package)
         | PackageTarget::Test(package)
@@ -140,7 +151,7 @@ fn rustdoc_json_path_for_manifest_path(
         rustdoc_json_path.push(target);
     }
     rustdoc_json_path.push("doc");
-    rustdoc_json_path.push(package_target_name.replace('-', "_"));
+    rustdoc_json_path.push(package_target_name);
     rustdoc_json_path.set_extension("json");
     Ok(rustdoc_json_path)
 }

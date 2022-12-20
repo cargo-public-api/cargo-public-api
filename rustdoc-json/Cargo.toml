@@ -17,7 +17,9 @@ thiserror = "1.0.29"
 toml = "0.5.6"
 
 [dev-dependencies]
+assert_cmd = "2.0.4"
 expect-test = "1.4.0"
+predicates = "2.1.1"
 tempfile = "3.3.0"
 
 [dev-dependencies.public-api]

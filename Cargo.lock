@@ -598,6 +598,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "repo-tests"
+version = "0.1.0"
+dependencies = [
+ "public-api",
+]
+
+[[package]]
 name = "rustdoc-json"
 version = "0.7.3"
 dependencies = [

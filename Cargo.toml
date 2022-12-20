@@ -14,6 +14,9 @@ members = [
 
     # High-level CLI for "rustdoc-json" and "public-api"
     "cargo-public-api",
+
+    # Contains various repo-wide tests
+    "repo-tests",
 ]
 
 # Test APIs can't be part of the workspace because

@@ -1,0 +1,10 @@
+[package]
+edition = "2021"
+name = "repo-tests"
+version = "0.1.0"
+description = "Contains various repo-wide tests"
+
+[dev-dependencies.public-api]
+path = "../public-api"
+version = "0.24.2"
+

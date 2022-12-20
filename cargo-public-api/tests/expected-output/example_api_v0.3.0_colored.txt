@@ -1,8 +1,8 @@
 [34mpub[0m [34mmod[0m [36mexample_api[0m
 #[non_exhaustive] [34mpub[0m [34mstruct[0m [36mexample_api[0m::[32mStruct[0m
-[34mpub[0m [34mstruct[0m [34mfield[0m [36mexample_api[0m::[32mStruct[0m::[36mv1_field[0m: [32musize[0m
-[34mpub[0m [34mstruct[0m [34mfield[0m [36mexample_api[0m::[32mStruct[0m::[36mv2_field[0m: [32musize[0m
+[34mpub[0m [36mexample_api[0m::[32mStruct[0m::[36mv1_field[0m: [32musize[0m
+[34mpub[0m [36mexample_api[0m::[32mStruct[0m::[36mv2_field[0m: [32musize[0m
 [34mimpl[0m [36mcore[0m::[36mfmt[0m::[32mDebug[0m [34mfor[0m [36mexample_api[0m::[32mStruct[0m
 [34mpub[0m [34mfn[0m [36mexample_api[0m::[32mStruct[0m::[33mfmt[0m(&[34mself[0m, [36mf[0m: &[34mmut[0m [36mcore[0m::[36mfmt[0m::[32mFormatter[0m<[34m'_[0m>) -> [36mcore[0m::[36mfmt[0m::[32mResult[0m
 [34mpub[0m [34mstruct[0m [36mexample_api[0m::[32mStructV2[0m
-[34mpub[0m [34mstruct[0m [34mfield[0m [36mexample_api[0m::[32mStructV2[0m::[36mfield[0m: [32musize[0m
+[34mpub[0m [36mexample_api[0m::[32mStructV2[0m::[36mfield[0m: [32musize[0m

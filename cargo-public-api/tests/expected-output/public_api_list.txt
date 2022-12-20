@@ -1,8 +1,8 @@
 pub mod public_api
 pub mod public_api::diff
 pub struct public_api::diff::ChangedPublicItem
-pub struct field public_api::diff::ChangedPublicItem::new: public_api::PublicItem
-pub struct field public_api::diff::ChangedPublicItem::old: public_api::PublicItem
+pub public_api::diff::ChangedPublicItem::new: public_api::PublicItem
+pub public_api::diff::ChangedPublicItem::old: public_api::PublicItem
 impl core::clone::Clone for public_api::diff::ChangedPublicItem
 pub fn public_api::diff::ChangedPublicItem::clone(&self) -> public_api::diff::ChangedPublicItem
 impl core::fmt::Debug for public_api::diff::ChangedPublicItem
@@ -17,9 +17,9 @@ pub fn public_api::diff::ChangedPublicItem::partial_cmp(&self, other: &public_ap
 impl core::marker::StructuralEq for public_api::diff::ChangedPublicItem
 impl core::marker::StructuralPartialEq for public_api::diff::ChangedPublicItem
 pub struct public_api::diff::PublicApiDiff
-pub struct field public_api::diff::PublicApiDiff::added: alloc::vec::Vec<public_api::PublicItem>
-pub struct field public_api::diff::PublicApiDiff::changed: alloc::vec::Vec<public_api::diff::ChangedPublicItem>
-pub struct field public_api::diff::PublicApiDiff::removed: alloc::vec::Vec<public_api::PublicItem>
+pub public_api::diff::PublicApiDiff::added: alloc::vec::Vec<public_api::PublicItem>
+pub public_api::diff::PublicApiDiff::changed: alloc::vec::Vec<public_api::diff::ChangedPublicItem>
+pub public_api::diff::PublicApiDiff::removed: alloc::vec::Vec<public_api::PublicItem>
 impl public_api::diff::PublicApiDiff
 pub fn public_api::diff::PublicApiDiff::between(old: public_api::PublicApi, new: public_api::PublicApi) -> Self
 pub fn public_api::diff::PublicApiDiff::is_empty(&self) -> bool
@@ -34,19 +34,19 @@ impl core::marker::StructuralEq for public_api::diff::PublicApiDiff
 impl core::marker::StructuralPartialEq for public_api::diff::PublicApiDiff
 pub mod public_api::tokens
 pub enum public_api::tokens::Token
-pub enum variant public_api::tokens::Token::Annotation(alloc::string::String)
-pub enum variant public_api::tokens::Token::Function(alloc::string::String)
-pub enum variant public_api::tokens::Token::Generic(alloc::string::String)
-pub enum variant public_api::tokens::Token::Identifier(alloc::string::String)
-pub enum variant public_api::tokens::Token::Keyword(alloc::string::String)
-pub enum variant public_api::tokens::Token::Kind(alloc::string::String)
-pub enum variant public_api::tokens::Token::Lifetime(alloc::string::String)
-pub enum variant public_api::tokens::Token::Primitive(alloc::string::String)
-pub enum variant public_api::tokens::Token::Qualifier(alloc::string::String)
-pub enum variant public_api::tokens::Token::Self_(alloc::string::String)
-pub enum variant public_api::tokens::Token::Symbol(alloc::string::String)
-pub enum variant public_api::tokens::Token::Type(alloc::string::String)
-pub enum variant public_api::tokens::Token::Whitespace
+pub public_api::tokens::Token::Annotation(alloc::string::String)
+pub public_api::tokens::Token::Function(alloc::string::String)
+pub public_api::tokens::Token::Generic(alloc::string::String)
+pub public_api::tokens::Token::Identifier(alloc::string::String)
+pub public_api::tokens::Token::Keyword(alloc::string::String)
+pub public_api::tokens::Token::Kind(alloc::string::String)
+pub public_api::tokens::Token::Lifetime(alloc::string::String)
+pub public_api::tokens::Token::Primitive(alloc::string::String)
+pub public_api::tokens::Token::Qualifier(alloc::string::String)
+pub public_api::tokens::Token::Self_(alloc::string::String)
+pub public_api::tokens::Token::Symbol(alloc::string::String)
+pub public_api::tokens::Token::Type(alloc::string::String)
+pub public_api::tokens::Token::Whitespace
 impl public_api::tokens::Token
 pub fn public_api::tokens::Token::len(&self) -> usize
 pub fn public_api::tokens::Token::text(&self) -> &str
@@ -66,8 +66,8 @@ pub fn public_api::tokens::Token::partial_cmp(&self, other: &public_api::tokens:
 impl core::marker::StructuralEq for public_api::tokens::Token
 impl core::marker::StructuralPartialEq for public_api::tokens::Token
 #[non_exhaustive] pub enum public_api::Error
-pub enum variant public_api::Error::IoError(std::io::error::Error)
-pub enum variant public_api::Error::SerdeJsonError(serde_json::error::Error)
+pub public_api::Error::IoError(std::io::error::Error)
+pub public_api::Error::SerdeJsonError(serde_json::error::Error)
 impl core::fmt::Debug for public_api::Error
 pub fn public_api::Error::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::fmt::Display for public_api::Error
@@ -79,10 +79,10 @@ impl core::convert::From<std::io::error::Error> for public_api::Error
 pub fn public_api::Error::from(source: serde_json::error::Error) -> Self
 pub fn public_api::Error::from(source: std::io::error::Error) -> Self
 #[non_exhaustive] pub struct public_api::Options
-pub struct field public_api::Options::debug_sorting: bool
-pub struct field public_api::Options::simplified: bool
-pub struct field public_api::Options::sorted: bool
-pub struct field public_api::Options::with_blanket_implementations: bool
+pub public_api::Options::debug_sorting: bool
+pub public_api::Options::simplified: bool
+pub public_api::Options::sorted: bool
+pub public_api::Options::with_blanket_implementations: bool
 impl core::clone::Clone for public_api::Options
 pub fn public_api::Options::clone(&self) -> public_api::Options
 impl core::marker::Copy for public_api::Options

@@ -27,7 +27,7 @@ fn print_public_api() {
 fn print_public_api_not_simplified() {
     cmd_with_rustdoc_json_args_not_simplified(&["../test-apis/example_api-v0.2.0"], |mut cmd| {
         cmd.assert()
-            .stdout_or_update("./expected-output/example_api-v0.2.0-not-simplified")
+            .stdout_or_update("./expected-output/example_api-v0.2.0-not-simplified.txt")
             .stderr("")
             .success();
     });

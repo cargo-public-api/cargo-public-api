@@ -688,7 +688,7 @@ fn document_private_items() {
     cmd.arg("--rustdoc-json");
     cmd.arg(json);
     cmd.assert()
-        .stdout_or_update("./expected-output/example_api-v0.3.0_document-private-items")
+        .stdout_or_update("./expected-output/example_api-v0.3.0_document-private-items.txt")
         .success();
 }
 

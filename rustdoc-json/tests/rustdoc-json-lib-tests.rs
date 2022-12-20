@@ -87,7 +87,7 @@ fn test_specified_dependency_version() {
 
     // test_dep is present multiple times in the dependency graph.
     // Check that just passing "test_dep" errors
-    match builder.clone().package("test_dep").build() {
+    match builder.clone().package("test_dep").silent(true).build() {
         Err(rustdoc_json::BuildError::General(_)) => {}
         _ => panic!("Expected ambiguous specification error"),
     }

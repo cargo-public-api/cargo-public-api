@@ -1,0 +1,13 @@
+[package]
+description = "For testing rustdoc-json"
+name = "test_crate"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+test_dep_1 = { path = "../test_dep_1_0_0", package = "test_dep" }
+test_dep_2 = { path = "../test_dep_2_0_0", package = "test_dep" }
+
+# Exclude this package from the top level workspace by declaring our own empty
+# workspace
+[workspace]

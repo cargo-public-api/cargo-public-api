@@ -14,6 +14,27 @@ fn public_api() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
+/// Test that there is no error when building rustdoc JSON for a package that
+/// uses workspace inheritance
+#[test]
+fn ensure_workspace_inheritance_works() {
+    let path = rustdoc_json::Builder::default()
+        .toolchain("nightly".to_owned())
+        .manifest_path("../test-apis/workspace-inheritance/package-with-inheritance/Cargo.toml")
+        .quiet(true) // Make it less noisy to run tests
+        .build()
+        .unwrap();
+
+    assert_eq!(
+        path,
+        std::env::current_dir()
+            .unwrap()
+            .parent()
+            .unwrap()
+            .join("test-apis/workspace-inheritance/target/doc/package_with_inheritance.json")
+    );
+}
+
 #[test]
 fn package_target_bin() {
     test_alternative_package_target(PackageTarget::Bin("test_crate".into()));

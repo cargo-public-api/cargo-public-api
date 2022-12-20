@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
   # Since the release notes depend on labels (see .github/release.yml), rebuild
   # the release notes preview if labels change.
-  pull_request:
+  pull_request_target:
     types: [labeled, unlabeled]
   # Since the release notes depend on what is on the main branch, rebuild the
   # release notes preview if main change.

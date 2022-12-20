@@ -601,9 +601,11 @@ dependencies = [
 name = "rustdoc-json"
 version = "0.7.3"
 dependencies = [
+ "assert_cmd",
  "cargo-manifest",
  "cargo_metadata",
  "expect-test",
+ "predicates",
  "public-api",
  "serde",
  "tempfile",

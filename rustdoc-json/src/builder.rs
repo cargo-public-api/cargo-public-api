@@ -44,6 +44,7 @@ fn cargo_rustdoc_command(options: &Builder) -> Command {
         target_dir,
         target,
         quiet,
+        silent,
         no_default_features,
         all_features,
         features,
@@ -78,6 +79,10 @@ fn cargo_rustdoc_command(options: &Builder) -> Command {
     }
     if *quiet {
         command.arg("--quiet");
+    }
+    if *silent {
+        command.stdout(std::process::Stdio::null());
+        command.stderr(std::process::Stdio::null());
     }
     command.arg("--manifest-path");
     command.arg(manifest_path);
@@ -185,6 +190,7 @@ pub struct Builder {
     target_dir: Option<PathBuf>,
     target: Option<String>,
     quiet: bool,
+    silent: bool,
     no_default_features: bool,
     all_features: bool,
     features: Vec<String>,
@@ -202,6 +208,7 @@ impl Default for Builder {
             target_dir: None,
             target: None,
             quiet: false,
+            silent: false,
             no_default_features: false,
             all_features: false,
             features: vec![],
@@ -259,6 +266,13 @@ impl Builder {
     #[must_use]
     pub const fn quiet(mut self, quiet: bool) -> Self {
         self.quiet = quiet;
+        self
+    }
+
+    /// Whether or not to redirect stdout and stderr to /dev/null. Default: `false`
+    #[must_use]
+    pub const fn silent(mut self, silent: bool) -> Self {
+        self.silent = silent;
         self
     }
 

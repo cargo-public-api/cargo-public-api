@@ -102,3 +102,27 @@ fn test_specified_dependency_version() {
     // We check for this here, to keep track of future changes.
     assert_eq!(path_1, path_2);
 }
+
+/// The cargo test framework can't capture stderr from child processes. So use a
+/// simple program and capture its stderr to test if `silent(true)` works.
+#[test]
+fn silent_build() {
+    use assert_cmd::Command;
+    use predicates::str::contains;
+
+    let stderr_substring_if_not_silent = "invalid/because/we/want/it/to/fail/Cargo.toml";
+    Command::cargo_bin("test-silent-build")
+        .unwrap()
+        .assert()
+        .stderr(contains(stderr_substring_if_not_silent))
+        .failure();
+
+    Command::cargo_bin("test-silent-build")
+        .unwrap()
+        .arg("--silent")
+        .assert()
+        .try_stderr(contains(stderr_substring_if_not_silent))
+        .expect_err(&format!(
+            "Found `{stderr_substring_if_not_silent}` in stderr, but stderr should be silent!"
+        ));
+}

@@ -1,5 +1,5 @@
 pub mod features
 #[non_exhaustive] pub struct features::AStruct
-pub struct field features::AStruct::feature_a: ()
-pub struct field features::AStruct::feature_b: ()
-pub struct field features::AStruct::feature_c: ()
+pub features::AStruct::feature_a: ()
+pub features::AStruct::feature_b: ()
+pub features::AStruct::feature_c: ()

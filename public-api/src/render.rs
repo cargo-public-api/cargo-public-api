@@ -66,7 +66,7 @@ impl<'c> RenderingContext<'c> {
                 output
             }
             ItemEnum::StructField(inner) => {
-                let mut output = self.render_simple(&["struct", "field"], item_path);
+                let mut output = self.render_simple(&[], item_path);
                 output.extend(colon());
                 output.extend(self.render_type(inner));
                 output
@@ -77,7 +77,7 @@ impl<'c> RenderingContext<'c> {
                 output
             }
             ItemEnum::Variant(inner) => {
-                let mut output = self.render_simple(&["enum", "variant"], item_path);
+                let mut output = self.render_simple(&[], item_path);
                 match inner {
                     Variant::Struct { .. } => {} // Each struct field is printed individually
                     Variant::Plain(discriminant) => {

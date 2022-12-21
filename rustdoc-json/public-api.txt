@@ -1,10 +1,10 @@
 pub mod rustdoc_json
 #[non_exhaustive] pub enum rustdoc_json::BuildError
-pub enum variant rustdoc_json::BuildError::CargoManifestError(cargo_manifest::error::Error)
-pub enum variant rustdoc_json::BuildError::CargoMetadataError(cargo_metadata::errors::Error)
-pub enum variant rustdoc_json::BuildError::General(alloc::string::String)
-pub enum variant rustdoc_json::BuildError::IoError(std::io::error::Error)
-pub enum variant rustdoc_json::BuildError::VirtualManifest(std::path::PathBuf)
+pub rustdoc_json::BuildError::CargoManifestError(cargo_manifest::error::Error)
+pub rustdoc_json::BuildError::CargoMetadataError(cargo_metadata::errors::Error)
+pub rustdoc_json::BuildError::General(alloc::string::String)
+pub rustdoc_json::BuildError::IoError(std::io::error::Error)
+pub rustdoc_json::BuildError::VirtualManifest(std::path::PathBuf)
 impl core::fmt::Debug for rustdoc_json::BuildError
 pub fn rustdoc_json::BuildError::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::fmt::Display for rustdoc_json::BuildError
@@ -43,11 +43,11 @@ impl<T, U> core::convert::TryInto<U> for rustdoc_json::BuildError where U: core:
 pub type rustdoc_json::BuildError::Error = <U as core::convert::TryFrom<T>>::Error
 pub fn rustdoc_json::BuildError::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
 #[non_exhaustive] pub enum rustdoc_json::PackageTarget
-pub enum variant rustdoc_json::PackageTarget::Bench(alloc::string::String)
-pub enum variant rustdoc_json::PackageTarget::Bin(alloc::string::String)
-pub enum variant rustdoc_json::PackageTarget::Example(alloc::string::String)
-pub enum variant rustdoc_json::PackageTarget::Lib
-pub enum variant rustdoc_json::PackageTarget::Test(alloc::string::String)
+pub rustdoc_json::PackageTarget::Bench(alloc::string::String)
+pub rustdoc_json::PackageTarget::Bin(alloc::string::String)
+pub rustdoc_json::PackageTarget::Example(alloc::string::String)
+pub rustdoc_json::PackageTarget::Lib
+pub rustdoc_json::PackageTarget::Test(alloc::string::String)
 impl core::clone::Clone for rustdoc_json::PackageTarget
 pub fn rustdoc_json::PackageTarget::clone(&self) -> rustdoc_json::PackageTarget
 impl core::fmt::Debug for rustdoc_json::PackageTarget

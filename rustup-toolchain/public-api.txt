@@ -1,8 +1,8 @@
 pub mod rustup_toolchain
 #[non_exhaustive] pub enum rustup_toolchain::Error
-pub enum variant rustup_toolchain::Error::IoError(std::io::error::Error)
-pub enum variant rustup_toolchain::Error::RustupToolchainInstallError
-pub enum variant rustup_toolchain::Error::StdSyncPoisonError
+pub rustup_toolchain::Error::IoError(std::io::error::Error)
+pub rustup_toolchain::Error::RustupToolchainInstallError
+pub rustup_toolchain::Error::StdSyncPoisonError
 impl core::fmt::Debug for rustup_toolchain::Error
 pub fn rustup_toolchain::Error::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::fmt::Display for rustup_toolchain::Error

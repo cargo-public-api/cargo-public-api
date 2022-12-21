@@ -6,9 +6,9 @@ pub use comprehensive_api::my_i32
 pub use comprehensive_api::u32
 pub mod comprehensive_api::attributes
 #[non_exhaustive] pub enum comprehensive_api::attributes::NonExhaustive
-pub enum variant comprehensive_api::attributes::NonExhaustive::MoreToCome
+pub comprehensive_api::attributes::NonExhaustive::MoreToCome
 #[repr(C)] pub struct comprehensive_api::attributes::C
-pub struct field comprehensive_api::attributes::C::b: bool
+pub comprehensive_api::attributes::C::b: bool
 #[no_mangle] #[link_section = ".custom"] pub static comprehensive_api::attributes::NO_MANGLE_WITH_CUSTOM_LINK_SECTION: usize
 #[export_name = "something_arbitrary"] pub fn comprehensive_api::attributes::export_name()
 pub fn comprehensive_api::attributes::must_use() -> usize
@@ -16,29 +16,29 @@ pub mod comprehensive_api::constants
 pub const comprehensive_api::constants::CONST: &str
 pub mod comprehensive_api::enums
 pub enum comprehensive_api::enums::DiverseVariants
-pub enum variant comprehensive_api::enums::DiverseVariants::Recursive
-pub struct field comprehensive_api::enums::DiverseVariants::Recursive::child: alloc::boxed::Box<comprehensive_api::enums::DiverseVariants>
-pub enum variant comprehensive_api::enums::DiverseVariants::Simple
-pub enum variant comprehensive_api::enums::DiverseVariants::Struct
-pub struct field comprehensive_api::enums::DiverseVariants::Struct::x: usize
-pub struct field comprehensive_api::enums::DiverseVariants::Struct::y: comprehensive_api::enums::SingleVariant
-pub enum variant comprehensive_api::enums::DiverseVariants::Tuple(usize, bool)
+pub comprehensive_api::enums::DiverseVariants::Recursive
+pub comprehensive_api::enums::DiverseVariants::Recursive::child: alloc::boxed::Box<comprehensive_api::enums::DiverseVariants>
+pub comprehensive_api::enums::DiverseVariants::Simple
+pub comprehensive_api::enums::DiverseVariants::Struct
+pub comprehensive_api::enums::DiverseVariants::Struct::x: usize
+pub comprehensive_api::enums::DiverseVariants::Struct::y: comprehensive_api::enums::SingleVariant
+pub comprehensive_api::enums::DiverseVariants::Tuple(usize, bool)
 pub enum comprehensive_api::enums::EnumWithExplicitDiscriminants
-pub enum variant comprehensive_api::enums::EnumWithExplicitDiscriminants::First = 1
-pub enum variant comprehensive_api::enums::EnumWithExplicitDiscriminants::Second = 2
-pub enum variant comprehensive_api::enums::EnumWithExplicitDiscriminants::TenPlusTen = 20
+pub comprehensive_api::enums::EnumWithExplicitDiscriminants::First = 1
+pub comprehensive_api::enums::EnumWithExplicitDiscriminants::Second = 2
+pub comprehensive_api::enums::EnumWithExplicitDiscriminants::TenPlusTen = 20
 pub enum comprehensive_api::enums::EnumWithGenerics<'a, T, D: core::fmt::Debug> where T: core::fmt::Display
-pub enum variant comprehensive_api::enums::EnumWithGenerics::Variant
-pub struct field comprehensive_api::enums::EnumWithGenerics::Variant::d: D
-pub struct field comprehensive_api::enums::EnumWithGenerics::Variant::t: &'a T
+pub comprehensive_api::enums::EnumWithGenerics::Variant
+pub comprehensive_api::enums::EnumWithGenerics::Variant::d: D
+pub comprehensive_api::enums::EnumWithGenerics::Variant::t: &'a T
 pub enum comprehensive_api::enums::EnumWithStrippedTupleVariants
-pub enum variant comprehensive_api::enums::EnumWithStrippedTupleVariants::Double(bool, bool)
-pub enum variant comprehensive_api::enums::EnumWithStrippedTupleVariants::DoubleFirstHidden(_, bool)
-pub enum variant comprehensive_api::enums::EnumWithStrippedTupleVariants::DoubleSecondHidden(bool, _)
-pub enum variant comprehensive_api::enums::EnumWithStrippedTupleVariants::Single(usize)
-pub enum variant comprehensive_api::enums::EnumWithStrippedTupleVariants::SingleHidden(_)
+pub comprehensive_api::enums::EnumWithStrippedTupleVariants::Double(bool, bool)
+pub comprehensive_api::enums::EnumWithStrippedTupleVariants::DoubleFirstHidden(_, bool)
+pub comprehensive_api::enums::EnumWithStrippedTupleVariants::DoubleSecondHidden(bool, _)
+pub comprehensive_api::enums::EnumWithStrippedTupleVariants::Single(usize)
+pub comprehensive_api::enums::EnumWithStrippedTupleVariants::SingleHidden(_)
 pub enum comprehensive_api::enums::SingleVariant
-pub enum variant comprehensive_api::enums::SingleVariant::Variant
+pub comprehensive_api::enums::SingleVariant::Variant
 pub mod comprehensive_api::exports
 pub mod comprehensive_api::exports::issue_145
 pub mod comprehensive_api::exports::issue_145::external
@@ -102,11 +102,11 @@ pub fn comprehensive_api::functions::synthetic_arg(t: impl comprehensive_api::tr
 pub unsafe fn comprehensive_api::functions::unsafe_fn()
 pub mod comprehensive_api::higher_ranked_trait_bounds
 pub struct comprehensive_api::higher_ranked_trait_bounds::Bar<'a>
-pub struct field comprehensive_api::higher_ranked_trait_bounds::Bar::bar: &'a (dyn for<'b> comprehensive_api::higher_ranked_trait_bounds::Trait<'b> + core::marker::Unpin)
-pub struct field comprehensive_api::higher_ranked_trait_bounds::Bar::baz: &'a (dyn core::marker::Unpin + for<'b> comprehensive_api::higher_ranked_trait_bounds::Trait<'b>)
+pub comprehensive_api::higher_ranked_trait_bounds::Bar::bar: &'a (dyn for<'b> comprehensive_api::higher_ranked_trait_bounds::Trait<'b> + core::marker::Unpin)
+pub comprehensive_api::higher_ranked_trait_bounds::Bar::baz: &'a (dyn core::marker::Unpin + for<'b> comprehensive_api::higher_ranked_trait_bounds::Trait<'b>)
 pub struct comprehensive_api::higher_ranked_trait_bounds::Foo<'a>
-pub struct field comprehensive_api::higher_ranked_trait_bounds::Foo::some_func: for<'c> fn(val: &'c i32) -> i32
-pub struct field comprehensive_api::higher_ranked_trait_bounds::Foo::some_trait: &'a dyn for<'b> comprehensive_api::higher_ranked_trait_bounds::Trait<'b>
+pub comprehensive_api::higher_ranked_trait_bounds::Foo::some_func: for<'c> fn(val: &'c i32) -> i32
+pub comprehensive_api::higher_ranked_trait_bounds::Foo::some_trait: &'a dyn for<'b> comprehensive_api::higher_ranked_trait_bounds::Trait<'b>
 impl<'a> comprehensive_api::higher_ranked_trait_bounds::Foo<'a>
 pub fn comprehensive_api::higher_ranked_trait_bounds::Foo::bar<T>() where T: comprehensive_api::higher_ranked_trait_bounds::Trait<'a>
 pub trait comprehensive_api::higher_ranked_trait_bounds::B<'x>
@@ -135,9 +135,9 @@ pub static comprehensive_api::statics::FUNCTION_POINTER: core::option::Option<fn
 pub mut static comprehensive_api::statics::MUT_ANSWER: i8
 pub mod comprehensive_api::structs
 pub struct comprehensive_api::structs::ConstArg<T, const N: usize>
-pub struct field comprehensive_api::structs::ConstArg::items: [T; N]
+pub comprehensive_api::structs::ConstArg::items: [T; N]
 pub struct comprehensive_api::structs::Plain
-pub struct field comprehensive_api::structs::Plain::x: usize
+pub comprehensive_api::structs::Plain::x: usize
 impl comprehensive_api::structs::Plain
 impl<'a> comprehensive_api::structs::Plain
 pub fn comprehensive_api::structs::Plain::f()
@@ -155,8 +155,8 @@ pub struct comprehensive_api::structs::Unit
 impl comprehensive_api::traits::Simple for comprehensive_api::structs::Unit
 pub fn comprehensive_api::structs::Unit::act()
 pub struct comprehensive_api::structs::WithLifetimeAndGenericParam<'a, T>
-pub struct field comprehensive_api::structs::WithLifetimeAndGenericParam::t: T
-pub struct field comprehensive_api::structs::WithLifetimeAndGenericParam::unit_ref: &'a comprehensive_api::structs::Unit
+pub comprehensive_api::structs::WithLifetimeAndGenericParam::t: T
+pub comprehensive_api::structs::WithLifetimeAndGenericParam::unit_ref: &'a comprehensive_api::structs::Unit
 impl<'b> comprehensive_api::structs::WithLifetimeAndGenericParam<'b, alloc::string::String>
 pub fn comprehensive_api::structs::WithLifetimeAndGenericParam::new(unit_ref: &'b comprehensive_api::structs::Unit, t: alloc::string::String) -> Self
 pub struct comprehensive_api::structs::WithTraitBounds<T: core::fmt::Display + core::fmt::Debug>
@@ -194,11 +194,11 @@ pub type comprehensive_api::typedefs::RedefinedResult<T, E> = core::result::Resu
 pub type comprehensive_api::typedefs::TypedefPlain = comprehensive_api::structs::Plain
 pub mod comprehensive_api::unions
 pub union comprehensive_api::unions::Basic
-pub struct field comprehensive_api::unions::Basic::x: usize
-pub struct field comprehensive_api::unions::Basic::y: usize
+pub comprehensive_api::unions::Basic::x: usize
+pub comprehensive_api::unions::Basic::y: usize
 pub macro comprehensive_api::simple_macro!
 pub struct comprehensive_api::Plain
-pub struct field comprehensive_api::Plain::x: usize
+pub comprehensive_api::Plain::x: usize
 impl comprehensive_api::structs::Plain
 impl<'a> comprehensive_api::structs::Plain
 pub fn comprehensive_api::Plain::f()
@@ -208,7 +208,7 @@ pub fn comprehensive_api::Plain::s2(&self)
 pub fn comprehensive_api::Plain::s3(&mut self)
 pub fn comprehensive_api::Plain::s4(&'a self)
 pub struct comprehensive_api::RenamedPlain
-pub struct field comprehensive_api::RenamedPlain::x: usize
+pub comprehensive_api::RenamedPlain::x: usize
 impl comprehensive_api::structs::Plain
 impl<'a> comprehensive_api::structs::Plain
 pub fn comprehensive_api::RenamedPlain::f()

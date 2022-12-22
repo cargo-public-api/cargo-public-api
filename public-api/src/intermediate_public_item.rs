@@ -1,4 +1,4 @@
-use rustdoc_types::{Impl, Item, ItemEnum};
+use rustdoc_types::{Item, ItemEnum};
 
 use crate::{public_item::PublicItemPath, render::RenderingContext, tokens::Token};
 
@@ -29,22 +29,23 @@ impl<'c> NameableItem<'c> {
 
     /// The name that, when sorted on, will group items nicely. Is never shown
     /// to a user.
-    pub fn sortable_name(&self) -> String {
-        let mut perceived_name = "";
+    pub fn sortable_name(&self, context: &RenderingContext) -> String {
+        let mut perceived_name = std::borrow::Cow::from("");
 
-        if let ItemEnum::Impl(Impl {
-            trait_: Some(trait_path),
-            ..
-        }) = &self.item.inner
-        {
-            // In order for items of impls to be grouped together with its impl, add
-            // the "name" of the impl to the sorting prefix.
-            perceived_name = &trait_path.name;
+        if let ItemEnum::Impl(impl_) = &self.item.inner {
+            if let Some(trait_path) = &impl_.trait_ {
+                // In order for items of impls to be grouped together with its impl, add
+                // the "name" of the impl to the sorting prefix.
+                perceived_name = (&trait_path.name).into();
+            } else {
+                perceived_name =
+                    crate::tokens::tokens_to_string(&context.render_impl(impl_, &[])).into();
+            }
         }
 
         // Note that in order for the prefix to sort properly lexicographically,
         // we need to pad it with leading zeroes.
-        let mut sortable_name = format!("{:0>3}{}", self.sorting_prefix, perceived_name);
+        let mut sortable_name = format!("{:0>3}{perceived_name}", self.sorting_prefix);
         if let Some(name) = self.name() {
             sortable_name.push('-');
             sortable_name.push_str(name);
@@ -79,10 +80,10 @@ impl<'c> IntermediatePublicItem<'c> {
 
     /// See [`crate::item_processor::sorting_prefix()`] docs for an explanation why we have this.
     #[must_use]
-    pub fn sortable_path(&self) -> PublicItemPath {
+    pub fn sortable_path(&self, context: &RenderingContext) -> PublicItemPath {
         self.path()
             .iter()
-            .map(NameableItem::sortable_name)
+            .map(|p| NameableItem::sortable_name(p, context))
             .collect()
     }
 

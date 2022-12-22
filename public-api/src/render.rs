@@ -254,7 +254,7 @@ impl<'c> RenderingContext<'c> {
             if self.options.debug_sorting {
                 // There is always a sortable name, so we can push the name
                 // unconditionally
-                output.push(token_fn(item.sortable_name()));
+                output.push(token_fn(item.sortable_name(self)));
                 output.push(Token::symbol("::"));
             } else if let Some(name) = item.name() {
                 // If we are not debugging, some items (read: impls) do not have
@@ -601,7 +601,7 @@ impl<'c> RenderingContext<'c> {
         output
     }
 
-    fn render_impl(&self, impl_: &Impl, path: &[NameableItem]) -> Vec<Token> {
+    pub(crate) fn render_impl(&self, impl_: &Impl, path: &[NameableItem]) -> Vec<Token> {
         let mut output = vec![];
 
         if self.options.debug_sorting {

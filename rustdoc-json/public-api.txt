@@ -80,12 +80,6 @@ impl<T, U> core::convert::TryInto<U> for rustdoc_json::PackageTarget where U: co
 pub type rustdoc_json::PackageTarget::Error = <U as core::convert::TryFrom<T>>::Error
 pub fn rustdoc_json::PackageTarget::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
 pub struct rustdoc_json::Builder
-impl core::clone::Clone for rustdoc_json::Builder
-pub fn rustdoc_json::Builder::clone(&self) -> rustdoc_json::Builder
-impl core::fmt::Debug for rustdoc_json::Builder
-pub fn rustdoc_json::Builder::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
-impl core::default::Default for rustdoc_json::Builder
-pub fn rustdoc_json::Builder::default() -> Self
 impl rustdoc_json::Builder
 pub const fn rustdoc_json::Builder::all_features(self, all_features: bool) -> Self
 pub fn rustdoc_json::Builder::build(self) -> core::result::Result<std::path::PathBuf, rustdoc_json::BuildError>
@@ -102,6 +96,12 @@ pub const fn rustdoc_json::Builder::silent(self, silent: bool) -> Self
 pub fn rustdoc_json::Builder::target(self, target: alloc::string::String) -> Self
 pub fn rustdoc_json::Builder::target_dir(self, target_dir: impl core::convert::AsRef<std::path::Path>) -> Self
 pub fn rustdoc_json::Builder::toolchain(self, toolchain: impl core::convert::Into<core::option::Option<alloc::string::String>>) -> Self
+impl core::clone::Clone for rustdoc_json::Builder
+pub fn rustdoc_json::Builder::clone(&self) -> rustdoc_json::Builder
+impl core::fmt::Debug for rustdoc_json::Builder
+pub fn rustdoc_json::Builder::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::default::Default for rustdoc_json::Builder
+pub fn rustdoc_json::Builder::default() -> Self
 impl core::panic::unwind_safe::RefUnwindSafe for rustdoc_json::Builder
 impl core::marker::Send for rustdoc_json::Builder
 impl core::marker::Sync for rustdoc_json::Builder

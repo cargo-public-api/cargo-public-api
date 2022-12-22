@@ -45,6 +45,9 @@ pub struct public_api::diff::PublicApiDiff
 pub public_api::diff::PublicApiDiff::added: alloc::vec::Vec<public_api::PublicItem>
 pub public_api::diff::PublicApiDiff::changed: alloc::vec::Vec<public_api::diff::ChangedPublicItem>
 pub public_api::diff::PublicApiDiff::removed: alloc::vec::Vec<public_api::PublicItem>
+impl public_api::diff::PublicApiDiff
+pub fn public_api::diff::PublicApiDiff::between(old: public_api::PublicApi, new: public_api::PublicApi) -> Self
+pub fn public_api::diff::PublicApiDiff::is_empty(&self) -> bool
 impl core::clone::Clone for public_api::diff::PublicApiDiff
 pub fn public_api::diff::PublicApiDiff::clone(&self) -> public_api::diff::PublicApiDiff
 impl core::fmt::Debug for public_api::diff::PublicApiDiff
@@ -54,9 +57,6 @@ impl core::cmp::PartialEq<public_api::diff::PublicApiDiff> for public_api::diff:
 pub fn public_api::diff::PublicApiDiff::eq(&self, other: &public_api::diff::PublicApiDiff) -> bool
 impl core::marker::StructuralEq for public_api::diff::PublicApiDiff
 impl core::marker::StructuralPartialEq for public_api::diff::PublicApiDiff
-impl public_api::diff::PublicApiDiff
-pub fn public_api::diff::PublicApiDiff::between(old: public_api::PublicApi, new: public_api::PublicApi) -> Self
-pub fn public_api::diff::PublicApiDiff::is_empty(&self) -> bool
 impl core::panic::unwind_safe::RefUnwindSafe for public_api::diff::PublicApiDiff
 impl core::marker::Send for public_api::diff::PublicApiDiff
 impl core::marker::Sync for public_api::diff::PublicApiDiff
@@ -97,6 +97,9 @@ pub public_api::tokens::Token::Self_(alloc::string::String)
 pub public_api::tokens::Token::Symbol(alloc::string::String)
 pub public_api::tokens::Token::Type(alloc::string::String)
 pub public_api::tokens::Token::Whitespace
+impl public_api::tokens::Token
+pub fn public_api::tokens::Token::len(&self) -> usize
+pub fn public_api::tokens::Token::text(&self) -> &str
 impl core::clone::Clone for public_api::tokens::Token
 pub fn public_api::tokens::Token::clone(&self) -> public_api::tokens::Token
 impl core::fmt::Debug for public_api::tokens::Token
@@ -112,9 +115,6 @@ impl core::cmp::PartialOrd<public_api::tokens::Token> for public_api::tokens::To
 pub fn public_api::tokens::Token::partial_cmp(&self, other: &public_api::tokens::Token) -> core::option::Option<core::cmp::Ordering>
 impl core::marker::StructuralEq for public_api::tokens::Token
 impl core::marker::StructuralPartialEq for public_api::tokens::Token
-impl public_api::tokens::Token
-pub fn public_api::tokens::Token::len(&self) -> usize
-pub fn public_api::tokens::Token::text(&self) -> &str
 impl core::panic::unwind_safe::RefUnwindSafe for public_api::tokens::Token
 impl core::marker::Send for public_api::tokens::Token
 impl core::marker::Sync for public_api::tokens::Token
@@ -216,16 +216,16 @@ impl<T, U> core::convert::TryInto<U> for public_api::Options where U: core::conv
 pub type public_api::Options::Error = <U as core::convert::TryFrom<T>>::Error
 pub fn public_api::Options::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
 #[non_exhaustive] pub struct public_api::PublicApi
-impl core::fmt::Debug for public_api::PublicApi
-pub fn public_api::PublicApi::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
-impl core::fmt::Display for public_api::PublicApi
-pub fn public_api::PublicApi::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl public_api::PublicApi
 pub fn public_api::PublicApi::from_rustdoc_json(path: impl core::convert::AsRef<std::path::Path>, options: public_api::Options) -> public_api::Result<public_api::PublicApi>
 pub fn public_api::PublicApi::from_rustdoc_json_str(rustdoc_json_str: impl core::convert::AsRef<str>, options: public_api::Options) -> public_api::Result<public_api::PublicApi>
 pub fn public_api::PublicApi::into_items(self) -> impl core::iter::traits::iterator::Iterator<Item = public_api::PublicItem>
 pub fn public_api::PublicApi::items(&self) -> impl core::iter::traits::iterator::Iterator<Item = &public_api::PublicItem>
 pub fn public_api::PublicApi::missing_item_ids(&self) -> impl core::iter::traits::iterator::Iterator<Item = &alloc::string::String>
+impl core::fmt::Debug for public_api::PublicApi
+pub fn public_api::PublicApi::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for public_api::PublicApi
+pub fn public_api::PublicApi::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::panic::unwind_safe::RefUnwindSafe for public_api::PublicApi
 impl core::marker::Send for public_api::PublicApi
 impl core::marker::Sync for public_api::PublicApi
@@ -250,6 +250,8 @@ impl<T, U> core::convert::TryInto<U> for public_api::PublicApi where U: core::co
 pub type public_api::PublicApi::Error = <U as core::convert::TryFrom<T>>::Error
 pub fn public_api::PublicApi::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
 pub struct public_api::PublicItem
+impl public_api::PublicItem
+pub fn public_api::PublicItem::tokens(&self) -> impl core::iter::traits::iterator::Iterator<Item = &public_api::tokens::Token>
 impl core::clone::Clone for public_api::PublicItem
 pub fn public_api::PublicItem::clone(&self) -> public_api::PublicItem
 impl core::fmt::Debug for public_api::PublicItem
@@ -267,8 +269,6 @@ impl core::cmp::PartialOrd<public_api::PublicItem> for public_api::PublicItem
 pub fn public_api::PublicItem::partial_cmp(&self, other: &Self) -> core::option::Option<core::cmp::Ordering>
 impl core::marker::StructuralEq for public_api::PublicItem
 impl core::marker::StructuralPartialEq for public_api::PublicItem
-impl public_api::PublicItem
-pub fn public_api::PublicItem::tokens(&self) -> impl core::iter::traits::iterator::Iterator<Item = &public_api::tokens::Token>
 impl core::panic::unwind_safe::RefUnwindSafe for public_api::PublicItem
 impl core::marker::Send for public_api::PublicItem
 impl core::marker::Sync for public_api::PublicItem

@@ -21,8 +21,24 @@ impl<'a> Plain {
     pub fn s4(&'a self) {}
 }
 
+impl<'a> Plain {
+    pub fn s5(&'a self) {}
+}
+
 impl<'b> WithLifetimeAndGenericParam<'b, String> {
     pub fn new(unit_ref: &'b Unit, t: String) -> Self {
+        WithLifetimeAndGenericParam { unit_ref, t }
+    }
+}
+
+impl<'b, T> WithLifetimeAndGenericParam<'b, T> {
+    pub fn new_any(unit_ref: &'b Unit, t: T) -> Self {
+        WithLifetimeAndGenericParam { unit_ref, t }
+    }
+}
+
+impl<'b, T> WithLifetimeAndGenericParam<'b, T> {
+    pub fn new_any_duplicate(unit_ref: &'b Unit, t: T) -> Self {
         WithLifetimeAndGenericParam { unit_ref, t }
     }
 }

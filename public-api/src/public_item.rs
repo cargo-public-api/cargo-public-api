@@ -31,7 +31,7 @@ impl PublicItem {
         public_item: &IntermediatePublicItem<'_>,
     ) -> PublicItem {
         PublicItem {
-            sortable_path: public_item.sortable_path(),
+            sortable_path: public_item.sortable_path(context),
             tokens: public_item.render_token_stream(context),
         }
     }

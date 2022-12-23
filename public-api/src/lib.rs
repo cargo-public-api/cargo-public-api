@@ -222,6 +222,7 @@ impl PublicApi {
 
         if options.sorted {
             public_api.items.sort();
+            public_api.items.dedup_by_key(|i| i.to_string());
         }
 
         Ok(public_api)

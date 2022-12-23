@@ -9,5 +9,6 @@ pub struct Struct {
 
 pub struct StructV2 {
     pub field: usize,
+    #[allow(dead_code)]
     private_field: usize,
 }

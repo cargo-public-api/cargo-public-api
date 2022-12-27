@@ -100,6 +100,12 @@ impl<'c> RenderingContext<'c> {
                 &inner.generics,
                 &inner.header,
             ),
+            ItemEnum::Method(inner) => self.render_function(
+                self.render_path(item_path),
+                &inner.decl,
+                &inner.generics,
+                &inner.header,
+            ),
             ItemEnum::Trait(trait_) => self.render_trait(trait_, item_path),
             ItemEnum::TraitAlias(_) => self.render_simple(&["trait", "alias"], item_path),
             ItemEnum::Impl(impl_) => self.render_impl(impl_, item_path),
@@ -229,7 +235,8 @@ impl<'c> RenderingContext<'c> {
     fn render_path(&self, path: &[NameableItem]) -> Vec<Token> {
         let mut output = vec![];
         for item in path {
-            let token_fn = if matches!(item.item.inner, ItemEnum::Function(_)) {
+            let token_fn = if matches!(item.item.inner, ItemEnum::Function(_) | ItemEnum::Method(_))
+            {
                 Token::function
             } else if matches!(
                 item.item.inner,

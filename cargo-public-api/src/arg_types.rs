@@ -1,3 +1,5 @@
+use is_terminal::IsTerminal;
+
 #[derive(Copy, Clone, Debug, Eq, PartialEq, clap::ValueEnum)]
 #[value(rename_all = "lower")]
 pub enum DenyMethod {
@@ -45,7 +47,7 @@ pub enum Color {
 impl Color {
     pub fn active(self) -> bool {
         match self {
-            Self::Auto => atty::is(atty::Stream::Stdout), // We should not assume Stdout here, but good enough for now
+            Self::Auto => std::io::stdout().is_terminal(), // We should not assume Stdout here, but good enough for now
             Self::Never => false,
             Self::Always => true,
         }

@@ -14,7 +14,7 @@ repository = "https://github.com/Enselic/cargo-public-api"
 [dependencies]
 nu-ansi-term = "0.46.0"
 anyhow = "1.0.68"
-atty = "0.2.14"
+is-terminal = "0.4.2"
 cargo-manifest = "0.7.1"
 diff = "0.1.13"
 dirs = "4.0.0"

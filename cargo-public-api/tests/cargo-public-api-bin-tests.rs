@@ -33,7 +33,7 @@ fn create_test_repo_with_dirty_git_tree() -> TestRepo {
     let test_repo = TestRepo::new();
 
     // Make the tree dirty by appending a comment to src/lib.rs
-    let mut lib_rs_path = test_repo.path.path().to_owned();
+    let mut lib_rs_path = test_repo.path().to_owned();
     lib_rs_path.push("src/lib.rs");
 
     let mut lib_rs = OpenOptions::new()
@@ -589,7 +589,7 @@ fn diff_public_items_with_manifest_path() {
     cmd.arg("--manifest-path");
     cmd.arg(format!(
         "{}/Cargo.toml",
-        &test_repo.path.path().to_string_lossy()
+        &test_repo.path().to_string_lossy()
     ));
     cmd.arg("--diff-git-checkouts");
     cmd.arg("v0.2.0");
@@ -839,7 +839,7 @@ fn long_help_wraps() {
 
 /// Helper to initialize a test crate git repo. Each test gets its own git repo
 /// to use so that tests can run in parallel.
-fn initialize_test_repo(dest: &Path) {
+fn initialize_test_repo(dest: impl AsRef<Path>) {
     create_test_git_repo::create_test_git_repo(dest, "../test-apis");
 }
 

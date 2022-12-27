@@ -6,6 +6,7 @@
 //! ./scripts/bless-expected-output-for-tests.sh
 //! ```
 
+use std::env;
 use std::ffi::OsStr;
 use std::io::Write;
 use std::{
@@ -1167,16 +1168,45 @@ impl AssertOrUpdate for Assert {
 /// starts working (since `./target/debug` contains the `cargo-public-api`
 /// binary).
 fn add_target_debug_to_path() {
-    let mut bin_dir = std::env::current_exe().unwrap(); // ".../target/debug/deps/cargo_public_api_bin_tests-d0f2f926b349fbb9"
+    assert_cargo_public_api_not_in_cargo_home_bin();
+
+    let mut bin_dir = env::current_exe().unwrap(); // ".../target/debug/deps/cargo_public_api_bin_tests-d0f2f926b349fbb9"
     bin_dir.pop(); // Pop "cargo_public_api_bin_tests-d0f2f926b349fbb9"
     bin_dir.pop(); // Pop "deps"
     add_to_path(bin_dir); // ".../target/debug"
 }
 
 fn add_to_path(dir: PathBuf) {
-    let mut path = std::env::var_os("PATH").unwrap();
-    let mut dirs: Vec<_> = std::env::split_paths(&path).collect();
+    let mut path = env::var_os("PATH").unwrap();
+    let mut dirs: Vec<_> = env::split_paths(&path).collect();
     dirs.insert(0, dir);
-    path = std::env::join_paths(dirs).unwrap();
-    std::env::set_var("PATH", path);
+    path = env::join_paths(dirs).unwrap();
+    env::set_var("PATH", path);
+}
+
+/// Since `rustup` always prepends `$CARGO_HOME/bin` to `$PATH` [1], make sure
+/// `cargo-public-api` is not there, so that tests will use the freshly built
+/// `cargo-public-api` rather than something old. This check can be annoying in
+/// case you WANT to have `cargo-public-api` installed though, so you can
+/// opt-out by doing `CARGO_PUBLIC_API_INSTALLED_FOR_TESTS=1 cargo test`.
+///
+/// [1]
+/// <https://github.com/rust-lang/rustup/blob/a223e5ad6549e5fb0c56932fd0e79af9de898ad4/src/toolchain.rs#L446-L453>
+fn assert_cargo_public_api_not_in_cargo_home_bin() {
+    let cargo_home = match (
+        env::var_os("CARGO_HOME"),
+        env::var_os("CARGO_PUBLIC_API_INSTALLED_FOR_TESTS"),
+    ) {
+        (Some(cargo_home), None) => cargo_home,
+        _ => return,
+    };
+
+    let mut path = PathBuf::from(cargo_home);
+    path.push("bin");
+    path.push("cargo-public-api");
+
+    assert!(
+        std::fs::metadata(&path).is_err(),
+        "Found {path:?} which will override `./target/debug/cargo-public-api` and thus interfere with tests. \
+         Either `rm {path:?}` or ignore this warning with `CARGO_PUBLIC_API_INSTALLED_FOR_TESTS=1 cargo test`.");
 }

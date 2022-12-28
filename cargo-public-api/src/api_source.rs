@@ -38,23 +38,24 @@ impl ApiSource for CurrentDir {
         public_api_for_current_dir(args)
     }
 }
-/// The API is obtained from a crate published to crates.io.
+/// The API is obtained from a crate published to crates.io. This struct only
+/// contains the version. The name of the package is obtained via [`Args`].
+/// Either via `-p` or via `--manifest-path`.
 pub struct PublishedCrate {
-    package_spec_str: String,
+    version: String,
 }
 
 impl PublishedCrate {
-    pub fn new(package_spec: &str) -> Self {
+    pub fn new(version: &str) -> Self {
         Self {
-            package_spec_str: package_spec.to_owned(),
+            version: version.to_owned(),
         }
     }
 }
 
 impl ApiSource for PublishedCrate {
     fn obtain_api(&self, args: &Args) -> Result<public_api::PublicApi> {
-        let rustdoc_json =
-            crate::published_crate::build_rustdoc_json(&self.package_spec_str, args)?;
+        let rustdoc_json = crate::published_crate::build_rustdoc_json(&self.version, args)?;
         public_api_from_rustdoc_json_path(&rustdoc_json, args)
     }
 }

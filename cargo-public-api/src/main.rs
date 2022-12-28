@@ -69,30 +69,6 @@ pub struct Args {
     #[arg(long, value_enum)]
     color: Option<Option<Color>>,
 
-    /// DEPRECATED: Use `cargo public-api diff <REF1>..<REF2>` instead.
-    #[arg(hide = true, long, num_args = 2, value_names = ["COMMIT_1", "COMMIT_2"])]
-    diff_git_checkouts: Option<Vec<String>>,
-
-    /// DEPRECATED: Use `cargo public-api diff --force <REF1>..<REF2>` instead.
-    #[arg(hide = true, long)]
-    force_git_checkouts: bool,
-
-    /// DEPRECATED: Use `cargo public-api diff file1.json file2.json` instead.
-    #[arg(hide = true, long, num_args = 2, value_names = ["RUSTDOC_JSON_PATH_1", "RUSTDOC_JSON_PATH_2"])]
-    diff_rustdoc_json: Option<Vec<String>>,
-
-    /// DEPRECATED: Use `cargo public-api diff <VERSION>` or `cargo public-api diff -p some-package <VERSION>` instead.
-    #[arg(hide = true, long, value_name = "CRATE_NAME@VERSION")]
-    diff_published: Option<String>,
-
-    /// DEPRECATED: Use `cargo public-api diff ...` instead.
-    #[arg(hide = true, long, num_args = 1..=2, value_name = "TARGET")]
-    diff: Option<Vec<String>>,
-
-    /// DEPRECATED: Use `cargo public-api diff ... --deny ...` instead.
-    #[arg(hide = true, long, value_enum)]
-    deny: Option<Vec<DenyMethod>>,
-
     /// List the public API based on the given rustdoc JSON file.
     ///
     /// Example:
@@ -145,9 +121,7 @@ pub struct Args {
     subcommand: Option<Subcommand>,
 }
 
-/// Long-term, the only CLI for diffing will be this subcommand. For now, we
-/// support the old CLI for backwards compatibility. The old CLI will be
-/// deprecated and removed in a future version.
+/// The subcommand used for diffing.
 #[derive(Parser, Debug)]
 #[allow(clippy::struct_excessive_bools)]
 struct DiffArgs {
@@ -254,7 +228,7 @@ pub enum Action {
 }
 
 fn main_() -> Result<()> {
-    let args = get_args()?;
+    let args = get_args();
 
     // A list of actions to perform after we have listed or diffed. Typical
     // examples: restore a git branch or check that a diff is allowed
@@ -294,44 +268,16 @@ fn main_() -> Result<()> {
 fn list_or_diff(args: &Args) -> Result<MainTask> {
     match main_task_from_diff_args(args)? {
         Some(main_task) => Ok(main_task),
-        None => main_task_from_args(args),
+        None => Ok(main_task_from_args(args)),
     }
 }
 
-fn main_task_from_args(args: &Args) -> Result<MainTask> {
-    let main_task = if let Some(commits) = &args.diff_git_checkouts {
-        let old = commits
-            .get(0)
-            .ok_or_else(|| anyhow!("Missing first commit! See --help"))?;
-        let new = commits
-            .get(1)
-            .ok_or_else(|| anyhow!("Missing second commit! See --help"))?;
-
-        MainTask::print_diff(
-            Commit::new(args, old)?.boxed(),
-            Commit::new(args, new)?.boxed(),
-        )
-    } else if let Some(files) = &args.diff_rustdoc_json {
-        // clap ensures both args exists if we get here
-        let old = files.get(0).unwrap();
-        let new = files.get(1).unwrap();
-
-        MainTask::print_diff(
-            RustdocJson::new(old.into()).boxed(),
-            RustdocJson::new(new.into()).boxed(),
-        )
-    } else if let Some(package_spec) = &args.diff_published {
-        MainTask::print_diff(
-            PublishedCrate::new(package_spec).boxed(),
-            CurrentDir.boxed(),
-        )
-    } else if let Some(rustdoc_json) = &args.rustdoc_json {
+fn main_task_from_args(args: &Args) -> MainTask {
+    if let Some(rustdoc_json) = &args.rustdoc_json {
         MainTask::print_list(RustdocJson::new(rustdoc_json.into()).boxed())
     } else {
         MainTask::print_list(CurrentDir.boxed())
-    };
-
-    Ok(main_task)
+    }
 }
 
 fn arg_to_api_source(arg: &str) -> Result<Box<dyn ApiSource>> {
@@ -460,9 +406,7 @@ fn print_diff(
 
     Plain::print_diff(&mut stdout(), args, &diff)?;
 
-    if let Some(deny) = &args.deny {
-        final_actions.push(check_diff(deny, diff));
-    } else if let Some(Some(deny)) = args.diff_args().map(|a| &a.deny) {
+    if let Some(Some(deny)) = args.diff_args().map(|a| &a.deny) {
         final_actions.push(check_diff(deny, diff));
     }
 
@@ -518,57 +462,15 @@ impl Args {
 /// Get CLI args via `clap` while also handling when we are invoked as a cargo
 /// subcommand. When the user runs `cargo public-api -a -b -c` our args will be
 /// `cargo-public-api public-api -a -b -c`.
-fn get_args() -> Result<Args> {
+fn get_args() -> Args {
     let args_os = std::env::args_os()
         .enumerate()
         .filter(|(index, arg)| *index != 1 || arg != "public-api")
         .map(|(_, arg)| arg);
 
     let mut args = Args::parse_from(args_os);
-    warn_about_deprecated_options(&args);
-    if let Some(diff_args) = args.diff.clone() {
-        resolve_diff_shorthand(&mut args, diff_args);
-    }
     resolve_toolchain(&mut args);
-
-    // Manually check this until a `cargo public-api diff ...` subcommand is in
-    // place, which will enable clap to perform this check
-    if args.deny.is_some()
-        && args.diff_git_checkouts.is_none()
-        && args.diff_published.is_none()
-        && args.diff_rustdoc_json.is_none()
-    {
-        Err(anyhow!("`--deny` can only be used when diffing"))
-    } else {
-        Ok(args)
-    }
-}
-
-fn warn_about_deprecated_options(args: &Args) {
-    if let Some(args) = &args.diff_git_checkouts {
-        let first = args.get(0).unwrap();
-        let second = args.get(1).unwrap();
-        eprintln!("DEPRECATION WARNING: `... --diff-git-checkouts {first} {second}` is deprecated, use `... diff {first}..{second}` instead.");
-    }
-    if args.force_git_checkouts {
-        eprintln!("DEPRECATION WARNING: `... --diff-git-checkouts --force-git-checkouts` is deprecated, use `... diff --force` instead.");
-    }
-    if let Some(args) = &args.diff_rustdoc_json {
-        let first = args.get(0).unwrap();
-        let second = args.get(1).unwrap();
-        eprintln!("DEPRECATION WARNING: `... --diff-rustdoc-json {first} {second}` is deprecated, use `... diff {first} {second}` instead.");
-    }
-    if let Some(arg) = &args.diff_published {
-        eprintln!("DEPRECATION WARNING: `... --diff-published {arg}` is deprecated, use `... diff {arg}` instead.");
-    }
-    if let Some(args) = &args.diff {
-        eprintln!("DEPRECATION WARNING: `... --diff {args:?}` is deprecated, use `... diff {args:?}` instead.");
-    }
-    if args.deny.is_some() {
-        eprintln!(
-            "DEPRECATION WARNING: `... --diff --deny` is deprecated, use `... diff --deny` instead"
-        );
-    }
+    args
 }
 
 /// Check if using a stable compiler, and use nightly if it is.
@@ -585,17 +487,6 @@ fn is_json_file(file_name: impl AsRef<str>) -> bool {
     Path::extension(Path::new(file_name.as_ref())).map_or(false, |a| a.eq_ignore_ascii_case("json"))
 }
 
-/// Resolve `--diff` to either `--diff-git-checkouts` or `--diff-rustdoc-json`
-fn resolve_diff_shorthand(args: &mut Args, diff_args: Vec<String>) {
-    if diff_args.iter().all(is_json_file) {
-        args.diff_rustdoc_json = Some(diff_args);
-    } else if diff_args.iter().any(|a| a.contains('@')) {
-        args.diff_published = diff_args.first().cloned();
-    } else {
-        args.diff_git_checkouts = Some(diff_args);
-    }
-}
-
 /// Helper to reduce code duplication. We can't add [`Args`] to
 /// [`git_utils::git_checkout()`] itself, because it is used in contexts where
 /// [`Args`] is not available (namely in tests).
@@ -604,7 +495,9 @@ fn git_checkout(args: &Args, commit: &str) -> Result<()> {
         &args.git_root()?,
         commit,
         !args.verbose,
-        args.force_git_checkouts,
+        args.diff_args()
+            .map(|diff_args| diff_args.force)
+            .unwrap_or_default(),
     )
 }
 

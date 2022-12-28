@@ -267,21 +267,11 @@ fn warn_when_using_beta() {
 
 #[test]
 fn diff_public_items() {
-    diff_public_items_impl("--diff-git-checkouts");
-}
-
-#[test]
-fn diff_public_items_smart_diff() {
-    diff_public_items_impl("--diff");
-}
-
-fn diff_public_items_impl(diff_arg: &str) {
     let mut cmd = TestCmd::new().with_test_repo();
     let test_repo_path = cmd.test_repo_path().to_owned();
     let branch_before = git_utils::current_branch(&test_repo_path).unwrap().unwrap();
-    cmd.arg(diff_arg);
-    cmd.arg("v0.2.0");
-    cmd.arg("v0.3.0");
+    cmd.arg("diff");
+    cmd.arg("v0.2.0..v0.3.0");
     cmd.assert()
         .stdout_or_update("./expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt")
         .success();
@@ -388,9 +378,8 @@ fn diff_public_items_detached_head() {
 
     let mut cmd = TestCmd::new();
     cmd.current_dir(path);
-    cmd.arg("--diff-git-checkouts");
-    cmd.arg("v0.2.0");
-    cmd.arg("v0.3.0");
+    cmd.arg("diff");
+    cmd.arg("v0.2.0..v0.3.0");
     cmd.assert()
         .stdout_or_update("./expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt")
         .success();
@@ -408,9 +397,8 @@ fn diff_public_items_with_dirty_tree_fails() {
     // Make sure diffing does not destroy uncommitted data!
     let mut cmd = TestCmd::new();
     cmd.current_dir(test_repo.path());
-    cmd.arg("--diff-git-checkouts");
-    cmd.arg("v0.2.0");
-    cmd.arg("v0.3.0");
+    cmd.arg("diff");
+    cmd.arg("v0.2.0..v0.3.0");
     cmd.assert()
         .stderr(contains(
             "Your local changes to the following files would be overwritten by checkout",
@@ -427,13 +415,11 @@ fn diff_public_items_with_dirty_tree_succeedes_with_force_option() {
 
     let mut cmd = TestCmd::new();
     cmd.current_dir(test_repo.path());
-    cmd.arg("--diff-git-checkouts");
-    cmd.arg("v0.2.0");
-    cmd.arg("v0.3.0");
-    cmd.arg("--force-git-checkouts");
+    cmd.arg("diff");
+    cmd.arg("v0.2.0..v0.3.0");
+    cmd.arg("--force");
     cmd.assert()
         .stdout_or_update("./expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt")
-        .stderr(contains("DEPRECATION WARNING"))
         .success();
 }
 
@@ -451,9 +437,8 @@ fn diff_public_items_relative_refs() {
 
     let mut cmd = TestCmd::new();
     cmd.current_dir(path);
-    cmd.arg("--diff-git-checkouts");
-    cmd.arg("HEAD^");
-    cmd.arg("HEAD");
+    cmd.arg("diff");
+    cmd.arg("HEAD^..HEAD");
     cmd.assert()
         .stdout_or_update("./expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt")
         .success();
@@ -493,30 +478,24 @@ fn test_deny_not_allowed(args: impl IntoIterator<Item = &'static str>) {
         cmd.arg(arg);
     }
     cmd.assert()
-        .stderr(contains("`--deny` can only be used when diffing"))
+        .stderr(contains("Found argument '--deny' which wasn't expected"))
         .failure();
 }
 
 #[test]
 fn deny_without_diff() {
     let mut cmd = TestCmd::new().with_test_repo();
-    cmd.arg("--diff-git-checkouts");
-    cmd.arg("v0.1.0");
-    cmd.arg("v0.1.1");
+    cmd.arg("diff");
+    cmd.arg("v0.1.0..v0.1.1");
     cmd.arg("--deny=all");
-    cmd.assert()
-        .stderr(contains(
-            "DEPRECATION WARNING: `... --diff --deny` is deprecated, use `... diff --deny` instead",
-        ))
-        .success();
+    cmd.assert().success();
 }
 
 #[test]
 fn deny_with_diff() {
     let mut cmd = TestCmd::new().with_test_repo();
-    cmd.arg("--diff-git-checkouts");
-    cmd.arg("v0.1.0");
-    cmd.arg("v0.2.0");
+    cmd.arg("diff");
+    cmd.arg("v0.1.0..v0.2.0");
     cmd.arg("--deny=all");
     cmd.assert()
         .stderr(contains("The API diff is not allowed as per --deny"))
@@ -537,9 +516,8 @@ fn deny_with_diff_with_subcommand() {
 #[test]
 fn deny_added_with_diff() {
     let mut cmd = TestCmd::new().with_test_repo();
-    cmd.arg("--diff-git-checkouts");
-    cmd.arg("v0.1.0");
-    cmd.arg("v0.2.0");
+    cmd.arg("diff");
+    cmd.arg("v0.1.0..v0.2.0");
     cmd.arg("--deny=added");
     cmd.assert()
         .stdout_or_update("./expected-output/example_api_diff_v0.1.0_to_v0.2.0.txt")
@@ -549,9 +527,8 @@ fn deny_added_with_diff() {
 #[test]
 fn deny_changed_with_diff() {
     let mut cmd = TestCmd::new().with_test_repo();
-    cmd.arg("--diff-git-checkouts");
-    cmd.arg("v0.1.0");
-    cmd.arg("v0.2.0");
+    cmd.arg("diff");
+    cmd.arg("v0.1.0..v0.2.0");
     cmd.arg("--deny=changed");
     cmd.assert().failure();
 }
@@ -559,9 +536,8 @@ fn deny_changed_with_diff() {
 #[test]
 fn deny_removed_with_diff() {
     let mut cmd = TestCmd::new().with_test_repo();
-    cmd.arg("--diff-git-checkouts");
-    cmd.arg("v0.2.0");
-    cmd.arg("v0.3.0");
+    cmd.arg("diff");
+    cmd.arg("v0.2.0..v0.3.0");
     cmd.arg("--deny=removed");
     cmd.assert()
         .stderr(contains(
@@ -573,9 +549,8 @@ fn deny_removed_with_diff() {
 #[test]
 fn deny_with_invalid_arg() {
     let mut cmd = TestCmd::new().with_test_repo();
-    cmd.arg("--diff-git-checkouts");
-    cmd.arg("v0.2.0");
-    cmd.arg("v0.3.0");
+    cmd.arg("diff");
+    cmd.arg("v0.2.0..v0.3.0");
     cmd.arg("--deny=invalid");
     cmd.assert()
         .stderr(contains("'invalid' isn't a valid value"))
@@ -591,9 +566,8 @@ fn diff_public_items_with_manifest_path() {
         "{}/Cargo.toml",
         &test_repo.path().to_string_lossy()
     ));
-    cmd.arg("--diff-git-checkouts");
-    cmd.arg("v0.2.0");
-    cmd.arg("v0.3.0");
+    cmd.arg("diff");
+    cmd.arg("v0.2.0..v0.3.0");
     cmd.assert()
         .stdout_or_update("./expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt")
         .success();
@@ -604,33 +578,17 @@ fn diff_public_items_without_git_root() {
     let mut cmd = TestCmd::new();
     cmd.arg("--manifest-path");
     cmd.arg("/does/not/exist/Cargo.toml");
-    cmd.arg("--diff-git-checkouts");
-    cmd.arg("v0.2.0");
-    cmd.arg("v0.3.0");
-    cmd.assert()
-        .stderr(predicates::str::starts_with(
-            "DEPRECATION WARNING: `... --diff-git-checkouts v0.2.0 v0.3.0` is deprecated, use `... diff v0.2.0..v0.3.0` instead.
-Error: No `.git` dir when starting from `",
-        ))
-        .failure();
+    cmd.arg("diff");
+    cmd.arg("v0.2.0..v0.3.0");
+    cmd.assert().failure();
 }
 
 #[test]
 fn diff_public_items_with_color() {
-    diff_public_items_with_color_impl("--color=always");
-}
-
-#[test]
-fn diff_public_items_with_color_implicitly() {
-    diff_public_items_with_color_impl("--color"); // Same as `--color=always`
-}
-
-fn diff_public_items_with_color_impl(color_arg: &str) {
     let mut cmd = TestCmd::new().with_test_repo();
-    cmd.arg(color_arg);
-    cmd.arg("--diff-git-checkouts");
-    cmd.arg("v0.1.0");
-    cmd.arg("v0.2.0");
+    cmd.arg("--color=always");
+    cmd.arg("diff");
+    cmd.arg("v0.1.0..v0.2.0");
     cmd.assert()
         .stdout_or_update("./expected-output/example_api_diff_v0.1.0_to_v0.2.0_colored.txt")
         .success();
@@ -638,8 +596,17 @@ fn diff_public_items_with_color_impl(color_arg: &str) {
 
 #[test]
 fn list_public_items_with_color() {
+    list_public_items_with_color_impl("--color=always");
+}
+
+#[test]
+fn list_public_items_with_color_implicitly() {
+    list_public_items_with_color_impl("--color"); // Same as `--color=always`
+}
+
+fn list_public_items_with_color_impl(color_arg: &str) {
     let mut cmd = TestCmd::new().with_test_repo();
-    cmd.arg("--color=always");
+    cmd.arg(color_arg);
     cmd.assert()
         .stdout_or_update("./expected-output/example_api_v0.3.0_colored.txt")
         .success();
@@ -647,20 +614,6 @@ fn list_public_items_with_color() {
 
 #[test]
 fn diff_public_items_from_files_with_subcommand() {
-    diff_public_items_from_files_impl("diff");
-}
-
-#[test]
-fn diff_public_items_from_files() {
-    diff_public_items_from_files_impl("--diff-rustdoc-json");
-}
-
-#[test]
-fn diff_public_items_from_files_smart_diff() {
-    diff_public_items_from_files_impl("--diff");
-}
-
-fn diff_public_items_from_files_impl(diff_arg: &str) {
     // Create independent build dirs so all tests can run in parallel
     let build_dir = tempdir().unwrap();
     let build_dir2 = tempdir().unwrap();
@@ -668,7 +621,7 @@ fn diff_public_items_from_files_impl(diff_arg: &str) {
     let old = rustdoc_json_path_for_crate("../test-apis/example_api-v0.1.0", &build_dir);
     let new = rustdoc_json_path_for_crate("../test-apis/example_api-v0.2.0", &build_dir2);
     let mut cmd = TestCmd::new().with_separate_target_dir();
-    cmd.arg(diff_arg);
+    cmd.arg("diff");
     cmd.arg(old);
     cmd.arg(new);
     cmd.assert()
@@ -694,35 +647,10 @@ fn document_private_items() {
 }
 
 #[test]
-fn diff_published() {
-    diff_published_impl("--diff-published", "example_api@0.1.0");
-}
-
-#[test]
-fn diff_published_smart_diff() {
-    diff_published_impl("--diff", "example_api@0.1.0");
-}
-
-#[test]
-fn diff_published_fallback() {
-    diff_published_impl("--diff-published", "@0.1.0");
-}
-
-#[test]
-fn diff_published_fallback_with_subcommand() {
-    diff_published_impl("diff", "0.1.0");
-}
-
-#[test]
-fn diff_published_smart_diff_fallback() {
-    diff_published_impl("--diff", "@0.1.0");
-}
-
-/// Diff against a published crate.
-fn diff_published_impl(diff_arg: &str, spec: &str) {
+fn diff_against_published_version() {
     let mut cmd = TestCmd::new().with_test_repo();
-    cmd.arg(diff_arg);
-    cmd.arg(spec);
+    cmd.arg("diff");
+    cmd.arg("0.1.0");
     cmd.assert()
         .stdout_or_update("./expected-output/diff_published.txt")
         .success();
@@ -733,11 +661,10 @@ fn diff_published_explicit_package() {
     let mut cmd = TestCmd::new().with_test_repo();
     cmd.arg("-p");
     cmd.arg("example_api");
-    cmd.arg("--diff-published");
-    cmd.arg("@0.1.0");
+    cmd.arg("diff");
+    cmd.arg("0.1.0");
     cmd.assert()
         .stdout_or_update("./expected-output/diff_published.txt")
-        .stderr(contains("DEPRECATION WARNING"))
         .success();
 }
 
@@ -753,16 +680,6 @@ fn list_public_items_from_json_file() {
     cmd.assert()
         .stdout_or_update("./expected-output/example_api-v0.3.0.txt")
         .success();
-}
-
-#[test]
-fn diff_public_items_missing_one_arg() {
-    let mut cmd = TestCmd::new().with_test_repo();
-    cmd.arg("--diff-git-checkouts");
-    cmd.arg("v0.2.0");
-    cmd.assert()
-        .stderr(contains("requires 2 values, but 1 was provided"))
-        .failure();
 }
 
 #[test]
@@ -1111,7 +1028,7 @@ impl TestCmd {
         self.test_repo = Some(test_repo);
 
         // Use a separate target dir even if we have a test repo with its own
-        // ./target dir. Because when we run --diff-published tests, they will
+        // ./target dir. Because when we run diff <version> tests, they will
         // share `.cargo-lock` (via `build-root-for-published-crates`)
         // otherwise.
         self.with_separate_target_dir()

@@ -29,24 +29,6 @@ mod create_test_git_repo;
 /// A toolchain that produces rustdoc JSON that we do not understand how to parse.
 const UNUSABLE_TOOLCHAIN: &str = "nightly-2022-06-01";
 
-fn create_test_repo_with_dirty_git_tree() -> TestRepo {
-    let test_repo = TestRepo::new();
-
-    // Make the tree dirty by appending a comment to src/lib.rs
-    let mut lib_rs_path = test_repo.path().to_owned();
-    lib_rs_path.push("src/lib.rs");
-
-    let mut lib_rs = OpenOptions::new()
-        .write(true)
-        .append(true)
-        .open(&lib_rs_path)
-        .unwrap();
-
-    writeln!(lib_rs, "// Make git tree dirty").unwrap();
-
-    test_repo
-}
-
 #[test]
 fn list_public_items() {
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
@@ -769,6 +751,28 @@ fn long_help_wraps() {
 /// to use so that tests can run in parallel.
 fn initialize_test_repo(dest: impl AsRef<Path>) {
     create_test_git_repo::create_test_git_repo(dest, "../test-apis");
+}
+
+fn create_test_repo_with_dirty_git_tree() -> TestRepo {
+    let test_repo = TestRepo::new();
+
+    // Make the tree dirty by appending a comment to src/lib.rs
+    append_to_lib_rs_in_test_repo(&test_repo, "// Make git tree dirty");
+
+    test_repo
+}
+
+fn append_to_lib_rs_in_test_repo(test_repo: &TestRepo, to_append: &str) {
+    let mut lib_rs_path = test_repo.path().to_owned();
+    lib_rs_path.push("src/lib.rs");
+
+    let mut lib_rs = OpenOptions::new()
+        .write(true)
+        .append(true)
+        .open(&lib_rs_path)
+        .unwrap();
+
+    writeln!(lib_rs, "{to_append}").unwrap();
 }
 
 #[derive(Debug)]

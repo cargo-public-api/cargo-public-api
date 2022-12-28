@@ -7,10 +7,19 @@ use anyhow::{anyhow, Result};
 use std::path::PathBuf;
 
 pub fn build_rustdoc_json(version: impl Into<String>, args: &Args) -> Result<PathBuf> {
-    let package_name = package_name_from_args(args);
+    let package_name = package_name_from_args(args).ok_or_else(|| anyhow!("You must specify a package with either `-p package-name` or `--manifest-path path/to/Cargo.toml`"))?;
+
+    let mut version = version.into();
+    if version == crate::LATEST {
+        version = most_recent_version_for_package(&package_name)?;
+        if args.verbose {
+            println!("Latest published version for `{package_name}` is `{version}`");
+        }
+    }
+
     let spec = PackageSpec {
-        name: package_name.ok_or_else(|| anyhow!("You must specify a package with either `-p package-name` or `--manifest-path path/to/Cargo.toml`"))?,
-        version: version.into(),
+        name: package_name,
+        version,
     };
 
     let build_dir = build_dir(args, &spec);
@@ -35,6 +44,17 @@ pub fn build_rustdoc_json(version: impl Into<String>, args: &Args) -> Result<Pat
         .manifest_path(&manifest)
         .package(&spec.name);
     crate::api_source::build_rustdoc_json(builder)
+}
+
+/// Gets the most recent version for the given package, by querying the
+/// crates.io index that users have locally.
+fn most_recent_version_for_package(package_name: &str) -> Result<String> {
+    let index = crates_index::Index::new_cargo_default()?;
+    let crate_ = index
+        .crate_(package_name)
+        .ok_or_else(|| anyhow!("Could not find crate `{package_name}` in the crates.io index"))?;
+    let version = crate_.most_recent_version();
+    return Ok(version.version().to_string());
 }
 
 /// When diffing against a published crate, we want to allow the user to not

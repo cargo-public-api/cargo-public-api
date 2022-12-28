@@ -25,6 +25,10 @@ thiserror = "1.0.38"
 version = "4.0.32"
 features = ["derive", "wrap_help"]
 
+[dependencies.crates-index]
+version = "0.18.11"
+default-features = false
+
 [dependencies.rustdoc-json]
 path = "../rustdoc-json"
 version = "0.7.4"

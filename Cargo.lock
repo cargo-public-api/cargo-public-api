@@ -100,6 +100,7 @@ dependencies = [
  "predicates",
  "pretty_assertions",
  "public-api",
+ "remove_dir_all",
  "rustdoc-json",
  "rustup-toolchain",
  "semver",

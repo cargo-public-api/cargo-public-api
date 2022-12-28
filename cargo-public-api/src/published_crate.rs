@@ -4,11 +4,14 @@
 
 use crate::Args;
 use anyhow::{anyhow, Result};
-use std::{fmt::Display, path::PathBuf};
+use std::path::PathBuf;
 
-pub fn build_rustdoc_json(package_spec_str: &str, args: &Args) -> Result<PathBuf> {
-    let fallback_name = package_name_from_args(args);
-    let spec = PackageSpec::from_str_with_fallback(package_spec_str, fallback_name.as_deref())?;
+pub fn build_rustdoc_json(version: impl Into<String>, args: &Args) -> Result<PathBuf> {
+    let package_name = package_name_from_args(args);
+    let spec = PackageSpec {
+        name: package_name.ok_or_else(|| anyhow!("You must specify a package with either `-p package-name` or `--manifest-path path/to/Cargo.toml`"))?,
+        version: version.into(),
+    };
 
     let build_dir = build_dir(args, &spec);
     std::fs::create_dir_all(&build_dir)?;
@@ -89,79 +92,5 @@ struct PackageSpec {
 impl PackageSpec {
     fn as_dir_name(&self) -> PathBuf {
         PathBuf::from(format!("{}-{}", self.name, self.version))
-    }
-
-    fn from_str_with_fallback(spec_str: &str, fallback_name: Option<&str>) -> Result<Self> {
-        let mut split: Vec<_> = spec_str.split('@').map(ToOwned::to_owned).collect();
-        let version = split.pop();
-        let name = split.pop();
-
-        match (name, version, fallback_name) {
-            (Some(name), Some(version), _) if !name.is_empty() && !version.is_empty() => Ok(Self {
-                name,
-                version,
-            }),
-            (_, Some(version), Some(fallback_name)) if !fallback_name.is_empty() && !version.is_empty() => Ok(Self {
-                name: fallback_name.to_owned(),
-                version,
-            }),
-            _ => Err(anyhow!("Invalid format of package spec string. Use `crate-name@version`, e.g. `crate-name@0.4.0`")),
-        }
-    }
-}
-
-impl Display for PackageSpec {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}@{}", &self.name, &self.version)
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_parse_spec() {
-        assert!(PackageSpec::from_str_with_fallback("", None).is_err());
-        assert!(PackageSpec::from_str_with_fallback("", Some("fallback")).is_err());
-
-        assert!(PackageSpec::from_str_with_fallback("@", None).is_err());
-        assert!(PackageSpec::from_str_with_fallback("@", Some("fallback")).is_err());
-
-        assert!(PackageSpec::from_str_with_fallback("foo@", None).is_err());
-        assert!(PackageSpec::from_str_with_fallback("foo@", Some("fallback")).is_err());
-
-        assert!(PackageSpec::from_str_with_fallback("@1.0.0", None).is_err());
-        assert_eq!(
-            PackageSpec::from_str_with_fallback("@1.0.0", Some("fallback")).unwrap(),
-            PackageSpec {
-                name: String::from("fallback"),
-                version: String::from("1.0.0")
-            }
-        );
-
-        assert!(PackageSpec::from_str_with_fallback("1.0.0", None).is_err());
-        assert_eq!(
-            PackageSpec::from_str_with_fallback("1.0.0", Some("fallback")).unwrap(),
-            PackageSpec {
-                name: String::from("fallback"),
-                version: String::from("1.0.0")
-            }
-        );
-
-        assert_eq!(
-            PackageSpec::from_str_with_fallback("foo@1.0.0", None).unwrap(),
-            PackageSpec {
-                name: String::from("foo"),
-                version: String::from("1.0.0")
-            }
-        );
-        assert_eq!(
-            PackageSpec::from_str_with_fallback("foo@1.0.0", Some("fallback")).unwrap(),
-            PackageSpec {
-                name: String::from("foo"),
-                version: String::from("1.0.0")
-            }
-        );
     }
 }

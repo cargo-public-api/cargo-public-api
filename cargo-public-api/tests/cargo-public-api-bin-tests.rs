@@ -407,7 +407,7 @@ fn diff_public_items_with_dirty_tree_fails() {
 
     // Make sure diffing does not destroy uncommitted data!
     let mut cmd = TestCmd::new();
-    cmd.current_dir(&test_repo.path);
+    cmd.current_dir(test_repo.path());
     cmd.arg("--diff-git-checkouts");
     cmd.arg("v0.2.0");
     cmd.arg("v0.3.0");
@@ -426,7 +426,7 @@ fn diff_public_items_with_dirty_tree_succeedes_with_force_option() {
     let test_repo = create_test_repo_with_dirty_git_tree();
 
     let mut cmd = TestCmd::new();
-    cmd.current_dir(&test_repo.path);
+    cmd.current_dir(test_repo.path());
     cmd.arg("--diff-git-checkouts");
     cmd.arg("v0.2.0");
     cmd.arg("v0.3.0");
@@ -1107,7 +1107,7 @@ impl TestCmd {
     /// current dir.
     fn with_test_repo(mut self) -> Self {
         let test_repo = TestRepo::new();
-        self.cmd.current_dir(&test_repo.path);
+        self.cmd.current_dir(test_repo.path());
         self.test_repo = Some(test_repo);
 
         // Use a separate target dir even if we have a test repo with its own

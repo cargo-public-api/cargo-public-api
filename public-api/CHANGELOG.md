@@ -2,6 +2,11 @@
 
 If a version is not listed below, it means it had no API changes.
 
+## v0.25.0
+* Get rid of `enum variant` and `struct field` prefixes in rendered items
+* Group impl blocks together with their respective functions
+* Bump all deps
+
 ## v0.24.1
 * Make `PublicApi` implement `Display` to get `.to_string()`. All items in one big multi-line `String`.
 

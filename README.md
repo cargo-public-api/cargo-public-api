@@ -109,7 +109,7 @@ cargo public-api --simplified
 
 | cargo-public-api | Understands the rustdoc JSON output of  |
 | ---------------- | --------------------------------------- |
-| 0.20.x — 0.24.x  | nightly-2022-09-28 —                    |
+| 0.20.x — 0.25.x  | nightly-2022-09-28 —                    |
 | 0.19.x           | nightly-2022-09-08 — nightly-2022-09-27 |
 | 0.18.x           | nightly-2022-09-07                      |
 | 0.17.x           | nightly-2022-09-06                      |

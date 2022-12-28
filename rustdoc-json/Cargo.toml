@@ -19,8 +19,11 @@ toml = "0.5.10"
 [dev-dependencies]
 assert_cmd = "2.0.7"
 expect-test = "1.4.0"
-predicates = "2.1.4"
 tempfile = "3.3.0"
+
+[dev-dependencies.predicates]
+version = "2.1.4"
+default-features = false
 
 [dev-dependencies.public-api]
 path = "../public-api"

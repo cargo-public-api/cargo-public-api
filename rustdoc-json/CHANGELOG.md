@@ -2,6 +2,7 @@
 * Correctly determine json path for `Builder::default().package("crate@1.0.0")`
 * Add `Builder::package_target()` and `PackageTarget`
 * Add `Builder::silent()` to suppress stdout and stderr
+* Bump all deps
 
 ## v0.7.3
 * Derive `Clone` for `rustdoc_json::Builder`

@@ -1142,7 +1142,7 @@ fn add_to_path(dir: PathBuf) {
 /// [1]
 /// <https://github.com/rust-lang/rustup/blob/a223e5ad6549e5fb0c56932fd0e79af9de898ad4/src/toolchain.rs#L446-L453>
 fn assert_cargo_public_api_not_in_cargo_home_bin() {
-    let cargo_home = match (
+    let mut path = match (
         home::cargo_home().ok(),
         env::var_os("CARGO_PUBLIC_API_INSTALLED_FOR_TESTS"),
     ) {
@@ -1150,7 +1150,6 @@ fn assert_cargo_public_api_not_in_cargo_home_bin() {
         _ => return,
     };
 
-    let mut path = PathBuf::from(cargo_home);
     path.push("bin");
     path.push("cargo-public-api");
 

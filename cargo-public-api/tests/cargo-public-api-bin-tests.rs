@@ -43,6 +43,15 @@ fn list_public_items() {
 }
 
 #[test]
+fn list_public_items_omit_auto_derived_impls() {
+    let mut cmd = TestCmd::as_subcommand_without_args().with_test_repo();
+    cmd.arg("-ss"); // Note the double -s
+    cmd.assert()
+        .stdout_or_update("./expected-output/omit-auto-derived-impls.txt")
+        .success();
+}
+
+#[test]
 fn list_public_items_with_lint_error() {
     let mut cmd = TestCmd::new().with_separate_target_dir();
     cmd.args(["--manifest-path", "../test-apis/lint_error/Cargo.toml"]);

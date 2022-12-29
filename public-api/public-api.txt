@@ -180,6 +180,7 @@ pub type public_api::Error::Error = <U as core::convert::TryFrom<T>>::Error
 pub fn public_api::Error::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
 #[non_exhaustive] pub struct public_api::Options
 pub public_api::Options::debug_sorting: bool
+pub public_api::Options::omit_auto_derived_impls: bool
 pub public_api::Options::simplified: bool
 pub public_api::Options::sorted: bool
 pub public_api::Options::with_blanket_implementations: bool

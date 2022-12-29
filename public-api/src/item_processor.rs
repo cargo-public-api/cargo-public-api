@@ -334,7 +334,8 @@ impl ImplKind {
     fn is_active(&self, options: Options) -> bool {
         match self {
             ImplKind::Blanket | ImplKind::AutoTrait => !options.simplified,
-            ImplKind::Normal | ImplKind::AutoDerived => true,
+            ImplKind::AutoDerived => !options.omit_auto_derived_impls,
+            ImplKind::Normal => true,
         }
     }
 }

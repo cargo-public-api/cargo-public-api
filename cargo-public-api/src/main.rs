@@ -34,7 +34,8 @@ pub struct Args {
     package: Option<String>,
 
     /// Omit items that belong to Blanket Implementations and Auto Trait
-    /// Implementations.
+    /// Implementations (first use), and Auto Derived Implementations (second
+    /// use).
     ///
     /// This makes the output significantly less noisy and repetitive, at the
     /// cost of not fully describing the public API.
@@ -44,8 +45,10 @@ pub struct Args {
     ///
     /// Examples of Auto Trait Implementations: `impl Send for Foo`, `impl Sync
     /// for Foo`, and `impl Unpin for Foo`
-    #[arg(short, long)]
-    simplified: bool,
+    ///
+    /// Examples of Auto Derived Implementations: `Clone`, `Debug`, `Eq`
+    #[arg(short, long, action = clap::ArgAction::Count)]
+    simplified: u8,
 
     /// Space or comma separated list of features to activate
     #[arg(long, short = 'F', num_args = 1..)]
@@ -447,6 +450,14 @@ impl Action {
 }
 
 impl Args {
+    fn simplified(&self) -> bool {
+        self.simplified > 0
+    }
+
+    fn omit_auto_derived_impls(&self) -> bool {
+        self.simplified > 1
+    }
+
     fn git_root(&self) -> Result<PathBuf> {
         git_utils::git_root_from_manifest_path(self.manifest_path.as_path())
     }

@@ -18,8 +18,9 @@ Options:
   -p, --package <PACKAGE>
           Name of package in workspace to list or diff the public API for
 
-  -s, --simplified
-          Omit items that belong to Blanket Implementations and Auto Trait Implementations.
+  -s, --simplified...
+          Omit items that belong to Blanket Implementations and Auto Trait Implementations (first
+          use), and Auto Derived Implementations (second use).
           
           This makes the output significantly less noisy and repetitive, at the cost of not fully
           describing the public API.
@@ -29,6 +30,8 @@ Options:
           
           Examples of Auto Trait Implementations: `impl Send for Foo`, `impl Sync for Foo`, and
           `impl Unpin for Foo`
+          
+          Examples of Auto Derived Implementations: `Clone`, `Debug`, `Eq`
 
   -F, --features <FEATURES>...
           Space or comma separated list of features to activate

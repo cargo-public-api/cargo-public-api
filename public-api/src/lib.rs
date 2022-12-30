@@ -112,6 +112,15 @@ pub struct Options {
     /// The default value is `false` so that the listed public API is complete
     /// by default.
     pub simplified: bool,
+
+    /// If `true`, items that belongs to automatically derived implementations
+    /// (`Clone`, `Debug`, `Eq`, etc) are omitted from the output. This makes
+    /// the output less noisy, at the cost of not fully describing the public
+    /// API.
+    ///
+    /// The default value is `false` so that the listed public API is complete
+    /// by default.
+    pub omit_auto_derived_impls: bool,
 }
 
 /// Enables options to be set up like this (note that `Options` is marked
@@ -131,6 +140,7 @@ impl Default for Options {
             sorted: true,
             debug_sorting: false,
             simplified: false,
+            omit_auto_derived_impls: false,
         }
     }
 }

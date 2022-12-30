@@ -3,14 +3,14 @@ pub mod rustup_toolchain
 pub rustup_toolchain::Error::IoError(std::io::error::Error)
 pub rustup_toolchain::Error::RustupToolchainInstallError
 pub rustup_toolchain::Error::StdSyncPoisonError
-impl core::fmt::Debug for rustup_toolchain::Error
-pub fn rustup_toolchain::Error::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::fmt::Display for rustup_toolchain::Error
 pub fn rustup_toolchain::Error::fmt(&self, __formatter: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::error::Error for rustup_toolchain::Error
 pub fn rustup_toolchain::Error::source(&self) -> core::option::Option<&(dyn core::error::Error + 'static)>
 impl core::convert::From<std::io::error::Error> for rustup_toolchain::Error
 pub fn rustup_toolchain::Error::from(source: std::io::error::Error) -> Self
+impl core::fmt::Debug for rustup_toolchain::Error
+pub fn rustup_toolchain::Error::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl !core::panic::unwind_safe::RefUnwindSafe for rustup_toolchain::Error
 impl core::marker::Send for rustup_toolchain::Error
 impl core::marker::Sync for rustup_toolchain::Error

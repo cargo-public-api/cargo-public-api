@@ -183,7 +183,6 @@ pub public_api::Options::debug_sorting: bool
 pub public_api::Options::omit_auto_derived_impls: bool
 pub public_api::Options::simplified: bool
 pub public_api::Options::sorted: bool
-pub public_api::Options::with_blanket_implementations: bool
 impl core::default::Default for public_api::Options
 pub fn public_api::Options::default() -> Self
 impl core::clone::Clone for public_api::Options

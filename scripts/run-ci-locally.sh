@@ -13,3 +13,4 @@ scripts/cargo-clippy.sh
 
 cargo test --locked
 
+cargo build --locked --no-default-features # Build without "diff-latest" feature

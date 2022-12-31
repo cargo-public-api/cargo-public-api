@@ -53,3 +53,4 @@ jobs:
           profile: minimal
       - uses: Swatinem/rust-cache@v2
       - run: cargo test --locked
+      - run: cargo build --locked --no-default-features # Build without "diff-latest" feature

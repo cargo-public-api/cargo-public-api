@@ -100,14 +100,12 @@ fn comprehensive_api_proc_macro() {
 #[test]
 fn invalid_json() {
     let result = PublicApi::from_rustdoc_json_str("}}}}}}}}}", Options::default());
-    ensure_impl_debug(&result);
     assert!(matches!(result, Err(Error::SerdeJsonError(_))));
 }
 
 #[test]
 fn options() {
     let options = Options::default();
-    ensure_impl_debug(&options);
 
     // If we don't do this, we will not have code coverage 100% of functions in
     // lib.rs, which is more annoying than doing this clone
@@ -149,10 +147,4 @@ fn assert_public_api_impl(
         .to_string();
 
     expect_file![expected_output.as_ref()].assert_eq(&api);
-}
-
-/// To be honest this is mostly to get higher code coverage numbers.
-/// But it is actually useful thing to test.
-fn ensure_impl_debug(impl_debug: &impl std::fmt::Debug) {
-    eprintln!("Yes, this can be debugged: {:?}", impl_debug);
 }

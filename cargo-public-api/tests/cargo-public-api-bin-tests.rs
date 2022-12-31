@@ -663,6 +663,7 @@ fn diff_against_latest_published_version() {
     cmd.arg("latest");
     cmd.assert()
         .stdout_or_update("./expected-output/diff-latest.txt")
+        .stderr(contains("Resolved `diff latest` to `diff 0.3.0`"))
         .success();
 }
 

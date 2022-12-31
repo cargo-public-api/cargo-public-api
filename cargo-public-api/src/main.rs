@@ -229,7 +229,7 @@ pub enum Action {
 
 /// The string used by users to request a diff of the latest published version
 /// of a given crate.
-const LATEST: &str = "latest";
+const LATEST_VERSION_ARG: &str = "latest";
 
 fn main_() -> Result<()> {
     let args = get_args();
@@ -348,7 +348,9 @@ for more.
                 Commit::new(args, commits[1])?.boxed(),
             )
         }
-        (Some(first), None) if semver::Version::parse(first).is_ok() || first == LATEST => {
+        (Some(first), None)
+            if semver::Version::parse(first).is_ok() || first == LATEST_VERSION_ARG =>
+        {
             MainTask::print_diff(PublishedCrate::new(first).boxed(), CurrentDir.boxed())
         }
         (Some(first), None) => {

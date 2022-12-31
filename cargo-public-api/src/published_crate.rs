@@ -2,7 +2,7 @@
 //! rustdoc JSON for. We then build rustdoc JSON for the crate using this dummy
 //! project.
 
-use crate::Args;
+use crate::{Args, LATEST_VERSION_ARG};
 use anyhow::{anyhow, Result};
 use std::path::PathBuf;
 
@@ -10,11 +10,9 @@ pub fn build_rustdoc_json(version: impl Into<String>, args: &Args) -> Result<Pat
     let package_name = package_name_from_args(args).ok_or_else(|| anyhow!("You must specify a package with either `-p package-name` or `--manifest-path path/to/Cargo.toml`"))?;
 
     let mut version = version.into();
-    if version == crate::LATEST {
+    if version == LATEST_VERSION_ARG {
         version = most_recent_version_for_package(&package_name)?;
-        if args.verbose {
-            println!("Latest published version for `{package_name}` is `{version}`");
-        }
+        eprintln!("Resolved `diff {LATEST_VERSION_ARG}` to `diff {version}`");
     }
 
     let spec = PackageSpec {

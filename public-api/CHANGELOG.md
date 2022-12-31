@@ -2,6 +2,9 @@
 
 If a version is not listed below, it means it had no API changes.
 
+## Unreleased v0.26.0
+* Remove deprecated `Options::with_blanket_implementations`
+
 ## v0.25.0
 * Get rid of `enum variant` and `struct field` prefixes in rendered items
 * Group impl blocks together with their respective functions

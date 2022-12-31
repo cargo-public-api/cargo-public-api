@@ -75,14 +75,6 @@ pub const MINIMUM_RUSTDOC_JSON_VERSION: &str = "nightly-2022-09-28";
 #[non_exhaustive] // More options are likely to be added in the future
 #[allow(clippy::struct_excessive_bools)]
 pub struct Options {
-    /// Deprecated. Blanket Implementations are included by default. Set
-    /// `simplified = true` to omit both Blanket Implementations and Auto Trait
-    /// Implementations.
-    #[deprecated(
-        note = "Blanket Implementations are included by default. Set `simplified = true` to omit both Blanket Implementations and Auto Trait Implementations"
-    )]
-    pub with_blanket_implementations: bool,
-
     /// If `true`, items will be sorted before being returned. If you will pass
     /// on the return value to [`diff::PublicApiDiff::between`], it is
     /// currently unnecessary to sort first, because the sorting will be
@@ -134,9 +126,7 @@ pub struct Options {
 /// ```
 impl Default for Options {
     fn default() -> Self {
-        #[allow(deprecated)]
         Self {
-            with_blanket_implementations: false,
             sorted: true,
             debug_sorting: false,
             simplified: false,

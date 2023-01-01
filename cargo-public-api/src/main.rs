@@ -161,9 +161,13 @@ enum Subcommand {
     /// EXAMPLES:
     /// =========
     ///
-    /// Diffing working tree against a published version of the crate:
+    /// Diffing a published version of a crate against the current working tree:
     ///
     ///     cargo public-api diff 1.2.3
+    ///
+    /// Diffing the latest published version of a crate against the current working tree:
+    ///
+    ///     cargo public-api diff latest
     ///
     /// Diffing working tree against a published version of a specific crate in the workspace:
     ///

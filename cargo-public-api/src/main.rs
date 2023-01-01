@@ -164,9 +164,13 @@ enum Subcommand {
     /// EXAMPLES:
     /// =========
     ///
-    /// Diffing working tree against a published version of the crate:
+    /// Diffing a published version of a crate against the current working tree:
     ///
     ///     cargo public-api diff 1.2.3
+    ///
+    /// Diffing the latest published version of a crate against the current working tree:
+    ///
+    ///     cargo public-api diff latest
     ///
     /// Diffing working tree against a published version of a specific crate in the workspace:
     ///
@@ -229,6 +233,10 @@ pub enum Action {
     /// not mess up their work tree.
     RestoreBranch { name: String },
 }
+
+/// The string used by users to request a diff of the latest published version
+/// of a given crate.
+const LATEST_VERSION_ARG: &str = "latest";
 
 fn main_() -> Result<()> {
     let args = get_args();
@@ -347,7 +355,9 @@ for more.
                 Commit::new(args, commits[1])?.boxed(),
             )
         }
-        (Some(first), None) if semver::Version::parse(first).is_ok() => {
+        (Some(first), None)
+            if semver::Version::parse(first).is_ok() || first == LATEST_VERSION_ARG =>
+        {
             MainTask::print_diff(PublishedCrate::new(first).boxed(), CurrentDir.boxed())
         }
         (Some(first), None) => {

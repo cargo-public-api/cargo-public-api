@@ -2,15 +2,22 @@
 //! rustdoc JSON for. We then build rustdoc JSON for the crate using this dummy
 //! project.
 
-use crate::Args;
+use crate::{Args, LATEST_VERSION_ARG};
 use anyhow::{anyhow, Result};
 use std::path::PathBuf;
 
 pub fn build_rustdoc_json(version: impl Into<String>, args: &Args) -> Result<PathBuf> {
-    let package_name = package_name_from_args(args);
+    let package_name = package_name_from_args(args).ok_or_else(|| anyhow!("You must specify a package with either `-p package-name` or `--manifest-path path/to/Cargo.toml`"))?;
+
+    let mut version = version.into();
+    if version == LATEST_VERSION_ARG {
+        version = most_recent_version_for_package(&package_name)?;
+        eprintln!("Resolved `diff {LATEST_VERSION_ARG}` to `diff {version}`");
+    }
+
     let spec = PackageSpec {
-        name: package_name.ok_or_else(|| anyhow!("You must specify a package with either `-p package-name` or `--manifest-path path/to/Cargo.toml`"))?,
-        version: version.into(),
+        name: package_name,
+        version,
     };
 
     let build_dir = build_dir(args, &spec);
@@ -35,6 +42,26 @@ pub fn build_rustdoc_json(version: impl Into<String>, args: &Args) -> Result<Pat
         .manifest_path(&manifest)
         .package(&spec.name);
     crate::api_source::build_rustdoc_json(builder)
+}
+
+/// Gets the most recent version for the given package, by querying the
+/// crates.io index that users have locally.
+fn most_recent_version_for_package(package_name: &str) -> Result<String> {
+    #[cfg(feature = "diff-latest")]
+    {
+        let index = crates_index::Index::new_cargo_default()?;
+        let crate_ = index.crate_(package_name).ok_or_else(|| {
+            anyhow!("Could not find crate `{package_name}` in the crates.io index")
+        })?;
+        let version = crate_.most_recent_version();
+        Ok(version.version().to_string())
+    }
+    #[cfg(not(feature = "diff-latest"))]
+    {
+        Err(anyhow!(
+            "Can not find latest version of `{package_name}`; the `diff-latest` feature needs to be enabled for `cargo-public-api`"
+        ))
+    }
 }
 
 /// Returns the package name from `-p package-name` or from inside

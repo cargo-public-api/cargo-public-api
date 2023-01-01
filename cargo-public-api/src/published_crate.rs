@@ -59,7 +59,7 @@ fn most_recent_version_for_package(package_name: &str) -> Result<String> {
     #[cfg(not(feature = "diff-latest"))]
     {
         Err(anyhow!(
-            "Can't find latest version of `{package_name}`; the `diff-latest` feature is disabled"
+            "Can not find latest version of `{package_name}`; the `diff-latest` feature needs to be enabled for `cargo-public-api`"
         ))
     }
 }

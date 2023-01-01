@@ -90,20 +90,27 @@ pub struct Options {
     /// The default value is `false`
     pub debug_sorting: bool,
 
-    /// If `true`, items that belongs to Blanket Implementations and Auto Trait
-    /// Implementations are omitted from the output. This makes the output
-    /// significantly less noisy and repetitive, at the cost of not fully
-    /// describing the public API.
+    /// If `true`, items that belongs to Blanket Implementations are omitted
+    /// from the output. This makes the output less noisy, at the cost of not
+    /// fully describing the public API.
     ///
     /// Examples of Blanket Implementations: `impl<T> Any for T`, `impl<T>
     /// Borrow<T> for T`, and `impl<T, U> Into<U> for T where U: From<T>`
+    ///
+    /// The default value is `false` so that the listed public API is complete
+    /// by default.
+    pub omit_blanket_impls: bool,
+
+    /// If `true`, items that belongs to Auto Trait Implementations are omitted
+    /// from the output. This makes the output less noisy, at the cost of not
+    /// fully describing the public API.
     ///
     /// Examples of Auto Trait Implementations: `impl Send for Foo`, `impl Sync
     /// for Foo`, and `impl Unpin for Foo`
     ///
     /// The default value is `false` so that the listed public API is complete
     /// by default.
-    pub simplified: bool,
+    pub omit_auto_trait_impls: bool,
 
     /// If `true`, items that belongs to automatically derived implementations
     /// (`Clone`, `Debug`, `Eq`, etc) are omitted from the output. This makes
@@ -129,7 +136,8 @@ impl Default for Options {
         Self {
             sorted: true,
             debug_sorting: false,
-            simplified: false,
+            omit_blanket_impls: false,
+            omit_auto_trait_impls: false,
             omit_auto_derived_impls: false,
         }
     }

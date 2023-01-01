@@ -4,6 +4,7 @@ If a version is not listed below, it means it had no API changes.
 
 ## Unreleased v0.26.0
 * Remove deprecated `Options::with_blanket_implementations`
+* Split `Options::simplified` into `Options::omit_auto_trait_impls` and `Options::omit_blanket_impls`
 
 ## v0.25.0
 * Get rid of `enum variant` and `struct field` prefixes in rendered items

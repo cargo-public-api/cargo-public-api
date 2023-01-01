@@ -20,6 +20,7 @@ enum Error {
 
 type Result<T> = std::result::Result<T, Error>;
 
+/// Use `cargo-public-api` for a much richer set of command line options.
 #[derive(Default)]
 struct Args {
     help: bool,
@@ -36,7 +37,10 @@ fn main_() -> Result<()> {
     }
 
     let mut options = Options::default();
-    options.simplified = args.simplified;
+    if args.simplified {
+        options.omit_blanket_impls = true;
+        options.omit_auto_trait_impls = true;
+    }
     options.sorted = true;
 
     let files = args.files;

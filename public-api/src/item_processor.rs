@@ -333,7 +333,8 @@ impl ImplKind {
 impl ImplKind {
     fn is_active(&self, options: Options) -> bool {
         match self {
-            ImplKind::Blanket | ImplKind::AutoTrait => !options.simplified,
+            ImplKind::Blanket => !options.omit_blanket_impls,
+            ImplKind::AutoTrait => !options.omit_auto_trait_impls,
             ImplKind::AutoDerived => !options.omit_auto_derived_impls,
             ImplKind::Normal => true,
         }

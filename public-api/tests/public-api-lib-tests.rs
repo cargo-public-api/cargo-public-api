@@ -52,6 +52,36 @@ fn simplified_without_auto_derived_impls() {
 }
 
 #[test]
+fn omit_blanket_impls() {
+    // Create independent build dir so all tests can run in parallel
+    let build_dir = tempdir().unwrap();
+
+    let mut options = Options::default();
+    options.omit_blanket_impls = true;
+
+    assert_public_api(
+        rustdoc_json_path_for_crate("../test-apis/example_api-v0.2.0", &build_dir),
+        "./expected-output/example_api-v0.2.0-omit_blanket_impls.txt",
+        options,
+    );
+}
+
+#[test]
+fn omit_auto_trait_impls() {
+    // Create independent build dir so all tests can run in parallel
+    let build_dir = tempdir().unwrap();
+
+    let mut options = Options::default();
+    options.omit_auto_trait_impls = true;
+
+    assert_public_api(
+        rustdoc_json_path_for_crate("../test-apis/example_api-v0.2.0", &build_dir),
+        "./expected-output/example_api-v0.2.0-omit_auto_trait_impls.txt",
+        options,
+    );
+}
+
+#[test]
 fn diff_with_added_items() {
     // Create independent build dirs so all tests can run in parallel
     let build_dir = tempdir().unwrap();

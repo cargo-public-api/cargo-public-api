@@ -170,7 +170,7 @@ impl<'c> ItemProcessor<'c> {
         item: &'c Item,
         impl_: &'c Impl,
     ) {
-        if !ImplKind::from(impl_).is_active(self.options) {
+        if !ImplKind::from(item, impl_).is_active(self.options) {
             return;
         }
 
@@ -289,35 +289,42 @@ pub(crate) fn sorting_prefix(item: &Item) -> u8 {
 
         ItemEnum::Typedef(_) => 19,
 
-        ItemEnum::Impl(impl_) => match ImplKind::from(impl_) {
+        ItemEnum::Impl(impl_) => match ImplKind::from(item, impl_) {
             ImplKind::Normal => 20,
-            ImplKind::AutoTrait => 21,
-            ImplKind::Blanket => 22,
+            ImplKind::AutoDerived => 21,
+            ImplKind::AutoTrait => 22,
+            ImplKind::Blanket => 23,
         },
 
-        ItemEnum::ForeignType => 23,
+        ItemEnum::ForeignType => 24,
 
-        ItemEnum::OpaqueTy(_) => 24,
+        ItemEnum::OpaqueTy(_) => 25,
 
-        ItemEnum::TraitAlias(_) => 25,
+        ItemEnum::TraitAlias(_) => 26,
     }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) enum ImplKind {
     Normal,
+    AutoDerived,
     AutoTrait,
     Blanket,
 }
 
-impl From<&Impl> for ImplKind {
-    fn from(impl_: &Impl) -> Self {
+impl ImplKind {
+    fn from(impl_item: &Item, impl_: &Impl) -> Self {
         let has_blanket_impl = matches!(impl_.blanket_impl, Some(_));
+        let is_automatically_derived = impl_item
+            .attrs
+            .iter()
+            .any(|a| a == "#[automatically_derived]");
 
         // See https://github.com/rust-lang/rust/blob/54f20bbb8a7aeab93da17c0019c1aaa10329245a/src/librustdoc/json/conversions.rs#L589-L590
         match (impl_.synthetic, has_blanket_impl) {
             (true, false) => ImplKind::AutoTrait,
             (false, true) => ImplKind::Blanket,
+            _ if is_automatically_derived => ImplKind::AutoDerived,
             _ => ImplKind::Normal,
         }
     }
@@ -326,7 +333,9 @@ impl From<&Impl> for ImplKind {
 impl ImplKind {
     fn is_active(&self, options: Options) -> bool {
         match self {
-            ImplKind::Blanket | ImplKind::AutoTrait => !options.simplified,
+            ImplKind::Blanket => !options.omit_blanket_impls,
+            ImplKind::AutoTrait => !options.omit_auto_trait_impls,
+            ImplKind::AutoDerived => !options.omit_auto_derived_impls,
             ImplKind::Normal => true,
         }
     }

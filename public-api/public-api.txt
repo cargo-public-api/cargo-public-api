@@ -143,8 +143,6 @@ pub fn public_api::tokens::Token::try_into(self) -> core::result::Result<U, <U a
 #[non_exhaustive] pub enum public_api::Error
 pub public_api::Error::IoError(std::io::error::Error)
 pub public_api::Error::SerdeJsonError(serde_json::error::Error)
-impl core::fmt::Debug for public_api::Error
-pub fn public_api::Error::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::fmt::Display for public_api::Error
 pub fn public_api::Error::fmt(&self, __formatter: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::error::Error for public_api::Error
@@ -153,6 +151,8 @@ impl core::convert::From<serde_json::error::Error> for public_api::Error
 impl core::convert::From<std::io::error::Error> for public_api::Error
 pub fn public_api::Error::from(source: serde_json::error::Error) -> Self
 pub fn public_api::Error::from(source: std::io::error::Error) -> Self
+impl core::fmt::Debug for public_api::Error
+pub fn public_api::Error::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl !core::panic::unwind_safe::RefUnwindSafe for public_api::Error
 impl core::marker::Send for public_api::Error
 impl core::marker::Sync for public_api::Error
@@ -180,16 +180,17 @@ pub type public_api::Error::Error = <U as core::convert::TryFrom<T>>::Error
 pub fn public_api::Error::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
 #[non_exhaustive] pub struct public_api::Options
 pub public_api::Options::debug_sorting: bool
-pub public_api::Options::simplified: bool
+pub public_api::Options::omit_auto_derived_impls: bool
+pub public_api::Options::omit_auto_trait_impls: bool
+pub public_api::Options::omit_blanket_impls: bool
 pub public_api::Options::sorted: bool
-pub public_api::Options::with_blanket_implementations: bool
+impl core::default::Default for public_api::Options
+pub fn public_api::Options::default() -> Self
 impl core::clone::Clone for public_api::Options
 pub fn public_api::Options::clone(&self) -> public_api::Options
 impl core::marker::Copy for public_api::Options
 impl core::fmt::Debug for public_api::Options
 pub fn public_api::Options::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
-impl core::default::Default for public_api::Options
-pub fn public_api::Options::default() -> Self
 impl core::panic::unwind_safe::RefUnwindSafe for public_api::Options
 impl core::marker::Send for public_api::Options
 impl core::marker::Sync for public_api::Options
@@ -222,9 +223,9 @@ pub fn public_api::PublicApi::from_rustdoc_json_str(rustdoc_json_str: impl core:
 pub fn public_api::PublicApi::into_items(self) -> impl core::iter::traits::iterator::Iterator<Item = public_api::PublicItem>
 pub fn public_api::PublicApi::items(&self) -> impl core::iter::traits::iterator::Iterator<Item = &public_api::PublicItem>
 pub fn public_api::PublicApi::missing_item_ids(&self) -> impl core::iter::traits::iterator::Iterator<Item = &alloc::string::String>
-impl core::fmt::Debug for public_api::PublicApi
-pub fn public_api::PublicApi::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::fmt::Display for public_api::PublicApi
+pub fn public_api::PublicApi::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Debug for public_api::PublicApi
 pub fn public_api::PublicApi::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::panic::unwind_safe::RefUnwindSafe for public_api::PublicApi
 impl core::marker::Send for public_api::PublicApi
@@ -252,21 +253,21 @@ pub fn public_api::PublicApi::try_into(self) -> core::result::Result<U, <U as co
 pub struct public_api::PublicItem
 impl public_api::PublicItem
 pub fn public_api::PublicItem::tokens(&self) -> impl core::iter::traits::iterator::Iterator<Item = &public_api::tokens::Token>
-impl core::clone::Clone for public_api::PublicItem
-pub fn public_api::PublicItem::clone(&self) -> public_api::PublicItem
 impl core::fmt::Debug for public_api::PublicItem
 pub fn public_api::PublicItem::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::fmt::Display for public_api::PublicItem
 pub fn public_api::PublicItem::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::cmp::Ord for public_api::PublicItem
+pub fn public_api::PublicItem::cmp(&self, other: &Self) -> core::cmp::Ordering
+impl core::cmp::PartialOrd<public_api::PublicItem> for public_api::PublicItem
+pub fn public_api::PublicItem::partial_cmp(&self, other: &Self) -> core::option::Option<core::cmp::Ordering>
+impl core::clone::Clone for public_api::PublicItem
+pub fn public_api::PublicItem::clone(&self) -> public_api::PublicItem
 impl core::cmp::Eq for public_api::PublicItem
 impl core::hash::Hash for public_api::PublicItem
 pub fn public_api::PublicItem::hash<__H: core::hash::Hasher>(&self, state: &mut __H) -> ()
-impl core::cmp::Ord for public_api::PublicItem
-pub fn public_api::PublicItem::cmp(&self, other: &Self) -> core::cmp::Ordering
 impl core::cmp::PartialEq<public_api::PublicItem> for public_api::PublicItem
 pub fn public_api::PublicItem::eq(&self, other: &public_api::PublicItem) -> bool
-impl core::cmp::PartialOrd<public_api::PublicItem> for public_api::PublicItem
-pub fn public_api::PublicItem::partial_cmp(&self, other: &Self) -> core::option::Option<core::cmp::Ordering>
 impl core::marker::StructuralEq for public_api::PublicItem
 impl core::marker::StructuralPartialEq for public_api::PublicItem
 impl core::panic::unwind_safe::RefUnwindSafe for public_api::PublicItem

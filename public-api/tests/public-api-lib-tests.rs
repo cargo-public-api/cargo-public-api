@@ -29,9 +29,55 @@ fn not_simplified() {
     // Create independent build dir so all tests can run in parallel
     let build_dir = tempdir().unwrap();
 
-    assert_public_api_not_simplified(
+    assert_public_api(
         rustdoc_json_path_for_crate("../test-apis/example_api-v0.2.0", &build_dir),
         "./expected-output/example_api-v0.2.0-not-simplified.txt",
+        Options::default(),
+    );
+}
+
+#[test]
+fn simplified_without_auto_derived_impls() {
+    // Create independent build dir so all tests can run in parallel
+    let build_dir = tempdir().unwrap();
+
+    let mut options = simplified();
+    options.omit_auto_derived_impls = true;
+
+    assert_public_api(
+        rustdoc_json_path_for_crate("../test-apis/example_api-v0.2.0", &build_dir),
+        "./expected-output/example_api-v0.2.0-simplified_without_auto_derived_impls.txt",
+        options,
+    );
+}
+
+#[test]
+fn omit_blanket_impls() {
+    // Create independent build dir so all tests can run in parallel
+    let build_dir = tempdir().unwrap();
+
+    let mut options = Options::default();
+    options.omit_blanket_impls = true;
+
+    assert_public_api(
+        rustdoc_json_path_for_crate("../test-apis/example_api-v0.2.0", &build_dir),
+        "./expected-output/example_api-v0.2.0-omit_blanket_impls.txt",
+        options,
+    );
+}
+
+#[test]
+fn omit_auto_trait_impls() {
+    // Create independent build dir so all tests can run in parallel
+    let build_dir = tempdir().unwrap();
+
+    let mut options = Options::default();
+    options.omit_auto_trait_impls = true;
+
+    assert_public_api(
+        rustdoc_json_path_for_crate("../test-apis/example_api-v0.2.0", &build_dir),
+        "./expected-output/example_api-v0.2.0-omit_auto_trait_impls.txt",
+        options,
     );
 }
 
@@ -80,7 +126,7 @@ fn comprehensive_api() {
     // Create independent build dir so all tests can run in parallel
     let build_dir = tempdir().unwrap();
 
-    assert_public_api(
+    assert_simplified_public_api(
         rustdoc_json_path_for_crate("../test-apis/comprehensive_api", &build_dir),
         "./expected-output/comprehensive_api.txt",
     );
@@ -91,7 +137,7 @@ fn comprehensive_api_proc_macro() {
     // Create independent build dir so all tests can run in parallel
     let build_dir = tempdir().unwrap();
 
-    assert_public_api(
+    assert_simplified_public_api(
         rustdoc_json_path_for_crate("../test-apis/comprehensive_api_proc_macro", &build_dir),
         "./expected-output/comprehensive_api_proc_macro.txt",
     );
@@ -100,14 +146,12 @@ fn comprehensive_api_proc_macro() {
 #[test]
 fn invalid_json() {
     let result = PublicApi::from_rustdoc_json_str("}}}}}}}}}", Options::default());
-    ensure_impl_debug(&result);
     assert!(matches!(result, Err(Error::SerdeJsonError(_))));
 }
 
 #[test]
 fn options() {
     let options = Options::default();
-    ensure_impl_debug(&options);
 
     // If we don't do this, we will not have code coverage 100% of functions in
     // lib.rs, which is more annoying than doing this clone
@@ -127,23 +171,20 @@ fn assert_public_api_diff(
     expect_file![expected.as_ref()].assert_debug_eq(&diff);
 }
 
-fn assert_public_api(json: impl AsRef<Path>, expected: impl AsRef<Path>) {
-    assert_public_api_impl(json, expected, true);
+/// Asserts that the public API of the crate in the given rustdoc JSON file
+/// matches the expected output. For brevity, Auto Trait or Blanket impls are
+/// not included.
+fn assert_simplified_public_api(json: impl AsRef<Path>, expected: impl AsRef<Path>) {
+    assert_public_api(json, expected, simplified());
 }
 
-fn assert_public_api_not_simplified(json: impl AsRef<Path>, expected: impl AsRef<Path>) {
-    assert_public_api_impl(json, expected, false);
-}
-
-fn assert_public_api_impl(
+/// Asserts that the public API of the crate in the given rustdoc JSON file
+/// matches the expected output.
+fn assert_public_api(
     rustdoc_json: impl AsRef<Path>,
     expected_output: impl AsRef<Path>,
-    simplified: bool,
+    options: Options,
 ) {
-    let mut options = Options::default();
-    options.simplified = simplified;
-    options.sorted = true;
-
     let api = PublicApi::from_rustdoc_json(rustdoc_json, options)
         .unwrap()
         .to_string();
@@ -151,8 +192,11 @@ fn assert_public_api_impl(
     expect_file![expected_output.as_ref()].assert_eq(&api);
 }
 
-/// To be honest this is mostly to get higher code coverage numbers.
-/// But it is actually useful thing to test.
-fn ensure_impl_debug(impl_debug: &impl std::fmt::Debug) {
-    eprintln!("Yes, this can be debugged: {:?}", impl_debug);
+/// Returns options for a so called "simplified" API, which is an API without
+/// Auto Trait or Blanket impls, to reduce public item noise.
+fn simplified() -> Options {
+    let mut options = Options::default();
+    options.omit_blanket_impls = true;
+    options.omit_auto_trait_impls = true;
+    options
 }

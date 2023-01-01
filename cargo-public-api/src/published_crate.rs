@@ -64,11 +64,8 @@ fn most_recent_version_for_package(package_name: &str) -> Result<String> {
     }
 }
 
-/// When diffing against a published crate, we want to allow the user to not
-/// specify the package name. Instead, we want to support to figure that out for
-/// the user. So instead of doing `diff --published crate-name@1.2.3` they can
-/// just do `diff --published @1.2.3`. This helper function figures out what
-/// package name to use in this case.
+/// Returns the package name from `-p package-name` or from inside
+/// `--manifest-path Cargo.toml`.
 fn package_name_from_args(args: &Args) -> Option<String> {
     if let Some(package) = &args.package {
         Some(package.clone())

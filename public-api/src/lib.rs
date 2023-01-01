@@ -75,14 +75,6 @@ pub const MINIMUM_RUSTDOC_JSON_VERSION: &str = "nightly-2022-09-28";
 #[non_exhaustive] // More options are likely to be added in the future
 #[allow(clippy::struct_excessive_bools)]
 pub struct Options {
-    /// Deprecated. Blanket Implementations are included by default. Set
-    /// `simplified = true` to omit both Blanket Implementations and Auto Trait
-    /// Implementations.
-    #[deprecated(
-        note = "Blanket Implementations are included by default. Set `simplified = true` to omit both Blanket Implementations and Auto Trait Implementations"
-    )]
-    pub with_blanket_implementations: bool,
-
     /// If `true`, items will be sorted before being returned. If you will pass
     /// on the return value to [`diff::PublicApiDiff::between`], it is
     /// currently unnecessary to sort first, because the sorting will be
@@ -98,20 +90,36 @@ pub struct Options {
     /// The default value is `false`
     pub debug_sorting: bool,
 
-    /// If `true`, items that belongs to Blanket Implementations and Auto Trait
-    /// Implementations are omitted from the output. This makes the output
-    /// significantly less noisy and repetitive, at the cost of not fully
-    /// describing the public API.
+    /// If `true`, items that belongs to Blanket Implementations are omitted
+    /// from the output. This makes the output less noisy, at the cost of not
+    /// fully describing the public API.
     ///
     /// Examples of Blanket Implementations: `impl<T> Any for T`, `impl<T>
     /// Borrow<T> for T`, and `impl<T, U> Into<U> for T where U: From<T>`
+    ///
+    /// The default value is `false` so that the listed public API is complete
+    /// by default.
+    pub omit_blanket_impls: bool,
+
+    /// If `true`, items that belongs to Auto Trait Implementations are omitted
+    /// from the output. This makes the output less noisy, at the cost of not
+    /// fully describing the public API.
     ///
     /// Examples of Auto Trait Implementations: `impl Send for Foo`, `impl Sync
     /// for Foo`, and `impl Unpin for Foo`
     ///
     /// The default value is `false` so that the listed public API is complete
     /// by default.
-    pub simplified: bool,
+    pub omit_auto_trait_impls: bool,
+
+    /// If `true`, items that belongs to automatically derived implementations
+    /// (`Clone`, `Debug`, `Eq`, etc) are omitted from the output. This makes
+    /// the output less noisy, at the cost of not fully describing the public
+    /// API.
+    ///
+    /// The default value is `false` so that the listed public API is complete
+    /// by default.
+    pub omit_auto_derived_impls: bool,
 }
 
 /// Enables options to be set up like this (note that `Options` is marked
@@ -125,12 +133,12 @@ pub struct Options {
 /// ```
 impl Default for Options {
     fn default() -> Self {
-        #[allow(deprecated)]
         Self {
-            with_blanket_implementations: false,
             sorted: true,
             debug_sorting: false,
-            simplified: false,
+            omit_blanket_impls: false,
+            omit_auto_trait_impls: false,
+            omit_auto_derived_impls: false,
         }
     }
 }

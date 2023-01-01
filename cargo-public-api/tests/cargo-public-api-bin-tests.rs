@@ -43,6 +43,15 @@ fn list_public_items() {
 }
 
 #[test]
+fn list_public_items_omit_auto_derived_impls() {
+    let mut cmd = TestCmd::as_subcommand_without_args().with_test_repo();
+    cmd.arg("-ss"); // Note the double -s
+    cmd.assert()
+        .stdout_or_update("./expected-output/omit-auto-derived-impls.txt")
+        .success();
+}
+
+#[test]
 fn list_public_items_with_lint_error() {
     let mut cmd = TestCmd::new().with_separate_target_dir();
     cmd.args(["--manifest-path", "../test-apis/lint_error/Cargo.toml"]);
@@ -1160,15 +1169,14 @@ fn add_to_path(dir: PathBuf) {
 /// [1]
 /// <https://github.com/rust-lang/rustup/blob/a223e5ad6549e5fb0c56932fd0e79af9de898ad4/src/toolchain.rs#L446-L453>
 fn assert_cargo_public_api_not_in_cargo_home_bin() {
-    let cargo_home = match (
-        env::var_os("CARGO_HOME"),
+    let mut path = match (
+        home::cargo_home().ok(),
         env::var_os("CARGO_PUBLIC_API_INSTALLED_FOR_TESTS"),
     ) {
         (Some(cargo_home), None) => cargo_home,
         _ => return,
     };
 
-    let mut path = PathBuf::from(cargo_home);
     path.push("bin");
     path.push("cargo-public-api");
 

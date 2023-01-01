@@ -10,8 +10,9 @@ Commands:
 Options:
       --manifest-path <PATH>    Path to `Cargo.toml` [default: Cargo.toml]
   -p, --package <PACKAGE>       Name of package in workspace to list or diff the public API for
-  -s, --simplified              Omit items that belong to Blanket Implementations and Auto Trait
-                                Implementations
+  -s, --simplified...           Omit items that belong to Blanket Implementations and Auto Trait
+                                Implementations (first use), and Auto Derived Implementations
+                                (second use)
   -F, --features <FEATURES>...  Space or comma separated list of features to activate
       --all-features            Activate all available features
       --no-default-features     Do not activate the `default` feature

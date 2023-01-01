@@ -132,7 +132,9 @@ pub fn build_rustdoc_json(builder: rustdoc_json::Builder) -> Result<PathBuf> {
 fn get_options(args: &Args) -> Options {
     let mut options = Options::default();
     options.debug_sorting = args.debug_sorting;
-    options.simplified = args.simplified;
+    options.omit_blanket_impls = args.simplified();
+    options.omit_auto_trait_impls = args.simplified();
+    options.omit_auto_derived_impls = args.omit_auto_derived_impls();
     options
 }
 

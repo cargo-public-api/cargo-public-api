@@ -87,6 +87,7 @@ dependencies = [
  "diff",
  "dirs",
  "expect-test",
+ "home",
  "is-terminal",
  "nu-ansi-term",
  "predicates",

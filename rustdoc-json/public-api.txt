@@ -5,8 +5,6 @@ pub rustdoc_json::BuildError::CargoMetadataError(cargo_metadata::errors::Error)
 pub rustdoc_json::BuildError::General(alloc::string::String)
 pub rustdoc_json::BuildError::IoError(std::io::error::Error)
 pub rustdoc_json::BuildError::VirtualManifest(std::path::PathBuf)
-impl core::fmt::Debug for rustdoc_json::BuildError
-pub fn rustdoc_json::BuildError::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::fmt::Display for rustdoc_json::BuildError
 pub fn rustdoc_json::BuildError::fmt(&self, __formatter: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::error::Error for rustdoc_json::BuildError
@@ -17,6 +15,8 @@ impl core::convert::From<std::io::error::Error> for rustdoc_json::BuildError
 pub fn rustdoc_json::BuildError::from(source: cargo_manifest::error::Error) -> Self
 pub fn rustdoc_json::BuildError::from(source: cargo_metadata::errors::Error) -> Self
 pub fn rustdoc_json::BuildError::from(source: std::io::error::Error) -> Self
+impl core::fmt::Debug for rustdoc_json::BuildError
+pub fn rustdoc_json::BuildError::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl !core::panic::unwind_safe::RefUnwindSafe for rustdoc_json::BuildError
 impl core::marker::Send for rustdoc_json::BuildError
 impl core::marker::Sync for rustdoc_json::BuildError
@@ -96,12 +96,12 @@ pub const fn rustdoc_json::Builder::silent(self, silent: bool) -> Self
 pub fn rustdoc_json::Builder::target(self, target: alloc::string::String) -> Self
 pub fn rustdoc_json::Builder::target_dir(self, target_dir: impl core::convert::AsRef<std::path::Path>) -> Self
 pub fn rustdoc_json::Builder::toolchain(self, toolchain: impl core::convert::Into<core::option::Option<alloc::string::String>>) -> Self
+impl core::default::Default for rustdoc_json::Builder
+pub fn rustdoc_json::Builder::default() -> Self
 impl core::clone::Clone for rustdoc_json::Builder
 pub fn rustdoc_json::Builder::clone(&self) -> rustdoc_json::Builder
 impl core::fmt::Debug for rustdoc_json::Builder
 pub fn rustdoc_json::Builder::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
-impl core::default::Default for rustdoc_json::Builder
-pub fn rustdoc_json::Builder::default() -> Self
 impl core::panic::unwind_safe::RefUnwindSafe for rustdoc_json::Builder
 impl core::marker::Send for rustdoc_json::Builder
 impl core::marker::Sync for rustdoc_json::Builder

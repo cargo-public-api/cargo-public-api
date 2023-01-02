@@ -16,7 +16,7 @@ The library comes with a thin bin wrapper that can be used to explore the capabi
 # Build and install the thin bin wrapper with a recent stable Rust toolchain
 cargo install public-api
 
-# Install nightly-2022-09-28 or later so you can build up-to-date rustdoc JSON files
+# Install nightly-2022-11-22 or later so you can build up-to-date rustdoc JSON files
 rustup install nightly
 ```
 

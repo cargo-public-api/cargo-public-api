@@ -65,7 +65,7 @@ impl<'c> ItemProcessor<'c> {
     /// we want to "fully" process an item before we move on to the next one. So
     /// when we encounter a struct, we also encounter its struct fields, and we
     /// want to insert the struct fields BEFORE everything else, so that these
-    /// items remain groped together. And the same applies for many kinds of
+    /// items remain grouped together. And the same applies for many kinds of
     /// groupings (enums, impls, etc).
     fn add_to_work_queue(&mut self, parent_path: Vec<NameableItem<'c>>, id: &'c Id) {
         self.work_queue

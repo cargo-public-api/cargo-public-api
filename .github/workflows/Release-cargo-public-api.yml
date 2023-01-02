@@ -1,4 +1,4 @@
-name: Release cargo-public-api+public-api
+name: Release cargo-public-api + public-api
 
 on:
   workflow_dispatch:

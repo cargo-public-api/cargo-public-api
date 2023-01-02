@@ -46,3 +46,10 @@ pub trait TraitWithBoundsAndGenerics<U>: Simple {}
 mod private_mod {
     pub trait PubTraitInPrivateMod {}
 }
+
+pub trait GenericAssociatedTypes {
+    type WhereSelfSized where Self: Sized;
+    type WhereSimple<T> where T: Simple;
+    type SimpleBound: Simple;
+    type WithLifetime<'a>;
+}

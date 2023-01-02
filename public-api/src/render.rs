@@ -123,7 +123,7 @@ impl<'c> RenderingContext<'c> {
             } => {
                 let mut output = self.render_simple(&["type"], item_path);
                 output.extend(self.render_generics(generics));
-                output.extend(self.render_generic_bounds(bounds));
+                output.extend(self.render_generic_bounds_with_colon(bounds));
                 if let Some(ty) = default {
                     output.extend(equals());
                     output.extend(self.render_type(ty));
@@ -361,10 +361,7 @@ impl<'c> RenderingContext<'c> {
         output.extend([Token::kind("trait"), ws!()]);
         output.extend(self.render_path(path));
         output.extend(self.render_generics(&trait_.generics));
-        if !trait_.bounds.is_empty() {
-            output.extend(colon());
-            output.extend(self.render_generic_bounds(&trait_.bounds));
-        }
+        output.extend(self.render_generic_bounds_with_colon(&trait_.bounds));
         output
     }
 
@@ -830,10 +827,7 @@ impl<'c> RenderingContext<'c> {
             }
             GenericParamDefKind::Type { bounds, .. } => {
                 output.push(Token::generic(&generic_param_def.name));
-                if !bounds.is_empty() {
-                    output.extend(colon());
-                    output.extend(self.render_generic_bounds(bounds));
-                }
+                output.extend(self.render_generic_bounds_with_colon(bounds));
             }
             GenericParamDefKind::Const { type_, .. } => {
                 output.push(Token::qualifier("const"));
@@ -871,8 +865,7 @@ impl<'c> RenderingContext<'c> {
             } => {
                 output.extend(self.render_higher_rank_trait_bounds(generic_params));
                 output.extend(self.render_type(type_));
-                output.extend(colon());
-                output.extend(self.render_generic_bounds(bounds));
+                output.extend(self.render_generic_bounds_with_colon(bounds));
             }
             WherePredicate::RegionPredicate {
                 lifetime,
@@ -883,6 +876,15 @@ impl<'c> RenderingContext<'c> {
                 output.extend(equals());
                 output.extend(self.render_term(rhs));
             }
+        }
+        output
+    }
+
+    fn render_generic_bounds_with_colon(&self, bounds: &[GenericBound]) -> Vec<Token> {
+        let mut output = vec![];
+        if !bounds.is_empty() {
+            output.extend(colon());
+            output.extend(self.render_generic_bounds(bounds));
         }
         output
     }

@@ -4,10 +4,10 @@ name: Preview release notes
 
 on:
   workflow_dispatch:
-  # Since the release notes depend on labels (see .github/release.yml), rebuild
-  # the release notes preview if labels change.
+  # We need to rebuild the release notes preview if PR titles or PR labels
+  # changes (see .github/release.yml).
   pull_request_target:
-    types: [labeled, unlabeled]
+    types: [edited, labeled, unlabeled]
   # Since the release notes depend on what is on the main branch, rebuild the
   # release notes preview if main change.
   push:

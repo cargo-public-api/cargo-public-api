@@ -2,7 +2,8 @@
 
 If a version is not listed below, it means it had no API changes.
 
-## Unreleased v0.26.0
+## v0.26.0
+* Put auto-derived impls (`Clone`, `Debug`, etc) in a separate group, right after normal `impl`s
 * Remove deprecated `Options::with_blanket_implementations`
 * Split `Options::simplified` into `Options::omit_auto_trait_impls` and `Options::omit_blanket_impls`
 

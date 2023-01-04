@@ -76,7 +76,7 @@ dependencies = [
 
 [[package]]
 name = "cargo-public-api"
-version = "0.25.0"
+version = "0.26.0"
 dependencies = [
  "anyhow",
  "assert_cmd",
@@ -625,7 +625,7 @@ dependencies = [
 
 [[package]]
 name = "public-api"
-version = "0.25.0"
+version = "0.26.0"
 dependencies = [
  "anyhow",
  "assert_cmd",
@@ -716,9 +716,9 @@ dependencies = [
 
 [[package]]
 name = "rustdoc-types"
-version = "0.19.0"
+version = "0.20.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fd62550e9cd1e785b22928008446bdecc4e5b093abecc74186cbf45dee5adf12"
+checksum = "f5f59b848e09e1631f0f8711fcdcb65d4481597b869372cca5d6755737b21501"
 dependencies = [
  "serde",
 ]

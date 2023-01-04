@@ -3,7 +3,9 @@ use crate::{
     crate_wrapper::CrateWrapper, intermediate_public_item::IntermediatePublicItem,
     public_item::PublicItem, render::RenderingContext, Options, PublicApi,
 };
-use rustdoc_types::{Crate, Id, Impl, Import, Item, ItemEnum, Module, Struct, StructKind};
+use rustdoc_types::{
+    Crate, Id, Impl, Import, Item, ItemEnum, Module, Struct, StructKind, VariantKind,
+};
 use std::{
     collections::{HashMap, VecDeque},
     vec,
@@ -350,7 +352,10 @@ const fn children_for_item(item: &Item) -> Option<&Vec<Id>> {
             kind: StructKind::Plain { fields, .. },
             ..
         })
-        | ItemEnum::Variant(rustdoc_types::Variant::Struct { fields, .. }) => Some(fields),
+        | ItemEnum::Variant(rustdoc_types::Variant {
+            kind: VariantKind::Struct { fields, .. },
+            ..
+        }) => Some(fields),
         ItemEnum::Enum(e) => Some(&e.variants),
         ItemEnum::Trait(t) => Some(&t.items),
         ItemEnum::Impl(i) => Some(&i.items),

@@ -9,7 +9,7 @@ use std::{cmp::Ordering, collections::HashMap, vec};
 use rustdoc_types::{
     Abi, Constant, Crate, FnDecl, FunctionPointer, GenericArg, GenericArgs, GenericBound,
     GenericParamDef, GenericParamDefKind, Generics, Header, Id, Impl, Item, ItemEnum, MacroKind,
-    Path, PolyTrait, StructKind, Term, Trait, Type, TypeBinding, TypeBindingKind, Variant,
+    Path, PolyTrait, StructKind, Term, Trait, Type, TypeBinding, TypeBindingKind, VariantKind,
     WherePredicate,
 };
 
@@ -78,15 +78,15 @@ impl<'c> RenderingContext<'c> {
             }
             ItemEnum::Variant(inner) => {
                 let mut output = self.render_simple(&[], item_path);
-                match inner {
-                    Variant::Struct { .. } => {} // Each struct field is printed individually
-                    Variant::Plain(discriminant) => {
-                        if let Some(discriminant) = discriminant {
+                match &inner.kind {
+                    VariantKind::Struct { .. } => {} // Each struct field is printed individually
+                    VariantKind::Plain => {
+                        if let Some(discriminant) = &inner.discriminant {
                             output.extend(equals());
                             output.push(Token::identifier(&discriminant.value));
                         }
                     }
-                    Variant::Tuple(fields) => {
+                    VariantKind::Tuple(fields) => {
                         output.extend(
                             self.render_option_tuple(&self.resolve_tuple_fields(fields), None),
                         );

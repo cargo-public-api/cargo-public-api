@@ -25,7 +25,7 @@
     1. Label with `[category-public-api]`/`[category-rustdoc-json]`/`[category-rustup-toolchain]` if it shall be in the "`public-api`/`rustdoc-json`/`rustup-toolchain` library" section in the auto-generated release notes.
     1. Tweak the PR title if necessary so it makes up a good release notes entry
 1. Wait for CR of the PR created in step 2.
-1. Once reviewed and merged, run https://github.com/Enselic/cargo-public-api/actions/workflows/Release.yml workflow from `main` ([instructions](https://github.com/Enselic/cargo-public-api/blob/main/docs/development.md#how-to-trigger-main-branch-workflow))
+1. Once reviewed and merged, run https://github.com/Enselic/cargo-public-api/actions/workflows/Release-cargo-public-api.yml workflow from `main` ([instructions](https://github.com/Enselic/cargo-public-api/blob/main/docs/development.md#how-to-trigger-main-branch-workflow))
 1. Done!
 
 ### `rustdoc-json`

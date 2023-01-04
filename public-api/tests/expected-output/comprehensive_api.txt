@@ -116,6 +116,10 @@ pub fn comprehensive_api::higher_ranked_trait_bounds::test1<T>() where for<'a> &
 pub fn comprehensive_api::higher_ranked_trait_bounds::test2<T>() where for<'a, 'b> &'a T: comprehensive_api::higher_ranked_trait_bounds::Trait<'b>
 pub fn comprehensive_api::higher_ranked_trait_bounds::test3<F>() where F: for<'a, 'b> core::ops::function::Fn(&'a u8, &'b u8)
 pub mod comprehensive_api::impls
+pub struct comprehensive_api::impls::GatTestStruct1<'a, T>(_)
+impl<'a, T> comprehensive_api::traits::Simple for comprehensive_api::impls::GatTestStruct1<'a, T>
+pub fn comprehensive_api::impls::GatTestStruct1::act()
+pub struct comprehensive_api::impls::GatTestStruct2<T>(_)
 pub struct comprehensive_api::impls::TestItemGrouping
 impl comprehensive_api::traits::TraitReferencingOwnAssociatedType for comprehensive_api::impls::TestItemGrouping
 pub type comprehensive_api::impls::TestItemGrouping::OwnAssociatedType = bool
@@ -154,6 +158,11 @@ pub struct comprehensive_api::structs::TupleStructDoubleWithHidden(_, pub bool)
 pub struct comprehensive_api::structs::TupleStructDoubleWithPrivate(_, pub bool)
 pub struct comprehensive_api::structs::TupleStructSingle(pub usize)
 pub struct comprehensive_api::structs::Unit
+impl comprehensive_api::traits::GenericAssociatedTypes for comprehensive_api::structs::Unit
+pub type comprehensive_api::structs::Unit::SimpleBound = comprehensive_api::impls::GatTestStruct1<'static, usize>
+pub type comprehensive_api::structs::Unit::WhereSelfSized = comprehensive_api::structs::Unit
+pub type comprehensive_api::structs::Unit::WhereSimple<T: comprehensive_api::traits::Simple> = comprehensive_api::impls::GatTestStruct2<T>
+pub type comprehensive_api::structs::Unit::WithLifetime<'a> = comprehensive_api::impls::GatTestStruct1<'a, bool>
 impl comprehensive_api::traits::Simple for comprehensive_api::structs::Unit
 pub fn comprehensive_api::structs::Unit::act()
 pub struct comprehensive_api::structs::WithLifetimeAndGenericParam<'a, T>
@@ -179,9 +188,16 @@ pub type comprehensive_api::traits::GenericAssociatedTypes::SimpleBound: compreh
 pub type comprehensive_api::traits::GenericAssociatedTypes::WhereSelfSized where Self: core::marker::Sized
 pub type comprehensive_api::traits::GenericAssociatedTypes::WhereSimple<T> where T: comprehensive_api::traits::Simple
 pub type comprehensive_api::traits::GenericAssociatedTypes::WithLifetime<'a>
+impl comprehensive_api::traits::GenericAssociatedTypes for comprehensive_api::structs::Unit
+pub type comprehensive_api::traits::GenericAssociatedTypes::SimpleBound = comprehensive_api::impls::GatTestStruct1<'static, usize>
+pub type comprehensive_api::traits::GenericAssociatedTypes::WhereSelfSized = comprehensive_api::structs::Unit
+pub type comprehensive_api::traits::GenericAssociatedTypes::WhereSimple<T: comprehensive_api::traits::Simple> = comprehensive_api::impls::GatTestStruct2<T>
+pub type comprehensive_api::traits::GenericAssociatedTypes::WithLifetime<'a> = comprehensive_api::impls::GatTestStruct1<'a, bool>
 pub trait comprehensive_api::traits::Simple
 pub fn comprehensive_api::traits::Simple::act()
 impl comprehensive_api::traits::Simple for comprehensive_api::structs::Unit
+impl<'a, T> comprehensive_api::traits::Simple for comprehensive_api::impls::GatTestStruct1<'a, T>
+pub fn comprehensive_api::traits::Simple::act()
 pub fn comprehensive_api::traits::Simple::act()
 pub trait comprehensive_api::traits::TraitReferencingOwnAssociatedType
 pub type comprehensive_api::traits::TraitReferencingOwnAssociatedType::OwnAssociatedType

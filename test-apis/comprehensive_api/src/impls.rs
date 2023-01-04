@@ -1,6 +1,8 @@
 use crate::{
     structs::{Plain, Unit, WithLifetimeAndGenericParam},
-    traits::{Simple, TraitReferencingOwnAssociatedType, TraitWithGenerics},
+    traits::{
+        GenericAssociatedTypes, Simple, TraitReferencingOwnAssociatedType, TraitWithGenerics,
+    },
 };
 
 impl Plain {
@@ -79,4 +81,22 @@ impl<T, U> TraitWithGenerics<T, U> for TestItemGrouping {
     fn bar() -> <Self as TraitWithGenerics<T, U>>::Foo {
         1
     }
+}
+
+pub struct GatTestStruct1<'a, T>(&'a T);
+
+pub struct GatTestStruct2<T>(T);
+
+impl<'a, T> Simple for GatTestStruct1<'a, T> {
+    fn act() {}
+}
+
+impl GenericAssociatedTypes for Unit {
+    type WhereSelfSized = Self;
+
+    type WhereSimple<T: Simple> = GatTestStruct2<T>;
+
+    type SimpleBound = GatTestStruct1<'static, usize>;
+
+    type WithLifetime<'a> = GatTestStruct1<'a, bool>;
 }

@@ -37,18 +37,11 @@ impl<'c> NameableItem<'c> {
         if let Some(name) = self.name() {
             sortable_name.push_str(name);
         } else if let ItemEnum::Impl(impl_) = &self.item.inner {
-            if let Some(trait_path) = &impl_.trait_ {
-                // In order for items of impls to be grouped together with its
-                // impl, add the "name" of the impl to the sorting prefix.
-                sortable_name.push_str(&trait_path.name);
-            } else {
-                // Inherent impls can also have different "names". For example,
-                // if we have `impl Foo { ... }` and `impl<'a> Foo { ... }`, we
-                // want to group them separately.
-                sortable_name.push_str(&crate::tokens::tokens_to_string(
-                    &context.render_impl(impl_, &[]),
-                ));
-            }
+            // In order for items of impls to be grouped together with its
+            // impl, add the "name" of the impl to the sorting prefix.
+            sortable_name.push_str(&crate::tokens::tokens_to_string(
+                &context.render_impl(impl_, &[]),
+            ));
         }
 
         sortable_name

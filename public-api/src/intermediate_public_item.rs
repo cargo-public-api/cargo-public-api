@@ -30,26 +30,27 @@ impl<'c> NameableItem<'c> {
     /// The name that, when sorted on, will group items nicely. Is never shown
     /// to a user.
     pub fn sortable_name(&self, context: &RenderingContext) -> String {
-        let mut perceived_name = std::borrow::Cow::from("");
-
-        if let ItemEnum::Impl(impl_) = &self.item.inner {
-            if let Some(trait_path) = &impl_.trait_ {
-                // In order for items of impls to be grouped together with its impl, add
-                // the "name" of the impl to the sorting prefix.
-                perceived_name = (&trait_path.name).into();
-            } else {
-                perceived_name =
-                    crate::tokens::tokens_to_string(&context.render_impl(impl_, &[])).into();
-            }
-        }
+        let mut sortable_name = format!("{:0>3}-", self.sorting_prefix);
 
         // Note that in order for the prefix to sort properly lexicographically,
         // we need to pad it with leading zeroes.
-        let mut sortable_name = format!("{:0>3}{perceived_name}", self.sorting_prefix);
         if let Some(name) = self.name() {
-            sortable_name.push('-');
             sortable_name.push_str(name);
+        } else if let ItemEnum::Impl(impl_) = &self.item.inner {
+            if let Some(trait_path) = &impl_.trait_ {
+                // In order for items of impls to be grouped together with its
+                // impl, add the "name" of the impl to the sorting prefix.
+                sortable_name.push_str(&trait_path.name);
+            } else {
+                // Inherent impls can also have different "names". For example,
+                // if we have `impl Foo { ... }` and `impl<'a> Foo { ... }`, we
+                // want to group them separately.
+                sortable_name.push_str(&crate::tokens::tokens_to_string(
+                    &context.render_impl(impl_, &[]),
+                ));
+            }
         }
+
         sortable_name
     }
 }

@@ -164,8 +164,9 @@ fn assert_public_api_diff(
     new_json: impl AsRef<Path>,
     expected: impl AsRef<Path>,
 ) {
-    let old = PublicApi::from_rustdoc_json(old_json, Options::default()).unwrap();
-    let new = PublicApi::from_rustdoc_json(new_json, Options::default()).unwrap();
+    let options = Options::default();
+    let old = PublicApi::from_rustdoc_json(old_json, options).unwrap();
+    let new = PublicApi::from_rustdoc_json(new_json, options).unwrap();
 
     let diff = public_api::diff::PublicApiDiff::between(old, new);
     expect_file![expected.as_ref()].assert_debug_eq(&diff);

@@ -31,24 +31,21 @@ impl<'c> NameableItem<'c> {
     /// to a user.
     pub fn sortable_name(&self, context: &RenderingContext) -> String {
         let mut perceived_name = std::borrow::Cow::from("");
-        let mut sub_prefix = "";
 
         if let ItemEnum::Impl(impl_) = &self.item.inner {
             if let Some(trait_path) = &impl_.trait_ {
                 // In order for items of impls to be grouped together with its impl, add
                 // the "name" of the impl to the sorting prefix.
                 perceived_name = (&trait_path.name).into();
-                sub_prefix = "1-";
             } else {
                 perceived_name =
                     crate::tokens::tokens_to_string(&context.render_impl(impl_, &[])).into();
-                sub_prefix = "0-";
             }
         }
 
         // Note that in order for the prefix to sort properly lexicographically,
         // we need to pad it with leading zeroes.
-        let mut sortable_name = format!("{:0>3}{sub_prefix}{perceived_name}", self.sorting_prefix);
+        let mut sortable_name = format!("{:0>3}{perceived_name}", self.sorting_prefix);
         if let Some(name) = self.name() {
             sortable_name.push('-');
             sortable_name.push_str(name);

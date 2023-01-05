@@ -14,3 +14,9 @@ scripts/cargo-clippy.sh
 cargo test --locked
 
 cargo build --locked --no-default-features # Build without "diff-latest" feature
+
+if command -v cargo-audit >/dev/null; then
+    scripts/cargo-audit.sh
+else
+    echo "INFO: Not running \`cargo audit\` because it is not installed"
+fi

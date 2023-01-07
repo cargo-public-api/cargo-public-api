@@ -196,8 +196,8 @@ pub type comprehensive_api::traits::GenericAssociatedTypes::WithLifetime<'a> = c
 pub trait comprehensive_api::traits::Simple
 pub fn comprehensive_api::traits::Simple::act()
 impl comprehensive_api::traits::Simple for comprehensive_api::structs::Unit
-impl<'a, T> comprehensive_api::traits::Simple for comprehensive_api::impls::GatTestStruct1<'a, T>
 pub fn comprehensive_api::traits::Simple::act()
+impl<'a, T> comprehensive_api::traits::Simple for comprehensive_api::impls::GatTestStruct1<'a, T>
 pub fn comprehensive_api::traits::Simple::act()
 pub trait comprehensive_api::traits::TraitReferencingOwnAssociatedType
 pub type comprehensive_api::traits::TraitReferencingOwnAssociatedType::OwnAssociatedType

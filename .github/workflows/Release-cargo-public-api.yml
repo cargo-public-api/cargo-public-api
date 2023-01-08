@@ -15,7 +15,7 @@ jobs:
     environment: crates.io
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       # Figure out what tag to use. Do this first since we want to ensure that
       # the same tag is used for both public-api and cargo-public-api before we
@@ -31,8 +31,8 @@ jobs:
             echo "Version mismatch! Keep public-api and cargo-public-api versions in sync before you release! $version != $version2"
             exit 42
           fi
-          echo ::set-output name=VERSION::${version}
-          echo ::set-output name=GIT_TAG::v${version}
+          echo "VERSION=${version}" >> $GITHUB_OUTPUT
+          echo "GIT_TAG=v${version}" >> $GITHUB_OUTPUT
 
       # Try to cargo publish public-api. If this succeeds we will tag the
       # release. This is because we don't want to have a situation where a
@@ -61,7 +61,7 @@ jobs:
 
       # OK, both public-api and cargo-public-api has been published under the
       # same version. Create a GitHub Release now.
-      - uses: softprops/action-gh-release@1e07f4398721186383de40550babbdf2b84acfc5 # v0.1.14
+      - uses: softprops/action-gh-release@d4e8205d7e959a9107da6396278b2f1f07af0f9b # 2022-12-09
         with:
           tag_name: ${{ steps.version.outputs.GIT_TAG }}
           generate_release_notes: true

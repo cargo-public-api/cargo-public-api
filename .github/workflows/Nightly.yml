@@ -32,11 +32,11 @@ jobs:
     environment: CICD-fork
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@e645b0cf01249a964ec099494d38d2da0f0b349f
         with:
           toolchain: nightly
-          profile: minimal
+      - run: rustup default stable
       - uses: Swatinem/rust-cache@v2
       - run: ./scripts/bless-expected-output-for-tests.sh
       - id: latest-nightly

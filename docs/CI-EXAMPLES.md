@@ -14,15 +14,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Full git history needed
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
       # Install nightly (stable is already installed)
-      - uses: actions-rs/toolchain@v1
+      # Note that dtolnay/rust-toolchain also sets this toolchain as the default, change with `rustup default <toolchain>`
+      - uses: dtolnay/rust-toolchain@master
         with:
           toolchain: nightly
-          profile: minimal
 
       # Install and run cargo public-api and deny any API diff
       - run: cargo install cargo-public-api
@@ -49,10 +49,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Install nightly (stable is already installed)
-      - uses: actions-rs/toolchain@v1
+      # Note that dtolnay/rust-toolchain also sets this toolchain as the default, change with `rustup default <toolchain>`
+      - uses: dtolnay/rust-toolchain@master
         with:
           toolchain: nightly
-          profile: minimal
 
       # Install and run cargo public-api and deny any API diff
       - run: cargo install cargo-public-api@0.22.0

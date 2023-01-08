@@ -15,15 +15,15 @@ jobs:
     environment: crates.io
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       # Figure out what tag to use
       - name: calculate version
         id: version
         run: |
           version=$(cargo read-manifest --manifest-path rustdoc-json/Cargo.toml | jq --raw-output .version)
-          echo ::set-output name=VERSION::${version}
-          echo ::set-output name=GIT_TAG::rustdoc-json-v${version}
+          echo "VERSION=${version}" >> $GITHUB_OUTPUT
+          echo "GIT_TAG=rustdoc-json-v${version}" >> $GITHUB_OUTPUT
 
       # Try to cargo publish rustdoc-json. If this succeeds we will tag the
       # release. This is because we don't want to have a situation where a

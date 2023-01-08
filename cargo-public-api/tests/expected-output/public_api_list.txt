@@ -3,15 +3,13 @@ pub mod public_api::diff
 pub struct public_api::diff::ChangedPublicItem
 pub public_api::diff::ChangedPublicItem::new: public_api::PublicItem
 pub public_api::diff::ChangedPublicItem::old: public_api::PublicItem
+impl public_api::diff::ChangedPublicItem
+pub fn public_api::diff::ChangedPublicItem::grouping_cmp(&self, other: &Self) -> core::cmp::Ordering
 impl core::clone::Clone for public_api::diff::ChangedPublicItem
 pub fn public_api::diff::ChangedPublicItem::clone(&self) -> public_api::diff::ChangedPublicItem
 impl core::cmp::Eq for public_api::diff::ChangedPublicItem
-impl core::cmp::Ord for public_api::diff::ChangedPublicItem
-pub fn public_api::diff::ChangedPublicItem::cmp(&self, other: &public_api::diff::ChangedPublicItem) -> core::cmp::Ordering
 impl core::cmp::PartialEq<public_api::diff::ChangedPublicItem> for public_api::diff::ChangedPublicItem
 pub fn public_api::diff::ChangedPublicItem::eq(&self, other: &public_api::diff::ChangedPublicItem) -> bool
-impl core::cmp::PartialOrd<public_api::diff::ChangedPublicItem> for public_api::diff::ChangedPublicItem
-pub fn public_api::diff::ChangedPublicItem::partial_cmp(&self, other: &public_api::diff::ChangedPublicItem) -> core::option::Option<core::cmp::Ordering>
 impl core::fmt::Debug for public_api::diff::ChangedPublicItem
 pub fn public_api::diff::ChangedPublicItem::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::marker::StructuralEq for public_api::diff::ChangedPublicItem
@@ -104,23 +102,18 @@ impl core::fmt::Debug for public_api::PublicApi
 pub fn public_api::PublicApi::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 pub struct public_api::PublicItem
 impl public_api::PublicItem
+pub fn public_api::PublicItem::grouping_cmp(&self, other: &Self) -> core::cmp::Ordering
 pub fn public_api::PublicItem::tokens(&self) -> impl core::iter::traits::iterator::Iterator<Item = &public_api::tokens::Token>
-impl core::cmp::Ord for public_api::PublicItem
-pub fn public_api::PublicItem::cmp(&self, other: &Self) -> core::cmp::Ordering
-impl core::cmp::PartialOrd<public_api::PublicItem> for public_api::PublicItem
-pub fn public_api::PublicItem::partial_cmp(&self, other: &Self) -> core::option::Option<core::cmp::Ordering>
+impl core::cmp::Eq for public_api::PublicItem
+impl core::cmp::PartialEq<public_api::PublicItem> for public_api::PublicItem
+pub fn public_api::PublicItem::eq(&self, other: &Self) -> bool
 impl core::fmt::Debug for public_api::PublicItem
 pub fn public_api::PublicItem::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::fmt::Display for public_api::PublicItem
 pub fn public_api::PublicItem::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::hash::Hash for public_api::PublicItem
+pub fn public_api::PublicItem::hash<H: core::hash::Hasher>(&self, state: &mut H)
 impl core::clone::Clone for public_api::PublicItem
 pub fn public_api::PublicItem::clone(&self) -> public_api::PublicItem
-impl core::cmp::Eq for public_api::PublicItem
-impl core::cmp::PartialEq<public_api::PublicItem> for public_api::PublicItem
-pub fn public_api::PublicItem::eq(&self, other: &public_api::PublicItem) -> bool
-impl core::hash::Hash for public_api::PublicItem
-pub fn public_api::PublicItem::hash<__H: core::hash::Hasher>(&self, state: &mut __H) -> ()
-impl core::marker::StructuralEq for public_api::PublicItem
-impl core::marker::StructuralPartialEq for public_api::PublicItem
 pub const public_api::MINIMUM_RUSTDOC_JSON_VERSION: &str
 pub type public_api::Result<T> = core::result::Result<T, public_api::Error>

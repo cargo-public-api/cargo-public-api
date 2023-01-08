@@ -1,5 +1,6 @@
 use std::cmp::Ordering;
 use std::fmt::Display;
+use std::hash::Hash;
 
 use crate::intermediate_public_item::IntermediatePublicItem;
 use crate::render::RenderingContext;
@@ -16,7 +17,7 @@ pub(crate) type PublicItemPath = Vec<String>;
 /// of the public API of a crate. Implements [`Display`] so it can be printed. It
 /// also implements [`Ord`], but how items are ordered are not stable yet, and
 /// will change in later versions.
-#[derive(Clone, Eq, PartialEq, Hash)]
+#[derive(Clone)]
 pub struct PublicItem {
     /// Read [`crate::item_processor::sorting_prefix()`] docs for more info
     pub(crate) sortable_path: PublicItemPath,
@@ -40,6 +41,34 @@ impl PublicItem {
     pub fn tokens(&self) -> impl Iterator<Item = &Token> {
         self.tokens.iter()
     }
+
+    /// Special version of [`cmp`](Ord::cmp) that is used to sort public items in a way that
+    /// makes them grouped logically. For example, struct fields will be put
+    /// right after the struct they are part of.
+    #[must_use]
+    pub fn grouping_cmp(&self, other: &Self) -> std::cmp::Ordering {
+        // This will make e.g. struct and struct fields be grouped together.
+        if let Some(ordering) = different_or_none(&self.sortable_path, &other.sortable_path) {
+            return ordering;
+        }
+
+        // Fall back to lexical sorting if the above is not sufficient
+        self.to_string().cmp(&other.to_string())
+    }
+}
+
+impl PartialEq for PublicItem {
+    fn eq(&self, other: &Self) -> bool {
+        self.tokens == other.tokens
+    }
+}
+
+impl Eq for PublicItem {}
+
+impl Hash for PublicItem {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.tokens.hash(state);
+    }
 }
 
 /// We want pretty-printing (`"{:#?}"`) of [`crate::diff::PublicApiDiff`] to print
@@ -58,28 +87,10 @@ impl Display for PublicItem {
     }
 }
 
-impl PartialOrd for PublicItem {
-    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        Some(self.cmp(other))
-    }
-}
-
 /// Returns `None` if two items are equal. Otherwise their ordering is returned.
 fn different_or_none<T: Ord>(a: &T, b: &T) -> Option<Ordering> {
     match a.cmp(b) {
         Ordering::Equal => None,
         c => Some(c),
-    }
-}
-
-impl Ord for PublicItem {
-    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-        // This will make e.g. struct and struct fields be grouped together.
-        if let Some(ordering) = different_or_none(&self.sortable_path, &other.sortable_path) {
-            return ordering;
-        }
-
-        // Fall back to lexical sorting if the above is not sufficient
-        self.to_string().cmp(&other.to_string())
     }
 }

@@ -229,7 +229,7 @@ impl PublicApi {
         let mut public_api = item_processor::public_api_in_crate(&crate_, options);
 
         if options.sorted {
-            public_api.items.sort();
+            public_api.items.sort_by(PublicItem::grouping_cmp);
         }
 
         Ok(public_api)

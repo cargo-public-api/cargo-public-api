@@ -2,6 +2,10 @@
 
 If a version is not listed below, it means it had no API changes.
 
+## Unreleased v0.27.0
+* Make `Eq` and `Hash` for `PublicItem` only take tokens into account, to make diffing insensitive to internal data that has no bearing on public API surface of a crate
+* Remove `Ord` and `PartialOrd` impls of `PublicItem` and `ChangedPublicItem`. Use `PublicItem::grouping_cmp` and `ChangedPublicItem::grouping_cmp` instead.
+
 ## v0.26.0
 * Put auto-derived impls (`Clone`, `Debug`, etc) in a separate group, right after normal `impl`s
 * Remove deprecated `Options::with_blanket_implementations`

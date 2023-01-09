@@ -1,15 +1,18 @@
 // deny in CI, only warn here
 #![warn(clippy::all, clippy::pedantic)]
 
-use std::path::Path;
+use std::{
+    fs,
+    path::{Path, PathBuf},
+};
 
 use expect_test::expect_file;
 use public_api::{Error, Options, PublicApi};
 
-use tempfile::tempdir;
+use tempfile::{tempdir, TempDir};
 
 mod common;
-use common::rustdoc_json_path_for_crate;
+use common::{rustdoc_json_path_for_crate, rustdoc_json_path_for_temp_crate};
 
 #[test]
 fn public_api() -> Result<(), Box<dyn std::error::Error>> {
@@ -109,6 +112,41 @@ fn no_diff() {
 }
 
 #[test]
+fn diff_empty_when_item_moved_between_inherent_impls() {
+    let v1 = rustdoc_json_for_lib(
+        r#"
+pub struct Foo;
+impl Foo {
+    pub fn f1() {}
+    pub fn moved() {}
+}
+impl Foo {
+    pub fn f2() {}
+}
+    "#,
+    );
+
+    let v2 = rustdoc_json_for_lib(
+        r#"
+pub struct Foo;
+impl Foo {
+    pub fn f1() {}
+}
+impl Foo {
+    pub fn f2() {}
+    pub fn moved() {}
+}
+    "#,
+    );
+
+    assert_public_api_diff(
+        &v1.json_path,
+        &v2.json_path,
+        "./expected-output/diff_move_item_between_inherent_impls.txt",
+    );
+}
+
+#[test]
 fn diff_with_removed_items() {
     // Create independent build dirs so all tests can run in parallel
     let build_dir = tempdir().unwrap();
@@ -157,6 +195,41 @@ fn options() {
     // lib.rs, which is more annoying than doing this clone
     #[allow(clippy::clone_on_copy)]
     let _ = options.clone();
+}
+
+struct LibWithJson {
+    json_path: PathBuf,
+
+    /// Keep the tempdir alive so the json file doesn't get deleted
+    _root: TempDir,
+}
+
+fn rustdoc_json_for_lib(lib: &str) -> LibWithJson {
+    let root = tempdir().unwrap();
+
+    let write = |file: &str, content: &str| {
+        let file_path = root.path().join(file);
+        fs::write(file_path, content).unwrap();
+    };
+
+    write(
+        "Cargo.toml",
+        "\
+        [package]\n\
+        name = \"lib\"\n\
+        version = \"0.1.0\"\n\
+        edition = \"2021\"\n\
+        [lib]\n\
+        path = \"lib.rs\"\n\
+        ",
+    );
+
+    write("lib.rs", lib);
+
+    LibWithJson {
+        json_path: rustdoc_json_path_for_temp_crate(&root),
+        _root: root,
+    }
 }
 
 fn assert_public_api_diff(

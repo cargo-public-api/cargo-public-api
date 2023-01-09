@@ -12,7 +12,9 @@ jobs:
 
   release:
     needs: ci
-    environment: crates.io
+    environment:
+      name: crates.io
+      url: https://crates.io/crates/rustdoc-json
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

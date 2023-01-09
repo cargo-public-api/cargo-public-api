@@ -1,0 +1,29 @@
+[licenses]
+allow = [
+    "Apache-2.0",
+    "BSD-3-Clause",
+    "MIT",
+    "Unicode-DFS-2016",
+]
+
+unlicensed = "deny"
+copyleft = "deny"
+default = "deny"
+
+exceptions = [
+    # Allowed because:
+    #  * MPL-2.0 is a weak/non-viral copyleft license that doesn't cause much
+    #    trouble in practice
+    #  * Only affects the `cargo-public-api` binary and not any of our libraries
+    #    (`public-api`, `rustdoc-json`, `rustup-toolchain`). The dependency
+    #    chain is: `cargo-public-api` -> `crates-index` -> `smartstring`
+    #  * Can be opted out from by disabling the `diff-latest` feature
+    #  * Upstream is hesitant to remove the dependency because of better
+    #    performance than alternatives:
+    #    https://github.com/frewsxcv/rust-crates-index/pull/90
+    { name = "smartstring", allow = ["MPL-2.0"] },
+]
+
+[bans]
+multiple-versions = "deny"
+wildcards = "deny"

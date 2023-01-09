@@ -20,3 +20,9 @@ if command -v cargo-audit >/dev/null; then
 else
     echo "INFO: Not running \`cargo audit\` because it is not installed"
 fi
+
+if command -v cargo-deny >/dev/null; then
+    scripts/cargo-deny.sh
+else
+    echo "INFO: Not running \`cargo deny\` because it is not installed"
+fi

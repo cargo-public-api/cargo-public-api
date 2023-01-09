@@ -3,6 +3,7 @@ edition = "2021"
 name = "repo-tests"
 version = "0.1.0"
 description = "Contains various repo-wide tests"
+license = "MIT"
 
 [dev-dependencies.public-api]
 path = "../public-api"

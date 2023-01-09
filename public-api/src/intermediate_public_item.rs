@@ -42,6 +42,46 @@ impl<'c> NameableItem<'c> {
             sortable_name.push_str(&crate::tokens::tokens_to_string(
                 &context.render_impl(impl_, &[]),
             ));
+
+            // If this is an inherent impl, additionally add the concatenated
+            // names of all associated items to the "name" of the impl. This makes
+            // multiple inherent impls group together, even if they have the
+            // same "name".
+            //
+            // For example, consider this code:
+            //
+            //   pub struct MultipleInherentImpls;
+            //
+            //   impl MultipleInherentImpls {
+            //       pub fn impl_one() {}
+            //   }
+            //
+            //   impl MultipleInherentImpls {
+            //       pub fn impl_two() {}
+            //   }
+            //
+            // In this case, we want to group the two impls together. So
+            // the name of the first impl should be
+            //
+            //   impl MultipleInherentImpls-impl_one
+            //
+            // and the second one
+            //
+            //   impl MultipleInherentImpls-impl_two
+            //
+            if impl_.trait_.is_none() {
+                let mut assoc_item_names: Vec<&str> = impl_
+                    .items
+                    .iter()
+                    .filter_map(|id| context.crate_.index.get(id))
+                    .filter_map(|item| item.name.as_ref())
+                    .map(String::as_str)
+                    .collect();
+                assoc_item_names.sort_unstable();
+
+                sortable_name.push('-');
+                sortable_name.push_str(&assoc_item_names.join("-"));
+            }
         }
 
         sortable_name

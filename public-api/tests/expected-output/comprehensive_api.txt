@@ -149,8 +149,8 @@ pub fn comprehensive_api::structs::Plain::s1(self)
 pub fn comprehensive_api::structs::Plain::s2(&self)
 pub fn comprehensive_api::structs::Plain::s3(&mut self)
 impl<'a> comprehensive_api::structs::Plain
-impl<'a> comprehensive_api::structs::Plain
 pub fn comprehensive_api::structs::Plain::s4(&'a self)
+impl<'a> comprehensive_api::structs::Plain
 pub fn comprehensive_api::structs::Plain::s5(&'a self)
 pub struct comprehensive_api::structs::PrivateField
 pub struct comprehensive_api::structs::TupleStructDouble(pub usize, pub bool)
@@ -169,8 +169,8 @@ pub struct comprehensive_api::structs::WithLifetimeAndGenericParam<'a, T>
 pub comprehensive_api::structs::WithLifetimeAndGenericParam::t: T
 pub comprehensive_api::structs::WithLifetimeAndGenericParam::unit_ref: &'a comprehensive_api::structs::Unit
 impl<'b, T> comprehensive_api::structs::WithLifetimeAndGenericParam<'b, T>
-impl<'b, T> comprehensive_api::structs::WithLifetimeAndGenericParam<'b, T>
 pub fn comprehensive_api::structs::WithLifetimeAndGenericParam::new_any(unit_ref: &'b comprehensive_api::structs::Unit, t: T) -> Self
+impl<'b, T> comprehensive_api::structs::WithLifetimeAndGenericParam<'b, T>
 pub fn comprehensive_api::structs::WithLifetimeAndGenericParam::new_any_duplicate(unit_ref: &'b comprehensive_api::structs::Unit, t: T) -> Self
 impl<'b> comprehensive_api::structs::WithLifetimeAndGenericParam<'b, alloc::string::String>
 pub fn comprehensive_api::structs::WithLifetimeAndGenericParam::new(unit_ref: &'b comprehensive_api::structs::Unit, t: alloc::string::String) -> Self
@@ -233,8 +233,8 @@ pub fn comprehensive_api::Plain::s1(self)
 pub fn comprehensive_api::Plain::s2(&self)
 pub fn comprehensive_api::Plain::s3(&mut self)
 impl<'a> comprehensive_api::structs::Plain
-impl<'a> comprehensive_api::structs::Plain
 pub fn comprehensive_api::Plain::s4(&'a self)
+impl<'a> comprehensive_api::structs::Plain
 pub fn comprehensive_api::Plain::s5(&'a self)
 pub struct comprehensive_api::RenamedPlain
 pub comprehensive_api::RenamedPlain::x: usize
@@ -245,7 +245,7 @@ pub fn comprehensive_api::RenamedPlain::s1(self)
 pub fn comprehensive_api::RenamedPlain::s2(&self)
 pub fn comprehensive_api::RenamedPlain::s3(&mut self)
 impl<'a> comprehensive_api::structs::Plain
-impl<'a> comprehensive_api::structs::Plain
 pub fn comprehensive_api::RenamedPlain::s4(&'a self)
+impl<'a> comprehensive_api::structs::Plain
 pub fn comprehensive_api::RenamedPlain::s5(&'a self)
 pub struct comprehensive_api::StructInPrivateMod

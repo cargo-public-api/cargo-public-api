@@ -35,10 +35,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: dtolnay/rust-toolchain@e645b0cf01249a964ec099494d38d2da0f0b349f
-        with:
-          toolchain: nightly
-      - run: rustup default stable
+      - run: rustup install --profile minimal nightly
       - uses: Swatinem/rust-cache@v2
       - run: ./scripts/bless-expected-output-for-tests.sh
       - id: latest-nightly

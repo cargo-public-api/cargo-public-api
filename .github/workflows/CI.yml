@@ -53,10 +53,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
-      - uses: dtolnay/rust-toolchain@e645b0cf01249a964ec099494d38d2da0f0b349f
-        with:
-          toolchain: nightly
-      - run: rustup default stable
+      - run: rustup install --profile minimal nightly
       - uses: Swatinem/rust-cache@v2
       - run: cargo test --locked
       - run: cargo build --locked --no-default-features # Build without "diff-latest" feature

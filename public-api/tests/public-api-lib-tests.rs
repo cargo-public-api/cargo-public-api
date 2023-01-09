@@ -181,6 +181,22 @@ fn comprehensive_api_proc_macro() {
     );
 }
 
+/// Test that `debug_sorting` does not result in stack overflow because of
+/// recursion. This can quite easily happen unless we test for it continuously.
+/// We don't care what the exact output is, just that we don't crash.
+#[test]
+fn comprehensive_api_debug_sorting_no_stack_overflow() {
+    // Create independent build dir so all tests can run in parallel
+    let build_dir = tempdir().unwrap();
+
+    let mut options = Options::default();
+    options.debug_sorting = true;
+    let rustdoc_json = rustdoc_json_path_for_crate("../test-apis/comprehensive_api", &build_dir);
+    let _api = PublicApi::from_rustdoc_json(rustdoc_json, options)
+        .unwrap()
+        .to_string();
+}
+
 #[test]
 fn invalid_json() {
     let result = PublicApi::from_rustdoc_json_str("}}}}}}}}}", Options::default());

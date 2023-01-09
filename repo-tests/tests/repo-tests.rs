@@ -70,13 +70,3 @@ fn installation_instructions_in_toplevel_readme() {
         format!("Ensure `{}` or later", MINIMUM_RUSTDOC_JSON_VERSION);
     assert!(readme.contains(&expected_installation_instruction));
 }
-
-#[test]
-fn installation_instructions_in_public_api_readme() {
-    let readme = include_str!("../../public-api/README.md");
-    let expected_installation_instruction = format!(
-        "# Install {} or later so you can build up-to-date rustdoc JSON files",
-        MINIMUM_RUSTDOC_JSON_VERSION
-    );
-    assert!(readme.contains(&expected_installation_instruction));
-}

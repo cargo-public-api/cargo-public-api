@@ -12,7 +12,6 @@
     1. If `MINIMUM_RUSTDOC_JSON_VERSION` must be bumped, bump it. If you bump it, also
         *  bump it in [compatibility matrix](https://github.com/Enselic/cargo-public-api#compatibility-matrix)
         *  bump it in `cargo-public-api` [installation instructions](https://github.com/Enselic/cargo-public-api#installation)
-        *  bump it in `public-api` [installation instructions](https://github.com/Enselic/cargo-public-api/tree/main/public-api#usage)
         * `rm cargo-public-api/MINIMUM_RUSTDOC_JSON_VERSION_FOR_TESTS`
 
 1. Preview what the auto-generated release-notes will look like by going [here](https://github.com/cargo-public-api/cargo-public-api.github.io/blob/main/release-notes-preview.md). It is automatically updated, but you can also trigger manually [here](https://github.com/Enselic/cargo-public-api/actions/workflows/Preview-release-notes.yml)

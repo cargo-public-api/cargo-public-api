@@ -1161,11 +1161,6 @@ fn add_to_path(dir: PathBuf) {
 /// case you WANT to have `cargo-public-api` installed though, so you can
 /// opt-out by doing `CARGO_PUBLIC_API_INSTALLED_FOR_TESTS=1 cargo test`.
 ///
-/// Tip: Use `cargo-public-api` from your build dir instead of installing it:
-/// ```sh
-/// export PATH=~/src/cargo-public-api/target/debug:"$PATH"
-/// ```
-///
 /// [1]
 /// <https://github.com/rust-lang/rustup/blob/a223e5ad6549e5fb0c56932fd0e79af9de898ad4/src/toolchain.rs#L446-L453>
 fn assert_cargo_public_api_not_in_cargo_home_bin() {
@@ -1183,5 +1178,6 @@ fn assert_cargo_public_api_not_in_cargo_home_bin() {
     assert!(
         std::fs::metadata(&path).is_err(),
         "Found {path:?} which will override `./target/debug/cargo-public-api` and thus interfere with tests. \
-         Either `rm {path:?}` or ignore this warning with `CARGO_PUBLIC_API_INSTALLED_FOR_TESTS=1 cargo test`.");
+         Either `rm {path:?}` or ignore this warning with `CARGO_PUBLIC_API_INSTALLED_FOR_TESTS=1 cargo test`. \
+         Tip: Use `cargo-public-api` from your build dir instead of installing it: `export PATH=~/src/cargo-public-api/target/debug:\"$PATH\"`");
 }

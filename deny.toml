@@ -23,3 +23,7 @@ exceptions = [
     #    https://github.com/frewsxcv/rust-crates-index/pull/90
     { name = "smartstring", allow = ["MPL-2.0"] },
 ]
+
+[bans]
+multiple-versions = "deny"
+wildcards = "deny"

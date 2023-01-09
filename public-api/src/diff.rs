@@ -14,13 +14,24 @@ type ItemsWithPath = HashMap<PublicItemPath, Vec<PublicItem>>;
 
 /// An item has changed in the public API. Two [`PublicItem`]s are considered
 /// the same if their `path` is the same.
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct ChangedPublicItem {
     /// How the item used to look.
     pub old: PublicItem,
 
     /// How the item looks now.
     pub new: PublicItem,
+}
+
+impl ChangedPublicItem {
+    /// See [`PublicItem::grouping_cmp`]
+    #[must_use]
+    pub fn grouping_cmp(&self, other: &Self) -> std::cmp::Ordering {
+        match PublicItem::grouping_cmp(&self.old, &other.old) {
+            std::cmp::Ordering::Equal => PublicItem::grouping_cmp(&self.new, &other.new),
+            ordering => ordering,
+        }
+    }
 }
 
 /// The return value of [`Self::between`]. To quickly get a sense of what it
@@ -99,9 +110,9 @@ impl PublicApiDiff {
         }
 
         // Make output predictable and stable
-        removed.sort();
-        changed.sort();
-        added.sort();
+        removed.sort_by(PublicItem::grouping_cmp);
+        changed.sort_by(ChangedPublicItem::grouping_cmp);
+        added.sort_by(PublicItem::grouping_cmp);
 
         Self {
             removed,

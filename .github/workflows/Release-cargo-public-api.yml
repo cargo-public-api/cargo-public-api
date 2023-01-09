@@ -10,7 +10,7 @@ jobs:
   ci:
     uses: ./.github/workflows/CI.yml
 
-  release:
+  publish:
     needs: ci
     environment:
       name: crates.io
@@ -60,6 +60,18 @@ jobs:
       - run: cargo publish -p cargo-public-api
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+
+  release:
+    needs: publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: calculate version
+        id: version
+        run: |
+          version=$(cargo read-manifest --manifest-path public-api/Cargo.toml | jq --raw-output .version)
+          echo "GIT_TAG=v${version}" >> $GITHUB_OUTPUT
 
       # OK, both public-api and cargo-public-api has been published under the
       # same version. Create a GitHub Release now.

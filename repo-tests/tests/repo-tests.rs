@@ -67,6 +67,6 @@ fn newline_at_end_of_all_files() {
 fn installation_instructions_in_toplevel_readme() {
     let readme = include_str!("../../README.md");
     let expected_installation_instruction =
-        format!("Ensure `{}` or later", MINIMUM_RUSTDOC_JSON_VERSION);
+        format!("Ensure **{}** or later", MINIMUM_RUSTDOC_JSON_VERSION);
     assert!(readme.contains(&expected_installation_instruction));
 }

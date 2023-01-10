@@ -25,8 +25,7 @@ impl Plain {
 
         print_items_with_header(
             w,
-            "Removed items from the public API\n\
-             =================================",
+            "Removed items from the public API",
             &diff.removed,
             |w, item| {
                 if use_color {
@@ -39,8 +38,7 @@ impl Plain {
 
         print_items_with_header(
             w,
-            "Changed items in the public API\n\
-             ===============================",
+            "Changed items in the public API",
             &diff.changed,
             |w, changed_item| {
                 if use_color {
@@ -61,8 +59,7 @@ impl Plain {
 
         print_items_with_header(
             w,
-            "Added items to the public API\n\
-             =============================",
+            "Added items to the public API",
             &diff.added,
             |w, item| {
                 if use_color {
@@ -170,6 +167,7 @@ pub fn print_items_with_header<T>(
     print_fn: impl Fn(&mut dyn Write, &T) -> Result<()>,
 ) -> Result<()> {
     writeln!(w, "{}", header)?;
+    writeln!(w, "{}", "=".repeat(header.len()))?;
     if items.is_empty() {
         writeln!(w, "(none)")?;
     } else {

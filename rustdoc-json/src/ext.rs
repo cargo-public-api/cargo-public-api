@@ -1,5 +1,4 @@
 #![doc(hidden)]
-
 #![allow(clippy::disallowed_methods, clippy::module_name_repetitions)]
 pub trait CommandExt {
     fn log(&self);
@@ -33,10 +32,14 @@ impl CommandExt for std::process::Command {
     #[track_caller]
     #[cfg(feature = "log")]
     fn log(&self) {
+        let args = self.get_args().map(std::ffi::OsStr::to_string_lossy);
+        let program = self.get_program().to_string_lossy();
+        let args = shell_words::join(args);
+        let space = if args.is_empty() { "" } else { " " };
         if let Some(cwd) = self.get_current_dir() {
-            log::debug!("running `{} {:?}`", cwd.display(), self);
+            log::debug!("running `{} {program}{space}{args}`", cwd.display(),);
         } else {
-            log::debug!("running `{:?}`", self);
+            log::debug!("running `{program}{space}{args}`",);
         }
     }
 }

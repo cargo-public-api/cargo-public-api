@@ -142,7 +142,7 @@ fn print_minimum_rustdoc_json_version() {
     let mut cmd = Command::cargo_bin("public-api").unwrap();
     cmd.arg("--print-minimum-rustdoc-json-version");
     cmd.assert()
-        .stdout(format!("{}\n", MINIMUM_RUSTDOC_JSON_VERSION))
+        .stdout(format!("{MINIMUM_RUSTDOC_JSON_VERSION}\n"))
         .stderr("")
         .success();
 }

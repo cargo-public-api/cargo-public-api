@@ -252,7 +252,7 @@ fn main_() -> Result<()> {
     // commit, set up a restoration of the current branch
     if main_task.changes_commit() {
         final_actions.push(Action::RestoreBranch {
-            name: current_branch_or_commit(&args.git_root()?)?,
+            name: current_branch_or_commit(args.git_root()?)?,
         });
     }
 

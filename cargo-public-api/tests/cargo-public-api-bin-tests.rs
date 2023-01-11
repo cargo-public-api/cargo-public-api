@@ -884,7 +884,7 @@ fn test_features(features: &F) {
     }
 
     cmd.assert()
-        .stdout_or_update(&format!("./expected-output/features-feat{features}.txt"))
+        .stdout_or_update(format!("./expected-output/features-feat{features}.txt"))
         .success();
 }
 
@@ -899,7 +899,7 @@ fn rustdoc_json_builder_for_crate(
     target_dir: impl AsRef<Path>,
 ) -> rustdoc_json::Builder {
     rustdoc_json::Builder::default()
-        .manifest_path(&format!("{}/Cargo.toml", test_crate))
+        .manifest_path(format!("{test_crate}/Cargo.toml"))
         .toolchain("nightly".to_owned())
         .target_dir(target_dir)
         .quiet(true)
@@ -972,7 +972,7 @@ enum TestCmdType<'str> {
 #[cfg(not(target_family = "windows"))]
 fn cargo_with_toolchain(toolchain: &str) -> std::process::Command {
     let mut cmd = std::process::Command::new("cargo");
-    cmd.arg(format!("+{}", toolchain));
+    cmd.arg(format!("+{toolchain}"));
     cmd
 }
 

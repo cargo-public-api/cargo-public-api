@@ -31,7 +31,25 @@ pub fn build_rustdoc_json(version: impl Into<String>, args: &Args) -> Result<Pat
     };
 
     write_file("lib.rs", "// empty lib")?;
-    let manifest = write_file("Cargo.toml", &manifest_for(&spec))?;
+    let (manifest, needs_resolved) = manifest_for(args, &spec)?;
+    let manifest = write_file("Cargo.toml", &manifest)?;
+
+    'resolve: {
+        if needs_resolved {
+            let mut metadata = cargo_metadata::MetadataCommand::new();
+            metadata.manifest_path(&manifest);
+            let metadata = metadata.exec()?;
+            let Some(package) = metadata.packages.iter().find(|p| p.name == spec.name) else {
+                // XXX if metadata doesn't find a package, rustdoc will tell us why, so continue
+                break 'resolve;
+            };
+
+            write_file(
+                "Cargo.toml",
+                &manifest_for_resolved(args, &spec, Some(package))?.0,
+            )?;
+        }
+    }
 
     // Since we used `crate::builder_from_args(args)` above it means that if
     // `args.target_dir` is set, both the dummy crate and the real crate will
@@ -39,7 +57,10 @@ pub fn build_rustdoc_json(version: impl Into<String>, args: &Args) -> Result<Pat
     // won't work. So always clear the target dir before we use the builder.
     let builder = crate::api_source::builder_from_args(args)
         .clear_target_dir()
-        .manifest_path(manifest)
+        .all_features(false)
+        .features(Vec::<&str>::new())
+        .no_default_features(false)
+        .manifest_path(&manifest)
         .package(&spec.name);
     crate::api_source::build_rustdoc_json(builder)
 }
@@ -90,21 +111,100 @@ fn build_dir(args: &Args, spec: &PackageSpec) -> PathBuf {
     build_dir.push(spec.as_dir_name());
     build_dir
 }
+/// Create the manifest for a package given cargo cli arguments.
+///
+/// If the boolean is `true`, call `manifest_for_resolved`
+fn manifest_for(args: &Args, spec: &PackageSpec) -> Result<(String, bool)> {
+    manifest_for_resolved(args, spec, None)
+}
 
-fn manifest_for(spec: &PackageSpec) -> String {
-    format!(
-        "\
-        [package]\n\
-        name = \"crate-downloader\"\n\
-        version = \"0.1.0\"\n\
-        edition = \"2021\"\n\
-        [lib]\n\
-        path = \"lib.rs\"\n\
-        [dependencies]\n\
-        {} = \"={}\"\n
-        ",
-        spec.name, spec.version
-    )
+fn manifest_for_resolved(
+    args: &Args,
+    spec: &PackageSpec,
+    package: Option<&cargo_metadata::Package>,
+) -> Result<(String, bool)> {
+    #[allow(clippy::trivially_copy_pass_by_ref)]
+    fn is_true(b: &bool) -> bool {
+        *b
+    }
+
+    #[derive(serde::Serialize)]
+    struct Dep<'a, S: AsRef<str>> {
+        version: &'a str,
+        #[serde(skip_serializing_if = "is_true")]
+        default_features: bool,
+        #[serde(skip_serializing_if = "<[_]>::is_empty")]
+        features: &'a [S],
+    }
+
+    let setup = toml::toml! {
+        [package]
+        name = "crate-downloader"
+        version = "0.1.0"
+        edition = "2021"
+        [lib]
+        path = "lib.rs"
+    };
+
+    let mut needs_resolved = false;
+
+    let dep = match (args, package) {
+        (
+            Args {
+                features,
+                all_features: false,
+                no_default_features,
+                ..
+            },
+            _,
+        ) => {
+            format!(
+                "[dependencies.{}]\n{}",
+                spec.name,
+                toml::to_string(&Dep {
+                    version: &spec.version,
+                    default_features: !no_default_features,
+                    features
+                })?
+            )
+        }
+        (
+            Args {
+                all_features: true, ..
+            },
+            None,
+        ) => {
+            needs_resolved = true;
+            format!(
+                "[dependencies.{}]\n{}",
+                spec.name,
+                toml::to_string(&Dep {
+                    version: &spec.version,
+                    default_features: true,
+                    features: &Vec::<&str>::new()
+                })?
+            )
+        }
+        (
+            Args {
+                all_features: true, ..
+            },
+            Some(package),
+        ) => {
+            needs_resolved = true;
+            format!(
+                "[dependencies.{}]\n{}",
+                spec.name,
+                toml::to_string(&Dep {
+                    version: &spec.version,
+                    default_features: true,
+                    features: &package.features.keys().collect::<Vec<_>>(),
+                })?
+            )
+        }
+    };
+
+    Ok((format!("{setup}\n{dep}"), needs_resolved))
 }
 
 #[derive(Debug, PartialEq, Eq)]

@@ -97,8 +97,10 @@ dependencies = [
  "rustdoc-json",
  "rustup-toolchain",
  "semver",
+ "serde",
  "tempfile",
  "thiserror",
+ "toml",
 ]
 
 [[package]]

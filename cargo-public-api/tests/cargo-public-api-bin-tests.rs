@@ -689,6 +689,19 @@ fn diff_published_explicit_package() {
 }
 
 #[test]
+fn diff_published_with_all_features() {
+    let mut cmd = TestCmd::new().with_test_repo();
+    cmd.arg("-p");
+    cmd.arg("example_api");
+    cmd.arg("--all-features");
+    cmd.arg("diff");
+    cmd.arg("0.1.0");
+    cmd.assert()
+        .stdout_or_update("./expected-output/diff_published.txt")
+        .success();
+}
+
+#[test]
 fn list_public_items_from_json_file() {
     // Create independent build dir so all tests can run in parallel
     let build_dir = tempdir().unwrap();

@@ -7,7 +7,7 @@ use std::{
 
 use anyhow::{anyhow, Context, Result};
 
-use crate::ext::CommandExt;
+use rustdoc_json::__private::CommandExt;
 
 /// Synchronously do a `git checkout` of `commit`.
 pub fn git_checkout(git_root: &Path, commit: &str, quiet: bool, force: bool) -> Result<()> {

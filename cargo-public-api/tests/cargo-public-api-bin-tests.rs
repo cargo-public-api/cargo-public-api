@@ -23,8 +23,6 @@ use tempfile::tempdir;
 
 #[path = "../src/git_utils.rs"] // Say NO to copy-paste!
 mod git_utils;
-#[path = "../src/ext.rs"] // Say NO to copy-paste!
-mod ext;
 
 mod create_test_git_repo;
 

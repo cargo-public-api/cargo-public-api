@@ -1,4 +1,4 @@
-use crate::ext::CommandExt;
+use rustdoc_json::__private::CommandExt;
 
 /// Returns true if it seems like the currently active toolchain is the stable
 /// toolchain.

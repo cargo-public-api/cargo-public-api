@@ -26,6 +26,11 @@ mod builder;
 mod ext;
 pub use builder::{Builder, PackageTarget};
 
+#[doc(hidden)]
+pub mod __private {
+    pub use super::ext::CommandExt;
+}
+
 /// Represents all errors that can occur when using [`Builder::build()`].
 #[derive(thiserror::Error, Debug)]
 #[non_exhaustive]

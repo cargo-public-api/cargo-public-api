@@ -90,7 +90,6 @@ dependencies = [
  "expect-test",
  "home",
  "is-terminal",
- "log",
  "nu-ansi-term",
  "predicates",
  "pretty_assertions",

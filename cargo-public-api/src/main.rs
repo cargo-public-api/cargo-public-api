@@ -16,7 +16,6 @@ use clap::Parser;
 mod api_source;
 mod arg_types;
 mod error;
-mod ext;
 mod git_utils;
 mod plain;
 mod published_crate;

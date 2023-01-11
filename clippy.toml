@@ -1,5 +1,6 @@
+# enable as needed
 disallowed-methods = [
-    { path = "std::process::Command::status", reason = "use the extension CommandExt::status_and_log defined in this crate instead" },
-    { path = "std::process::Command::output", reason = "use the extension CommandExt::output_and_log defined in this crate instead" },
-    { path = "std::process::Command::spawn", reason = "use the extension CommandExt::spawn_and_log defined in this crate instead" },
+#    { path = "std::process::Command::status", reason = "use the extension CommandExt::status_and_log defined in this crate instead" },
+#    { path = "std::process::Command::output", reason = "use the extension CommandExt::output_and_log defined in this crate instead" },
+#    { path = "std::process::Command::spawn", reason = "use the extension CommandExt::spawn_and_log defined in this crate instead" },
 ]

@@ -16,7 +16,7 @@ default = ["diff-latest", "log"]
 # Enable `cargo public-api diff latest`. Requires 33 more deps (most notably the
 # `git2` crate) so that the crates.io index can be updated and read.
 diff-latest = ["dep:crates-index"]
-log = ["dep:env_logger", "dep:log", "rustdoc-json/log"]
+log = ["dep:env_logger", "rustdoc-json/log"]
 
 [dependencies]
 nu-ansi-term = "0.46.0"
@@ -28,7 +28,6 @@ dirs = "4.0.0"
 home = "0.5.4"
 semver = "1.0.16"
 thiserror = "1.0.38"
-log = { version = "0.4.17", optional = true }
 env_logger = { version = "0.10.0", default-features = false, features = ["auto-color"], optional = true }
 
 [dependencies.clap]

@@ -39,7 +39,7 @@ pub fn build_rustdoc_json(version: impl Into<String>, args: &Args) -> Result<Pat
     // won't work. So always clear the target dir before we use the builder.
     let builder = crate::api_source::builder_from_args(args)
         .clear_target_dir()
-        .manifest_path(&manifest)
+        .manifest_path(manifest)
         .package(&spec.name);
     crate::api_source::build_rustdoc_json(builder)
 }

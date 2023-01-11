@@ -211,7 +211,7 @@ impl PublicApi {
     ///
     /// E.g. if the JSON is invalid or if the file can't be read.
     pub fn from_rustdoc_json(path: impl AsRef<Path>, options: Options) -> Result<PublicApi> {
-        Self::from_rustdoc_json_str(&std::fs::read_to_string(path)?, options)
+        Self::from_rustdoc_json_str(std::fs::read_to_string(path)?, options)
     }
 
     /// Same as [`Self::from_rustdoc_json`], but the rustdoc JSON is read from a
@@ -265,7 +265,7 @@ impl PublicApi {
 impl std::fmt::Display for PublicApi {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         for item in self.items() {
-            writeln!(f, "{}", item)?;
+            writeln!(f, "{item}")?;
         }
         Ok(())
     }

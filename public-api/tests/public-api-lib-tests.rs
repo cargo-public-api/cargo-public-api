@@ -140,8 +140,8 @@ impl Foo {
     );
 
     assert_public_api_diff(
-        &v1.json_path,
-        &v2.json_path,
+        v1.json_path,
+        v2.json_path,
         "./expected-output/diff_move_item_between_inherent_impls.txt",
     );
 }

@@ -31,7 +31,18 @@ pub fn build_rustdoc_json(version: impl Into<String>, args: &Args) -> Result<Pat
     };
 
     write_file("lib.rs", "// empty lib")?;
-    let manifest = write_file("Cargo.toml", &manifest_for(&spec))?;
+    let (manifest, needs_resolved_package) = manifest_simple(args, &spec)?;
+    let manifest = write_file("Cargo.toml", &manifest)?;
+
+    if needs_resolved_package {
+        let mut metadata = cargo_metadata::MetadataCommand::new();
+        metadata.manifest_path(&manifest);
+        let metadata = metadata.exec()?;
+        if let Some(package) = metadata.packages.iter().find(|p| p.name == spec.name) {
+            // XXX if metadata doesn't find a package, rustdoc will tell us why, so we can continue
+            write_file("Cargo.toml", &manifest_with_info(args, &spec, package)?)?;
+        };
+    }
 
     // Since we used `crate::builder_from_args(args)` above it means that if
     // `args.target_dir` is set, both the dummy crate and the real crate will
@@ -39,7 +50,10 @@ pub fn build_rustdoc_json(version: impl Into<String>, args: &Args) -> Result<Pat
     // won't work. So always clear the target dir before we use the builder.
     let builder = crate::api_source::builder_from_args(args)
         .clear_target_dir()
-        .manifest_path(manifest)
+        .all_features(false)
+        .features(Vec::<&str>::new())
+        .no_default_features(false)
+        .manifest_path(&manifest)
         .package(&spec.name);
     crate::api_source::build_rustdoc_json(builder)
 }
@@ -92,20 +106,81 @@ fn build_dir(args: &Args, spec: &PackageSpec) -> PathBuf {
     build_dir
 }
 
-fn manifest_for(spec: &PackageSpec) -> String {
-    format!(
-        "\
-        [package]\n\
-        name = \"crate-downloader\"\n\
-        version = \"0.1.0\"\n\
-        edition = \"2021\"\n\
-        [lib]\n\
-        path = \"lib.rs\"\n\
-        [dependencies]\n\
-        {} = \"={}\"\n
-        ",
-        spec.name, spec.version
-    )
+/// Create the manifest for a package given cargo cli arguments. Returns a boolean to signify if [`manifest_with_info`] needs to be called
+fn manifest_simple(args: &Args, spec: &PackageSpec) -> Result<(String, bool)> {
+    let setup = toml::toml! {
+        [package]
+        name = "crate-downloader"
+        version = "0.1.0"
+        edition = "2021"
+        [lib]
+        path = "lib.rs"
+    };
+
+    let Args {
+        features,
+        no_default_features,
+        all_features,
+        ..
+    } = args;
+
+    Ok((
+        format!(
+            "{setup}\n[dependencies.{}]\n{}",
+            spec.name,
+            toml::to_string(&cargo_manifest::DependencyDetail {
+                version: Some(format!("={}", spec.version)),
+                default_features: no_default_features.then(|| false),
+                features: if features.is_empty() {
+                    None
+                } else {
+                    Some(features.clone())
+                },
+                ..Default::default()
+            })?
+        ),
+        *all_features,
+    ))
+}
+
+fn manifest_with_info(
+    args: &Args,
+    spec: &PackageSpec,
+    package: &cargo_metadata::Package,
+) -> Result<String> {
+    let setup = toml::toml! {
+        [package]
+        name = "crate-downloader"
+        version = "0.1.0"
+        edition = "2021"
+        [lib]
+        path = "lib.rs"
+    };
+    let features = package
+        .features
+        .keys()
+        .map(Clone::clone)
+        .collect::<Vec<_>>();
+    let dep = match args {
+        Args {
+            all_features: true, ..
+        } => format!(
+            "[dependencies.{}]\n{}",
+            spec.name,
+            toml::to_string(&cargo_manifest::DependencyDetail {
+                version: Some(format!("={}", spec.version)),
+                features: if features.is_empty() {
+                    None
+                } else {
+                    Some(features)
+                },
+                ..Default::default()
+            })?
+        ),
+        _ => return Ok(manifest_simple(args, spec)?.0),
+    };
+
+    Ok(format!("{setup}\n{dep}"))
 }
 
 #[derive(Debug, PartialEq, Eq)]
@@ -117,5 +192,86 @@ struct PackageSpec {
 impl PackageSpec {
     fn as_dir_name(&self) -> PathBuf {
         PathBuf::from(format!("{}-{}", self.name, self.version))
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use clap::Parser as _;
+
+    #[test]
+    fn manifest_simple() {
+        let manifest = super::manifest_simple(
+            &Args::try_parse_from(["test", "-p", "example-api", "diff", "0.1.1"].iter()).unwrap(),
+            &PackageSpec {
+                name: "example-api".to_owned(),
+                version: "0.1.1".to_owned(),
+            },
+        )
+        .unwrap()
+        .0;
+        assert_eq!(manifest, "[package]\nname = \"crate-downloader\"\nversion = \"0.1.0\"\nedition = \"2021\"\n\n[lib]\npath = \"lib.rs\"\n\n[dependencies.example-api]\nversion = \"=0.1.1\"\n");
+    }
+
+    #[test]
+    fn manifest_with_info() {
+        let package = serde_json::from_str(
+            r#"{
+        "name": "bin",
+        "version": "0.1.0",
+        "id": "bin 0.1.0 (path+file://)",
+        "license": null,
+        "license_file": null,
+        "description": null,
+        "source": null,
+        "dependencies": [],
+        "targets":
+        [
+          {
+            "kind":
+            [
+              "lib"
+            ],
+            "crate_types":
+            [
+              "lib"
+            ],
+            "name": "lib",
+            "src_path": "/src/lib.rs",
+            "edition": "2021",
+            "doc": true,
+            "doctest": false,
+            "test": true
+          }
+        ],
+        "features": {},
+        "manifest_path": "/Cargo.toml",
+        "metadata": null,
+        "publish": null,
+        "authors": [],
+        "categories": [],
+        "keywords": [],
+        "readme": null,
+        "repository": null,
+        "homepage": null,
+        "documentation": null,
+        "edition": "2021",
+        "links": null,
+        "default_run": null,
+        "rust_version": null
+      }"#,
+        )
+        .unwrap();
+        let manifest = super::manifest_with_info(
+            &Args::try_parse_from(["test", "-p", "example-api", "diff", "0.1.1"].iter()).unwrap(),
+            &PackageSpec {
+                name: "example-api".to_owned(),
+                version: "0.1.1".to_owned(),
+            },
+            &package,
+        )
+        .unwrap();
+        assert_eq!(manifest, "[package]\nname = \"crate-downloader\"\nversion = \"0.1.0\"\nedition = \"2021\"\n\n[lib]\npath = \"lib.rs\"\n\n[dependencies.example-api]\nversion = \"=0.1.1\"\n");
     }
 }

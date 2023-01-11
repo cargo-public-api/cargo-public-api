@@ -1,5 +1,6 @@
 // deny in CI, only warn here
 #![warn(clippy::all, clippy::pedantic)]
+#![allow(clippy::disallowed_methods)]
 
 use std::{ffi::OsStr, fs::read_to_string, path::PathBuf};
 

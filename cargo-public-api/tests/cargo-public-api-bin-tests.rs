@@ -23,6 +23,8 @@ use tempfile::tempdir;
 
 #[path = "../src/git_utils.rs"] // Say NO to copy-paste!
 mod git_utils;
+#[path = "../src/ext.rs"] // Say NO to copy-paste!
+mod ext;
 
 mod create_test_git_repo;
 
@@ -133,6 +135,7 @@ fn target_arg() {
         let mut cmd = std::process::Command::new("sh");
         cmd.arg("-c");
         cmd.arg("rustc -vV | sed -n 's/host: \\(.*\\)/\\1/gp'");
+        #[allow(clippy::disallowed_methods)]
         let stdout = cmd.output().unwrap().stdout;
         String::from_utf8_lossy(&stdout)
             .to_string()

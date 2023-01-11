@@ -1,5 +1,6 @@
 // deny in CI, only warn here
 #![warn(clippy::all, clippy::pedantic)]
+#![allow(clippy::disallowed_methods)]
 
 use std::path::Path;
 use std::{io::BufRead, str::from_utf8};

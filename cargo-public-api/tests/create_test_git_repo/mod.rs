@@ -62,6 +62,7 @@ pub fn create_test_git_repo(dest_dir: impl AsRef<Path>, test_apis_dir: impl AsRe
     }
 }
 
+#[allow(clippy::disallowed_methods)]
 fn run(cmd: &mut Command) {
     cmd.status().unwrap();
 }

@@ -64,6 +64,7 @@ pub fn ensure_installed(toolchain: &str) -> Result<()> {
 pub fn is_installed(toolchain: &str) -> Result<bool> {
     let _guard = RUSTUP_MUTEX.lock().map_err(|_| Error::StdSyncPoisonError)?;
 
+    #[allow(clippy::disallowed_methods)]
     Ok(std::process::Command::new("rustup")
         .arg("run")
         .arg(toolchain)
@@ -78,6 +79,7 @@ pub fn is_installed(toolchain: &str) -> Result<bool> {
 fn install(toolchain: &str) -> Result<()> {
     let _guard = RUSTUP_MUTEX.lock().map_err(|_| Error::StdSyncPoisonError)?;
 
+    #[allow(clippy::disallowed_methods)]
     let status = std::process::Command::new("rustup")
         .arg("toolchain")
         .arg("install")

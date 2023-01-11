@@ -1,3 +1,5 @@
+use crate::ext::CommandExt;
+
 /// Returns true if it seems like the currently active toolchain is the stable
 /// toolchain.
 ///
@@ -14,7 +16,7 @@ pub fn is_probably_stable(toolchain: Option<&str>) -> bool {
     );
     cmd.arg("--version");
 
-    let output = match cmd.output() {
+    let output = match cmd.output_and_log() {
         Ok(output) => output,
         Err(_) => return false,
     };
@@ -35,7 +37,7 @@ pub fn from_rustup() -> Option<String> {
     cmd.args(["show", "active-toolchain"]);
     cmd.env_remove("RUSTUP_TOOLCHAIN");
 
-    let output = String::from_utf8(cmd.output().ok()?.stdout).ok()?;
+    let output = String::from_utf8(cmd.output_and_log().ok()?.stdout).ok()?;
 
     output
         .split(char::is_whitespace)

@@ -7,6 +7,8 @@ use std::{
 
 use anyhow::{anyhow, Context, Result};
 
+use crate::ext::CommandExt;
+
 /// Synchronously do a `git checkout` of `commit`.
 pub fn git_checkout(git_root: &Path, commit: &str, quiet: bool, force: bool) -> Result<()> {
     let mut command = Command::new("git");
@@ -18,7 +20,7 @@ pub fn git_checkout(git_root: &Path, commit: &str, quiet: bool, force: bool) -> 
     if force {
         command.arg("--force");
     }
-    if command.spawn()?.wait()?.success() {
+    if command.spawn_and_log()?.wait()?.success() {
         Ok(())
     } else {
         Err(anyhow!(
@@ -75,7 +77,7 @@ fn trimmed_git_stdout(path: impl AsRef<Path>, args: &[&str]) -> Result<String> {
 }
 
 fn trimmed_stdout(mut cmd: Command) -> Result<String> {
-    let output = cmd.output()?;
+    let output = cmd.output_and_log()?;
     if output.status.success() {
         Ok(String::from_utf8_lossy(&output.stdout).trim().to_string())
     } else {

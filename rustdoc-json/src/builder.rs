@@ -1,3 +1,4 @@
+use super::ext::CommandExt;
 use super::BuildError;
 
 use std::{
@@ -14,7 +15,7 @@ const OVERRIDDEN_TOOLCHAIN: Option<&str> = option_env!("RUSTDOC_JSON_OVERRIDDEN_
 /// file.
 pub fn run_cargo_rustdoc(options: Builder) -> Result<PathBuf, BuildError> {
     let mut cmd = cargo_rustdoc_command(&options);
-    if cmd.status()?.success() {
+    if cmd.status_and_log()?.success() {
         rustdoc_json_path_for_manifest_path(
             options.manifest_path,
             options.package.as_deref(),
@@ -166,6 +167,8 @@ fn rustdoc_json_path_for_manifest_path(
 fn target_directory(manifest_path: impl AsRef<Path>) -> Result<PathBuf, BuildError> {
     let mut metadata_cmd = cargo_metadata::MetadataCommand::new();
     metadata_cmd.manifest_path(manifest_path.as_ref());
+    #[cfg(feature = "log")]
+    metadata_cmd.cargo_command().log();
     let metadata = metadata_cmd.exec()?;
     Ok(metadata.target_directory.as_std_path().to_owned())
 }

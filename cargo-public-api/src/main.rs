@@ -16,6 +16,7 @@ use clap::Parser;
 mod api_source;
 mod arg_types;
 mod error;
+mod ext;
 mod git_utils;
 mod plain;
 mod published_crate;
@@ -239,6 +240,7 @@ pub enum Action {
 const LATEST_VERSION_ARG: &str = "latest";
 
 fn main_() -> Result<()> {
+    env_logger::try_init()?;
     let args = get_args();
 
     // A list of actions to perform after we have listed or diffed. Typical

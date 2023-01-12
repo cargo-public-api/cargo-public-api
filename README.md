@@ -4,13 +4,13 @@ List and diff the public API of Rust library crates between releases and commits
 
 # Installation
 
-Install the `cargo public-api` subcommand with a recent regular stable Rust toolchain:
+Install the `cargo public-api` subcommand with a recent regular **stable** Rust toolchain:
 
 ```console
 $ cargo install --locked cargo-public-api
 ```
 
-Ensure `nightly-2023-01-04` or later is installed (does not need to be the active toolchain) so `cargo public-api` can build **rustdoc JSON** for you:
+Ensure **nightly-2023-01-04** or later is installed (does not need to be the active toolchain) so `cargo public-api` can build **rustdoc JSON** for you:
 
 ```console
 $ rustup install --profile minimal nightly
@@ -22,54 +22,62 @@ $ rustup install --profile minimal nightly
 
 This example lists the public API of the ubiquitous `regex` crate. First we clone the repo:
 
-```bash
-git clone https://github.com/rust-lang/regex
-cd regex
+```console
+$ git clone https://github.com/rust-lang/regex ; cd regex
 ```
 
 Now we can list the public API of `regex` by running
 
-```bash
-cargo public-api
+```console
+$ cargo public-api
 ```
 
 which will print the public API of `regex` with one line per public item in the API:
 
-<img src="docs/img/list.jpg" alt="colored output of listing a public api">
+<img src="docs/img/list-truncated.webp" alt="colored output of listing a public api">
 
 ## Diff the Public API
 
-To diff the API between say **0.2.2** and **0.2.3** of `regex`, use `diff 0.2.2..0.2.3` while standing in the git repo. Like this:
+### … Against a Specific Published Version
 
-```bash
-cargo public-api diff 0.2.2..0.2.3
+To diff the public API of the `regex` crate in the **current directory** against  **published version 1.6.0** on [crates.io](https://crates.io/crates/regex/1.6.0):
+
+```console
+$ cargo public-api diff 1.6.0
 ```
 
-and the API diff will be printed:
+<img src="docs/img/diff-specific-published-version.webp" alt="colored output of diffing a public api">
 
-<img src="docs/img/diff.jpg" alt="colored output of diffing a public api">
 
-### … of Your Current Branch
+### … Against the Latest Published Version
 
-When you make changes to your library you often want to make sure that you do not accidentally change the public API of your library, or that the API change you are making looks like you expect. For this use case, first git commit your work in progress, and then run
+```console
+$ cargo public-api diff latest
+Resolved `diff latest` to `diff 1.7.1`
 
-```bash
-cargo public-api diff origin/main..your-current-branch
+Removed items from the public API
+=================================
+(none)
+
+Changed items in the public API
+===============================
+(none)
+
+Added items to the public API
+=============================
+(none)
 ```
 
-which will print the diff of your public API changes compared to `origin/main`.
+### … Between Git Refs
+
+```console
+$ cargo public-api diff ref1..ref2
+...
+```
 
 ### … as a CI Check
 
 This tool can be put to good use in CI pipelines to e.g. help you make sure your public API is not unexpectedly changed. Please see [CI-EXAMPLES.md](./docs/CI-EXAMPLES.md) for CI job configuration examples and use cases.
-
-### … Against Published Version
-
-Before you `cargo publish` a new version of your crate, you can diff the public API of your local code against the public API of the version you last published. Use the `diff <VERSION>` syntax for that. Like this:
-
-```bash
-cargo public-api diff 0.2.2
-```
 
 ## Expected Output
 
@@ -82,7 +90,7 @@ where
     P: AsRef<Path>,
 ```
 
-and `cargo public-api` represents this item in the following manner:
+and `cargo public-api` renders this item in the following way:
 
 ```
 pub fn bat::PrettyPrinter::input_files<I, P>(&mut self, paths: I) -> &mut Self where I: IntoIterator<Item = P>, P: AsRef<Path>

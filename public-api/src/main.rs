@@ -32,7 +32,7 @@ struct Args {
 fn main_() -> Result<()> {
     let args = args();
     if args.print_minimum_rustdoc_json_version {
-        println!("{}", MINIMUM_RUSTDOC_JSON_VERSION);
+        println!("{MINIMUM_RUSTDOC_JSON_VERSION}");
         return Ok(());
     }
 
@@ -60,7 +60,7 @@ fn main_() -> Result<()> {
 
 fn print_public_api(path: &Path, options: Options) -> Result<()> {
     for public_item in PublicApi::from_rustdoc_json(path, options)?.items() {
-        writeln!(std::io::stdout(), "{}", public_item)?;
+        writeln!(std::io::stdout(), "{public_item}")?;
     }
 
     Ok(())
@@ -84,14 +84,14 @@ fn print_diff_with_headers(
     header_added: &str,
 ) -> std::io::Result<()> {
     print_items_with_header(w, header_removed, &diff.removed, |w, item| {
-        writeln!(w, "-{}", item)
+        writeln!(w, "-{item}")
     })?;
     print_items_with_header(w, header_changed, &diff.changed, |w, item| {
         writeln!(w, "-{}", item.old)?;
         writeln!(w, "+{}", item.new)
     })?;
     print_items_with_header(w, header_added, &diff.added, |w, item| {
-        writeln!(w, "+{}", item)
+        writeln!(w, "+{item}")
     })?;
 
     Ok(())
@@ -103,7 +103,7 @@ fn print_items_with_header<W: std::io::Write, T>(
     items: &[T],
     print_fn: impl Fn(&mut W, &T) -> std::io::Result<()>,
 ) -> std::io::Result<()> {
-    writeln!(w, "{}", header)?;
+    writeln!(w, "{header}")?;
     if items.is_empty() {
         writeln!(w, "(nothing)")?;
     } else {

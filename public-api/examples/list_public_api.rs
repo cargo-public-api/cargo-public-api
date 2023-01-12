@@ -11,7 +11,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let public_api = PublicApi::from_rustdoc_json(json_path, Options::default())?;
 
     for public_item in public_api.items() {
-        println!("{}", public_item);
+        println!("{public_item}");
     }
 
     Ok(())

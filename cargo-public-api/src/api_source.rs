@@ -56,7 +56,7 @@ impl PublishedCrate {
 impl ApiSource for PublishedCrate {
     fn obtain_api(&self, args: &Args) -> Result<public_api::PublicApi> {
         let rustdoc_json = crate::published_crate::build_rustdoc_json(&self.version, args)?;
-        public_api_from_rustdoc_json_path(&rustdoc_json, args)
+        public_api_from_rustdoc_json_path(rustdoc_json, args)
     }
 }
 
@@ -69,7 +69,7 @@ impl Commit {
     pub fn new(args: &Args, commit_ref: &str) -> Result<Self> {
         Ok(Self {
             // Resolve the ref during creation to detect problems early
-            commit: git_utils::resolve_ref(&args.git_root()?, commit_ref)?,
+            commit: git_utils::resolve_ref(args.git_root()?, commit_ref)?,
         })
     }
 }

@@ -31,7 +31,7 @@ impl Plain {
                 if use_color {
                     writeln!(w, "-{}", color_item(item))
                 } else {
-                    writeln!(w, "-{}", item)
+                    writeln!(w, "-{item}")
                 }
             },
         )?;
@@ -65,7 +65,7 @@ impl Plain {
                 if use_color {
                     writeln!(w, "+{}", color_item(item))
                 } else {
-                    writeln!(w, "+{}", item)
+                    writeln!(w, "+{item}")
                 }
             },
         )?;
@@ -78,7 +78,7 @@ fn print_item(args: &Args, w: &mut dyn Write, item: &PublicItem) -> Result<()> {
     if color_active(args.color) {
         writeln!(w, "{}", color_item(item))
     } else {
-        writeln!(w, "{}", item)
+        writeln!(w, "{item}")
     }
 }
 
@@ -166,7 +166,7 @@ pub fn print_items_with_header<T>(
     items: &[T],
     print_fn: impl Fn(&mut dyn Write, &T) -> Result<()>,
 ) -> Result<()> {
-    writeln!(w, "{}", header)?;
+    writeln!(w, "{header}")?;
     writeln!(w, "{}", "=".repeat(header.len()))?;
     if items.is_empty() {
         writeln!(w, "(none)")?;

@@ -31,8 +31,8 @@ pub fn build_rustdoc_json(version: impl Into<String>, args: &Args) -> Result<Pat
     };
 
     write_file("lib.rs", "// empty lib")?;
-    let (manifest, needs_resolved) = manifest_for(args, &spec)?;
-    let manifest = write_file("Cargo.toml", &manifest)?;
+    let (manifest, needs_resolved) = dbg!(manifest_simple(args, &spec)?);
+    let manifest = write_file("Cargo.toml", dbg!(&manifest))?;
 
     'resolve: {
         if needs_resolved {
@@ -44,10 +44,7 @@ pub fn build_rustdoc_json(version: impl Into<String>, args: &Args) -> Result<Pat
                 break 'resolve;
             };
 
-            write_file(
-                "Cargo.toml",
-                &manifest_for_resolved(args, &spec, Some(package))?.0,
-            )?;
+            write_file("Cargo.toml", &manifest_with_info(args, &spec, package)?)?;
         }
     }
 
@@ -111,32 +108,23 @@ fn build_dir(args: &Args, spec: &PackageSpec) -> PathBuf {
     build_dir.push(spec.as_dir_name());
     build_dir
 }
-/// Create the manifest for a package given cargo cli arguments.
-///
-/// If the boolean is `true`, call `manifest_for_resolved`
-fn manifest_for(args: &Args, spec: &PackageSpec) -> Result<(String, bool)> {
-    manifest_for_resolved(args, spec, None)
+
+#[allow(clippy::trivially_copy_pass_by_ref)]
+fn is_true(b: &bool) -> bool {
+    *b
 }
 
-fn manifest_for_resolved(
-    args: &Args,
-    spec: &PackageSpec,
-    package: Option<&cargo_metadata::Package>,
-) -> Result<(String, bool)> {
-    #[allow(clippy::trivially_copy_pass_by_ref)]
-    fn is_true(b: &bool) -> bool {
-        *b
-    }
+#[derive(serde::Serialize)]
+struct Dep<'a, S: AsRef<str>> {
+    version: &'a str,
+    #[serde(skip_serializing_if = "is_true")]
+    default_features: bool,
+    #[serde(skip_serializing_if = "<[_]>::is_empty")]
+    features: &'a [S],
+}
 
-    #[derive(serde::Serialize)]
-    struct Dep<'a, S: AsRef<str>> {
-        version: &'a str,
-        #[serde(skip_serializing_if = "is_true")]
-        default_features: bool,
-        #[serde(skip_serializing_if = "<[_]>::is_empty")]
-        features: &'a [S],
-    }
-
+/// Create the manifest for a package given cargo cli arguments. Returns a boolean to signify if [`manifest_with_info`] needs to be called
+fn manifest_simple(args: &Args, spec: &PackageSpec) -> Result<(String, bool)> {
     let setup = toml::toml! {
         [package]
         name = "crate-downloader"
@@ -146,65 +134,57 @@ fn manifest_for_resolved(
         path = "lib.rs"
     };
 
-    let mut needs_resolved = false;
+    let Args {
+        features,
+        no_default_features,
+        all_features,
+        ..
+    } = args;
 
-    let dep = match (args, package) {
-        (
-            Args {
-                features,
-                all_features: false,
-                no_default_features,
-                ..
-            },
-            _,
-        ) => {
-            format!(
-                "[dependencies.{}]\n{}",
-                spec.name,
-                toml::to_string(&Dep {
-                    version: &spec.version,
-                    default_features: !no_default_features,
-                    features
-                })?
-            )
-        }
-        (
-            Args {
-                all_features: true, ..
-            },
-            None,
-        ) => {
-            needs_resolved = true;
-            format!(
-                "[dependencies.{}]\n{}",
-                spec.name,
-                toml::to_string(&Dep {
-                    version: &spec.version,
-                    default_features: true,
-                    features: &Vec::<&str>::new()
-                })?
-            )
-        }
-        (
-            Args {
-                all_features: true, ..
-            },
-            Some(package),
-        ) => {
-            needs_resolved = true;
-            format!(
-                "[dependencies.{}]\n{}",
-                spec.name,
-                toml::to_string(&Dep {
-                    version: &spec.version,
-                    default_features: true,
-                    features: &package.features.keys().collect::<Vec<_>>(),
-                })?
-            )
-        }
+    Ok((
+        format!(
+            "{setup}\n[dependencies.{}]\n{}",
+            spec.name,
+            toml::to_string(&Dep {
+                version: &spec.version,
+                default_features: !no_default_features,
+                features
+            })?
+        ),
+        *all_features,
+    ))
+}
+
+fn manifest_with_info(
+    args: &Args,
+    spec: &PackageSpec,
+    package: &cargo_metadata::Package,
+) -> Result<String> {
+    let setup = toml::toml! {
+        [package]
+        name = "crate-downloader"
+        version = "0.1.0"
+        edition = "2021"
+        [lib]
+        path = "lib.rs"
     };
 
-    Ok((format!("{setup}\n{dep}"), needs_resolved))
+    let dep = match args {
+        Args {
+            all_features: true, ..
+        } => format!(
+            "[dependencies.{}]\n{}",
+            spec.name,
+            toml::to_string(&Dep {
+                version: &spec.version,
+                default_features: true,
+                features: &package.features.keys().collect::<Vec<_>>(),
+            })?
+        ),
+        _ => manifest_simple(args, spec)?.0,
+    };
+
+    Ok(format!("{setup}\n{dep}"))
 }
 
 #[derive(Debug, PartialEq, Eq)]

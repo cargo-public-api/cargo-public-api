@@ -4,57 +4,54 @@ This document describes different ways to make use of `cargo public-api` in CI. 
 
 ## Prevent Accidental Public API Changes
 
-### With a Public API Set in Stone
+### With Blessable `cargo test`
 
-If the API is set in stone, you can use the `--deny=all` flag together with `diff ...` to deny all kinds of changes (additions, changes, removals) to your public API. A GitHub Actions job to do this for PRs would look something like this:
+The best way to version the public API of your crate - and require any changes to show up in diffs - is to write a regular `cargo test` that you run via CI along with all other tests.
 
-```yaml
-jobs:
-  deny-public-api-changes:
-    runs-on: ubuntu-latest
-    steps:
-      # Full git history needed
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+First add the latest versions of the necessary libraries to your `[dev-dependencies]`:
 
-      # Install nightly (stable is already installed)
-      - run: rustup install --profile minimal nightly
-
-      # Install and run cargo public-api and deny any API diff
-      - run: cargo install cargo-public-api
-      - run: cargo public-api diff ${GITHUB_BASE_REF}..${GITHUB_HEAD_REF} --deny=all
+```console
+$ cargo add --dev \
+    rustup-toolchain \
+    rustdoc-json \
+    public-api \
+    expect-test
 ```
 
-See `cargo public-api --help` for more variants of `--deny`.
+Then copy-paste this test to your project:
 
-### With a Changeable Public API
+```rust
+#[test]
+fn public_api() {
+    // Install a proper nightly toolchain if it is missing
+    rustup_toolchain::ensure_installed(public_api::MINIMUM_RUSTDOC_JSON_VERSION).unwrap();
 
-Sometimes you want CI to prevent accidental changes to your public API while still allowing you to easily bless changes to the public API. To do this, first write the current public API to a file:
+    // Build rustdoc JSON
+    let rustdoc_json = rustdoc_json::Builder::default()
+        .toolchain(public_api::MINIMUM_RUSTDOC_JSON_VERSION.to_owned())
+        .build()
+        .unwrap();
 
-```bash
-cargo +nightly-2022-09-28 public-api > public-api.txt
+    // Build the public API from the rustdoc JSON
+    let public_api =
+        public_api::PublicApi::from_rustdoc_json(rustdoc_json, public_api::Options::default())
+            .unwrap();
+
+    // Assert that the public API looks correct
+    expect_test::expect_file!["public-api.txt"].assert_eq(&public_api.to_string());
+}
 ```
 
-> NOTE: This example uses a fixed nightly toolchain. See [Locking](#locking) for more info.
+Before you run the test the first time you need to bless the current public API:
 
-Then create a CI job that ensures the API remains unchanged, with instructions on how to bless changes. A GitHub Actions job to do so would look something like this:
-
-```yaml
-jobs:
-  deny-public-api-changes:
-    runs-on: ubuntu-latest
-    steps:
-      # Install nightly (stable is already installed)
-      - run: rustup install --profile minimal nightly
-
-      # Install and run cargo public-api and deny any API diff
-      - run: cargo install cargo-public-api@0.22.0
-      - run: |
-          diff -u public-api.txt <(cargo +nightly-2022-08-15 public-api) ||
-              (echo '\nFAIL: Public API changed! To bless, `git commit` the result of `cargo +nightly-2022-08-15 public-api > public-api.txt`' && exit 1)
+```console
+$ UPDATE_EXPECT=1 cargo test public_api
 ```
 
-#### Locking
+Whenever you change the public API, you need to bless it again with the above command.
 
-Since the rustdoc JSON format is unstable and frequently changes across nightly toolchain versions, and since improvements to `cargo public-api` are regularly released, you probably want to lock against a specific version of `cargo public-api` and a specific version of the nightly toolchain. To find matching versions, consult the [Compatibility Matrix](../README.md#compatibility-matrix). Then use the syntax above to provision CI with these versions.
+This create a `tests/public-api.txt` file in your project that you version together with your other project files. Any changes to it (and the public API) will show up in e.g. PR diffs.
+
+### Locking
+
+Since the rustdoc JSON format is unstable and frequently changes across nightly toolchain versions, and since improvements to `cargo public-api` are regularly released, you probably want to lock against a specific version of `public-api` and a specific version of the nightly toolchain. The above example code does that. To find other matching versions, consult the [Compatibility Matrix](../README.md#compatibility-matrix).

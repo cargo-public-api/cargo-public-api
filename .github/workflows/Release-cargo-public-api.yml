@@ -5,6 +5,7 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
+  CARGO_NET_GIT_FETCH_WITH_CLI: true # Workaround from https://github.com/rust-lang/cargo/issues/11014
 
 jobs:
   ci:

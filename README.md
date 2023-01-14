@@ -20,7 +20,7 @@ $ rustup install --profile minimal nightly
 
 ## List the Public API
 
-This example lists the public API of the ubiquitous `regex` crate. First we clone the repo:
+This example lists the public API of the `regex` crate. First we clone the repo:
 
 ```console
 $ git clone https://github.com/rust-lang/regex ; cd regex
@@ -77,7 +77,51 @@ $ cargo public-api diff ref1..ref2
 
 ### … as a CI Check
 
-This tool can be put to good use in CI pipelines to e.g. help you make sure your public API is not unexpectedly changed. Please see [CI-EXAMPLES.md](./docs/CI-EXAMPLES.md) for CI job configuration examples and use cases.
+With a regular `cargo test` that you run in CI you will be able to
+* prevent accidental changes to your public API
+* review the public API diff of deliberate changes
+
+First add the latest versions of the necessary libraries to your `[dev-dependencies]`:
+
+```console
+$ cargo add --dev \
+    rustup-toolchain \
+    rustdoc-json \
+    public-api \
+    expect-test
+```
+
+Then add the following test to your project. As the author of the below test code I hereby put it in the public domain:
+
+```rust
+#[test]
+fn public_api() {
+    // Install a proper nightly toolchain if it is missing
+    rustup_toolchain::ensure_installed(public_api::MINIMUM_RUSTDOC_JSON_VERSION).unwrap();
+
+    // Build rustdoc JSON
+    let rustdoc_json = rustdoc_json::Builder::default()
+        .toolchain(public_api::MINIMUM_RUSTDOC_JSON_VERSION.to_owned())
+        .build()
+        .unwrap();
+
+    // Derive the public API from the rustdoc JSON
+    let public_api =
+        public_api::PublicApi::from_rustdoc_json(rustdoc_json, public_api::Options::default())
+            .unwrap();
+
+    // Assert that the public API looks correct
+    expect_test::expect_file!["public-api.txt"].assert_eq(&public_api.to_string());
+}
+```
+
+Before you run the test the first time you need to bless the current public API:
+
+```console
+$ UPDATE_EXPECT=1 cargo test public_api
+```
+
+This creates a `tests/public-api.txt` file in your project that you `git add` together with your other project files. Whenever you change the public API, you need to bless it again with the above command. If you forget to bless, the test will fail, together with instructions on how to bless.
 
 ## Expected Output
 

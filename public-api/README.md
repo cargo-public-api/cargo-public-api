@@ -8,7 +8,13 @@ List and diff the public API of Rust library crates by analyzing rustdoc JSON ou
 
 This library is the backbone of [`cargo public-api`](https://github.com/Enselic/cargo-public-api).
 
-# Usage
+## Usage
+
+### In CI
+
+Please see [here](../README.md#-as-a-ci-check).
+
+### CLI
 
 The library comes with a thin bin wrapper that can be used to explore the capabilities of this library.
 
@@ -22,7 +28,7 @@ Ensure a [recent enough](https://github.com/Enselic/cargo-public-api#compatibili
 ```
 $ rustup install --profile minimal nightly
 ```
-## List the public API
+#### List the public API
 
 First you need to build **rustdoc JSON** for your own Rust library:
 ```console
@@ -38,7 +44,7 @@ pub struct Foo
 ...
 ```
 
-## Diff the public API
+#### Diff the public API
 
 Seriously, use `cargo public-api` for diffing. It has many more diffing capabilities and features. If you insist, you _can_ use `public-api` for diffing. Pass two different **rustdoc JSON** files for two different versions of your library to print the public API diff between them:
 
@@ -55,10 +61,10 @@ Added:
 (nothing)
 ```
 
-# Library documentation
+## Library documentation
 
-Documentation can be found at [docs.rs](https://docs.rs/public-api/latest/public-api/) as usual. There are also some simple [examples](https://github.com/Enselic/cargo-public-api/tree/main/public-api/examples) on how to use the library. The code for the [thin bin wrapper](https://github.com/Enselic/cargo-public-api/blob/main/public-api/src/main.rs) might also be of interest.
+Documentation can be found at [docs.rs](https://docs.rs/public-api/latest/public_api/index.html) as usual. There are also some simple [examples](https://github.com/Enselic/cargo-public-api/tree/main/public-api/examples) on how to use the library. The code for the [thin bin wrapper](https://github.com/Enselic/cargo-public-api/blob/main/public-api/src/main.rs) might also be of interest. Don't forget to learn how to use this library in CI via [`cargo test`](https://github.com/Enselic/cargo-public-api#-as-a-ci-check)
 
-# Changelog
+## Changelog
 
 Please refer to [CHANGELOG.md](https://github.com/Enselic/cargo-public-api/blob/main/public-api/CHANGELOG.md)

@@ -141,11 +141,13 @@ fn get_options(args: &Args) -> Options {
 /// Creates a rustdoc JSON builder based on the args to this program.
 pub fn builder_from_args(args: &Args) -> rustdoc_json::Builder {
     let mut builder = rustdoc_json::Builder::default()
-        .toolchain(args.toolchain.clone())
         .manifest_path(&args.manifest_path)
         .all_features(args.all_features)
         .no_default_features(args.no_default_features)
         .features(&args.features);
+    if let Some(toolchain) = &args.toolchain {
+        builder = builder.toolchain(toolchain);
+    }
     if let Some(target_dir) = &args.target_dir {
         builder = builder.target_dir(target_dir.clone());
     }

@@ -739,7 +739,7 @@ dependencies = [
 
 [[package]]
 name = "rustup-toolchain"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "expect-test",
  "public-api",

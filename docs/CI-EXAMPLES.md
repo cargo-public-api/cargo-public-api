@@ -32,7 +32,7 @@ fn public_api() {
         .build()
         .unwrap();
 
-    // Build the public API from the rustdoc JSON
+    // Derive the public API from the rustdoc JSON
     let public_api =
         public_api::PublicApi::from_rustdoc_json(rustdoc_json, public_api::Options::default())
             .unwrap();
@@ -54,4 +54,4 @@ This create a `tests/public-api.txt` file in your project that you version toget
 
 ### Locking
 
-Since the rustdoc JSON format is unstable and frequently changes across nightly toolchain versions, and since improvements to `cargo public-api` are regularly released, you probably want to lock against a specific version of `public-api` and a specific version of the nightly toolchain. The above example code does that. To find other matching versions, consult the [Compatibility Matrix](../README.md#compatibility-matrix).
+Since the rustdoc JSON format is unstable and frequently changes across nightly toolchain versions, and since improvements to `cargo public-api` are regularly released, you probably want to lock against a specific `0.y.z` version of `public-api` and a specific version of the nightly toolchain. The above example code does that. To find other matching versions, consult the [Compatibility Matrix](../README.md#compatibility-matrix).

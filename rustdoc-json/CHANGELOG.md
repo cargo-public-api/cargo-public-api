@@ -1,4 +1,8 @@
-## Unreleased v0.8.0
+# rustdoc-json
+
+If a version is not listed below, it means it had no API changes.
+
+## v0.8.0
 * Change `Builder::toolchain(...)` to take `Into<String>` instead of `Into<Option<String>>` to make client code nicer in 99% of cases. Introduce `Builder::clear_toolchain()` for the 1%.
 
 ## v0.7.4

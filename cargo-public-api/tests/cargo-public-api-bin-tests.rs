@@ -18,7 +18,7 @@ use assert_cmd::assert::Assert;
 use assert_cmd::Command;
 use predicates::str::contains;
 
-use public_api::MINIMUM_RUSTDOC_JSON_VERSION;
+use public_api::MINIMUM_NIGHTLY_VERSION;
 use tempfile::tempdir;
 
 #[path = "../src/git_utils.rs"] // Say NO to copy-paste!
@@ -213,10 +213,10 @@ fn subcommand_invocation_public_api_arg() {
 /// required for tests is not the same as required for users, so allow tests to
 /// use a different toolchain if needed
 fn get_minimum_toolchain() -> String {
-    std::fs::read_to_string("../cargo-public-api/MINIMUM_RUSTDOC_JSON_VERSION_FOR_TESTS")
+    std::fs::read_to_string("../cargo-public-api/MINIMUM_NIGHTLY_VERSION_FOR_TESTS")
         .map(|s| s.trim().to_owned())
         .ok()
-        .unwrap_or_else(|| MINIMUM_RUSTDOC_JSON_VERSION.to_owned())
+        .unwrap_or_else(|| MINIMUM_NIGHTLY_VERSION.to_owned())
 }
 
 #[test]

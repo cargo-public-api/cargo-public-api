@@ -4,7 +4,7 @@ use anyhow::{anyhow, Context, Result};
 use rustdoc_json::BuildError;
 use std::path::{Path, PathBuf};
 
-use public_api::{Options, PublicApi, MINIMUM_RUSTDOC_JSON_VERSION};
+use public_api::{Options, PublicApi, MINIMUM_NIGHTLY_VERSION};
 
 use crate::{git_utils, Args};
 
@@ -182,7 +182,7 @@ fn public_api_from_rustdoc_json_path(
             to install the latest version with `cargo install cargo-public-api`. If the\n\
             issue remains, please report at\n\n    https://github.com/Enselic/cargo-public-api/issues",
             json_path.as_ref(),
-            MINIMUM_RUSTDOC_JSON_VERSION,
+            MINIMUM_NIGHTLY_VERSION,
         )
     })?;
 

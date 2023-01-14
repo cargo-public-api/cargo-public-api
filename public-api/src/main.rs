@@ -8,7 +8,7 @@ use std::io::{stdout, ErrorKind, Write};
 use std::path::{Path, PathBuf};
 
 use public_api::diff::PublicApiDiff;
-use public_api::{Options, PublicApi, MINIMUM_RUSTDOC_JSON_VERSION};
+use public_api::{Options, PublicApi, MINIMUM_NIGHTLY_VERSION};
 
 #[derive(thiserror::Error, Debug)]
 enum Error {
@@ -25,14 +25,14 @@ type Result<T> = std::result::Result<T, Error>;
 struct Args {
     help: bool,
     simplified: bool,
-    print_minimum_rustdoc_json_version: bool,
+    print_minimum_nightly_version: bool,
     files: Vec<PathBuf>,
 }
 
 fn main_() -> Result<()> {
     let args = args();
-    if args.print_minimum_rustdoc_json_version {
-        println!("{MINIMUM_RUSTDOC_JSON_VERSION}");
+    if args.print_minimum_nightly_version {
+        println!("{MINIMUM_NIGHTLY_VERSION}");
         return Ok(());
     }
 
@@ -144,7 +144,7 @@ commit and then pass the path of both files to this utility:
 
 ",
         env!("CARGO_PKG_VERSION"),
-        MINIMUM_RUSTDOC_JSON_VERSION,
+        MINIMUM_NIGHTLY_VERSION,
     )
 }
 
@@ -163,8 +163,8 @@ fn args() -> Args {
     for arg in std::env::args_os().skip(1) {
         if arg == "--simplified" {
             args.simplified = true;
-        } else if arg == "--print-minimum-rustdoc-json-version" {
-            args.print_minimum_rustdoc_json_version = true;
+        } else if arg == "--print-minimum-nightly-version" {
+            args.print_minimum_nightly_version = true;
         } else if arg == "--help" || arg == "-h" {
             args.help = true;
         } else {

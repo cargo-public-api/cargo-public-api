@@ -27,7 +27,7 @@ jobs:
 
   # If Rust nightly changes output, auto-create a PR with the new blessed
   # output, which maintainers can conveniently merge after manual review. Note
-  # that we must also bump MINIMUM_RUSTDOC_JSON_VERSION_FOR_TESTS to this
+  # that we must also bump MINIMUM_NIGHTLY_VERSION_FOR_TESTS to this
   # version, otherwise tests will fail.
   auto-bless:
     environment:
@@ -42,7 +42,7 @@ jobs:
       - id: latest-nightly
         run: echo "version=nightly-$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
       - run: |
-          [ -z "$(git status --porcelain)" ] || echo "${{ steps.latest-nightly.outputs.version }}" > cargo-public-api/MINIMUM_RUSTDOC_JSON_VERSION_FOR_TESTS
+          [ -z "$(git status --porcelain)" ] || echo "${{ steps.latest-nightly.outputs.version }}" > cargo-public-api/MINIMUM_NIGHTLY_VERSION_FOR_TESTS
       - uses: peter-evans/create-pull-request@v4
         with:
           title: Bless `${{ steps.latest-nightly.outputs.version }}` output

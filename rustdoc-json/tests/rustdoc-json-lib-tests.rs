@@ -9,7 +9,7 @@ fn public_api() -> Result<(), Box<dyn std::error::Error>> {
 
     let public_api = PublicApi::from_rustdoc_json(rustdoc_json, Options::default())?;
 
-    expect_test::expect_file!["../public-api.txt"].assert_eq(&public_api.to_string());
+    expect_test::expect_file!["public-api.txt"].assert_eq(&public_api.to_string());
 
     Ok(())
 }

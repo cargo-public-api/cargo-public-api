@@ -3,7 +3,7 @@ use public_api::{Options, PublicApi};
 #[test]
 fn public_api() -> Result<(), Box<dyn std::error::Error>> {
     let rustdoc_json = rustdoc_json::Builder::default()
-        .toolchain("nightly".to_owned())
+        .toolchain("nightly")
         .build()?;
 
     let public_api = PublicApi::from_rustdoc_json(rustdoc_json, Options::default())?;

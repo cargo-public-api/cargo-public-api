@@ -85,6 +85,7 @@ pub const fn rustdoc_json::Builder::all_features(self, all_features: bool) -> Se
 pub fn rustdoc_json::Builder::build(self) -> core::result::Result<std::path::PathBuf, rustdoc_json::BuildError>
 pub fn rustdoc_json::Builder::cap_lints(self, cap_lints: core::option::Option<impl core::convert::AsRef<str>>) -> Self
 pub fn rustdoc_json::Builder::clear_target_dir(self) -> Self
+pub fn rustdoc_json::Builder::clear_toolchain(self) -> Self
 pub fn rustdoc_json::Builder::document_private_items(self, document_private_items: bool) -> Self
 pub fn rustdoc_json::Builder::features<I: core::iter::traits::collect::IntoIterator<Item = S>, S: core::convert::AsRef<str>>(self, features: I) -> Self
 pub fn rustdoc_json::Builder::manifest_path(self, manifest_path: impl core::convert::AsRef<std::path::Path>) -> Self
@@ -95,7 +96,7 @@ pub const fn rustdoc_json::Builder::quiet(self, quiet: bool) -> Self
 pub const fn rustdoc_json::Builder::silent(self, silent: bool) -> Self
 pub fn rustdoc_json::Builder::target(self, target: alloc::string::String) -> Self
 pub fn rustdoc_json::Builder::target_dir(self, target_dir: impl core::convert::AsRef<std::path::Path>) -> Self
-pub fn rustdoc_json::Builder::toolchain(self, toolchain: impl core::convert::Into<core::option::Option<alloc::string::String>>) -> Self
+pub fn rustdoc_json::Builder::toolchain(self, toolchain: impl core::convert::Into<alloc::string::String>) -> Self
 impl core::default::Default for rustdoc_json::Builder
 pub fn rustdoc_json::Builder::default() -> Self
 impl core::clone::Clone for rustdoc_json::Builder

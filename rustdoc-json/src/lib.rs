@@ -6,7 +6,7 @@
 //!
 //! ```no_run
 //! let json_path = rustdoc_json::Builder::default()
-//!     .toolchain("nightly".to_owned())
+//!     .toolchain("nightly")
 //!     .manifest_path("Cargo.toml")
 //!     .build()
 //!     .unwrap();

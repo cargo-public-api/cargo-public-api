@@ -16,7 +16,7 @@ pub fn rustdoc_json_path_for_crate(
 
     rustdoc_json::Builder::default()
         .manifest_path(&manifest_path)
-        .toolchain("nightly".to_owned())
+        .toolchain("nightly")
         .target_dir(target_dir)
         .quiet(true)
         .build()

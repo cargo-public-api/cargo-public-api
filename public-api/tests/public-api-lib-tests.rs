@@ -17,7 +17,7 @@ use common::{rustdoc_json_path_for_crate, rustdoc_json_path_for_temp_crate};
 #[test]
 fn public_api() -> Result<(), Box<dyn std::error::Error>> {
     let rustdoc_json = rustdoc_json::Builder::default()
-        .toolchain("nightly".to_owned())
+        .toolchain("nightly")
         .build()?;
 
     let public_api = PublicApi::from_rustdoc_json(rustdoc_json, Options::default())?;

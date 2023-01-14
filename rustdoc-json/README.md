@@ -8,7 +8,7 @@ To build rustdoc JSON for a library with the manifest path `project/Cargo.toml`,
 
 ```rust
 let json_path = rustdoc_json::Builder::default()
-    .toolchain("nightly".to_owned())
+    .toolchain("nightly")
     .manifest_path("project/Cargo.toml")
     .build()
     .unwrap();

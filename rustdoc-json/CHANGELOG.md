@@ -1,3 +1,6 @@
+## Unreleased v0.8.0
+* Change `Builder::toolchain(...)` to take `Into<String>` instead of `Into<Option<String>>` to make client code nicer in 99% of cases. Introduce `Builder::clear_toolchain()` for the 1%.
+
 ## v0.7.4
 * Correctly determine json path for `Builder::default().package("crate@1.0.0")`
 * Add `Builder::package_target()` and `PackageTarget`

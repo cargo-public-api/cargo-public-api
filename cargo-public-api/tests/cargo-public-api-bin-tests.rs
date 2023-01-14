@@ -900,7 +900,7 @@ fn rustdoc_json_builder_for_crate(
 ) -> rustdoc_json::Builder {
     rustdoc_json::Builder::default()
         .manifest_path(format!("{test_crate}/Cargo.toml"))
-        .toolchain("nightly".to_owned())
+        .toolchain("nightly")
         .target_dir(target_dir)
         .quiet(true)
 }

@@ -34,7 +34,6 @@ jobs:
             echo "Version mismatch! Keep public-api and cargo-public-api versions in sync before you release! $version != $version2"
             exit 42
           fi
-          echo "VERSION=${version}" >> $GITHUB_OUTPUT
           echo "GIT_TAG=v${version}" >> $GITHUB_OUTPUT
 
       # Try to cargo publish public-api. If this succeeds we will tag the
@@ -49,12 +48,6 @@ jobs:
         run: |
           git tag ${{ steps.version.outputs.GIT_TAG }}
           git push origin ${{ steps.version.outputs.GIT_TAG }}
-
-      # Wait for the public-api release to appear. Before it appears, we can't
-      # publish cargo-public-api.
-      - name: wait for public-api crate
-        run: |
-          ./scripts/wait-for-crate-version.sh public-api ${{ steps.version.outputs.VERSION }}
 
       # Now before we also create a GitHub Release, also try to cargo publish
       # cargo-public-api.

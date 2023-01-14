@@ -93,6 +93,7 @@ $ cargo add --dev \
 
 Then add the following test to your project. As the author of the below test code I hereby put it in the public domain:
 
+<!-- Keep this code in sync with the code in ./rustup-toolchain/tests/rustup-toolchain-lib-tests.rs -->
 ```rust
 #[test]
 fn public_api() {

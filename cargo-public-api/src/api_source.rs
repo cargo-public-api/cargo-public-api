@@ -4,7 +4,7 @@ use anyhow::{anyhow, Context, Result};
 use rustdoc_json::BuildError;
 use std::path::{Path, PathBuf};
 
-use public_api::{Options, PublicApi, MINIMUM_NIGHTLY_VERSION};
+use public_api::{PublicApi, MINIMUM_NIGHTLY_VERSION};
 
 use crate::{git_utils, Args, Subcommand};
 
@@ -126,16 +126,12 @@ pub fn build_rustdoc_json(builder: rustdoc_json::Builder) -> Result<PathBuf> {
     }
 }
 
-/// Figure out what [`Options`] to pass to
-/// [`public_api::PublicApi::from_rustdoc_json`] based on our
-/// [`Args`]
-fn get_options(args: &Args) -> Options {
-    let mut options = Options::default();
-    options.debug_sorting = args.debug_sorting;
-    options.omit_blanket_impls = args.omit_blanket_impls();
-    options.omit_auto_trait_impls = args.omit_auto_trait_impls();
-    options.omit_auto_derived_impls = args.omit_auto_derived_impls();
-    options
+fn public_api_builder_from_args(rustdoc_json: &Path, args: &Args) -> public_api::Builder {
+    public_api::Builder::from_rustdoc_json(rustdoc_json)
+        .debug_sorting(args.debug_sorting)
+        .omit_blanket_impls(args.omit_blanket_impls())
+        .omit_auto_trait_impls(args.omit_auto_trait_impls())
+        .omit_auto_derived_impls(args.omit_auto_derived_impls())
 }
 
 /// Creates a rustdoc JSON builder based on the args to this program.
@@ -170,13 +166,11 @@ pub fn builder_from_args(args: &Args) -> rustdoc_json::Builder {
 fn public_api_from_rustdoc_json(path: impl AsRef<Path>, args: &Args) -> Result<PublicApi> {
     let json_path = path.as_ref();
 
-    let options = get_options(args);
-
     if args.verbose {
         println!("Processing {json_path:?}");
     }
 
-    let public_api = PublicApi::from_rustdoc_json(json_path, options).with_context(|| {
+    let public_api = public_api_builder_from_args(json_path, args).build().with_context(|| {
         format!(
             "Failed to parse rustdoc JSON at {json_path:?}.\n\
             This version of `cargo public-api` requires at least:\n\n    {MINIMUM_NIGHTLY_VERSION}\n\n\

@@ -5,20 +5,12 @@
 //! If you want a convenient CLI for this library, you should use [cargo
 //! public-api](https://github.com/Enselic/cargo-public-api).
 //!
-//! As input to the library, a special output format from `cargo doc` is used,
-//! which goes by the name **rustdoc JSON**. Currently, only `cargo doc` from
-//! the Nightly toolchain can produce **rustdoc JSON** for a library. You build
-//! **rustdoc JSON** like this:
+//! As input to the library, a special output format from `rustdoc +nightly` is
+//! used, which goes by the name **rustdoc JSON**. Currently, only the nightly
+//! toolchain can build **rustdoc JSON**.
 //!
-//! ```bash
-//! cargo +nightly rustdoc --lib -- -Z unstable-options --output-format json
-//! ```
-//!
-//! Consider using [`rustdoc_json`](https://crates.io/crates/rustdoc_json)
-//! instead of invoking the above command yourself.
-//!
-//! The main entry point to the library is [`PublicApi::from_rustdoc_json_str`],
-//! so please read its documentation.
+//! You use the [`rustdoc-json`](https://crates.io/crates/rustdoc_json) library
+//! to programmatically build rustdoc JSON. See below for example code.
 //!
 //! # Examples
 //!
@@ -34,10 +26,6 @@
 //! ```no_run
 #![doc = include_str!("../examples/diff_public_api.rs")]
 //! ```
-//!
-//! The most comprehensive example code on how to use the library can be found
-//! in the thin binary wrapper around the library, see
-//! <https://github.com/Enselic/cargo-public-api/blob/main/public-api/src/main.rs>.
 
 // deny in CI, only warn here
 #![warn(clippy::all, clippy::pedantic, missing_docs)]
@@ -52,7 +40,7 @@ pub mod tokens;
 
 pub mod diff;
 
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 // Documented at the definition site so cargo doc picks it up
 pub use error::{Error, Result};
@@ -74,11 +62,44 @@ pub const MINIMUM_NIGHTLY_VERSION: &str = "nightly-2023-01-04";
 #[deprecated(since = "0.27.0", note = "Use MINIMUM_NIGHTLY_VERSION instead")]
 pub const MINIMUM_RUSTDOC_JSON_VERSION: &str = MINIMUM_NIGHTLY_VERSION;
 
-/// Contains various options that you can pass to [`PublicApi::from_rustdoc_json`].
+/// See [`Builder`] method docs for what each field means.
 #[derive(Copy, Clone, Debug)]
-#[non_exhaustive] // More options are likely to be added in the future
 #[allow(clippy::struct_excessive_bools)]
-pub struct Options {
+struct BuilderOptions {
+    sorted: bool,
+    debug_sorting: bool,
+    omit_blanket_impls: bool,
+    omit_auto_trait_impls: bool,
+    omit_auto_derived_impls: bool,
+}
+
+/// Builds [`PublicApi`]s. See the [top level][`crate`] module docs for example
+/// code.
+#[derive(Debug, Clone)]
+#[allow(clippy::struct_excessive_bools)]
+pub struct Builder {
+    source: BuilderSource,
+    options: BuilderOptions,
+}
+
+impl Builder {
+    /// Create a new [`PublicApi`] builder from a rustdoc JSON file. See the
+    /// [top level][`crate`] module docs for example code.
+    #[must_use]
+    pub fn from_rustdoc_json(path: impl Into<PathBuf>) -> Self {
+        let options = BuilderOptions {
+            sorted: true,
+            debug_sorting: false,
+            omit_blanket_impls: false,
+            omit_auto_trait_impls: false,
+            omit_auto_derived_impls: false,
+        };
+        Self {
+            source: BuilderSource::RustdocJson(path.into()),
+            options,
+        }
+    }
+
     /// If `true`, items will be sorted before being returned. If you will pass
     /// on the return value to [`diff::PublicApiDiff::between`], it is
     /// currently unnecessary to sort first, because the sorting will be
@@ -86,13 +107,21 @@ pub struct Options {
     ///
     /// The default value is `true`, because usually the performance impact is
     /// negligible, and is is generally more practical to work with sorted data.
-    pub sorted: bool,
+    #[must_use]
+    pub fn sorted(mut self, sorted: bool) -> Self {
+        self.options.sorted = sorted;
+        self
+    }
 
     /// If `true`, item paths include the so called "sorting prefix" that makes
     /// them grouped in a nice way. Only intended for debugging this library.
     ///
     /// The default value is `false`
-    pub debug_sorting: bool,
+    #[must_use]
+    pub fn debug_sorting(mut self, debug_sorting: bool) -> Self {
+        self.options.debug_sorting = debug_sorting;
+        self
+    }
 
     /// If `true`, items that belongs to Blanket Implementations are omitted
     /// from the output. This makes the output less noisy, at the cost of not
@@ -103,7 +132,11 @@ pub struct Options {
     ///
     /// The default value is `false` so that the listed public API is complete
     /// by default.
-    pub omit_blanket_impls: bool,
+    #[must_use]
+    pub fn omit_blanket_impls(mut self, omit_blanket_impls: bool) -> Self {
+        self.options.omit_blanket_impls = omit_blanket_impls;
+        self
+    }
 
     /// If `true`, items that belongs to Auto Trait Implementations are omitted
     /// from the output. This makes the output less noisy, at the cost of not
@@ -114,7 +147,11 @@ pub struct Options {
     ///
     /// The default value is `false` so that the listed public API is complete
     /// by default.
-    pub omit_auto_trait_impls: bool,
+    #[must_use]
+    pub fn omit_auto_trait_impls(mut self, omit_auto_trait_impls: bool) -> Self {
+        self.options.omit_auto_trait_impls = omit_auto_trait_impls;
+        self
+    }
 
     /// If `true`, items that belongs to automatically derived implementations
     /// (`Clone`, `Debug`, `Eq`, etc) are omitted from the output. This makes
@@ -123,33 +160,32 @@ pub struct Options {
     ///
     /// The default value is `false` so that the listed public API is complete
     /// by default.
-    pub omit_auto_derived_impls: bool,
-}
+    #[must_use]
+    pub fn omit_auto_derived_impls(mut self, omit_auto_derived_impls: bool) -> Self {
+        self.options.omit_auto_derived_impls = omit_auto_derived_impls;
+        self
+    }
 
-/// Enables options to be set up like this (note that `Options` is marked
-/// `#[non_exhaustive]`):
-///
-/// ```
-/// # use public_api::Options;
-/// let mut options = Options::default();
-/// options.sorted = true;
-/// // ...
-/// ```
-impl Default for Options {
-    fn default() -> Self {
-        Self {
-            sorted: true,
-            debug_sorting: false,
-            omit_blanket_impls: false,
-            omit_auto_trait_impls: false,
-            omit_auto_derived_impls: false,
-        }
+    /// Builds [`PublicApi`]. See the [top level][`crate`] module docs for
+    /// example code.
+    ///
+    /// # Errors
+    ///
+    /// E.g. if the [JSON](Builder::from_rustdoc_json) is invalid or if the file
+    /// can't be read.
+    pub fn build(self) -> Result<PublicApi> {
+        let s = match &self.source {
+            BuilderSource::RustdocJson(path) => std::fs::read_to_string(path)?,
+            BuilderSource::RustdocJsonStr(s) => s.clone(),
+        };
+
+        from_rustdoc_json_str(s, self.options)
     }
 }
 
 /// The public API of a crate
 ///
-/// Create an instance with [`PublicApi::from_rustdoc_json()`].
+/// Create an instance with [`Builder`].
 ///
 /// ## Rendering the items
 ///
@@ -159,12 +195,12 @@ impl Default for Options {
 /// [`rustdoc_json`](https://crates.io/crates/rustdoc_json) or by calling `cargo rustdoc` yourself.
 ///
 /// ```no_run
-/// use public_api::{PublicApi, Options};
+/// use public_api::PublicApi;
+/// use std::path::PathBuf;
 ///
-/// # let rustdoc_json_str: String = todo!();
-/// let options = Options::default();
+/// # let rustdoc_json: PathBuf = todo!();
 /// // Gather the rustdoc content as described in this crates top-level documentation.
-/// let public_api = PublicApi::from_rustdoc_json_str(&rustdoc_json_str, options)?;
+/// let public_api = public_api::Builder::from_rustdoc_json(&rustdoc_json).build()?;
 ///
 /// for public_item in public_api.items() {
 ///     // here we print the items to stdout, we could also write to a string or a file.
@@ -214,9 +250,18 @@ impl PublicApi {
     /// # Errors
     ///
     /// E.g. if the JSON is invalid or if the file can't be read.
+    #[deprecated(
+        since = "0.27.4",
+        note = "Use `public_api::Builder::from_rustdoc_json(path).option1(arg1).option2(arg2)...` instead."
+    )]
+    #[allow(deprecated)]
+    #[allow(clippy::needless_pass_by_value)] // For API backwards compatibility
     pub fn from_rustdoc_json(path: impl AsRef<Path>, options: Options) -> Result<PublicApi> {
-        #[allow(deprecated)]
-        Self::from_rustdoc_json_str(std::fs::read_to_string(path)?, options)
+        Builder {
+            source: BuilderSource::RustdocJson(path.as_ref().to_owned()),
+            options: options.into(),
+        }
+        .build()
     }
 
     /// Same as [`Self::from_rustdoc_json`], but the rustdoc JSON is read from a
@@ -229,11 +274,17 @@ impl PublicApi {
         since = "0.27.1",
         note = "If you need this edge case API, you need to write your JSON to a temporary file and then use `PublicApi::from_rustdoc_json()` instead."
     )]
+    #[allow(deprecated)]
+    #[allow(clippy::needless_pass_by_value)] // For API backwards compatibility
     pub fn from_rustdoc_json_str(
         rustdoc_json_str: impl AsRef<str>,
         options: Options,
     ) -> Result<PublicApi> {
-        from_rustdoc_json_str(rustdoc_json_str, options)
+        Builder {
+            source: BuilderSource::RustdocJsonStr(rustdoc_json_str.as_ref().to_owned()),
+            options: options.into(),
+        }
+        .build()
     }
 
     /// Returns an iterator over all public items in the public API
@@ -272,7 +323,10 @@ impl std::fmt::Display for PublicApi {
     }
 }
 
-fn from_rustdoc_json_str(rustdoc_json_str: impl AsRef<str>, options: Options) -> Result<PublicApi> {
+fn from_rustdoc_json_str(
+    rustdoc_json_str: impl AsRef<str>,
+    options: BuilderOptions,
+) -> Result<PublicApi> {
     let crate_ = deserialize_without_recursion_limit(rustdoc_json_str.as_ref())?;
 
     let mut public_api = item_processor::public_api_in_crate(&crate_, options);
@@ -291,4 +345,58 @@ fn deserialize_without_recursion_limit(rustdoc_json_str: &str) -> Result<rustdoc
     let mut deserializer = serde_json::Deserializer::from_str(rustdoc_json_str);
     deserializer.disable_recursion_limit();
     Ok(serde::de::Deserialize::deserialize(&mut deserializer)?)
+}
+
+/// Temporary enum until we have removed [`PublicApi::from_rustdoc_json_str`]
+#[derive(Debug, Clone)]
+enum BuilderSource {
+    RustdocJson(PathBuf),
+    RustdocJsonStr(String),
+}
+
+/// Deprecated. Use [`public_api::Builder`](crate::Builder) instead.
+#[derive(Debug, Clone, Copy)]
+#[allow(clippy::struct_excessive_bools)]
+#[non_exhaustive]
+#[deprecated(
+    since = "0.27.4",
+    note = "Use `public_api::Builder::from_rustdoc_json(path).option1(arg1).option2(arg2)...` instead."
+)]
+pub struct Options {
+    /// Deprecated. Use [`crate::Builder::sorted`] instead.
+    pub sorted: bool,
+    /// Deprecated. Use [`crate::Builder::debug_sorting`] instead.
+    pub debug_sorting: bool,
+    /// Deprecated. Use [`crate::Builder::omit_blanket_impls`] instead.
+    pub omit_blanket_impls: bool,
+    /// Deprecated. Use [`crate::Builder::omit_auto_trait_impls`] instead.
+    pub omit_auto_trait_impls: bool,
+    /// Deprecated. Use [`crate::Builder::omit_auto_derived_impls`] instead.
+    pub omit_auto_derived_impls: bool,
+}
+
+#[allow(deprecated)]
+impl Default for Options {
+    fn default() -> Self {
+        Self {
+            sorted: true,
+            debug_sorting: false,
+            omit_blanket_impls: false,
+            omit_auto_trait_impls: false,
+            omit_auto_derived_impls: false,
+        }
+    }
+}
+
+#[allow(deprecated)]
+impl From<Options> for BuilderOptions {
+    fn from(options: Options) -> Self {
+        Self {
+            sorted: options.sorted,
+            debug_sorting: options.debug_sorting,
+            omit_blanket_impls: options.omit_blanket_impls,
+            omit_auto_trait_impls: options.omit_auto_trait_impls,
+            omit_auto_derived_impls: options.omit_auto_derived_impls,
+        }
+    }
 }

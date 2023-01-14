@@ -2,6 +2,25 @@
 
 use std::path::{Path, PathBuf};
 
+pub fn builder_for_crate(
+    test_crate: impl AsRef<Path>,
+    target_dir: impl AsRef<Path>,
+) -> public_api::Builder {
+    let json = rustdoc_json_path_for_crate(test_crate, target_dir);
+    public_api::Builder::from_rustdoc_json(json)
+}
+
+/// Returns a builder for a so called "simplified" API, which is an API without
+/// Auto Trait or Blanket impls, to reduce public item noise.
+pub fn simplified_builder_for_crate(
+    test_crate: impl AsRef<Path>,
+    target_dir: impl AsRef<Path>,
+) -> public_api::Builder {
+    builder_for_crate(test_crate, target_dir)
+        .omit_blanket_impls(true)
+        .omit_auto_trait_impls(true)
+}
+
 /// Builds rustdoc JSON for the given test crate.
 ///
 /// Output of child processes are not captured by the Rust test framework (see

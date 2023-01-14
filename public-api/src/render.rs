@@ -1,8 +1,7 @@
 #![allow(clippy::unused_self)]
-use crate::{
-    intermediate_public_item::{IntermediatePublicItem, NameableItem},
-    Options,
-};
+use crate::intermediate_public_item::{IntermediatePublicItem, NameableItem};
+use crate::tokens::Token;
+use crate::BuilderOptions as Options;
 use std::ops::Deref;
 use std::{cmp::Ordering, collections::HashMap, vec};
 
@@ -20,8 +19,6 @@ macro_rules! ws {
     };
 }
 
-use crate::tokens::Token;
-
 /// When we render an item, it might contain references to other parts of the
 /// public API. For such cases, the rendering code can use the fields in this
 /// struct.
@@ -32,7 +29,7 @@ pub struct RenderingContext<'c> {
     /// Given a rustdoc JSON ID, keeps track of what public items that have this Id.
     pub id_to_items: HashMap<&'c Id, Vec<&'c IntermediatePublicItem<'c>>>,
 
-    pub options: Options,
+    pub(crate) options: Options,
 }
 
 impl<'c> RenderingContext<'c> {
@@ -1316,10 +1313,11 @@ mod test {
             external_crates: HashMap::new(),
             format_version: 0,
         };
+        let builder = crate::Builder::from_rustdoc_json("N/A");
         let context = RenderingContext {
             crate_: &crate_,
             id_to_items: HashMap::new(),
-            options: Options::default(),
+            options: builder.options,
         };
 
         let actual = render_fn(context);

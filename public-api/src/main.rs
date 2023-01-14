@@ -8,7 +8,7 @@ use std::io::{stdout, ErrorKind, Write};
 use std::path::{Path, PathBuf};
 
 use public_api::diff::PublicApiDiff;
-use public_api::{Options, PublicApi, MINIMUM_NIGHTLY_VERSION};
+use public_api::{PublicApi, MINIMUM_NIGHTLY_VERSION};
 
 #[derive(thiserror::Error, Debug)]
 enum Error {
@@ -36,39 +36,32 @@ fn main_() -> Result<()> {
         return Ok(());
     }
 
-    let mut options = Options::default();
-    if args.simplified {
-        options.omit_blanket_impls = true;
-        options.omit_auto_trait_impls = true;
-    }
-    options.sorted = true;
-
-    let files = args.files;
+    let files = &args.files;
     if args.help || files.is_empty() || files.len() > 2 {
         print_usage()?;
     } else if files.len() == 1 {
         let path = &files[0];
-        print_public_api(path, options)?;
+        print_public_api(path, &args)?;
     } else if files.len() == 2 {
         let old = &files[0];
         let new = &files[1];
-        print_public_api_diff(old, new, options)?;
+        print_public_api_diff(old, new, &args)?;
     }
 
     Ok(())
 }
 
-fn print_public_api(path: &Path, options: Options) -> Result<()> {
-    for public_item in PublicApi::from_rustdoc_json(path, options)?.items() {
+fn print_public_api(path: &Path, args: &Args) -> Result<()> {
+    for public_item in public_api_from_args(path, args)?.items() {
         writeln!(std::io::stdout(), "{public_item}")?;
     }
 
     Ok(())
 }
 
-fn print_public_api_diff(old: &Path, new: &Path, options: Options) -> Result<()> {
-    let old = PublicApi::from_rustdoc_json(old, options)?;
-    let new = PublicApi::from_rustdoc_json(new, options)?;
+fn print_public_api_diff(old: &Path, new: &Path, args: &Args) -> Result<()> {
+    let old = public_api_from_args(old, args)?;
+    let new = public_api_from_args(new, args)?;
 
     let diff = PublicApiDiff::between(old, new);
     print_diff_with_headers(&diff, &mut stdout(), "Removed:", "Changed:", "Added:")?;
@@ -173,6 +166,14 @@ fn args() -> Args {
     }
 
     args
+}
+
+fn public_api_from_args(path: &Path, args: &Args) -> public_api::Result<PublicApi> {
+    public_api::Builder::from_rustdoc_json(path.to_owned())
+        .omit_blanket_impls(args.simplified)
+        .omit_auto_trait_impls(args.simplified)
+        .sorted(true)
+        .build()
 }
 
 /// Wrapper to handle <https://github.com/rust-lang/rust/issues/46016>

@@ -1,7 +1,7 @@
 use super::intermediate_public_item::NameableItem;
 use crate::{
     crate_wrapper::CrateWrapper, intermediate_public_item::IntermediatePublicItem,
-    public_item::PublicItem, render::RenderingContext, Options, PublicApi,
+    public_item::PublicItem, render::RenderingContext, BuilderOptions as Options, PublicApi,
 };
 use rustdoc_types::{
     Crate, Id, Impl, Import, Item, ItemEnum, Module, Struct, StructKind, VariantKind,
@@ -53,7 +53,7 @@ pub struct ItemProcessor<'c> {
 }
 
 impl<'c> ItemProcessor<'c> {
-    pub fn new(crate_: &'c Crate, options: Options) -> Self {
+    pub(crate) fn new(crate_: &'c Crate, options: Options) -> Self {
         ItemProcessor {
             crate_: CrateWrapper::new(crate_),
             options,
@@ -386,7 +386,7 @@ pub fn impls_for_item(item: &Item) -> Option<&[Id]> {
     }
 }
 
-pub fn public_api_in_crate(crate_: &Crate, options: Options) -> super::PublicApi {
+pub(crate) fn public_api_in_crate(crate_: &Crate, options: Options) -> super::PublicApi {
     let mut item_processor = ItemProcessor::new(crate_, options);
     item_processor.add_to_work_queue(vec![], &crate_.root);
     item_processor.run();

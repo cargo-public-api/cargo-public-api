@@ -61,7 +61,7 @@ impl PublicApiDiff {
     /// Allows you to diff the public API between two arbitrary versions of a
     /// library, e.g. different releases. The input parameters `old` and `new`
     /// is the output of two different invocations of
-    /// [`crate::PublicApi::from_rustdoc_json`].
+    /// [`crate::Builder::build`].
     #[must_use]
     pub fn between(old: PublicApi, new: PublicApi) -> Self {
         // We must use a HashBag, because with a HashSet we would lose public

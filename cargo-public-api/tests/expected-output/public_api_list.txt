@@ -115,5 +115,6 @@ impl core::hash::Hash for public_api::PublicItem
 pub fn public_api::PublicItem::hash<H: core::hash::Hasher>(&self, state: &mut H)
 impl core::clone::Clone for public_api::PublicItem
 pub fn public_api::PublicItem::clone(&self) -> public_api::PublicItem
-pub const public_api::MINIMUM_RUSTDOC_JSON_VERSION: &str
+pub const public_api::MINIMUM_NIGHTLY_VERSION: &str
+pub const public_api::MINIMUM_RUSTDOC_JSON_VERSION: MINIMUM_NIGHTLY_VERSION
 pub type public_api::Result<T> = core::result::Result<T, public_api::Error>

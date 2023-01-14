@@ -17,7 +17,7 @@
 //! Consider using [`rustdoc_json`](https://crates.io/crates/rustdoc_json)
 //! instead of invoking the above command yourself.
 //!
-//! The main entry point to the library is [`PublicApi::from_rustdoc_json_str`],
+//! The main entry point to the library is [`Builder::from_rustdoc_json`],
 //! so please read its documentation.
 //!
 //! # Examples
@@ -52,7 +52,7 @@ pub mod tokens;
 
 pub mod diff;
 
-use std::path::Path;
+use std::path::PathBuf;
 
 // Documented at the definition site so cargo doc picks it up
 pub use error::{Error, Result};
@@ -74,11 +74,12 @@ pub const MINIMUM_NIGHTLY_VERSION: &str = "nightly-2023-01-04";
 #[deprecated(since = "0.27.0", note = "Use MINIMUM_NIGHTLY_VERSION instead")]
 pub const MINIMUM_RUSTDOC_JSON_VERSION: &str = MINIMUM_NIGHTLY_VERSION;
 
-/// Contains various options that you can pass to [`PublicApi::from_rustdoc_json_str`].
-#[derive(Copy, Clone, Debug)]
-#[non_exhaustive] // More options are likely to be added in the future
+/// TODO: Rewrite docs
+#[derive(Debug, Clone)]
 #[allow(clippy::struct_excessive_bools)]
-pub struct Options {
+pub struct Builder {
+    rustdoc_json_path: PathBuf,
+
     /// If `true`, items will be sorted before being returned. If you will pass
     /// on the return value to [`diff::PublicApiDiff::between`], it is
     /// currently unnecessary to sort first, because the sorting will be
@@ -86,13 +87,13 @@ pub struct Options {
     ///
     /// The default value is `true`, because usually the performance impact is
     /// negligible, and is is generally more practical to work with sorted data.
-    pub sorted: bool,
+    sorted: bool,
 
     /// If `true`, item paths include the so called "sorting prefix" that makes
     /// them grouped in a nice way. Only intended for debugging this library.
     ///
     /// The default value is `false`
-    pub debug_sorting: bool,
+    debug_sorting: bool,
 
     /// If `true`, items that belongs to Blanket Implementations are omitted
     /// from the output. This makes the output less noisy, at the cost of not
@@ -103,7 +104,7 @@ pub struct Options {
     ///
     /// The default value is `false` so that the listed public API is complete
     /// by default.
-    pub omit_blanket_impls: bool,
+    omit_blanket_impls: bool,
 
     /// If `true`, items that belongs to Auto Trait Implementations are omitted
     /// from the output. This makes the output less noisy, at the cost of not
@@ -114,7 +115,7 @@ pub struct Options {
     ///
     /// The default value is `false` so that the listed public API is complete
     /// by default.
-    pub omit_auto_trait_impls: bool,
+    omit_auto_trait_impls: bool,
 
     /// If `true`, items that belongs to automatically derived implementations
     /// (`Clone`, `Debug`, `Eq`, etc) are omitted from the output. This makes
@@ -123,21 +124,15 @@ pub struct Options {
     ///
     /// The default value is `false` so that the listed public API is complete
     /// by default.
-    pub omit_auto_derived_impls: bool,
+    omit_auto_derived_impls: bool,
 }
 
-/// Enables options to be set up like this (note that `Options` is marked
-/// `#[non_exhaustive]`):
-///
-/// ```
-/// # use public_api::Options;
-/// let mut options = Options::default();
-/// options.sorted = true;
-/// // ...
-/// ```
-impl Default for Options {
-    fn default() -> Self {
+impl Builder {
+    /// TODO
+    #[must_use]
+    pub fn from_rustdoc_json(path: impl Into<PathBuf>) -> Self {
         Self {
+            rustdoc_json_path: path.into(),
             sorted: true,
             debug_sorting: false,
             omit_blanket_impls: false,
@@ -145,11 +140,94 @@ impl Default for Options {
             omit_auto_derived_impls: false,
         }
     }
+
+    /// If `true`, items will be sorted before being returned. If you will pass
+    /// on the return value to [`diff::PublicApiDiff::between`], it is
+    /// currently unnecessary to sort first, because the sorting will be
+    /// performed/ensured inside of that function.
+    ///
+    /// The default value is `true`, because usually the performance impact is
+    /// negligible, and is is generally more practical to work with sorted data.
+    #[must_use]
+    pub fn sorted(mut self, sorted: bool) -> Self {
+        self.sorted = sorted;
+        self
+    }
+
+    /// If `true`, item paths include the so called "sorting prefix" that makes
+    /// them grouped in a nice way. Only intended for debugging this library.
+    ///
+    /// The default value is `false`
+    #[must_use]
+    pub fn debug_sorting(mut self, debug_sorting: bool) -> Self {
+        self.debug_sorting = debug_sorting;
+        self
+    }
+
+    /// If `true`, items that belongs to Blanket Implementations are omitted
+    /// from the output. This makes the output less noisy, at the cost of not
+    /// fully describing the public API.
+    ///
+    /// Examples of Blanket Implementations: `impl<T> Any for T`, `impl<T>
+    /// Borrow<T> for T`, and `impl<T, U> Into<U> for T where U: From<T>`
+    ///
+    /// The default value is `false` so that the listed public API is complete
+    /// by default.
+    #[must_use]
+    pub fn omit_blanket_impls(mut self, omit_blanket_impls: bool) -> Self {
+        self.omit_blanket_impls = omit_blanket_impls;
+        self
+    }
+
+    /// If `true`, items that belongs to Auto Trait Implementations are omitted
+    /// from the output. This makes the output less noisy, at the cost of not
+    /// fully describing the public API.
+    ///
+    /// Examples of Auto Trait Implementations: `impl Send for Foo`, `impl Sync
+    /// for Foo`, and `impl Unpin for Foo`
+    ///
+    /// The default value is `false` so that the listed public API is complete
+    /// by default.
+    #[must_use]
+    pub fn omit_auto_trait_impls(mut self, omit_auto_trait_impls: bool) -> Self {
+        self.omit_auto_trait_impls = omit_auto_trait_impls;
+        self
+    }
+
+    /// If `true`, items that belongs to automatically derived implementations
+    /// (`Clone`, `Debug`, `Eq`, etc) are omitted from the output. This makes
+    /// the output less noisy, at the cost of not fully describing the public
+    /// API.
+    ///
+    /// The default value is `false` so that the listed public API is complete
+    /// by default.
+    #[must_use]
+    pub fn omit_auto_derived_impls(mut self, omit_auto_derived_impls: bool) -> Self {
+        self.omit_auto_derived_impls = omit_auto_derived_impls;
+        self
+    }
+
+    /// TODO
+    /// # Errors
+    /// TODO
+    pub fn build(self) -> Result<PublicApi> {
+        let rustdoc_json_str = std::fs::read_to_string(&self.rustdoc_json_path)?;
+
+        let crate_ = deserialize_without_recursion_limit(&rustdoc_json_str)?;
+
+        let mut public_api = item_processor::public_api_in_crate(&crate_, &self);
+
+        if self.sorted {
+            public_api.items.sort_by(PublicItem::grouping_cmp);
+        }
+
+        Ok(public_api)
+    }
 }
 
 /// The public API of a crate
 ///
-/// Create an instance with [`PublicApi::from_rustdoc_json()`].
+/// Create an instance with [`Builder`].
 ///
 /// ## Rendering the items
 ///
@@ -159,12 +237,12 @@ impl Default for Options {
 /// [`rustdoc_json`](https://crates.io/crates/rustdoc_json) or by calling `cargo rustdoc` yourself.
 ///
 /// ```no_run
-/// use public_api::{PublicApi, Options};
+/// use public_api::PublicApi;
+/// use std::path::PathBuf;
 ///
-/// # let rustdoc_json_str: String = todo!();
-/// let options = Options::default();
+/// # let rustdoc_json: PathBuf = todo!();
 /// // Gather the rustdoc content as described in this crates top-level documentation.
-/// let public_api = PublicApi::from_rustdoc_json_str(&rustdoc_json_str, options)?;
+/// let public_api = public_api::Builder::from_rustdoc_json(&rustdoc_json).build()?;
 ///
 /// for public_item in public_api.items() {
 ///     // here we print the items to stdout, we could also write to a string or a file.
@@ -189,56 +267,6 @@ pub struct PublicApi {
 }
 
 impl PublicApi {
-    /// Takes a [`Path`] to a rustdoc JSON file and returns a [`PublicApi`] with
-    /// [`PublicItem`]s where each [`PublicItem`] is one public item of the
-    /// crate, i.e. part of the crate's public API. Use [`Self::items()`] or
-    /// `[Self::into_items()` to get the items.
-    ///
-    /// There exists a convenient `cargo public-api` subcommand wrapper for this
-    /// function found at <https://github.com/Enselic/cargo-public-api> that
-    /// builds the rustdoc JSON for you and then invokes this function. If you don't
-    /// want to use that wrapper, use [`rustdoc_json`](https://crates.io/crates/rustdoc_json)
-    /// to build and return the path to the rustdoc json or call
-    /// ```bash
-    /// cargo +nightly rustdoc --lib -- -Z unstable-options --output-format json
-    /// ```
-    /// to generate the rustdoc JSON that this function takes as input. The output
-    /// is put in `./target/doc/your_library.json`. As mentioned,
-    /// [`rustdoc_json`](https://crates.io/crates/rustdoc_json) does this for you.
-    ///
-    /// For reference, the rustdoc JSON format is documented at
-    /// <https://rust-lang.github.io/rfcs/2963-rustdoc-json.html>. But the format is
-    /// still a moving target. Open PRs and issues for rustdoc JSON itself can be
-    /// found at <https://github.com/rust-lang/rust/labels/A-rustdoc-json>.
-    ///
-    /// # Errors
-    ///
-    /// E.g. if the JSON is invalid or if the file can't be read.
-    pub fn from_rustdoc_json(path: impl AsRef<Path>, options: Options) -> Result<PublicApi> {
-        Self::from_rustdoc_json_str(std::fs::read_to_string(path)?, options)
-    }
-
-    /// Same as [`Self::from_rustdoc_json`], but the rustdoc JSON is read from a
-    /// `&str` rather than a file.
-    ///
-    /// # Errors
-    ///
-    /// E.g. if the JSON is invalid.
-    pub fn from_rustdoc_json_str(
-        rustdoc_json_str: impl AsRef<str>,
-        options: Options,
-    ) -> Result<PublicApi> {
-        let crate_ = deserialize_without_recursion_limit(rustdoc_json_str.as_ref())?;
-
-        let mut public_api = item_processor::public_api_in_crate(&crate_, options);
-
-        if options.sorted {
-            public_api.items.sort_by(PublicItem::grouping_cmp);
-        }
-
-        Ok(public_api)
-    }
-
     /// Returns an iterator over all public items in the public API
     pub fn items(&self) -> impl Iterator<Item = &'_ PublicItem> {
         self.items.iter()

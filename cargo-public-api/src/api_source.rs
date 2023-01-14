@@ -4,7 +4,7 @@ use anyhow::{anyhow, Context, Result};
 use rustdoc_json::BuildError;
 use std::path::{Path, PathBuf};
 
-use public_api::{Options, PublicApi, MINIMUM_NIGHTLY_VERSION};
+use public_api::{PublicApi, MINIMUM_NIGHTLY_VERSION};
 
 use crate::{git_utils, Args};
 
@@ -126,16 +126,12 @@ pub fn build_rustdoc_json(builder: rustdoc_json::Builder) -> Result<PathBuf> {
     }
 }
 
-/// Figure out what [`Options`] to pass to
-/// [`public_api::PublicApi::from_rustdoc_json_str`] based on our
-/// [`Args`]
-fn get_options(args: &Args) -> Options {
-    let mut options = Options::default();
-    options.debug_sorting = args.debug_sorting;
-    options.omit_blanket_impls = args.simplified();
-    options.omit_auto_trait_impls = args.simplified();
-    options.omit_auto_derived_impls = args.omit_auto_derived_impls();
-    options
+fn public_api_builder_from_args(rustdoc_json: &Path, args: &Args) -> public_api::Builder {
+    public_api::Builder::from_rustdoc_json(rustdoc_json)
+        .debug_sorting(args.debug_sorting)
+        .omit_blanket_impls(args.simplified())
+        .omit_auto_trait_impls(args.simplified())
+        .omit_auto_derived_impls(args.omit_auto_derived_impls())
 }
 
 /// Creates a rustdoc JSON builder based on the args to this program.
@@ -167,23 +163,22 @@ fn public_api_from_rustdoc_json_path(
     json_path: impl AsRef<Path>,
     args: &Args,
 ) -> Result<PublicApi> {
-    let options = get_options(args);
+    let json_path = json_path.as_ref();
 
-    let rustdoc_json = &std::fs::read_to_string(&json_path)
-        .with_context(|| format!("Failed to read rustdoc JSON at {:?}", json_path.as_ref()))?;
+    let builder = public_api_builder_from_args(json_path, args);
 
     if args.verbose {
-        println!("Processing {:?}", json_path.as_ref());
+        println!("Processing {json_path:?}");
     }
 
-    let public_api = PublicApi::from_rustdoc_json_str(rustdoc_json, options).with_context(|| {
+    let public_api = builder.build().with_context(|| {
         format!(
             "Failed to parse rustdoc JSON at {:?}.\n\
             This version of `cargo public-api` requires at least:\n\n    {}\n\n\
             If you have that, it might be `cargo public-api` that is out of date. Try\n\
             to install the latest version with `cargo install cargo-public-api`. If the\n\
             issue remains, please report at\n\n    https://github.com/Enselic/cargo-public-api/issues",
-            json_path.as_ref(),
+            json_path,
             MINIMUM_NIGHTLY_VERSION,
         )
     })?;

@@ -1,7 +1,7 @@
 use super::intermediate_public_item::NameableItem;
 use crate::{
     crate_wrapper::CrateWrapper, intermediate_public_item::IntermediatePublicItem,
-    public_item::PublicItem, render::RenderingContext, Options, PublicApi,
+    public_item::PublicItem, render::RenderingContext, Builder as Options, PublicApi,
 };
 use rustdoc_types::{
     Crate, Id, Impl, Import, Item, ItemEnum, Module, Struct, StructKind, VariantKind,
@@ -10,6 +10,8 @@ use std::{
     collections::{HashMap, VecDeque},
     vec,
 };
+
+use crate::Builder;
 
 /// Items in rustdoc JSON reference each other by Id. The [`ItemProcessor`]
 /// essentially takes one Id at a time and figure out what to do with it. Once
@@ -36,12 +38,12 @@ struct UnprocessedItem<'c> {
 /// JSON is generated with `--document-private-items`, then private items will
 /// also be included in the output. Use with `--document-private-items` is not
 /// supported.
-pub struct ItemProcessor<'c> {
+pub struct ItemProcessor<'b, 'c> {
     /// The original and unmodified rustdoc JSON, in deserialized form.
     crate_: CrateWrapper<'c>,
 
     /// To know if e.g. blanket implementation should be included in the output.
-    options: Options,
+    builder: &'b crate::Builder,
 
     /// A queue of unprocessed items to process.
     work_queue: VecDeque<UnprocessedItem<'c>>,
@@ -52,11 +54,11 @@ pub struct ItemProcessor<'c> {
     output: Vec<IntermediatePublicItem<'c>>,
 }
 
-impl<'c> ItemProcessor<'c> {
-    pub fn new(crate_: &'c Crate, options: Options) -> Self {
+impl<'b, 'c> ItemProcessor<'b, 'c> {
+    pub fn new(crate_: &'c Crate, builder: &'b Builder) -> Self {
         ItemProcessor {
             crate_: CrateWrapper::new(crate_),
-            options,
+            builder,
             work_queue: VecDeque::new(),
             output: vec![],
         }
@@ -172,7 +174,7 @@ impl<'c> ItemProcessor<'c> {
         item: &'c Item,
         impl_: &'c Impl,
     ) {
-        if !ImplKind::from(item, impl_).is_active(self.options) {
+        if !ImplKind::from(item, impl_).is_active(self.builder) {
             return;
         }
 
@@ -344,7 +346,7 @@ impl ImplKind {
 }
 
 impl ImplKind {
-    fn is_active(&self, options: Options) -> bool {
+    fn is_active(&self, options: &Options) -> bool {
         match self {
             ImplKind::Blanket => !options.omit_blanket_impls,
             ImplKind::AutoTrait => !options.omit_auto_trait_impls,
@@ -386,15 +388,15 @@ pub fn impls_for_item(item: &Item) -> Option<&[Id]> {
     }
 }
 
-pub fn public_api_in_crate(crate_: &Crate, options: Options) -> super::PublicApi {
-    let mut item_processor = ItemProcessor::new(crate_, options);
+pub fn public_api_in_crate(crate_: &Crate, builder: &crate::Builder) -> super::PublicApi {
+    let mut item_processor = ItemProcessor::new(crate_, builder);
     item_processor.add_to_work_queue(vec![], &crate_.root);
     item_processor.run();
 
     let context = RenderingContext {
         crate_,
         id_to_items: item_processor.id_to_items(),
-        options,
+        builder,
     };
 
     PublicApi {

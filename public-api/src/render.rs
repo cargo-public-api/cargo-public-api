@@ -1,8 +1,5 @@
 #![allow(clippy::unused_self)]
-use crate::{
-    intermediate_public_item::{IntermediatePublicItem, NameableItem},
-    Options,
-};
+use crate::intermediate_public_item::{IntermediatePublicItem, NameableItem};
 use std::ops::Deref;
 use std::{cmp::Ordering, collections::HashMap, vec};
 
@@ -22,20 +19,22 @@ macro_rules! ws {
 
 use crate::tokens::Token;
 
+use crate::Builder;
+
 /// When we render an item, it might contain references to other parts of the
 /// public API. For such cases, the rendering code can use the fields in this
 /// struct.
-pub struct RenderingContext<'c> {
+pub struct RenderingContext<'b, 'c> {
     /// The original and unmodified rustdoc JSON, in deserialized form.
     pub crate_: &'c Crate,
 
     /// Given a rustdoc JSON ID, keeps track of what public items that have this Id.
     pub id_to_items: HashMap<&'c Id, Vec<&'c IntermediatePublicItem<'c>>>,
 
-    pub options: Options,
+    pub builder: &'b Builder,
 }
 
-impl<'c> RenderingContext<'c> {
+impl<'b, 'c> RenderingContext<'b, 'c> {
     #[allow(clippy::too_many_lines)]
     pub fn token_stream(&self, public_item: &IntermediatePublicItem<'c>) -> Vec<Token> {
         let item = public_item.item();
@@ -244,7 +243,7 @@ impl<'c> RenderingContext<'c> {
                 Token::identifier
             };
 
-            if self.options.debug_sorting {
+            if self.builder.debug_sorting {
                 // There is always a sortable name, so we can push the name
                 // unconditionally
                 output.push(token_fn(item.sortable_name(self)));
@@ -594,7 +593,7 @@ impl<'c> RenderingContext<'c> {
     pub(crate) fn render_impl(&self, impl_: &Impl, path: &[NameableItem]) -> Vec<Token> {
         let mut output = vec![];
 
-        if self.options.debug_sorting {
+        if self.builder.debug_sorting {
             output.extend(self.render_path(path));
             output.push(ws!());
         }
@@ -1319,10 +1318,11 @@ mod test {
             external_crates: HashMap::new(),
             format_version: 0,
         };
+        let builder = crate::Builder::from_rustdoc_json("N/A");
         let context = RenderingContext {
             crate_: &crate_,
             id_to_items: HashMap::new(),
-            options: Options::default(),
+            builder: &builder,
         };
 
         let actual = render_fn(context);

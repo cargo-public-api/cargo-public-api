@@ -1,4 +1,4 @@
-/// Keep this code in sync with the code in `../../README.md` -->
+/// Keep this code in sync with the code in ./README.md -->
 #[test]
 fn public_api() {
     // Install a proper nightly toolchain if it is missing
@@ -11,9 +11,9 @@ fn public_api() {
         .unwrap();
 
     // Derive the public API from the rustdoc JSON
-    let public_api =
-        public_api::PublicApi::from_rustdoc_json(rustdoc_json, public_api::Options::default())
-            .unwrap();
+    let public_api = public_api::Builder::from_rustdoc_json(rustdoc_json)
+        .build()
+        .unwrap();
 
     // Assert that the public API looks correct
     expect_test::expect_file!["public-api.txt"].assert_eq(&public_api.to_string());

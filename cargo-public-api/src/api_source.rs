@@ -56,7 +56,7 @@ impl PublishedCrate {
 impl ApiSource for PublishedCrate {
     fn obtain_api(&self, args: &Args) -> Result<public_api::PublicApi> {
         let rustdoc_json = crate::published_crate::build_rustdoc_json(&self.version, args)?;
-        public_api_from_rustdoc_json_path(rustdoc_json, args)
+        public_api_from_rustdoc_json(&rustdoc_json, args)
     }
 }
 
@@ -98,7 +98,7 @@ impl RustdocJson {
 
 impl ApiSource for RustdocJson {
     fn obtain_api(&self, args: &Args) -> Result<PublicApi> {
-        public_api_from_rustdoc_json_path(&self.path, args)
+        public_api_from_rustdoc_json(&self.path, args)
     }
 }
 
@@ -107,7 +107,7 @@ impl ApiSource for RustdocJson {
 /// which means it will return the public API of that commit.
 fn public_api_for_current_dir(args: &Args) -> Result<PublicApi> {
     let json_path = rustdoc_json_for_current_dir(args)?;
-    public_api_from_rustdoc_json_path(json_path, args)
+    public_api_from_rustdoc_json(&json_path, args)
 }
 
 /// Builds the rustdoc JSON for the library in the current working directory.
@@ -163,17 +163,14 @@ pub fn builder_from_args(args: &Args) -> rustdoc_json::Builder {
     builder
 }
 
-fn public_api_from_rustdoc_json_path(
-    json_path: impl AsRef<Path>,
-    args: &Args,
-) -> Result<PublicApi> {
+fn public_api_from_rustdoc_json(json_path: &Path, args: &Args) -> Result<PublicApi> {
     let options = get_options(args);
 
-    let rustdoc_json = &std::fs::read_to_string(&json_path)
-        .with_context(|| format!("Failed to read rustdoc JSON at {:?}", json_path.as_ref()))?;
+    let rustdoc_json = &std::fs::read_to_string(json_path)
+        .with_context(|| format!("Failed to read rustdoc JSON at {json_path:?}"))?;
 
     if args.verbose {
-        println!("Processing {:?}", json_path.as_ref());
+        println!("Processing {json_path:?}");
     }
 
     let public_api = PublicApi::from_rustdoc_json_str(rustdoc_json, options).with_context(|| {
@@ -183,7 +180,7 @@ fn public_api_from_rustdoc_json_path(
             If you have that, it might be `cargo public-api` that is out of date. Try\n\
             to install the latest version with `cargo install cargo-public-api`. If the\n\
             issue remains, please report at\n\n    https://github.com/Enselic/cargo-public-api/issues",
-            json_path.as_ref(),
+            json_path,
             MINIMUM_NIGHTLY_VERSION,
         )
     })?;

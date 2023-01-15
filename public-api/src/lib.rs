@@ -74,7 +74,7 @@ pub const MINIMUM_NIGHTLY_VERSION: &str = "nightly-2023-01-04";
 #[deprecated(since = "0.27.0", note = "Use MINIMUM_NIGHTLY_VERSION instead")]
 pub const MINIMUM_RUSTDOC_JSON_VERSION: &str = MINIMUM_NIGHTLY_VERSION;
 
-/// Contains various options that you can pass to [`PublicApi::from_rustdoc_json_str`].
+/// Contains various options that you can pass to [`PublicApi::from_rustdoc_json`].
 #[derive(Copy, Clone, Debug)]
 #[non_exhaustive] // More options are likely to be added in the future
 #[allow(clippy::struct_excessive_bools)]
@@ -215,6 +215,7 @@ impl PublicApi {
     ///
     /// E.g. if the JSON is invalid or if the file can't be read.
     pub fn from_rustdoc_json(path: impl AsRef<Path>, options: Options) -> Result<PublicApi> {
+        #[allow(deprecated)]
         Self::from_rustdoc_json_str(std::fs::read_to_string(path)?, options)
     }
 
@@ -224,6 +225,10 @@ impl PublicApi {
     /// # Errors
     ///
     /// E.g. if the JSON is invalid.
+    #[deprecated(
+        since = "0.27.1",
+        note = "If you need this edge case API, you need to write your JSON to a temporary file and then use `PublicApi::from_rustdoc_json()` instead."
+    )]
     pub fn from_rustdoc_json_str(
         rustdoc_json_str: impl AsRef<str>,
         options: Options,

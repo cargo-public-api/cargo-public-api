@@ -3,13 +3,14 @@
 
 use std::{
     fs,
+    io::Write,
     path::{Path, PathBuf},
 };
 
 use expect_test::expect_file;
 use public_api::{Error, Options, PublicApi};
 
-use tempfile::{tempdir, TempDir};
+use tempfile::{tempdir, NamedTempFile, TempDir};
 
 mod common;
 use common::{rustdoc_json_path_for_crate, rustdoc_json_path_for_temp_crate};
@@ -199,7 +200,9 @@ fn comprehensive_api_debug_sorting_no_stack_overflow() {
 
 #[test]
 fn invalid_json() {
-    let result = PublicApi::from_rustdoc_json_str("}}}}}}}}}", Options::default());
+    let invalid_json = NamedTempFile::new().unwrap();
+    write!(invalid_json.as_file(), "}}}}}}}}}}").unwrap();
+    let result = PublicApi::from_rustdoc_json(invalid_json, Options::default());
     assert!(matches!(result, Err(Error::SerdeJsonError(_))));
 }
 

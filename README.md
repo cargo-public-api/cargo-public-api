@@ -54,18 +54,15 @@ $ cargo public-api diff 1.6.0
 ```console
 $ cargo public-api diff latest
 Resolved `diff latest` to `diff 1.7.1`
+...
+```
 
-Removed items from the public API
-=================================
-(none)
+### … Against the Highest Published Semver Version
 
-Changed items in the public API
-===============================
-(none)
-
-Added items to the public API
-=============================
-(none)
+```console
+$ cargo public-api diff highest
+Resolved `diff highest` to `diff 1.7.1`
+...
 ```
 
 ### … Between Git Refs

@@ -23,6 +23,10 @@ Diffing the latest published version of a crate against the current working tree
 
     cargo public-api diff latest
 
+Diffing the highest published version of a crate against the current working tree:
+
+    cargo public-api diff highest
+
 Diffing working tree against a published version of a specific crate in the workspace:
 
     cargo public-api -p specific-crate diff 1.2.3

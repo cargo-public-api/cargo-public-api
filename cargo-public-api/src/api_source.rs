@@ -127,7 +127,7 @@ pub fn build_rustdoc_json(builder: rustdoc_json::Builder) -> Result<PathBuf> {
 }
 
 /// Figure out what [`Options`] to pass to
-/// [`public_api::PublicApi::from_rustdoc_json_str`] based on our
+/// [`public_api::PublicApi::from_rustdoc_json`] based on our
 /// [`Args`]
 fn get_options(args: &Args) -> Options {
     let mut options = Options::default();
@@ -166,22 +166,17 @@ pub fn builder_from_args(args: &Args) -> rustdoc_json::Builder {
 fn public_api_from_rustdoc_json(json_path: &Path, args: &Args) -> Result<PublicApi> {
     let options = get_options(args);
 
-    let rustdoc_json = &std::fs::read_to_string(json_path)
-        .with_context(|| format!("Failed to read rustdoc JSON at {json_path:?}"))?;
-
     if args.verbose {
         println!("Processing {json_path:?}");
     }
 
-    let public_api = PublicApi::from_rustdoc_json_str(rustdoc_json, options).with_context(|| {
+    let public_api = PublicApi::from_rustdoc_json(json_path, options).with_context(|| {
         format!(
-            "Failed to parse rustdoc JSON at {:?}.\n\
-            This version of `cargo public-api` requires at least:\n\n    {}\n\n\
+            "Failed to parse rustdoc JSON at {json_path:?}.\n\
+            This version of `cargo public-api` requires at least:\n\n    {MINIMUM_NIGHTLY_VERSION}\n\n\
             If you have that, it might be `cargo public-api` that is out of date. Try\n\
             to install the latest version with `cargo install cargo-public-api`. If the\n\
             issue remains, please report at\n\n    https://github.com/Enselic/cargo-public-api/issues",
-            json_path,
-            MINIMUM_NIGHTLY_VERSION,
         )
     })?;
 

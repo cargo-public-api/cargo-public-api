@@ -29,7 +29,7 @@ semver = "1.0.16"
 thiserror = "1.0.38"
 
 [dependencies.clap]
-version = "4.0.32"
+version = "4.1.1"
 features = ["derive", "wrap_help"]
 
 [dependencies.crates-index]

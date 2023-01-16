@@ -54,22 +54,14 @@ $ cargo public-api diff 1.6.0
 ```console
 $ cargo public-api diff latest
 Resolved `diff latest` to `diff 1.7.1`
-...
-```
-
-### … Against the Highest Published Semver Version
-
-```console
-$ cargo public-api diff highest
-Resolved `diff highest` to `diff 1.7.1`
-...
+[...]
 ```
 
 ### … Between Git Refs
 
 ```console
 $ cargo public-api diff ref1..ref2
-...
+[...]
 ```
 
 ### … as a CI Check

@@ -17,7 +17,7 @@ use std::{
 ///
 /// `test_api_dir` - The `test-apis` source dir. Used to find the path to the
 /// `example_api`s.
-pub fn create_test_git_repo(dest_dir: impl AsRef<Path>, test_apis_dir: impl AsRef<Path>) {
+pub fn create_test_git_repo(dest_dir: impl AsRef<Path>, dirs_and_tags: &[(&str, &str)]) {
     // Make sure the dest exists
     fs::create_dir_all(&dest_dir).unwrap();
 
@@ -37,10 +37,13 @@ pub fn create_test_git_repo(dest_dir: impl AsRef<Path>, test_apis_dir: impl AsRe
     run(git().args(["config", "user.name", "Cargo Public"]));
 
     // Now go through all directories and create git commits and tags from them
-    for version in ["v0.1.0", "v0.1.1", "v0.2.0", "v0.3.0"] {
+    for dir_and_tag in dirs_and_tags {
+        let dir_name = dir_and_tag.0;
+        let tag_name = dir_and_tag.1;
+
         let copy_to_dest = |name| {
-            let mut from = PathBuf::from(test_apis_dir.as_ref());
-            from.push(&format!("example_api-{version}"));
+            let mut from = PathBuf::from("../test-apis");
+            from.push(dir_name);
             from.push(name);
 
             let mut to = PathBuf::from(dest_dir.as_ref());
@@ -57,8 +60,8 @@ pub fn create_test_git_repo(dest_dir: impl AsRef<Path>, test_apis_dir: impl AsRe
         copy_to_dest("src/lib.rs");
 
         run(git().args(["add", "."]));
-        run(git().args(["commit", "--quiet", "-m"]).arg(version));
-        run(git().arg("tag").arg(version));
+        run(git().args(["commit", "--quiet", "-m"]).arg(tag_name));
+        run(git().arg("tag").arg(tag_name));
     }
 }
 

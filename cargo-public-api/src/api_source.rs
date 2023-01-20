@@ -6,7 +6,7 @@ use std::path::{Path, PathBuf};
 
 use public_api::{Options, PublicApi, MINIMUM_NIGHTLY_VERSION};
 
-use crate::{git_utils, Args};
+use crate::{git_utils, Args, Subcommand};
 
 /// Represents some place from which a public API can be obtained.
 /// Examples: a published crate, a git commit, an existing file.
@@ -159,6 +159,10 @@ pub fn builder_from_args(args: &Args) -> rustdoc_json::Builder {
     }
     if let Some(cap_lints) = &args.cap_lints {
         builder = builder.cap_lints(Some(cap_lints));
+    } else if let Some(Subcommand::Diff(_)) = args.subcommand {
+        // Suppress any build warning by default when diffing, because it
+        // typically is undesirable to fix lints in historic versions of a crate
+        builder = builder.cap_lints(Some("allow"));
     }
     builder
 }

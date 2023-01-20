@@ -18,7 +18,7 @@ use assert_cmd::assert::Assert;
 use assert_cmd::Command;
 use predicates::str::contains;
 
-use public_api::MINIMUM_RUSTDOC_JSON_VERSION;
+use public_api::MINIMUM_NIGHTLY_VERSION;
 use tempfile::tempdir;
 
 #[path = "../src/git_utils.rs"] // Say NO to copy-paste!
@@ -213,10 +213,10 @@ fn subcommand_invocation_public_api_arg() {
 /// required for tests is not the same as required for users, so allow tests to
 /// use a different toolchain if needed
 fn get_minimum_toolchain() -> String {
-    std::fs::read_to_string("../cargo-public-api/MINIMUM_RUSTDOC_JSON_VERSION_FOR_TESTS")
+    std::fs::read_to_string("../cargo-public-api/MINIMUM_NIGHTLY_VERSION_FOR_TESTS")
         .map(|s| s.trim().to_owned())
         .ok()
-        .unwrap_or_else(|| MINIMUM_RUSTDOC_JSON_VERSION.to_owned())
+        .unwrap_or_else(|| MINIMUM_NIGHTLY_VERSION.to_owned())
 }
 
 #[test]
@@ -884,7 +884,7 @@ fn test_features(features: &F) {
     }
 
     cmd.assert()
-        .stdout_or_update(&format!("./expected-output/features-feat{features}.txt"))
+        .stdout_or_update(format!("./expected-output/features-feat{features}.txt"))
         .success();
 }
 
@@ -899,8 +899,8 @@ fn rustdoc_json_builder_for_crate(
     target_dir: impl AsRef<Path>,
 ) -> rustdoc_json::Builder {
     rustdoc_json::Builder::default()
-        .manifest_path(&format!("{}/Cargo.toml", test_crate))
-        .toolchain("nightly".to_owned())
+        .manifest_path(format!("{test_crate}/Cargo.toml"))
+        .toolchain("nightly")
         .target_dir(target_dir)
         .quiet(true)
 }
@@ -972,7 +972,7 @@ enum TestCmdType<'str> {
 #[cfg(not(target_family = "windows"))]
 fn cargo_with_toolchain(toolchain: &str) -> std::process::Command {
     let mut cmd = std::process::Command::new("cargo");
-    cmd.arg(format!("+{}", toolchain));
+    cmd.arg(format!("+{toolchain}"));
     cmd
 }
 

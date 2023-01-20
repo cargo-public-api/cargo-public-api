@@ -26,6 +26,7 @@ For `public-api` and `cargo-public-api` (which always have the same version numb
 
 * **0.x.0**: We bump it when
   * The `public-api` lib or the `cargo-public-api` CLI has had backwards incompatible changes.
+  * When the `public-api` lib changes how items are rendered. This is because we want people that use the [`cargo test`](https://github.com/Enselic/cargo-public-api#-as-a-ci-check) approach to not have CI break just because they upgrade **0.0.x** version.
   * When the rustdoc JSON parsing code changes in a backwards incompatible way.
 
 * **0.0.x**: We bump it whenever we want to make a release but we don't have to/want to bump 0.x.0

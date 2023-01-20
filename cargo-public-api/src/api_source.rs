@@ -4,7 +4,7 @@ use anyhow::{anyhow, Context, Result};
 use rustdoc_json::BuildError;
 use std::path::{Path, PathBuf};
 
-use public_api::{Options, PublicApi, MINIMUM_RUSTDOC_JSON_VERSION};
+use public_api::{Options, PublicApi, MINIMUM_NIGHTLY_VERSION};
 
 use crate::{git_utils, Args, Subcommand};
 
@@ -56,7 +56,7 @@ impl PublishedCrate {
 impl ApiSource for PublishedCrate {
     fn obtain_api(&self, args: &Args) -> Result<public_api::PublicApi> {
         let rustdoc_json = crate::published_crate::build_rustdoc_json(&self.version, args)?;
-        public_api_from_rustdoc_json_path(&rustdoc_json, args)
+        public_api_from_rustdoc_json(&rustdoc_json, args)
     }
 }
 
@@ -69,7 +69,7 @@ impl Commit {
     pub fn new(args: &Args, commit_ref: &str) -> Result<Self> {
         Ok(Self {
             // Resolve the ref during creation to detect problems early
-            commit: git_utils::resolve_ref(&args.git_root()?, commit_ref)?,
+            commit: git_utils::resolve_ref(args.git_root()?, commit_ref)?,
         })
     }
 }
@@ -98,7 +98,7 @@ impl RustdocJson {
 
 impl ApiSource for RustdocJson {
     fn obtain_api(&self, args: &Args) -> Result<PublicApi> {
-        public_api_from_rustdoc_json_path(&self.path, args)
+        public_api_from_rustdoc_json(&self.path, args)
     }
 }
 
@@ -107,7 +107,7 @@ impl ApiSource for RustdocJson {
 /// which means it will return the public API of that commit.
 fn public_api_for_current_dir(args: &Args) -> Result<PublicApi> {
     let json_path = rustdoc_json_for_current_dir(args)?;
-    public_api_from_rustdoc_json_path(json_path, args)
+    public_api_from_rustdoc_json(&json_path, args)
 }
 
 /// Builds the rustdoc JSON for the library in the current working directory.
@@ -127,7 +127,7 @@ pub fn build_rustdoc_json(builder: rustdoc_json::Builder) -> Result<PathBuf> {
 }
 
 /// Figure out what [`Options`] to pass to
-/// [`public_api::PublicApi::from_rustdoc_json_str`] based on our
+/// [`public_api::PublicApi::from_rustdoc_json`] based on our
 /// [`Args`]
 fn get_options(args: &Args) -> Options {
     let mut options = Options::default();
@@ -141,11 +141,13 @@ fn get_options(args: &Args) -> Options {
 /// Creates a rustdoc JSON builder based on the args to this program.
 pub fn builder_from_args(args: &Args) -> rustdoc_json::Builder {
     let mut builder = rustdoc_json::Builder::default()
-        .toolchain(args.toolchain.clone())
         .manifest_path(&args.manifest_path)
         .all_features(args.all_features)
         .no_default_features(args.no_default_features)
         .features(&args.features);
+    if let Some(toolchain) = &args.toolchain {
+        builder = builder.toolchain(toolchain);
+    }
     if let Some(target_dir) = &args.target_dir {
         builder = builder.target_dir(target_dir.clone());
     }
@@ -165,28 +167,20 @@ pub fn builder_from_args(args: &Args) -> rustdoc_json::Builder {
     builder
 }
 
-fn public_api_from_rustdoc_json_path(
-    json_path: impl AsRef<Path>,
-    args: &Args,
-) -> Result<PublicApi> {
+fn public_api_from_rustdoc_json(json_path: &Path, args: &Args) -> Result<PublicApi> {
     let options = get_options(args);
 
-    let rustdoc_json = &std::fs::read_to_string(&json_path)
-        .with_context(|| format!("Failed to read rustdoc JSON at {:?}", json_path.as_ref()))?;
-
     if args.verbose {
-        println!("Processing {:?}", json_path.as_ref());
+        println!("Processing {json_path:?}");
     }
 
-    let public_api = PublicApi::from_rustdoc_json_str(rustdoc_json, options).with_context(|| {
+    let public_api = PublicApi::from_rustdoc_json(json_path, options).with_context(|| {
         format!(
-            "Failed to parse rustdoc JSON at {:?}.\n\
-            This version of `cargo public-api` requires at least:\n\n    {}\n\n\
+            "Failed to parse rustdoc JSON at {json_path:?}.\n\
+            This version of `cargo public-api` requires at least:\n\n    {MINIMUM_NIGHTLY_VERSION}\n\n\
             If you have that, it might be `cargo public-api` that is out of date. Try\n\
             to install the latest version with `cargo install cargo-public-api`. If the\n\
             issue remains, please report at\n\n    https://github.com/Enselic/cargo-public-api/issues",
-            json_path.as_ref(),
-            MINIMUM_RUSTDOC_JSON_VERSION,
         )
     })?;
 

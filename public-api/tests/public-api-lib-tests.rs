@@ -3,13 +3,14 @@
 
 use std::{
     fs,
+    io::Write,
     path::{Path, PathBuf},
 };
 
 use expect_test::expect_file;
 use public_api::{Error, Options, PublicApi};
 
-use tempfile::{tempdir, TempDir};
+use tempfile::{tempdir, NamedTempFile, TempDir};
 
 mod common;
 use common::{rustdoc_json_path_for_crate, rustdoc_json_path_for_temp_crate};
@@ -17,12 +18,12 @@ use common::{rustdoc_json_path_for_crate, rustdoc_json_path_for_temp_crate};
 #[test]
 fn public_api() -> Result<(), Box<dyn std::error::Error>> {
     let rustdoc_json = rustdoc_json::Builder::default()
-        .toolchain("nightly".to_owned())
+        .toolchain("nightly")
         .build()?;
 
     let public_api = PublicApi::from_rustdoc_json(rustdoc_json, Options::default())?;
 
-    expect_test::expect_file!["../public-api.txt"].assert_eq(&public_api.to_string());
+    expect_test::expect_file!["public-api.txt"].assert_eq(&public_api.to_string());
 
     Ok(())
 }
@@ -140,8 +141,8 @@ impl Foo {
     );
 
     assert_public_api_diff(
-        &v1.json_path,
-        &v2.json_path,
+        v1.json_path,
+        v2.json_path,
         "./expected-output/diff_move_item_between_inherent_impls.txt",
     );
 }
@@ -199,7 +200,9 @@ fn comprehensive_api_debug_sorting_no_stack_overflow() {
 
 #[test]
 fn invalid_json() {
-    let result = PublicApi::from_rustdoc_json_str("}}}}}}}}}", Options::default());
+    let invalid_json = NamedTempFile::new().unwrap();
+    write!(invalid_json.as_file(), "}}}}}}}}}}").unwrap();
+    let result = PublicApi::from_rustdoc_json(invalid_json, Options::default());
     assert!(matches!(result, Err(Error::SerdeJsonError(_))));
 }
 

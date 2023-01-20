@@ -168,7 +168,7 @@ enum Subcommand {
     ///
     ///     cargo public-api diff 1.2.3
     ///
-    /// Diffing the latest published version of a crate against the current working tree:
+    /// Diffing the latest version of a crate against the current working tree:
     ///
     ///     cargo public-api diff latest
     ///
@@ -234,8 +234,8 @@ pub enum Action {
     RestoreBranch { name: String },
 }
 
-/// The string used by users to request a diff of the latest published version
-/// of a given crate.
+/// The string used by users to request a diff of the latest (in semver terms)
+/// published version of a given crate.
 const LATEST_VERSION_ARG: &str = "latest";
 
 fn main_() -> Result<()> {
@@ -252,7 +252,7 @@ fn main_() -> Result<()> {
     // commit, set up a restoration of the current branch
     if main_task.changes_commit() {
         final_actions.push(Action::RestoreBranch {
-            name: current_branch_or_commit(&args.git_root()?)?,
+            name: current_branch_or_commit(args.git_root()?)?,
         });
     }
 

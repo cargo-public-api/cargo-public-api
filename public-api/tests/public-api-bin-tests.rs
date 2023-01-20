@@ -6,7 +6,7 @@ use std::{io::BufRead, str::from_utf8};
 
 use assert_cmd::assert::Assert;
 use assert_cmd::Command;
-use public_api::MINIMUM_RUSTDOC_JSON_VERSION;
+use public_api::MINIMUM_NIGHTLY_VERSION;
 
 use tempfile::{tempdir, TempDir};
 
@@ -138,11 +138,11 @@ fn no_args_shows_help() {
 }
 
 #[test]
-fn print_minimum_rustdoc_json_version() {
+fn print_minimum_nightly_version() {
     let mut cmd = Command::cargo_bin("public-api").unwrap();
-    cmd.arg("--print-minimum-rustdoc-json-version");
+    cmd.arg("--print-minimum-nightly-version");
     cmd.assert()
-        .stdout(format!("{}\n", MINIMUM_RUSTDOC_JSON_VERSION))
+        .stdout(format!("{MINIMUM_NIGHTLY_VERSION}\n"))
         .stderr("")
         .success();
 }
@@ -187,7 +187,7 @@ commit and then pass the path of both files to this utility:
 
 ",
         env!("CARGO_PKG_VERSION"),
-        MINIMUM_RUSTDOC_JSON_VERSION,
+        MINIMUM_NIGHTLY_VERSION,
     )
 }
 

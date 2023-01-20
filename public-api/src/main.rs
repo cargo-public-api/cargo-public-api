@@ -8,7 +8,7 @@ use std::io::{stdout, ErrorKind, Write};
 use std::path::{Path, PathBuf};
 
 use public_api::diff::PublicApiDiff;
-use public_api::{Options, PublicApi, MINIMUM_RUSTDOC_JSON_VERSION};
+use public_api::{Options, PublicApi, MINIMUM_NIGHTLY_VERSION};
 
 #[derive(thiserror::Error, Debug)]
 enum Error {
@@ -25,14 +25,14 @@ type Result<T> = std::result::Result<T, Error>;
 struct Args {
     help: bool,
     simplified: bool,
-    print_minimum_rustdoc_json_version: bool,
+    print_minimum_nightly_version: bool,
     files: Vec<PathBuf>,
 }
 
 fn main_() -> Result<()> {
     let args = args();
-    if args.print_minimum_rustdoc_json_version {
-        println!("{}", MINIMUM_RUSTDOC_JSON_VERSION);
+    if args.print_minimum_nightly_version {
+        println!("{MINIMUM_NIGHTLY_VERSION}");
         return Ok(());
     }
 
@@ -60,7 +60,7 @@ fn main_() -> Result<()> {
 
 fn print_public_api(path: &Path, options: Options) -> Result<()> {
     for public_item in PublicApi::from_rustdoc_json(path, options)?.items() {
-        writeln!(std::io::stdout(), "{}", public_item)?;
+        writeln!(std::io::stdout(), "{public_item}")?;
     }
 
     Ok(())
@@ -84,14 +84,14 @@ fn print_diff_with_headers(
     header_added: &str,
 ) -> std::io::Result<()> {
     print_items_with_header(w, header_removed, &diff.removed, |w, item| {
-        writeln!(w, "-{}", item)
+        writeln!(w, "-{item}")
     })?;
     print_items_with_header(w, header_changed, &diff.changed, |w, item| {
         writeln!(w, "-{}", item.old)?;
         writeln!(w, "+{}", item.new)
     })?;
     print_items_with_header(w, header_added, &diff.added, |w, item| {
-        writeln!(w, "+{}", item)
+        writeln!(w, "+{item}")
     })?;
 
     Ok(())
@@ -103,7 +103,7 @@ fn print_items_with_header<W: std::io::Write, T>(
     items: &[T],
     print_fn: impl Fn(&mut W, &T) -> std::io::Result<()>,
 ) -> std::io::Result<()> {
-    writeln!(w, "{}", header)?;
+    writeln!(w, "{header}")?;
     if items.is_empty() {
         writeln!(w, "(nothing)")?;
     } else {
@@ -144,7 +144,7 @@ commit and then pass the path of both files to this utility:
 
 ",
         env!("CARGO_PKG_VERSION"),
-        MINIMUM_RUSTDOC_JSON_VERSION,
+        MINIMUM_NIGHTLY_VERSION,
     )
 }
 
@@ -163,8 +163,8 @@ fn args() -> Args {
     for arg in std::env::args_os().skip(1) {
         if arg == "--simplified" {
             args.simplified = true;
-        } else if arg == "--print-minimum-rustdoc-json-version" {
-            args.print_minimum_rustdoc_json_version = true;
+        } else if arg == "--print-minimum-nightly-version" {
+            args.print_minimum_nightly_version = true;
         } else if arg == "--help" || arg == "-h" {
             args.help = true;
         } else {

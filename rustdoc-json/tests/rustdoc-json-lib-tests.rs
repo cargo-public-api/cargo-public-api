@@ -4,12 +4,12 @@ use rustdoc_json::PackageTarget;
 #[test]
 fn public_api() -> Result<(), Box<dyn std::error::Error>> {
     let rustdoc_json = rustdoc_json::Builder::default()
-        .toolchain("nightly".to_owned())
+        .toolchain("nightly")
         .build()?;
 
     let public_api = PublicApi::from_rustdoc_json(rustdoc_json, Options::default())?;
 
-    expect_test::expect_file!["../public-api.txt"].assert_eq(&public_api.to_string());
+    expect_test::expect_file!["public-api.txt"].assert_eq(&public_api.to_string());
 
     Ok(())
 }
@@ -19,7 +19,7 @@ fn public_api() -> Result<(), Box<dyn std::error::Error>> {
 #[test]
 fn ensure_workspace_inheritance_works() {
     let path = rustdoc_json::Builder::default()
-        .toolchain("nightly".to_owned())
+        .toolchain("nightly")
         .manifest_path("../test-apis/workspace-inheritance/package-with-inheritance/Cargo.toml")
         .quiet(true) // Make it less noisy to run tests
         .build()
@@ -64,7 +64,7 @@ fn test_alternative_package_target(package_target: PackageTarget) {
     let target_dir = tempfile::tempdir().unwrap();
 
     let path = rustdoc_json::Builder::default()
-        .toolchain("nightly".to_owned())
+        .toolchain("nightly")
         .manifest_path("tests/test_crates/test_crate/Cargo.toml")
         .quiet(true) // Make it less noisy to run tests
         .package_target(package_target)
@@ -80,7 +80,7 @@ fn test_specified_dependency_version() {
     let target_dir = tempfile::tempdir().unwrap();
 
     let builder = rustdoc_json::Builder::default()
-        .toolchain("nightly".to_owned())
+        .toolchain("nightly")
         .manifest_path("tests/test_crates/test_crate/Cargo.toml")
         .quiet(true) // Make it less noisy to run tests
         .target_dir(&target_dir);

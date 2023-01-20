@@ -10,9 +10,9 @@ checksum = "2cb2f989d18dd141ab8ae82f64d1a8cdd37e0840f73a406896cf5e99502fab61"
 
 [[package]]
 name = "assert_cmd"
-version = "2.0.7"
+version = "2.0.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fa3d466004a8b4cb1bc34044240a2fd29d17607e2e3bd613eb44fd48e8100da3"
+checksum = "9834fcc22e0874394a010230586367d4a3e9f11b560f469262678547e1d2575e"
 dependencies = [
  "bstr",
  "doc-comment",
@@ -76,7 +76,7 @@ dependencies = [
 
 [[package]]
 name = "cargo-public-api"
-version = "0.26.0"
+version = "0.27.0"
 dependencies = [
  "anyhow",
  "assert_cmd",
@@ -323,9 +323,9 @@ dependencies = [
 
 [[package]]
 name = "hashbag"
-version = "0.1.9"
+version = "0.1.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c759d39a226f021f488936b2d3a26b16d9a1246e931adcec5c5b057388adceb3"
+checksum = "de6127f031a7cae17eadc14a56738d01b2912c985d3dba0e597c8fccea49622b"
 
 [[package]]
 name = "hashbrown"
@@ -625,7 +625,7 @@ dependencies = [
 
 [[package]]
 name = "public-api"
-version = "0.26.0"
+version = "0.27.0"
 dependencies = [
  "anyhow",
  "assert_cmd",
@@ -700,7 +700,7 @@ checksum = "08d43f7aa6b08d49f382cde6a7982047c3426db949b1424bc4b7ec9ae12c6ce2"
 
 [[package]]
 name = "rustdoc-json"
-version = "0.7.4"
+version = "0.8.0"
 dependencies = [
  "assert_cmd",
  "cargo-manifest",
@@ -739,7 +739,7 @@ dependencies = [
 
 [[package]]
 name = "rustup-toolchain"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "expect-test",
  "public-api",

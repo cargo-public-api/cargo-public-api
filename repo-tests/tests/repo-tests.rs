@@ -3,7 +3,7 @@
 
 use std::{ffi::OsStr, fs::read_to_string, path::PathBuf};
 
-use public_api::MINIMUM_RUSTDOC_JSON_VERSION;
+use public_api::MINIMUM_NIGHTLY_VERSION;
 
 #[test]
 fn newline_at_end_of_all_files() {
@@ -67,6 +67,6 @@ fn newline_at_end_of_all_files() {
 fn installation_instructions_in_toplevel_readme() {
     let readme = include_str!("../../README.md");
     let expected_installation_instruction =
-        format!("Ensure `{}` or later", MINIMUM_RUSTDOC_JSON_VERSION);
+        format!("Ensure **{MINIMUM_NIGHTLY_VERSION}** or later");
     assert!(readme.contains(&expected_installation_instruction));
 }

@@ -5,8 +5,8 @@
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Build it
     let json_path = rustdoc_json::Builder::default()
-        .toolchain("nightly".to_owned())
-        .manifest_path(&std::env::args().nth(1).unwrap())
+        .toolchain("nightly")
+        .manifest_path(std::env::args().nth(1).unwrap())
         .build()?;
     println!("Built and wrote rustdoc JSON to {:?}", &json_path);
 
@@ -20,6 +20,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 fn show_json(path: &std::path::Path) -> std::io::Result<std::process::ExitStatus> {
     let mut cmd = std::process::Command::new("sh");
     cmd.arg("-c");
-    cmd.arg(&format!("cat {:?} | python3 -m json.tool | less", path));
+    cmd.arg(&format!("cat {path:?} | python3 -m json.tool | less"));
     cmd.spawn()?.wait()
 }

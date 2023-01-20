@@ -4,14 +4,14 @@ use public_api::{Options, PublicApi};
 
 fn main() -> Result<(), Box<dyn Error>> {
     let json_path = rustdoc_json::Builder::default()
-        .toolchain(String::from("nightly"))
+        .toolchain("nightly")
         .manifest_path("test-apis/example_api-v0.2.0/Cargo.toml")
         .build()?;
 
     let public_api = PublicApi::from_rustdoc_json(json_path, Options::default())?;
 
     for public_item in public_api.items() {
-        println!("{}", public_item);
+        println!("{public_item}");
     }
 
     Ok(())

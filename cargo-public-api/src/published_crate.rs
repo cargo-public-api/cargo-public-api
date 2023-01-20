@@ -11,7 +11,7 @@ pub fn build_rustdoc_json(version: impl Into<String>, args: &Args) -> Result<Pat
 
     let mut version = version.into();
     if version == LATEST_VERSION_ARG {
-        version = most_recent_version_for_package(&package_name)?;
+        version = latest_version_for_package(&package_name)?;
         eprintln!("Resolved `diff {LATEST_VERSION_ARG}` to `diff {version}`");
     }
 
@@ -39,27 +39,28 @@ pub fn build_rustdoc_json(version: impl Into<String>, args: &Args) -> Result<Pat
     // won't work. So always clear the target dir before we use the builder.
     let builder = crate::api_source::builder_from_args(args)
         .clear_target_dir()
-        .manifest_path(&manifest)
+        .manifest_path(manifest)
         .package(&spec.name);
     crate::api_source::build_rustdoc_json(builder)
 }
 
 /// Gets the most recent version for the given package, by querying the
 /// crates.io index that users have locally.
-fn most_recent_version_for_package(package_name: &str) -> Result<String> {
+fn latest_version_for_package(package_name: &str) -> Result<String> {
     #[cfg(feature = "diff-latest")]
     {
         let index = crates_index::Index::new_cargo_default()?;
         let crate_ = index.crate_(package_name).ok_or_else(|| {
             anyhow!("Could not find crate `{package_name}` in the crates.io index")
         })?;
-        let version = crate_.most_recent_version();
+
+        let version = crate_.highest_version();
         Ok(version.version().to_string())
     }
     #[cfg(not(feature = "diff-latest"))]
     {
         Err(anyhow!(
-            "Can not find latest version of `{package_name}`; the `diff-latest` feature needs to be enabled for `cargo-public-api`"
+            "Can not find `latest` version of `{package_name}`; the `diff-latest` feature needs to be enabled for `cargo-public-api`"
         ))
     }
 }

@@ -234,8 +234,15 @@ impl Builder {
     /// mechanism sets. See <https://rust-lang.github.io/rustup/overrides.html>
     /// for more info on how the active toolchain is determined.
     #[must_use]
-    pub fn toolchain(mut self, toolchain: impl Into<Option<String>>) -> Self {
-        self.toolchain = toolchain.into();
+    pub fn toolchain(mut self, toolchain: impl Into<String>) -> Self {
+        self.toolchain = Some(toolchain.into());
+        self
+    }
+
+    /// Clear a toolchain previously set with [`Self::toolchain`].
+    #[must_use]
+    pub fn clear_toolchain(mut self) -> Self {
+        self.target_dir = None;
         self
     }
 

@@ -68,9 +68,13 @@ pub use public_item::PublicItem;
 /// The rustdoc JSON format is still changing, so every now and then we update
 /// this library to support the latest format. If you use this version of
 /// nightly or later, you should be fine.
-pub const MINIMUM_RUSTDOC_JSON_VERSION: &str = "nightly-2023-01-04";
+pub const MINIMUM_NIGHTLY_VERSION: &str = "nightly-2023-01-04";
 
-/// Contains various options that you can pass to [`PublicApi::from_rustdoc_json_str`].
+/// Deprecated, use [`MINIMUM_NIGHTLY_VERSION`] instead.
+#[deprecated(since = "0.27.0", note = "Use MINIMUM_NIGHTLY_VERSION instead")]
+pub const MINIMUM_RUSTDOC_JSON_VERSION: &str = MINIMUM_NIGHTLY_VERSION;
+
+/// Contains various options that you can pass to [`PublicApi::from_rustdoc_json`].
 #[derive(Copy, Clone, Debug)]
 #[non_exhaustive] // More options are likely to be added in the future
 #[allow(clippy::struct_excessive_bools)]
@@ -211,7 +215,8 @@ impl PublicApi {
     ///
     /// E.g. if the JSON is invalid or if the file can't be read.
     pub fn from_rustdoc_json(path: impl AsRef<Path>, options: Options) -> Result<PublicApi> {
-        Self::from_rustdoc_json_str(&std::fs::read_to_string(path)?, options)
+        #[allow(deprecated)]
+        Self::from_rustdoc_json_str(std::fs::read_to_string(path)?, options)
     }
 
     /// Same as [`Self::from_rustdoc_json`], but the rustdoc JSON is read from a
@@ -220,6 +225,10 @@ impl PublicApi {
     /// # Errors
     ///
     /// E.g. if the JSON is invalid.
+    #[deprecated(
+        since = "0.27.1",
+        note = "If you need this edge case API, you need to write your JSON to a temporary file and then use `PublicApi::from_rustdoc_json()` instead."
+    )]
     pub fn from_rustdoc_json_str(
         rustdoc_json_str: impl AsRef<str>,
         options: Options,
@@ -265,7 +274,7 @@ impl PublicApi {
 impl std::fmt::Display for PublicApi {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         for item in self.items() {
-            writeln!(f, "{}", item)?;
+            writeln!(f, "{item}")?;
         }
         Ok(())
     }

@@ -80,7 +80,7 @@ $ cargo add --dev \
     expect-test
 ```
 
-Then add the following test to your project. As the author of the below test code I hereby put it in the public domain:
+Then add the following test to your project. As the author of the below test code, I hereby associate it with [CC0](https://creativecommons.org/publicdomain/zero/1.0/) and to the extent possible under law waive all copyright and related or neighboring rights to it:
 
 <!-- Keep this code in sync with the code in ./rustup-toolchain/tests/rustup-toolchain-lib-tests.rs -->
 ```rust

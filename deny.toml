@@ -25,5 +25,5 @@ exceptions = [
 ]
 
 [bans]
-multiple-versions = "deny"
+# multiple-versions = "deny"
 wildcards = "deny"

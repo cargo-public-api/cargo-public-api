@@ -25,5 +25,7 @@ exceptions = [
 ]
 
 [bans]
-# multiple-versions = "deny"
+multiple-versions = "deny"
 wildcards = "deny"
+[[bans.skip]]
+name = "toml"

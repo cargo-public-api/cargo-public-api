@@ -131,13 +131,14 @@ fn target_arg() {
     // A bit of a hack but similar to how rustc bootstrap script does it:
     // https://github.com/rust-lang/rust/blob/1ce51982b8550c782ded466c1abff0d2b2e21c4e/src/bootstrap/bootstrap.py#L207-L219
     fn get_host_target_triple() -> String {
-        let mut cmd = std::process::Command::new("sh");
-        cmd.arg("-c");
-        cmd.arg("rustc -vV | sed -n 's/host: \\(.*\\)/\\1/gp'");
-        let stdout = cmd.output().unwrap().stdout;
-        String::from_utf8_lossy(&stdout)
-            .to_string()
-            .trim()
+        let mut cmd = std::process::Command::new("rustc");
+        cmd.arg("-vV");
+        let output = cmd.output().unwrap();
+        let stdout = String::from_utf8_lossy(&output.stdout);
+        stdout
+            .lines()
+            .find_map(|line| line.strip_prefix("host: "))
+            .unwrap()
             .to_owned()
     }
 

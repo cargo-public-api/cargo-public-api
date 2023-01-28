@@ -394,7 +394,6 @@ fn diff_public_items_detached_head() {
 
 /// Test that diffing fails if the git tree is dirty
 #[test]
-#[cfg_attr(target_family = "windows", ignore)]
 fn diff_public_items_with_dirty_tree_fails() {
     let test_repo = create_test_repo_with_dirty_git_tree();
 
@@ -413,7 +412,6 @@ fn diff_public_items_with_dirty_tree_fails() {
 /// Test that diffing succeedes if the git tree is dirty and
 /// `force-git-checkout` option is specified.
 #[test]
-#[cfg_attr(target_family = "windows", ignore)]
 fn diff_public_items_with_dirty_tree_succeedes_with_force_option() {
     let test_repo = create_test_repo_with_dirty_git_tree();
 
@@ -745,7 +743,10 @@ fn verbose() {
 }
 
 #[test]
-#[cfg_attr(target_family = "windows", ignore)] // Because help output contains "cargo-public-api.exe"
+#[cfg_attr(
+    target_family = "windows",
+    ignore = "would fail on unexpected string `cargo-public-api.exe`"
+)]
 fn short_help() {
     let mut cmd = TestCmd::new().with_separate_target_dir();
     cmd.arg("-h");
@@ -755,7 +756,10 @@ fn short_help() {
 }
 
 #[test]
-#[cfg_attr(target_family = "windows", ignore)] // Because help output contains "cargo-public-api.exe"
+#[cfg_attr(
+    target_family = "windows",
+    ignore = "would fail on unexpected string `cargo-public-api.exe`"
+)]
 fn short_diff_help() {
     let mut cmd = TestCmd::new().with_separate_target_dir();
     cmd.arg("diff");
@@ -766,7 +770,10 @@ fn short_diff_help() {
 }
 
 #[test]
-#[cfg_attr(target_family = "windows", ignore)] // Because help output contains "cargo-public-api.exe"
+#[cfg_attr(
+    target_family = "windows",
+    ignore = "would fail on unexpected string `cargo-public-api.exe`"
+)]
 fn long_help() {
     let mut cmd = TestCmd::new();
     cmd.arg("--help");
@@ -776,7 +783,10 @@ fn long_help() {
 }
 
 #[test]
-#[cfg_attr(target_family = "windows", ignore)] // Because help output contains "cargo-public-api.exe"
+#[cfg_attr(
+    target_family = "windows",
+    ignore = "would fail on unexpected string `cargo-public-api.exe`"
+)]
 fn long_diff_help() {
     let mut cmd = TestCmd::new();
     cmd.arg("diff");
@@ -1021,8 +1031,8 @@ fn cargo_with_toolchain(toolchain: &str) -> std::process::Command {
     cmd
 }
 
-/// Workaround for [https://github.com/rust-lang/rustup/issues/3036](rustup
-/// 1.25: On Windows, nested cargo invocation with a toolchain specified fails).
+/// Workaround for [rustup 1.25: On Windows, nested cargo invocation with a
+/// toolchain specified fails](https://github.com/rust-lang/rustup/issues/3036).
 /// We only use it on Windows, because when possible we want this command to be
 /// as similar as possible to what real users use. And most users do
 /// ```bash

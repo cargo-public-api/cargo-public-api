@@ -38,6 +38,29 @@
 			"label": "rust: cargo check"
 		},
 		{
+			"type": "cargo",
+			"command": "clippy",
+			"args": [
+				"--locked",
+				"--all-targets",
+				"--all-features",
+				"--",
+				"--deny",
+				"clippy::all",
+				"--deny",
+				"clippy::pedantic",
+				"--deny",
+				"warnings",
+				"--deny",
+				"unsafe_code"
+			],
+			"problemMatcher": [
+				"$rustc"
+			],
+			"group": "build",
+			"label": "cargo clippy (for Windows)"
+		},
+		{
 			"type": "shell",
 			"command": "./scripts/cargo-clippy.sh",
 			"problemMatcher": [

@@ -60,7 +60,9 @@ pub fn create_test_git_repo(dest_dir: impl AsRef<Path>, dirs_and_tags: &[(&str, 
         copy_to_dest("src/lib.rs");
 
         run(git().args(["add", "."]));
-        run(git().args(["commit", "--quiet", "-m"]).arg(tag_name));
+        run(git()
+            .args(["-c", "commit.gpgsign=false", "commit", "--quiet", "-m"])
+            .arg(tag_name));
         run(git().arg("tag").arg(tag_name));
     }
 }

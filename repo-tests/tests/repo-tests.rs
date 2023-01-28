@@ -58,8 +58,7 @@ fn newline_at_end_of_all_files() {
     // Report files which are missing a newline at the end
     assert!(
         missing_newline.is_empty(),
-        "These files are missing a newline at the end: {:?}",
-        missing_newline,
+        "These files are missing a newline at the end: {missing_newline:?}",
     );
 }
 

@@ -302,10 +302,7 @@ fn arg_to_api_source(arg: &str) -> Result<Box<dyn ApiSource>> {
 }
 
 fn main_task_from_diff_args(args: &Args) -> Result<Option<MainTask>> {
-    let diff_args = match &args.subcommand {
-        Some(Subcommand::Diff(diff_args)) => diff_args,
-        _ => return Ok(None),
-    };
+    let Some(Subcommand::Diff(diff_args)) = &args.subcommand else { return Ok(None) };
 
     let first_arg = diff_args.args.get(0);
     let second_arg = diff_args.args.get(1);

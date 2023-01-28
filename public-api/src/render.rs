@@ -316,10 +316,7 @@ impl<'c> RenderingContext<'c> {
 
     #[allow(clippy::ref_option_ref, clippy::trivially_copy_pass_by_ref)] // Because of `render_sequence()` arg types
     fn render_option_type(&self, ty: &Option<&Type>) -> Vec<Token> {
-        let ty = match ty {
-            Some(ty) => ty,
-            None => return vec![Token::symbol("_")], // The `_` in `EnumWithStrippedTupleVariants::DoubleFirstHidden(_, bool)`
-        };
+        let Some(ty) = ty else { return vec![Token::symbol("_")] }; // The `_` in `EnumWithStrippedTupleVariants::DoubleFirstHidden(_, bool)`
         match ty {
             Type::ResolvedPath(path) => self.render_resolved_path(path),
             Type::DynTrait(dyn_trait) => self.render_dyn_trait(dyn_trait),

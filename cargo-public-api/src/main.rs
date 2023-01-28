@@ -22,7 +22,7 @@ mod published_crate;
 mod toolchain;
 
 #[derive(Parser, Debug)]
-#[command(author, version, about, long_about = None)]
+#[command(author, version, about, long_about = None, bin_name = "cargo public-api")]
 #[allow(clippy::struct_excessive_bools)]
 pub struct Args {
     /// Path to `Cargo.toml`.

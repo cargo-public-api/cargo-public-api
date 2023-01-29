@@ -84,7 +84,10 @@ fn print_no_diff() {
 /// Uses a bash one-liner to test that public-api gracefully handles
 /// `std::io::ErrorKind::BrokenPipe`
 #[test]
-#[cfg_attr(target_family = "windows", ignore)] // Because test uses bash
+#[cfg_attr(
+    target_family = "windows",
+    ignore = "BrokenPipe/SIGPIPE is a Unix-specific problem"
+)]
 fn broken_pipe() {
     // Create independent build dir so all tests can run in parallel
     let build_dir = tempdir().unwrap();

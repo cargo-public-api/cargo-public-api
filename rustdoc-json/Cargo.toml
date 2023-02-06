@@ -10,7 +10,7 @@ license = "MIT"
 repository = "https://github.com/Enselic/cargo-public-api/tree/main/rustdoc-json"
 
 [dependencies]
-cargo_metadata = "0.15.2"
+cargo_metadata = "0.15.3"
 cargo-manifest = "0.7.1"
 serde = { version = "1.0.152", features = ["derive"] }
 thiserror = "1.0.38"

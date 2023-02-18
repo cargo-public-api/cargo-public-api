@@ -1,6 +1,9 @@
 # rustdoc-json
 
-If a version is not listed below, it means it had no API changes.
+If a version is not listed below, it means it had no relevant changes.
+
+## v0.8.1
+* Bump deps
 
 ## v0.8.0
 * Change `Builder::toolchain(...)` to take `Into<String>` instead of `Into<Option<String>>` to make client code nicer in 99% of cases. Introduce `Builder::clear_toolchain()` for the 1%.

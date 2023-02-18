@@ -1,8 +1,9 @@
-# public-api
+# `public-api` changelog
 
-If a version is not listed below, it means it had no API changes.
+## v0.27.2
+* Bump deps
 
-## Unreleased v0.27.1
+## v0.27.1
 * Deprecate `PublicApi::from_rustdoc_json_str()`
 
 ## v0.27.0

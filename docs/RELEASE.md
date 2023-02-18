@@ -30,14 +30,16 @@
 ### `rustdoc-json`
 
 1. Update `rustdoc-json/CHANGELOG.md`
-1. Bump the `version` in **rustdoc-json/Cargo.toml** and the dependents that you find with `git grep -A1 'path = "../rustdoc-json"'`.
+1. Bump the `version` in **rustdoc-json/Cargo.toml**.
+    * Also bump dependents: `git grep -A1 'path = "../rustdoc-json"'`
 1. Run https://github.com/Enselic/cargo-public-api/actions/workflows/Release-rustdoc-json.yml workflow from `main` ([instructions](https://github.com/Enselic/cargo-public-api/blob/main/docs/development.md#how-to-trigger-main-branch-workflow))
 1. Done!
 
 ### `rustup-toolchain`
 
 1. Update `rustup-toolchain/CHANGELOG.md`
-1. Bump the `version` in **rustup-toolchain/Cargo.toml** and the dependency declared in **cargo-public-api/Cargo.toml**.
+1. Bump the `version` in **rustup-toolchain/Cargo.toml**
+    * Also bump dependents: `git grep -A1 'path = "../rustup-toolchain"'`
 1. Run https://github.com/Enselic/cargo-public-api/actions/workflows/Release-rustup-toolchain.yml workflow from `main` ([instructions](https://github.com/Enselic/cargo-public-api/blob/main/docs/development.md#how-to-trigger-main-branch-workflow))
 1. Done!
 

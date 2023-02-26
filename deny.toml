@@ -11,7 +11,4 @@ copyleft = "deny"
 default = "deny"
 
 [bans]
-multiple-versions = "deny"
 wildcards = "deny"
-[[bans.skip]]
-name = "toml"

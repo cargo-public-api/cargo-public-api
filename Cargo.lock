@@ -101,7 +101,7 @@ dependencies = [
  "serde_json",
  "tempfile",
  "thiserror",
- "toml 0.5.11",
+ "toml 0.7.2",
 ]
 
 [[package]]
@@ -723,7 +723,7 @@ dependencies = [
  "serde",
  "tempfile",
  "thiserror",
- "toml 0.5.11",
+ "toml 0.7.2",
 ]
 
 [[package]]

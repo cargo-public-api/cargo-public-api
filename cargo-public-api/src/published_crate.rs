@@ -212,7 +212,20 @@ mod tests {
         )
         .unwrap()
         .0;
-        assert_eq!(manifest, "[package]\nname = \"crate-downloader\"\nversion = \"0.1.0\"\nedition = \"2021\"\n\n[lib]\npath = \"lib.rs\"\n\n[dependencies.example-api]\nversion = \"=0.1.1\"\n");
+        assert_eq!(
+            manifest,
+            r#"[package]
+name = "crate-downloader"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+path = "lib.rs"
+
+[dependencies.example-api]
+version = "=0.1.1"
+"#
+        );
     }
 
     #[test]
@@ -273,6 +286,19 @@ mod tests {
             &package,
         )
         .unwrap();
-        assert_eq!(manifest, "[package]\nname = \"crate-downloader\"\nversion = \"0.1.0\"\nedition = \"2021\"\n\n[lib]\npath = \"lib.rs\"\n\n[dependencies.example-api]\nversion = \"=0.1.1\"\n");
+        assert_eq!(
+            manifest,
+            r#"[package]
+name = "crate-downloader"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+path = "lib.rs"
+
+[dependencies.example-api]
+version = "=0.1.1"
+"#
+        );
     }
 }

@@ -199,6 +199,7 @@ impl PackageSpec {
 mod tests {
     use super::*;
     use clap::Parser as _;
+    use pretty_assertions::assert_eq;
 
     #[test]
     fn manifest_simple() {

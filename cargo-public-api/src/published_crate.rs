@@ -214,13 +214,13 @@ mod tests {
         .0;
         assert_eq!(
             manifest,
-            r#"[package]
+            r#"[lib]
+path = "lib.rs"
+
+[package]
+edition = "2021"
 name = "crate-downloader"
 version = "0.1.0"
-edition = "2021"
-
-[lib]
-path = "lib.rs"
 
 [dependencies.example-api]
 version = "=0.1.1"
@@ -288,13 +288,13 @@ version = "=0.1.1"
         .unwrap();
         assert_eq!(
             manifest,
-            r#"[package]
+            r#"[lib]
+path = "lib.rs"
+
+[package]
+edition = "2021"
 name = "crate-downloader"
 version = "0.1.0"
-edition = "2021"
-
-[lib]
-path = "lib.rs"
 
 [dependencies.example-api]
 version = "=0.1.1"

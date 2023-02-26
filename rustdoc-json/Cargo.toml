@@ -19,7 +19,7 @@ toml = "0.7.2"
 [dev-dependencies]
 assert_cmd = "2.0.8"
 expect-test = "1.4.0"
-tempfile = "3.3.0"
+tempfile = "3.4.0"
 
 [dev-dependencies.predicates]
 version = "2.1.5"

@@ -7,6 +7,7 @@
 //! ```
 
 use std::env;
+use std::env::consts::EXE_SUFFIX;
 use std::ffi::OsStr;
 use std::io::Write;
 use std::{
@@ -58,6 +59,37 @@ fn list_public_items_with_lint_error() {
     cmd.args(["--manifest-path", "../test-apis/lint_error/Cargo.toml"]);
     cmd.assert()
         .stdout_or_update("./expected-output/lint_error_list.txt")
+        .success();
+}
+
+/// Test that `cargo-public-api` can be renamed to `cargo-public-api-v0.13.0`
+/// and still be invoked as `cargo public-api-v0.13.0` i.e. as a cargo
+/// subcommand.
+#[test]
+fn renamed_binary_works_as_subcommand() {
+    let cmd = || {
+        let mut cmd = std::process::Command::new("cargo");
+        cmd.arg("public-api-v0.13.0");
+        cmd.arg("-h");
+        Command::from_std(cmd)
+    };
+
+    let bin_dir = bin_dir();
+    add_to_path(&bin_dir);
+
+    // First make sure there is no leftover from a previous run by making sure
+    // that the command fails before we make a copy
+    cmd().assert().failure();
+
+    // Now copy the file (but make sure to clean up after the test)
+    let regular_bin = bin_dir.join(format!("cargo-public-api{EXE_SUFFIX}"));
+    let renamed_bin = RmOnDrop(bin_dir.join(format!("cargo-public-api-v0.13.0{EXE_SUFFIX}")));
+    std::fs::copy(regular_bin, &renamed_bin.0).unwrap();
+
+    // Now the command should succeed
+    cmd()
+        .assert()
+        .stdout_or_update("../../docs/short-help.txt")
         .success();
 }
 
@@ -1166,6 +1198,14 @@ impl TestCmd {
     }
 }
 
+struct RmOnDrop(PathBuf);
+
+impl Drop for RmOnDrop {
+    fn drop(&mut self) {
+        std::fs::remove_file(&self.0).unwrap();
+    }
+}
+
 pub trait AssertOrUpdate {
     fn stdout_or_update(self, expected_file: impl AsRef<Path>) -> Assert;
 }
@@ -1184,16 +1224,21 @@ impl AssertOrUpdate for Assert {
 fn add_target_debug_to_path() {
     assert_cargo_public_api_not_in_cargo_home_bin();
 
+    add_to_path(bin_dir());
+}
+
+/// Figures out the `./target/debug` dir
+fn bin_dir() -> PathBuf {
     let mut bin_dir = env::current_exe().unwrap(); // ".../target/debug/deps/cargo_public_api_bin_tests-d0f2f926b349fbb9"
     bin_dir.pop(); // Pop "cargo_public_api_bin_tests-d0f2f926b349fbb9"
     bin_dir.pop(); // Pop "deps"
-    add_to_path(bin_dir); // ".../target/debug"
+    bin_dir // ".../target/debug"
 }
 
-fn add_to_path(dir: PathBuf) {
+fn add_to_path(dir: impl Into<PathBuf>) {
     let mut path = env::var_os("PATH").unwrap();
     let mut dirs: Vec<_> = env::split_paths(&path).collect();
-    dirs.insert(0, dir);
+    dirs.insert(0, dir.into());
     path = env::join_paths(dirs).unwrap();
     env::set_var("PATH", path);
 }

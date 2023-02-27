@@ -1,6 +1,7 @@
 // deny in CI, only warn here
 #![warn(clippy::all, clippy::pedantic)]
 
+use std::ffi::OsString;
 use std::io::stdout;
 use std::path::{Path, PathBuf};
 
@@ -480,15 +481,36 @@ impl Args {
 /// Get CLI args via `clap` while also handling when we are invoked as a cargo
 /// subcommand. When the user runs `cargo public-api -a -b -c` our args will be
 /// `cargo-public-api public-api -a -b -c`.
+///
+/// Note that we also want to support the binary being installed with a
+/// non-standard name such as `~/.cargo/bin/cargo-public-api-v0.13.0`. So we
+/// can't assume the bin name is `cargo-public-api`.
 fn get_args() -> Args {
+    let subcommand_name = subcommand_name(std::env::args_os().next().unwrap());
     let args_os = std::env::args_os()
         .enumerate()
-        .filter(|(index, arg)| *index != 1 || arg != "public-api")
+        .filter(|(index, arg)| *index != 1 || Some(arg) != subcommand_name.as_ref())
         .map(|(_, arg)| arg);
 
     let mut args = Args::parse_from(args_os);
     resolve_toolchain(&mut args);
     args
+}
+
+/// Strips the `cargo-` prefix from the bin name as well as any extension. For
+/// example, `cargo-public-api` becomes `public-api` and
+/// `some/path/cargo-public-api-renamed.exe` becomes `public-api-renamed`.
+fn subcommand_name(bin: OsString) -> Option<OsString> {
+    Some(
+        PathBuf::from(bin)
+            .file_name()?
+            .to_owned()
+            .to_string_lossy()
+            .strip_prefix("cargo-")?
+            .strip_suffix(std::env::consts::EXE_SUFFIX)?
+            .to_owned()
+            .into(),
+    )
 }
 
 /// Check if using a stable compiler, and use nightly if it is.
@@ -543,11 +565,38 @@ fn main() -> Result<()> {
 
 #[cfg(test)]
 mod tests {
-    use super::Args;
+    use super::*;
 
     #[test]
     fn verify_cli() {
         use clap::CommandFactory;
         Args::command().debug_assert();
+    }
+
+    #[test]
+    fn test_subcommand_name() {
+        for test in [
+            ("cargo-public-api", Some("public-api")),
+            ("cargo-public-api-v0.13.0", Some("public-api-v0.13.0")),
+            ("relative/path/cargo-public-api", Some("public-api")),
+            ("relative/cargo-public-api.foo", Some("public-api.foo")),
+            ("cargo-public-api-secondary", Some("public-api-secondary")),
+            ("cargo-something-else", Some("something-else")),
+            ("prefix-cargo-public-api", None),
+            ("/some/abs/path/cargo-public-api", Some("public-api")),
+            #[cfg(windows)]
+            ("c:\\abs\\cargo-public-api-old", Some("public-api-old")),
+        ] {
+            assert_eq!(
+                subcommand_name(OsString::from(&format!(
+                    "{}{}",
+                    test.0,
+                    std::env::consts::EXE_SUFFIX
+                ))),
+                test.1.map(OsString::from),
+                "failed to parse \"{}\"",
+                test.0,
+            );
+        }
     }
 }

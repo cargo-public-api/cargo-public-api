@@ -18,3 +18,4 @@ jobs:
           gh pr review ${{ github.event.pull_request.number }} --comment --body "Hi, I am a bot, and now I am triggering auto-merge of this dependabot PR. This means that if CI passes, this PR will be automatically merged."
       - run: |
           gh pr merge --auto --rebase ${{ github.event.pull_request.number }}
+

@@ -14,7 +14,7 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - run: |
-          echo "DEBUG: ${{ github.repository }} ${{ github.ref_name }}"
+          echo "DEBUG2: ${{ github.repository }} ${{ github.ref_name }}"
       - run: |
           echo gh pr review --comment "Hi, I am a bot, and now I am triggering up auto-merge of this dependabot PR. This means that if CI passes, this PR will be automatically merged." ${{ github.event.pull_request.number }}
       - run: |

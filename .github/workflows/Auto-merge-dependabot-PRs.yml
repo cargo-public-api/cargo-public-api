@@ -5,13 +5,13 @@ name: Auto-merge dependabot PRs
 on:
   pull_request_target:
     types: [opened]
-    branches:
-      - 'dependabot/**'
 
 jobs:
   auto-merge:
-    if: github.repository == 'Enselic/cargo-public-api'
+    if: github.repository == 'Enselic/cargo-public-api' && startsWith(github.ref_name, "dependabot")
     runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - run: gh pr review --comment "Hi, I am a bot, and now I am triggering up auto-merge of this dependabot PR. This means that if CI passes, this PR will be automatically merged." ${{ github.event.pull_request.number }}
       - run: gh pr merge --auto --rebase ${{ github.event.pull_request.number }}

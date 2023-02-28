@@ -13,6 +13,7 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
+      - uses: actions/checkout@v3
       - run: |
           gh pr review ${{ github.event.pull_request.number }} --comment --body "Hi, I am a bot, and now I am triggering auto-merge of this dependabot PR. This means that if CI passes, this PR will be automatically merged."
       - run: |

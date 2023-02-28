@@ -8,7 +8,7 @@ on:
 
 jobs:
   auto-merge:
-    if: github.repository == 'Enselic/cargo-public-api' && startsWith(github.ref_name, "dependabot")
+    if: github.repository == 'Enselic/cargo-public-api' && startsWith(github.ref_name, 'dependabot')
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

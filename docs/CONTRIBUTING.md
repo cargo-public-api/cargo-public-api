@@ -81,17 +81,6 @@ RUSTDOC_JSON_OVERRIDDEN_TOOLCHAIN_HACK=custom ./scripts/run-ci-locally.sh
 
 All features and bugfixes needs automated tests. The only way to make sure no regressions creep in in software that is constantly changed, is to test for it. But manually testing quickly becomes unmanageable. Therefore, automated tests are needed.
 
-## Code coverage
-
-Exploring code coverage is a good way to ensure we have broad enough tests for relatively complex and broad code such as rustdoc JSON parsing. This is the command I use personally to get started:
-
-```bash
-cd public-api
-cargo llvm-cov --html && open ../target/llvm-cov/html/index.html
-```
-
-Which requires you to have done `cargo install cargo-llvm-cov` first.
-
 ## Finding flaky tests
 
 Run this (WARNING: destructive) command for a while and then scroll back and look at the output. It will find flakiness both in the case of requiring a clean build, and in case of requiring an incremental build. You can also remove the `git clean` of course.

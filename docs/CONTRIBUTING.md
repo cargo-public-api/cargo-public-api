@@ -7,9 +7,7 @@ Before you get started, you might want to read about the [architecture](./ARCHIT
 Just clone the repo. Then you can make changes and run tests:
 
 ```
-git clone https://github.com/Enselic/cargo-public-api.git
-
-cd cargo-public-api
+git clone https://github.com/Enselic/cargo-public-api.git ; cd cargo-public-api
 
 cargo test
 ```

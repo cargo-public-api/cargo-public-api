@@ -30,10 +30,10 @@ impl<'c> NameableItem<'c> {
     /// The name that, when sorted on, will group items nicely. Is never shown
     /// to a user.
     pub fn sortable_name(&self, context: &RenderingContext) -> String {
-        let mut sortable_name = format!("{:0>3}-", self.sorting_prefix);
-
         // Note that in order for the prefix to sort properly lexicographically,
         // we need to pad it with leading zeroes.
+        let mut sortable_name = format!("{:0>3}-", self.sorting_prefix);
+
         if let Some(name) = self.name() {
             sortable_name.push_str(name);
         } else if let ItemEnum::Impl(impl_) = &self.item.inner {

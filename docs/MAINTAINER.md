@@ -34,3 +34,12 @@ For `public-api` and `cargo-public-api` (which always have the same version numb
 ## How to release
 
 Please see [RELEASE.md](./RELEASE.md).
+
+# Maintainer tips
+
+## Finding flaky tests
+
+Run this (WARNING: destructive) command for a while and then scroll back and look at the output. It will find flakiness both in the case of requiring a clean build, and in case of requiring an incremental build. You can also remove the `git clean` of course.
+```bash
+while true ; do git clean -xdf ; cargo --quiet test ; cargo --quiet test ; sleep 1 ; done | grep -v -e '0 failed' -e 'running [0-9]\+ test'
+```

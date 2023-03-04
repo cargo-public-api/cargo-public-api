@@ -17,6 +17,6 @@ If you have a rustdoc JSON file, you can use the `public-api` binary directly on
 ## Diffing
 
 Diffing is essentially:
-1. Build rustdoc JSON for two versions of a crate, by literally doing `git checkout`s and then building rustdoc JSON for each commit.
+1. Build rustdoc JSON for two versions of a crate.
 1. Independently parse rustdoc JSON for both versions via the `public-api` crate to get the full public API for each version.
 1. Calculate the diff between the APIs (see [diff.rs](https://github.com/Enselic/cargo-public-api/blob/main/public-api/src/diff.rs))

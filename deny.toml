@@ -12,3 +12,4 @@ default = "deny"
 
 [bans]
 wildcards = "deny"
+multiple-versions = "allow"

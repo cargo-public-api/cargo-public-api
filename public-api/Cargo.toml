@@ -11,7 +11,7 @@ repository = "https://github.com/Enselic/cargo-public-api/tree/main/rustdoc-json
 
 [dependencies]
 hashbag = { version = "0.1.10", default-features = false }
-thiserror = "1.0.38"
+thiserror = "1.0.39"
 
 [dependencies.serde]
 version = "1.0.152"

@@ -10,7 +10,7 @@ license = "MIT"
 repository = "https://github.com/Enselic/cargo-public-api/tree/main/rustup-toolchain"
 
 [dependencies]
-thiserror = "1.0.38"
+thiserror = "1.0.39"
 
 [dev-dependencies]
 expect-test = "1.4.0"

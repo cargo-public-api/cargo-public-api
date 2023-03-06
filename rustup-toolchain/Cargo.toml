@@ -13,7 +13,7 @@ repository = "https://github.com/Enselic/cargo-public-api/tree/main/rustup-toolc
 thiserror = "1.0.39"
 
 [dev-dependencies]
-expect-test = "1.4.0"
+expect-test = "1.4.1"
 
 [dev-dependencies.rustdoc-json]
 path = "../rustdoc-json"

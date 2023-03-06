@@ -7,7 +7,7 @@ use std::path::{Path, PathBuf};
 
 use anyhow::{anyhow, bail, Result};
 use api_source::{ApiSource, Commit, CurrentDir, PublishedCrate, RustdocJson};
-use arg_types::{Color, DenyMethod};
+use arg_types::{Color, DenyMethod, Omit};
 use git_utils::current_branch_or_commit;
 use plain::Plain;
 use public_api::diff::PublicApiDiff;
@@ -41,15 +41,13 @@ pub struct Args {
     /// This makes the output significantly less noisy and repetitive, at the
     /// cost of not fully describing the public API.
     ///
-    /// Examples of Blanket Implementations: `impl<T> Any for T`, `impl<T>
-    /// Borrow<T> for T`, and `impl<T, U> Into<U> for T where U: From<T>`
-    ///
-    /// Examples of Auto Trait Implementations: `impl Send for Foo`, `impl Sync
-    /// for Foo`, and `impl Unpin for Foo`
-    ///
-    /// Examples of Auto Derived Implementations: `Clone`, `Debug`, `Eq`
+    /// Use `--omit ...` for more control.
     #[arg(short, long, action = clap::ArgAction::Count)]
     simplified: u8,
+
+    /// Omit certain kinds of items from the output to make it less noisy
+    #[arg(long, value_enum)]
+    omit: Option<Vec<Omit>>,
 
     /// Space or comma separated list of features to activate
     #[arg(long, short = 'F', num_args = 1..)]
@@ -458,12 +456,20 @@ impl Action {
 }
 
 impl Args {
-    fn simplified(&self) -> bool {
-        self.simplified > 0
+    fn omit_blanket_impls(&self) -> bool {
+        self.omits(Omit::BlanketImpls)
+    }
+
+    fn omit_auto_trait_impls(&self) -> bool {
+        self.omits(Omit::AutoTraitImpls)
     }
 
     fn omit_auto_derived_impls(&self) -> bool {
-        self.simplified > 1
+        self.omits(Omit::AutoDerivedImpls)
+    }
+
+    fn omits(&self, to_omit: Omit) -> bool {
+        self.omit.iter().flatten().any(|o| *o == to_omit)
     }
 
     fn git_root(&self) -> Result<PathBuf> {
@@ -494,6 +500,7 @@ fn get_args() -> Args {
 
     let mut args = Args::parse_from(args_os);
     resolve_toolchain(&mut args);
+    resolve_simplified(&mut args);
     args
 }
 
@@ -520,6 +527,19 @@ fn resolve_toolchain(args: &mut Args) {
             eprintln!("Warning: using the `{toolchain}` toolchain for gathering the public api is not possible, switching to `nightly`");
         }
         args.toolchain = Some("nightly".to_owned());
+    }
+}
+
+fn resolve_simplified(args: &mut Args) {
+    if args.simplified > 0 {
+        args.omit
+            .get_or_insert_with(Vec::new)
+            .extend([Omit::BlanketImpls, Omit::AutoTraitImpls]);
+    }
+    if args.simplified > 1 {
+        args.omit
+            .get_or_insert_with(Vec::new)
+            .push(Omit::AutoDerivedImpls);
     }
 }
 

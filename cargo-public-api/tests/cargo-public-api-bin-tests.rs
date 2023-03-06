@@ -45,11 +45,41 @@ fn list_public_items() {
 }
 
 #[test]
+fn list_public_items_omit_blanket_impls() {
+    let mut cmd = TestCmd::as_subcommand_without_args().with_test_repo();
+    cmd.arg("--omit");
+    cmd.arg("blanket-impls");
+    cmd.assert()
+        .stdout_or_update("./expected-output/omit-blanket-impls.txt")
+        .success();
+}
+
+#[test]
+fn list_public_items_omit_auto_trait_impls_impls() {
+    let mut cmd = TestCmd::as_subcommand_without_args().with_test_repo();
+    cmd.arg("--omit");
+    cmd.arg("auto-trait-impls");
+    cmd.assert()
+        .stdout_or_update("./expected-output/omit-auto-trait-impls.txt")
+        .success();
+}
+
+#[test]
 fn list_public_items_omit_auto_derived_impls() {
+    let mut cmd = TestCmd::as_subcommand_without_args().with_test_repo();
+    cmd.arg("--omit");
+    cmd.arg("auto-derived-impls");
+    cmd.assert()
+        .stdout_or_update("./expected-output/omit-auto-derived-impls.txt")
+        .success();
+}
+
+#[test]
+fn list_public_items_omit_auto_derived_impls_with_double_s() {
     let mut cmd = TestCmd::as_subcommand_without_args().with_test_repo();
     cmd.arg("-ss"); // Note the double -s
     cmd.assert()
-        .stdout_or_update("./expected-output/omit-auto-derived-impls.txt")
+        .stdout_or_update("./expected-output/omit-auto-derived-impls-with-double-s.txt")
         .success();
 }
 

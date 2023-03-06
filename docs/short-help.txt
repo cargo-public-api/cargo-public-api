@@ -13,6 +13,8 @@ Options:
   -s, --simplified...           Omit items that belong to Blanket Implementations and Auto Trait
                                 Implementations (first use), and Auto Derived Implementations
                                 (second use)
+      --omit <OMIT>             Omit certain kinds of items from the output to make it less noisy [possible
+                                values: blanket-impls, auto-trait-impls, auto-derived-impls]
   -F, --features <FEATURES>...  Space or comma separated list of features to activate
       --all-features            Activate all available features
       --no-default-features     Do not activate the `default` feature

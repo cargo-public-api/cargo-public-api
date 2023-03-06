@@ -54,6 +54,24 @@ impl Color {
     }
 }
 
+#[derive(Copy, Clone, Debug, Eq, PartialEq, clap::ValueEnum)]
+#[value(rename_all = "kebab-case")]
+#[allow(clippy::enum_variant_names)] // We might add support for omitting other things in the future
+pub enum Omit {
+    /// Omit items that belong to Blanket Implementations such as `impl<T> Any
+    /// for T`, `impl<T> Borrow<T> for T`, and `impl<T, U> Into<U> for T where
+    /// U: From<T>`.
+    BlanketImpls,
+
+    /// Omit items that belong to Auto Trait Implementations such as `impl Send
+    /// for ...`, `impl Sync for ...`, and `impl Unpin for ...`.
+    AutoTraitImpls,
+
+    /// Omit items that belong to Auto Derived Implementations such as `Clone`,
+    /// `Debug`, and `Eq`.
+    AutoDerivedImpls,
+}
+
 #[cfg(test)]
 mod tests {
     use super::DenyMethod;

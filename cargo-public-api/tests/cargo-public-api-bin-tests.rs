@@ -511,9 +511,10 @@ fn test_deny_not_allowed(args: impl IntoIterator<Item = &'static str>) {
     for arg in args {
         cmd.arg(arg);
     }
-    cmd.assert()
-        .stderr(contains("Found argument '--deny' which wasn't expected"))
-        .failure();
+    // The exact phrasing of the error message on stderr varies with clap
+    // version, and it is annoying to keep it up to date. So just assert on
+    // .failure() and not on the specifics of the  error message.
+    cmd.assert().failure();
 }
 
 #[test]
@@ -586,9 +587,7 @@ fn deny_with_invalid_arg() {
     cmd.arg("diff");
     cmd.arg("v0.2.0..v0.3.0");
     cmd.arg("--deny=invalid");
-    cmd.assert()
-        .stderr(contains("'invalid' isn't a valid value"))
-        .failure();
+    cmd.assert().failure();
 }
 
 #[test]

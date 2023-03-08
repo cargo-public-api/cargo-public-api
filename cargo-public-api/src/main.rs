@@ -12,7 +12,7 @@ use git_utils::current_branch_or_commit;
 use plain::Plain;
 use public_api::diff::PublicApiDiff;
 
-use clap::Parser;
+use clap::{CommandFactory, Parser};
 
 mod api_source;
 mod arg_types;
@@ -205,16 +205,40 @@ enum Subcommand {
     /// needed before a build can succeed. Such as the need to set up git submodules.
     #[clap(verbatim_doc_comment)]
     Diff(DiffArgs),
+
+    /// Generate completion scripts for many different shells.
+    ///
+    /// Example on how to generate and install the completion script for zsh:
+    ///
+    ///    $ mkdir ~/.zfunc
+    ///    $ rustup completions zsh cargo > ~/.zfunc/_cargo
+    ///    $ cargo public-api completions zsh > ~/.zfunc/_cargo-public-api
+    ///    $ fpath+=~/.zfunc
+    ///    $ autoload -U compinit && compinit
+    ///    $ cargo public-api --{{Tab}}
+    ///    --all-features         -- Activate all available features
+    ///    --cap-lints            -- Forwarded to rustdoc JSON build command
+    ///    --color                -- How to color the output. By default, `--color=auto` is active. Using just `--color` withou
+    ///    --debug-sorting        -- Include the so called "sorting prefix" that makes items grouped in a nice way
+    ///    [...]
+    #[clap(verbatim_doc_comment)]
+    Completions {
+        #[arg(value_enum)]
+        shell: clap_complete_command::Shell,
+    },
 }
 
 enum MainTask {
     /// Print the public API of a crate.
-    PrintList { api: Box<dyn ApiSource> },
+    PrintList {
+        api: Box<dyn ApiSource>,
+    },
     /// Diff the public API of a crate.
     PrintDiff {
         old_api: Box<dyn ApiSource>,
         new_api: Box<dyn ApiSource>,
     },
+    GenerateShellCompletionScript(clap_complete_command::Shell),
 }
 
 /// This represents an action that we want to do at some point.
@@ -263,6 +287,13 @@ fn main_() -> Result<()> {
             new_api.as_ref(),
             &mut final_actions,
         ),
+        MainTask::GenerateShellCompletionScript(shell) => {
+            shell.generate(
+                &mut Args::command().bin_name("cargo-public-api"),
+                &mut stdout(),
+            );
+            Ok(())
+        }
     };
 
     // Handle any final actions, such as checking the diff and restoring the
@@ -277,6 +308,9 @@ fn main_() -> Result<()> {
 fn main_task(args: &Args) -> Result<MainTask> {
     match &args.subcommand {
         Some(Subcommand::Diff(diff_args)) => main_task_from_diff_args(args, diff_args),
+        Some(Subcommand::Completions { shell }) => {
+            Ok(MainTask::GenerateShellCompletionScript(*shell))
+        }
         None => Ok(main_task_from_args(args)),
     }
 }
@@ -434,6 +468,7 @@ impl MainTask {
                 old_api.changes_commit() || new_api.changes_commit()
             }
             MainTask::PrintList { api } => api.changes_commit(),
+            MainTask::GenerateShellCompletionScript(_) => false,
         }
     }
 }

@@ -1,0 +1,27 @@
+Generate completion scripts for many different shells.
+
+Example on how to generate and install the completion script for zsh:
+
+   $ mkdir ~/.zfunc
+   $ rustup completions zsh cargo > ~/.zfunc/_cargo
+   $ cargo public-api completions zsh > ~/.zfunc/_cargo-public-api
+   $ fpath+=~/.zfunc
+   $ autoload -U compinit && compinit
+   $ cargo public-api --{{Tab}}
+   --all-features         -- Activate all available features
+   --cap-lints            -- Forwarded to rustdoc JSON build command
+   --color                -- How to color the output. By default, `--color=auto` is active. Using
+just `--color` withou
+   --debug-sorting        -- Include the so called "sorting prefix" that makes items grouped in a
+nice way
+   [...]
+
+Usage: cargo public-api completions <SHELL>
+
+Arguments:
+  <SHELL>
+          [possible values: bash, elvish, fig, fish, powershell, zsh]
+
+Options:
+  -h, --help
+          Print help (see a summary with '-h')

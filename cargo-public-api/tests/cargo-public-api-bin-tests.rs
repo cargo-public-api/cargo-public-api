@@ -827,11 +827,31 @@ fn short_diff_help() {
 }
 
 #[test]
+fn short_completions_help() {
+    let mut cmd = TestCmd::new().with_separate_target_dir();
+    cmd.arg("completions");
+    cmd.arg("-h");
+    cmd.assert()
+        .stdout_or_update("../../docs/short-completions-help.txt")
+        .success();
+}
+
+#[test]
 fn long_help() {
     let mut cmd = TestCmd::new();
     cmd.arg("--help");
     cmd.assert()
         .stdout_or_update("../../docs/long-help.txt")
+        .success();
+}
+
+#[test]
+fn long_completions_help() {
+    let mut cmd = TestCmd::new();
+    cmd.arg("completions");
+    cmd.arg("--help");
+    cmd.assert()
+        .stdout_or_update("../../docs/long-completions-help.txt")
         .success();
 }
 

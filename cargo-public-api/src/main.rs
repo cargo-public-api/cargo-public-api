@@ -207,11 +207,10 @@ enum Subcommand {
     Diff(DiffArgs),
 }
 
-/// If we should list or diff, and what we should list or diff.
 enum MainTask {
-    PrintList {
-        api: Box<dyn ApiSource>,
-    },
+    /// Print the public API of a crate.
+    PrintList { api: Box<dyn ApiSource> },
+    /// Diff the public API of a crate.
     PrintDiff {
         old_api: Box<dyn ApiSource>,
         new_api: Box<dyn ApiSource>,
@@ -244,8 +243,8 @@ fn main_() -> Result<()> {
     // examples: restore a git branch or check that a diff is allowed
     let mut final_actions = vec![];
 
-    // Now figure out if we should list the public API or diff the public API
-    let main_task = list_or_diff(&args)?;
+    // Now figure out our mask task. Typically listing or diffing the public API
+    let main_task = main_task(&args)?;
 
     // If the task we are going to do shortly involves checking out a different
     // commit, set up a restoration of the current branch
@@ -275,9 +274,9 @@ fn main_() -> Result<()> {
     result
 }
 
-fn list_or_diff(args: &Args) -> Result<MainTask> {
-    match main_task_from_diff_args(args)? {
-        Some(main_task) => Ok(main_task),
+fn main_task(args: &Args) -> Result<MainTask> {
+    match &args.subcommand {
+        Some(Subcommand::Diff(diff_args)) => main_task_from_diff_args(args, diff_args),
         None => Ok(main_task_from_args(args)),
     }
 }
@@ -300,9 +299,7 @@ fn arg_to_api_source(arg: &str) -> Result<Box<dyn ApiSource>> {
     }
 }
 
-fn main_task_from_diff_args(args: &Args) -> Result<Option<MainTask>> {
-    let Some(Subcommand::Diff(diff_args)) = &args.subcommand else { return Ok(None) };
-
+fn main_task_from_diff_args(args: &Args, diff_args: &DiffArgs) -> Result<MainTask> {
     let first_arg = diff_args.args.get(0);
     let second_arg = diff_args.args.get(1);
     if diff_args.args.is_empty() {
@@ -365,7 +362,7 @@ for more.
         _ => unreachable!("We should never get here"),
     };
 
-    Ok(Some(main_task))
+    Ok(main_task)
 }
 
 /// We were requested to deny diffs, so make sure there is no diff

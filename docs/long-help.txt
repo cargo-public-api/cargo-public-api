@@ -25,13 +25,21 @@ Options:
           This makes the output significantly less noisy and repetitive, at the cost of not fully
           describing the public API.
           
-          Examples of Blanket Implementations: `impl<T> Any for T`, `impl<T> Borrow<T> for T`, and
-          `impl<T, U> Into<U> for T where U: From<T>`
-          
-          Examples of Auto Trait Implementations: `impl Send for Foo`, `impl Sync for Foo`, and
-          `impl Unpin for Foo`
-          
-          Examples of Auto Derived Implementations: `Clone`, `Debug`, `Eq`
+          Use `--omit ...` for more control.
+
+      --omit <OMIT>
+          Omit certain kinds of items from the output to make it less noisy
+
+          Possible values:
+          - blanket-impls:
+            Omit items that belong to Blanket Implementations such as `impl<T> Any for T`, `impl<T>
+            Borrow<T> for T`, and `impl<T, U> Into<U> for T where U: From<T>`
+          - auto-trait-impls:
+            Omit items that belong to Auto Trait Implementations such as `impl Send for ...`, `impl
+            Sync for ...`, and `impl Unpin for ...`
+          - auto-derived-impls:
+            Omit items that belong to Auto Derived Implementations such as `Clone`, `Debug`, and
+            `Eq`
 
   -F, --features <FEATURES>...
           Space or comma separated list of features to activate

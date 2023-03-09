@@ -827,11 +827,31 @@ fn short_diff_help() {
 }
 
 #[test]
+fn short_completions_help() {
+    let mut cmd = TestCmd::new().with_separate_target_dir();
+    cmd.arg("completions");
+    cmd.arg("-h");
+    cmd.assert()
+        .stdout_or_update("../../docs/short-completions-help.txt")
+        .success();
+}
+
+#[test]
 fn long_help() {
     let mut cmd = TestCmd::new();
     cmd.arg("--help");
     cmd.assert()
         .stdout_or_update("../../docs/long-help.txt")
+        .success();
+}
+
+#[test]
+fn long_completions_help() {
+    let mut cmd = TestCmd::new();
+    cmd.arg("completions");
+    cmd.arg("--help");
+    cmd.assert()
+        .stdout_or_update("../../docs/long-completions-help.txt")
         .success();
 }
 
@@ -861,6 +881,41 @@ fn long_help_wraps() {
             "Found line larger than {max_allowed_line_length} chars! Text wrapping seems broken? Line: '{line}'"
         );
     }
+}
+
+#[test]
+#[cfg_attr(
+    target_family = "windows",
+    ignore = "zsh completion script not relevant for Windows"
+)]
+fn zsh_shell_completions() {
+    // Create a temp `fpath` dir for for zsh completion scripts
+    let zsh_fpath = tempdir().unwrap();
+
+    // Generate zsh completion script for `cargo`
+    let mut rustup = std::process::Command::new("rustup");
+    rustup.args(["completions", "zsh", "cargo"]);
+    std::fs::write(
+        zsh_fpath.path().to_path_buf().join("_cargo"),
+        rustup.output().unwrap().stdout,
+    )
+    .unwrap();
+
+    // Generate zsh completion script for `cargo public-api`
+    let mut cmd = TestCmd::as_subcommand_without_args();
+    cmd.args(["completions", "zsh"]);
+    std::fs::write(
+        zsh_fpath.path().to_path_buf().join("_cargo-public-api"),
+        &cmd.assert().success().get_output().stdout,
+    )
+    .unwrap();
+
+    // Now make sure that the zsh completion actually works
+    let mut cmd = Command::from_std(std::process::Command::new("zsh"));
+    cmd.arg("-f");
+    cmd.arg("tests/test-zsh-completions.zsh");
+    cmd.arg(zsh_fpath.path());
+    cmd.assert().success();
 }
 
 fn create_test_repo_with_dirty_git_tree() -> TestRepo {

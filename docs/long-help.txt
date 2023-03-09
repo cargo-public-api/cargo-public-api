@@ -6,6 +6,8 @@ Usage: cargo public-api [OPTIONS] [COMMAND]
 Commands:
   diff
           Diff the public API against a published version of the crate, or between commits.
+  completions
+          Generate completion scripts for many different shells.
   help
           Print this message or the help of the given subcommand(s)
 

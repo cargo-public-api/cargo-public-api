@@ -1,0 +1,9 @@
+Generate completion scripts for many different shells.
+
+Usage: cargo public-api completions <SHELL>
+
+Arguments:
+  <SHELL>  [possible values: bash, elvish, fig, fish, powershell, zsh]
+
+Options:
+  -h, --help  Print help (see more with '--help')

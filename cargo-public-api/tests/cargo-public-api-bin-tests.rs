@@ -884,6 +884,10 @@ fn long_help_wraps() {
 }
 
 #[test]
+#[cfg_attr(
+    target_family = "windows",
+    ignore = "zsh completion script not relevant for Windows"
+)]
 fn zsh_shell_completions() {
     // Create a temp `fpath` dir for for zsh completion scripts
     let zsh_fpath = tempdir().unwrap();

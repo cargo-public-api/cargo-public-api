@@ -68,7 +68,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
-      - run: sudo apt install -y zsh # To test our zsh completion script
+      - run: zsh --version || (sudo apt install -y zsh && zsh --version)
+        if: runner.os != 'Windows'
       - run: rustup install --profile minimal nightly
       - uses: Swatinem/rust-cache@v2
       - run: cargo test --locked

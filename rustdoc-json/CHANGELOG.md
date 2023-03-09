@@ -1,6 +1,7 @@
 # rustdoc-json
 
-If a version is not listed below, it means it had no relevant changes.
+## v0.8.2
+* Bump deps, most notably `toml` from 0.5.11 to 0.7.2
 
 ## v0.8.1
 * Bump deps

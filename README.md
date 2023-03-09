@@ -139,16 +139,26 @@ pub fn bat::PrettyPrinter::input_files<I, P>(&mut self, paths: I) -> &mut Self w
 
 ## Less Noisy Output
 
-For completeness, items belonging to _Blanket Implementations_ and _Auto Trait Implementations_ such as
+For completeness, items belonging to _Blanket Implementations_, _Auto Trait Implementations_, and _Auto Derived Implementations_, such as
 
-* `impl<T> Borrow<T> for T`
-* `impl<T, U> Into<U> for T where U: From<T>`
-* `impl Send for ...`
-* `impl Sync for ...`
+ * `impl<T> Borrow<T> for T`
+ * `impl<T, U> Into<U> for T where U: From<T>`
+ * `impl Send for ...`
+ * `impl Sync for ...`
+ * `impl Debug for ...` / `#[derive(Debug)]`
 
-are included in the list of public items by default. Use `--simplified` (or short form `-s`) to omit such items from the output:
-```bash
-cargo public-api --simplified
+are included in the list of public items by default. Use
+
+ * `--omit blanket-impls`
+ * `--omit auto-trait-impls`
+ * `--omit auto-derived-impls`
+
+respectively to omit such items from the output to make it much less noisy. For convenience you can also use `-s` (`--simplified`) to achieve the same thing:
+
+```console
+$ cargo public-api --omit blanket-impls --omit auto-trait-impls --omit auto-derived-impls
+
+$ cargo public-api -ss    # Shorter form of above command
 ```
 
 # Compatibility Matrix

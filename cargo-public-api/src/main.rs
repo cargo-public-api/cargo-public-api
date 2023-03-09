@@ -267,7 +267,7 @@ fn main_() -> Result<()> {
     // examples: restore a git branch or check that a diff is allowed
     let mut final_actions = vec![];
 
-    // Now figure out our mask task. Typically listing or diffing the public API
+    // Now figure out our main task. Typically listing or diffing the public API
     let main_task = main_task(&args)?;
 
     // If the task we are going to do shortly involves checking out a different

@@ -883,6 +883,37 @@ fn long_help_wraps() {
     }
 }
 
+#[test]
+fn zsh_shell_completions() {
+    // Create a temp `fpath` dir for for zsh completion scripts
+    let zsh_fpath = tempdir().unwrap();
+
+    // Generate zsh completion script for `cargo`
+    let mut rustup = std::process::Command::new("rustup");
+    rustup.args(["completions", "zsh", "cargo"]);
+    std::fs::write(
+        zsh_fpath.path().to_path_buf().join("_cargo"),
+        rustup.output().unwrap().stdout,
+    )
+    .unwrap();
+
+    // Generate zsh completion script for `cargo public-api`
+    let mut cmd = TestCmd::as_subcommand_without_args();
+    cmd.args(["completions", "zsh"]);
+    std::fs::write(
+        zsh_fpath.path().to_path_buf().join("_cargo-public-api"),
+        &cmd.assert().success().get_output().stdout,
+    )
+    .unwrap();
+
+    // Now make sure that the zsh completion actually works
+    let mut cmd = Command::from_std(std::process::Command::new("zsh"));
+    cmd.arg("-f");
+    cmd.arg("tests/test-zsh-completions.zsh");
+    cmd.arg(zsh_fpath.path());
+    cmd.assert().success();
+}
+
 fn create_test_repo_with_dirty_git_tree() -> TestRepo {
     let test_repo = TestRepo::new();
 

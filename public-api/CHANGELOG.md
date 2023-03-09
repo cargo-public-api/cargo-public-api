@@ -1,5 +1,8 @@
 # `public-api` changelog
 
+## v0.27.3
+* Bump deps
+
 ## v0.27.2
 * Bump deps
 

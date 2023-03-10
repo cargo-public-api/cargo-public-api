@@ -113,30 +113,6 @@ $ UPDATE_EXPECT=1 cargo test public_api
 
 This creates a `tests/public-api.txt` file in your project that you `git add` together with your other project files. Whenever you change the public API, you need to bless it again with the above command. If you forget to bless, the test will fail, together with instructions on how to bless.
 
-## Expected Output
-
-Output aims to be character-by-character identical to the textual parts of the regular `cargo doc` HTML output. For example, [this item](https://docs.rs/bat/0.20.0/bat/struct.PrettyPrinter.html#method.input_files) has the following textual representation in the rendered HTML:
-
-```
-pub fn input_files<I, P>(&mut self, paths: I) -> &mut Self
-where
-    I: IntoIterator<Item = P>,
-    P: AsRef<Path>,
-```
-
-and `cargo public-api` renders this item in the following way:
-
-```
-pub fn bat::PrettyPrinter::input_files<I, P>(&mut self, paths: I) -> &mut Self where I: IntoIterator<Item = P>, P: AsRef<Path>
-```
-
-If we remove newline characters and add some whitespace padding to get the alignment right for side-by-side comparison, we can see that they are exactly the same, except an irrelevant trailing comma:
-
-```
-pub fn                     input_files<I, P>(&mut self, paths: I) -> &mut Self where I: IntoIterator<Item = P>, P: AsRef<Path>,
-pub fn bat::PrettyPrinter::input_files<I, P>(&mut self, paths: I) -> &mut Self where I: IntoIterator<Item = P>, P: AsRef<Path>
-```
-
 ## Less Noisy Output
 
 For completeness, items belonging to _Blanket Implementations_, _Auto Trait Implementations_, and _Auto Derived Implementations_, such as
@@ -159,6 +135,30 @@ respectively to omit such items from the output to make it much less noisy. For 
 $ cargo public-api --omit blanket-impls --omit auto-trait-impls --omit auto-derived-impls
 
 $ cargo public-api -ss    # Shorter form of above command
+```
+
+## Expected Output
+
+Output aims to be character-by-character identical to the textual parts of the regular `cargo doc` HTML output. For example, [this item](https://docs.rs/bat/0.20.0/bat/struct.PrettyPrinter.html#method.input_files) has the following textual representation in the rendered HTML:
+
+```
+pub fn input_files<I, P>(&mut self, paths: I) -> &mut Self
+where
+    I: IntoIterator<Item = P>,
+    P: AsRef<Path>,
+```
+
+and `cargo public-api` renders this item in the following way:
+
+```
+pub fn bat::PrettyPrinter::input_files<I, P>(&mut self, paths: I) -> &mut Self where I: IntoIterator<Item = P>, P: AsRef<Path>
+```
+
+If we remove newline characters and add some whitespace padding to get the alignment right for side-by-side comparison, we can see that they are exactly the same, except an irrelevant trailing comma:
+
+```
+pub fn                     input_files<I, P>(&mut self, paths: I) -> &mut Self where I: IntoIterator<Item = P>, P: AsRef<Path>,
+pub fn bat::PrettyPrinter::input_files<I, P>(&mut self, paths: I) -> &mut Self where I: IntoIterator<Item = P>, P: AsRef<Path>
 ```
 
 # Compatibility Matrix

@@ -134,7 +134,7 @@ respectively to omit such items from the output to make it much less noisy. For 
 ```console
 $ cargo public-api --omit blanket-impls --omit auto-trait-impls --omit auto-derived-impls
 
-$ cargo public-api -ss    # Shorter form of above command
+$ cargo public-api -sss    # Shorter form of above command
 ```
 
 ## Expected Output

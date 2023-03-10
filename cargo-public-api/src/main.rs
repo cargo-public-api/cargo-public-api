@@ -562,16 +562,25 @@ fn resolve_toolchain(args: &mut Args) {
     }
 }
 
+/// Translates `--simplified` into `--omit` args.
+///
+/// | number of `--simplified` args | corresponds to `--omit` of                                |
+/// |-------------------------------|-----------------------------------------------------------|
+/// | 1                             | `blanket-impls`                                           |
+/// | 2                             | `blanket-impls`, `auto-trait-impls`                       |
+/// | 3                             | `blanket-impls`, `auto-trait-impls`, `auto-derived-impls` |
 fn resolve_simplified(args: &mut Args) {
     if args.simplified > 0 {
-        args.omit
-            .get_or_insert_with(Vec::new)
-            .extend([Omit::BlanketImpls, Omit::AutoTraitImpls]);
-    }
-    if args.simplified > 1 {
-        args.omit
-            .get_or_insert_with(Vec::new)
-            .push(Omit::AutoDerivedImpls);
+        let omit = args.omit.get_or_insert_with(Vec::new);
+        omit.push(Omit::BlanketImpls);
+
+        if args.simplified > 1 {
+            omit.push(Omit::AutoTraitImpls);
+        }
+
+        if args.simplified > 2 {
+            omit.push(Omit::AutoDerivedImpls);
+        }
     }
 }
 

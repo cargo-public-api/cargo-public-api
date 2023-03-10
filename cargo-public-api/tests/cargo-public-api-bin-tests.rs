@@ -883,6 +883,11 @@ fn long_help_wraps() {
     }
 }
 
+/// Test zsh completion script generation.
+///
+/// NOTE: This test requires zsh to be installed on the system. It is installed
+/// by default on macOS, and is generally either already installed on your Linux
+/// distribution or very easy to install.
 #[test]
 #[cfg_attr(
     target_family = "windows",

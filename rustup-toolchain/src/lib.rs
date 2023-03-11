@@ -44,6 +44,9 @@ static RUSTUP_MUTEX: std::sync::Mutex<()> = std::sync::Mutex::new(());
 ///
 /// If `rustup` is not installed on your system, for example.
 pub fn ensure_installed(toolchain: &str) -> Result<()> {
+    // The reason we check if the toolchain is installed rather than always
+    // doing `rustup install toolchain` is because otherwise there will be noisy
+    // "already installed" output from `rustup install toolchain`.
     if !is_installed(toolchain)? {
         install(toolchain)?;
     }

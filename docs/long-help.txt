@@ -21,16 +21,16 @@ Options:
           Name of package in workspace to list or diff the public API for
 
   -s, --simplified...
-          Omit items that belong to Blanket Implementations and Auto Trait Implementations (first
-          use), and Auto Derived Implementations (second use).
+          Omit noisy items. Can be used more than once.
           
-          This makes the output significantly less noisy and repetitive, at the cost of not fully
-          describing the public API.
-          
-          Use `--omit ...` for more control.
+          | Usage | Corresponds to                                           |
+          |-------|----------------------------------------------------------|
+          | -s    | --omit blanket-impls                                     |
+          | -ss   | --omit blanket-impls,auto-trait-impls                    |
+          | -sss  | --omit blanket-impls,auto-trait-impls,auto-derived-impls |
 
       --omit <OMIT>
-          Omit certain kinds of items from the output to make it less noisy
+          Omit specified items
 
           Possible values:
           - blanket-impls:
@@ -56,8 +56,10 @@ Options:
           Build for the target triple
 
       --color [<COLOR>]
-          How to color the output. By default, `--color=auto` is active. Using just `--color`
-          without an arg is equivalent to `--color=always`
+          When to color the output.
+          
+          By default, `--color=auto` is active. Using just `--color` without an arg is equivalent to
+          `--color=always`.
 
           Possible values:
           - auto:

@@ -11,17 +11,13 @@ Commands:
 Options:
       --manifest-path <PATH>    Path to `Cargo.toml` [default: Cargo.toml]
   -p, --package <PACKAGE>       Name of package in workspace to list or diff the public API for
-  -s, --simplified...           Omit items that belong to Blanket Implementations and Auto Trait
-                                Implementations (first use), and Auto Derived Implementations
-                                (second use)
-      --omit <OMIT>             Omit certain kinds of items from the output to make it less noisy [possible
-                                values: blanket-impls, auto-trait-impls, auto-derived-impls]
+  -s, --simplified...           Omit noisy items. Can be used more than once.
+      --omit <OMIT>             Omit specified items [possible values: blanket-impls,
+                                auto-trait-impls, auto-derived-impls]
   -F, --features <FEATURES>...  Space or comma separated list of features to activate
       --all-features            Activate all available features
       --no-default-features     Do not activate the `default` feature
       --target <TARGET>         Build for the target triple
-      --color [<COLOR>]         How to color the output. By default, `--color=auto` is active. Using
-                                just `--color` without an arg is equivalent to `--color=always` [possible
-                                values: auto, never, always]
+      --color [<COLOR>]         When to color the output [possible values: auto, never, always]
   -h, --help                    Print help (see more with '--help')
   -V, --version                 Print version

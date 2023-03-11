@@ -34,18 +34,18 @@ pub struct Args {
     #[arg(long, short)]
     package: Option<String>,
 
-    /// Omit items that belong to Blanket Implementations and Auto Trait
-    /// Implementations (first use), and Auto Derived Implementations (second
-    /// use).
+    /// Omit noisy items. Can be used more than once.
     ///
-    /// This makes the output significantly less noisy and repetitive, at the
-    /// cost of not fully describing the public API.
-    ///
-    /// Use `--omit ...` for more control.
+    /// | Usage | Corresponds to                                           |
+    /// |-------|----------------------------------------------------------|
+    /// | -s    | --omit blanket-impls                                     |
+    /// | -ss   | --omit blanket-impls,auto-trait-impls                    |
+    /// | -sss  | --omit blanket-impls,auto-trait-impls,auto-derived-impls |
+    #[clap(verbatim_doc_comment)]
     #[arg(short, long, action = clap::ArgAction::Count)]
     simplified: u8,
 
-    /// Omit certain kinds of items from the output to make it less noisy
+    /// Omit specified items.
     #[arg(long, value_enum, value_delimiter = ',')]
     omit: Option<Vec<Omit>>,
 
@@ -65,8 +65,10 @@ pub struct Args {
     #[arg(long)]
     target: Option<String>,
 
-    /// How to color the output. By default, `--color=auto` is active. Using
-    /// just `--color` without an arg is equivalent to `--color=always`.
+    /// When to color the output.
+    ///
+    /// By default, `--color=auto` is active. Using just `--color` without an
+    /// arg is equivalent to `--color=always`.
     #[allow(clippy::option_option)]
     #[arg(long, value_enum)]
     color: Option<Option<Color>>,
@@ -93,16 +95,16 @@ pub struct Args {
     #[arg(long, hide = true)]
     verbose: bool,
 
-    /// Include the so called "sorting prefix" that makes items grouped in a
-    /// nice way.
+    /// Show the hidden "sorting prefix" that makes items nicely grouped
     ///
     /// Only intended for debugging this tool.
     #[arg(long, hide = true)]
     debug_sorting: bool,
 
-    /// Put rustdoc JSON build artifacts in the specified dir instead of in
-    /// `./target`. Option hidden by default because it will typically not be
-    /// needed by users. Mainly useful to allow tests to run in parallel.
+    /// Where to put rustdoc JSON build artifacts.
+    ///
+    /// Hidden by default because it will typically not be needed by users.
+    /// Mainly useful to allow tests to run in parallel.
     #[arg(long, value_name = "PATH", hide = true)]
     target_dir: Option<PathBuf>,
 
@@ -218,8 +220,8 @@ enum Subcommand {
     ///    $ cargo public-api --{{Tab}}
     ///    --all-features         -- Activate all available features
     ///    --cap-lints            -- Forwarded to rustdoc JSON build command
-    ///    --color                -- How to color the output. By default, `--color=auto` is active. Using just `--color` withou
-    ///    --debug-sorting        -- Include the so called "sorting prefix" that makes items grouped in a nice way
+    ///    --color                -- When to color the output
+    ///    --debug-sorting        -- Show the hidden "sorting prefix" that makes items nicely grouped
     ///    [...]
     #[clap(verbatim_doc_comment)]
     Completions {

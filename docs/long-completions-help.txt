@@ -10,10 +10,8 @@ Example on how to generate and install the completion script for zsh:
    $ cargo public-api --{{Tab}}
    --all-features         -- Activate all available features
    --cap-lints            -- Forwarded to rustdoc JSON build command
-   --color                -- How to color the output. By default, `--color=auto` is active. Using
-just `--color` withou
-   --debug-sorting        -- Include the so called "sorting prefix" that makes items grouped in a
-nice way
+   --color                -- When to color the output
+   --debug-sorting        -- Show the hidden "sorting prefix" that makes items nicely grouped
    [...]
 
 Usage: cargo public-api completions <SHELL>

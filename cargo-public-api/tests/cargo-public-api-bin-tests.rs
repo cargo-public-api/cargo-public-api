@@ -40,7 +40,7 @@ fn list_public_items() {
 
     cmd.args(["--manifest-path", "../public-api/Cargo.toml"]);
     cmd.assert()
-        .stdout_or_update("./expected-output/public_api_list.txt")
+        .stdout_or_update("./expected-output/list_public_items.txt")
         .success();
 }
 
@@ -80,6 +80,15 @@ fn list_public_items_omit_auto_derived_impls_with_double_s() {
     cmd.arg("-ss"); // Note the double -s
     cmd.assert()
         .stdout_or_update("./expected-output/omit-auto-derived-impls-with-double-s.txt")
+        .success();
+}
+
+#[test]
+fn list_public_items_omit_auto_derived_impls_with_triple_s() {
+    let mut cmd = TestCmd::as_subcommand_without_args().with_test_repo();
+    cmd.arg("-sss"); // Note the triple -s
+    cmd.assert()
+        .stdout_or_update("./expected-output/omit-auto-derived-impls-with-triple-s.txt")
         .success();
 }
 
@@ -269,7 +278,7 @@ fn subcommand_invocation_public_api_arg() {
     cmd.current_dir(".."); // Enter git repo root so -p starts working
     cmd.args(["-p", "public-api"]);
     cmd.assert()
-        .stdout_or_update("./expected-output/public_api_list.txt")
+        .stdout_or_update("./expected-output/subcommand_invocation_public_api_arg.txt")
         .success();
 }
 
@@ -1228,7 +1237,8 @@ impl TestCmd {
             // risk is very low that we will render Blanket Implementations and
             // Auto Trait Implementations items wrong. Instead we choose to have
             // dedicated tests for the rendering of such items.
-            cmd.arg("--simplified");
+            cmd.args(["--omit", "blanket-impls"]);
+            cmd.args(["--omit", "auto-trait-impls"]);
         }
 
         Self {

@@ -747,6 +747,21 @@ fn diff_against_published_version() {
         .success();
 }
 
+/// Tests that we can diff between two published versions of an arbitrary crate
+/// that does not need to be in the current workspace.
+#[test]
+fn diff_between_two_published_versions() {
+    let mut cmd = TestCmd::new(); // NOTE: No `.with_test_repo()` !;
+    cmd.arg("-p");
+    cmd.arg("example_api");
+    cmd.arg("diff");
+    cmd.arg("0.1.0");
+    cmd.arg("0.2.0");
+    cmd.assert()
+        .stdout_or_update("./expected-output/example_api_diff_v0.1.0_to_v0.2.0.txt")
+        .success();
+}
+
 #[test]
 fn diff_against_latest_published_version() {
     // Create a test repo. It already is at the latest version

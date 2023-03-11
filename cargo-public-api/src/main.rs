@@ -173,6 +173,10 @@ enum Subcommand {
     ///
     ///     cargo public-api diff latest
     ///
+    /// Diffing between two published versions of any crate:
+    ///
+    ///     cargo public-api -p example_api diff 0.1.0 0.2.0
+    ///
     /// Diffing working tree against a published version of a specific crate in the workspace:
     ///
     ///     cargo public-api -p specific-crate diff 1.2.3

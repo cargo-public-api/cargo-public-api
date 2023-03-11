@@ -132,7 +132,7 @@ are included in the list of public items by default. Use
 respectively to omit such items from the output to make it much less noisy. For convenience you can also use `-s` (`--simplified`) to achieve the same thing:
 
 ```console
-$ cargo public-api --omit blanket-impls --omit auto-trait-impls --omit auto-derived-impls
+$ cargo public-api --omit blanket-impls,auto-trait-impls,auto-derived-impls
 
 $ cargo public-api -sss    # Shorter form of above command
 ```

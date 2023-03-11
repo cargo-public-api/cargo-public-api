@@ -1236,9 +1236,9 @@ impl TestCmd {
             // Simplify output since if we render all other items properly, the
             // risk is very low that we will render Blanket Implementations and
             // Auto Trait Implementations items wrong. Instead we choose to have
-            // dedicated tests for the rendering of such items.
-            cmd.args(["--omit", "blanket-impls"]);
-            cmd.args(["--omit", "auto-trait-impls"]);
+            // dedicated tests for the rendering of such items. NOTE: Here we
+            // also test that ',' is a valid delimiter for `--omit`.
+            cmd.args(["--omit", "blanket-impls,auto-trait-impls"]);
         }
 
         Self {

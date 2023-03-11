@@ -46,7 +46,7 @@ pub struct Args {
     simplified: u8,
 
     /// Omit certain kinds of items from the output to make it less noisy
-    #[arg(long, value_enum)]
+    #[arg(long, value_enum, value_delimiter = ',')]
     omit: Option<Vec<Omit>>,
 
     /// Space or comma separated list of features to activate
@@ -564,11 +564,11 @@ fn resolve_toolchain(args: &mut Args) {
 
 /// Translates `--simplified` into `--omit` args.
 ///
-/// | number of `--simplified` args | corresponds to `--omit` of                                |
-/// |-------------------------------|-----------------------------------------------------------|
-/// | 1                             | `blanket-impls`                                           |
-/// | 2                             | `blanket-impls`, `auto-trait-impls`                       |
-/// | 3                             | `blanket-impls`, `auto-trait-impls`, `auto-derived-impls` |
+/// | number of `--simplified` args | corresponds to `--omit` of                          |
+/// |-------------------------------|-----------------------------------------------------|
+/// | 1                             | `blanket-impls`                                     |
+/// | 2                             | `blanket-impls,auto-trait-impls`                    |
+/// | 3                             | `blanket-impls,auto-trait-impls,auto-derived-impls` |
 fn resolve_simplified(args: &mut Args) {
     if args.simplified > 0 {
         let omit = args.omit.get_or_insert_with(Vec::new);

@@ -9,7 +9,7 @@
         * **Cargo.toml** `[workspace.package.version]`
         * Dependents that you find with `git grep -A1 'path = "../public-api"'`
     2. If you bump 0.x.0 version, also update the [compatibility matrix](https://github.com/Enselic/cargo-public-api#compatibility-matrix).
-    1. If `MINIMUM_NIGHTLY_VERSION` must be bumped, bump it. If you bump it, also
+    1. If `MINIMUM_NIGHTLY_RUST_VERSION` must be bumped, bump it. If you bump it, also
         *  bump it in [compatibility matrix](https://github.com/Enselic/cargo-public-api#compatibility-matrix)
         *  bump it in `cargo-public-api` [installation instructions](https://github.com/Enselic/cargo-public-api#installation)
         * `rm cargo-public-api/MINIMUM_NIGHTLY_VERSION_FOR_TESTS`

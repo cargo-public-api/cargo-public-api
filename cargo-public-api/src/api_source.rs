@@ -4,7 +4,7 @@ use anyhow::{anyhow, Context, Result};
 use rustdoc_json::BuildError;
 use std::path::{Path, PathBuf};
 
-use public_api::{PublicApi, MINIMUM_NIGHTLY_VERSION};
+use public_api::{PublicApi, MINIMUM_NIGHTLY_RUST_VERSION};
 
 use crate::{git_utils, Args, Subcommand};
 
@@ -173,7 +173,7 @@ fn public_api_from_rustdoc_json(path: impl AsRef<Path>, args: &Args) -> Result<P
     let public_api = public_api_builder_from_args(json_path, args).build().with_context(|| {
         format!(
             "Failed to parse rustdoc JSON at {json_path:?}.\n\
-            This version of `cargo public-api` requires at least:\n\n    {MINIMUM_NIGHTLY_VERSION}\n\n\
+            This version of `cargo public-api` requires at least:\n\n    {MINIMUM_NIGHTLY_RUST_VERSION}\n\n\
             If you have that, it might be `cargo public-api` that is out of date. Try\n\
             to install the latest version with `cargo install cargo-public-api`. If the\n\
             issue remains, please report at\n\n    https://github.com/Enselic/cargo-public-api/issues",

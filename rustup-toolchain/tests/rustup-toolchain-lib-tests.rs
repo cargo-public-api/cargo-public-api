@@ -2,11 +2,11 @@
 #[test]
 fn public_api() {
     // Install a proper nightly toolchain if it is missing
-    rustup_toolchain::ensure_installed(public_api::MINIMUM_NIGHTLY_VERSION).unwrap();
+    rustup_toolchain::ensure_installed(public_api::MINIMUM_NIGHTLY_RUST_VERSION).unwrap();
 
     // Build rustdoc JSON
     let rustdoc_json = rustdoc_json::Builder::default()
-        .toolchain(public_api::MINIMUM_NIGHTLY_VERSION)
+        .toolchain(public_api::MINIMUM_NIGHTLY_RUST_VERSION)
         .build()
         .unwrap();
 

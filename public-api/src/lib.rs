@@ -56,11 +56,15 @@ pub use public_item::PublicItem;
 /// The rustdoc JSON format is still changing, so every now and then we update
 /// this library to support the latest format. If you use this version of
 /// nightly or later, you should be fine.
-pub const MINIMUM_NIGHTLY_VERSION: &str = "nightly-2023-01-04";
+pub const MINIMUM_NIGHTLY_RUST_VERSION: &str = "nightly-2023-01-04";
 
-/// Deprecated, use [`MINIMUM_NIGHTLY_VERSION`] instead.
-#[deprecated(since = "0.27.0", note = "Use MINIMUM_NIGHTLY_VERSION instead")]
-pub const MINIMUM_RUSTDOC_JSON_VERSION: &str = MINIMUM_NIGHTLY_VERSION;
+/// Deprecated, use [`MINIMUM_NIGHTLY_RUST_VERSION`] instead.
+#[deprecated(since = "0.27.4", note = "Use MINIMUM_NIGHTLY_RUST_VERSION instead")]
+pub const MINIMUM_NIGHTLY_VERSION: &str = MINIMUM_NIGHTLY_RUST_VERSION;
+
+/// Deprecated, use [`MINIMUM_NIGHTLY_RUST_VERSION`] instead.
+#[deprecated(since = "0.27.0", note = "Use MINIMUM_NIGHTLY_RUST_VERSION instead")]
+pub const MINIMUM_RUSTDOC_JSON_VERSION: &str = MINIMUM_NIGHTLY_RUST_VERSION;
 
 /// See [`Builder`] method docs for what each field means.
 #[derive(Copy, Clone, Debug)]

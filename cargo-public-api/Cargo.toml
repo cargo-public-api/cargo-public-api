@@ -37,7 +37,7 @@ version = "4.0.32"
 features = ["derive", "wrap_help"]
 
 [dependencies.crates-index]
-version = "0.19.6"
+version = "0.19.7"
 default-features = false
 optional = true
 

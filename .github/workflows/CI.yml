@@ -12,12 +12,19 @@ env:
 
 jobs:
   all-jobs:
+    if: always()
     name: all-jobs
     runs-on: ubuntu-latest
     needs:
-      [cargo-fmt, cargo-doc, cargo-clippy, cargo-audit, cargo-deny, cargo-test]
+      - cargo-fmt
+      - cargo-doc
+      - cargo-clippy
+      - cargo-audit
+      - cargo-deny
+      - cargo-test
     steps:
-      - run: echo "All jobs completed"
+      - run: |
+          [ "${{ needs.cargo-test.result }}" = "success" ]
 
   cargo-fmt:
     name: cargo fmt -- --check

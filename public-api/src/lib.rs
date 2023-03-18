@@ -233,15 +233,7 @@ impl PublicApi {
         rustdoc_json_str: impl AsRef<str>,
         options: Options,
     ) -> Result<PublicApi> {
-        let crate_ = deserialize_without_recursion_limit(rustdoc_json_str.as_ref())?;
-
-        let mut public_api = item_processor::public_api_in_crate(&crate_, options);
-
-        if options.sorted {
-            public_api.items.sort_by(PublicItem::grouping_cmp);
-        }
-
-        Ok(public_api)
+        from_rustdoc_json_str(rustdoc_json_str, options)
     }
 
     /// Returns an iterator over all public items in the public API
@@ -278,6 +270,18 @@ impl std::fmt::Display for PublicApi {
         }
         Ok(())
     }
+}
+
+fn from_rustdoc_json_str(rustdoc_json_str: impl AsRef<str>, options: Options) -> Result<PublicApi> {
+    let crate_ = deserialize_without_recursion_limit(rustdoc_json_str.as_ref())?;
+
+    let mut public_api = item_processor::public_api_in_crate(&crate_, options);
+
+    if options.sorted {
+        public_api.items.sort_by(PublicItem::grouping_cmp);
+    }
+
+    Ok(public_api)
 }
 
 /// Helper to deserialize the JSON with `serde_json`, but with the recursion

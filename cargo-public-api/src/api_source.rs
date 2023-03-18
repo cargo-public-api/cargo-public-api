@@ -56,7 +56,7 @@ impl PublishedCrate {
 impl ApiSource for PublishedCrate {
     fn obtain_api(&self, args: &Args) -> Result<public_api::PublicApi> {
         let rustdoc_json = crate::published_crate::build_rustdoc_json(&self.version, args)?;
-        public_api_from_rustdoc_json(&rustdoc_json, args)
+        public_api_from_rustdoc_json(rustdoc_json, args)
     }
 }
 
@@ -107,7 +107,7 @@ impl ApiSource for RustdocJson {
 /// which means it will return the public API of that commit.
 fn public_api_for_current_dir(args: &Args) -> Result<PublicApi> {
     let json_path = rustdoc_json_for_current_dir(args)?;
-    public_api_from_rustdoc_json(&json_path, args)
+    public_api_from_rustdoc_json(json_path, args)
 }
 
 /// Builds the rustdoc JSON for the library in the current working directory.
@@ -167,7 +167,9 @@ pub fn builder_from_args(args: &Args) -> rustdoc_json::Builder {
     builder
 }
 
-fn public_api_from_rustdoc_json(json_path: &Path, args: &Args) -> Result<PublicApi> {
+fn public_api_from_rustdoc_json(path: impl AsRef<Path>, args: &Args) -> Result<PublicApi> {
+    let json_path = path.as_ref();
+
     let options = get_options(args);
 
     if args.verbose {

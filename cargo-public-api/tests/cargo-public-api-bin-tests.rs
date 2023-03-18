@@ -484,10 +484,10 @@ fn diff_public_items_with_dirty_tree_fails() {
         .failure();
 }
 
-/// Test that diffing succeedes if the git tree is dirty and
+/// Test that diffing succeeds if the git tree is dirty and
 /// `force-git-checkout` option is specified.
 #[test]
-fn diff_public_items_with_dirty_tree_succeedes_with_force_option() {
+fn diff_public_items_with_dirty_tree_succeeds_with_force_option() {
     let test_repo = create_test_repo_with_dirty_git_tree();
 
     let mut cmd = TestCmd::new();

@@ -1,4 +1,4 @@
-/// Keep this code in sync with the code in `../../README.md` -->
+/// Keep this code in sync with the code in `../../README.md`
 #[test]
 fn public_api() {
     // Install a proper nightly toolchain if it is missing

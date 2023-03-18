@@ -1,8 +1,8 @@
-//! The module tp contain all token handling logic.
+//! Contains all token handling logic.
 #[cfg(doc)]
 use crate::public_item::PublicItem;
 
-/// A token in a rendered [`PublicItem`], used to apply syntax colouring in downstream applications.
+/// A token in a rendered [`PublicItem`], used to apply syntax coloring in downstream applications.
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum Token {
     /// A symbol, like `=` or `::<`

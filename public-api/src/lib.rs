@@ -192,7 +192,7 @@ impl PublicApi {
     /// Takes a [`Path`] to a rustdoc JSON file and returns a [`PublicApi`] with
     /// [`PublicItem`]s where each [`PublicItem`] is one public item of the
     /// crate, i.e. part of the crate's public API. Use [`Self::items()`] or
-    /// `[Self::into_items()` to get the items.
+    /// [`Self::into_items()`] to get the items.
     ///
     /// There exists a convenient `cargo public-api` subcommand wrapper for this
     /// function found at <https://github.com/Enselic/cargo-public-api> that

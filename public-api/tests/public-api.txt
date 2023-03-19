@@ -176,6 +176,44 @@ impl<T> core::borrow::BorrowMut<T> for public_api::Error where T: core::marker::
 pub fn public_api::Error::borrow_mut(&mut self) -> &mut T
 impl<T> core::convert::From<T> for public_api::Error
 pub fn public_api::Error::from(t: T) -> T
+pub struct public_api::Builder
+impl public_api::Builder
+pub fn public_api::Builder::build(self) -> public_api::Result<public_api::PublicApi>
+pub fn public_api::Builder::debug_sorting(self, debug_sorting: bool) -> Self
+pub fn public_api::Builder::from_rustdoc_json(path: impl core::convert::Into<std::path::PathBuf>) -> Self
+pub fn public_api::Builder::omit_auto_derived_impls(self, omit_auto_derived_impls: bool) -> Self
+pub fn public_api::Builder::omit_auto_trait_impls(self, omit_auto_trait_impls: bool) -> Self
+pub fn public_api::Builder::omit_blanket_impls(self, omit_blanket_impls: bool) -> Self
+pub fn public_api::Builder::sorted(self, sorted: bool) -> Self
+impl core::clone::Clone for public_api::Builder
+pub fn public_api::Builder::clone(&self) -> public_api::Builder
+impl core::fmt::Debug for public_api::Builder
+pub fn public_api::Builder::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::Send for public_api::Builder
+impl core::marker::Sync for public_api::Builder
+impl core::marker::Unpin for public_api::Builder
+impl core::panic::unwind_safe::RefUnwindSafe for public_api::Builder
+impl core::panic::unwind_safe::UnwindSafe for public_api::Builder
+impl<T, U> core::convert::Into<U> for public_api::Builder where U: core::convert::From<T>
+pub fn public_api::Builder::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for public_api::Builder where U: core::convert::Into<T>
+pub type public_api::Builder::Error = core::convert::Infallible
+pub fn public_api::Builder::try_from(value: U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for public_api::Builder where U: core::convert::TryFrom<T>
+pub type public_api::Builder::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn public_api::Builder::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for public_api::Builder where T: core::clone::Clone
+pub type public_api::Builder::Owned = T
+pub fn public_api::Builder::clone_into(&self, target: &mut T)
+pub fn public_api::Builder::to_owned(&self) -> T
+impl<T> core::any::Any for public_api::Builder where T: 'static + core::marker::Sized
+pub fn public_api::Builder::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for public_api::Builder where T: core::marker::Sized
+pub fn public_api::Builder::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for public_api::Builder where T: core::marker::Sized
+pub fn public_api::Builder::borrow_mut(&mut self) -> &mut T
+impl<T> core::convert::From<T> for public_api::Builder
+pub fn public_api::Builder::from(t: T) -> T
 #[non_exhaustive] pub struct public_api::Options
 pub public_api::Options::debug_sorting: bool
 pub public_api::Options::omit_auto_derived_impls: bool

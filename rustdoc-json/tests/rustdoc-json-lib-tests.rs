@@ -1,4 +1,3 @@
-use public_api::{Options, PublicApi};
 use rustdoc_json::PackageTarget;
 
 #[test]
@@ -7,7 +6,7 @@ fn public_api() -> Result<(), Box<dyn std::error::Error>> {
         .toolchain("nightly")
         .build()?;
 
-    let public_api = PublicApi::from_rustdoc_json(rustdoc_json, Options::default())?;
+    let public_api = public_api::Builder::from_rustdoc_json(rustdoc_json).build()?;
 
     expect_test::expect_file!["public-api.txt"].assert_eq(&public_api.to_string());
 

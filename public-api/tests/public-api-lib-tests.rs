@@ -8,12 +8,15 @@ use std::{
 };
 
 use expect_test::expect_file;
-use public_api::{Error, Options, PublicApi};
+use public_api::Error;
 
 use tempfile::{tempdir, NamedTempFile, TempDir};
 
 mod common;
-use common::{rustdoc_json_path_for_crate, rustdoc_json_path_for_temp_crate};
+use common::{
+    builder_for_crate, rustdoc_json_path_for_crate, rustdoc_json_path_for_temp_crate,
+    simplified_builder_for_crate,
+};
 
 #[test]
 fn public_api() -> Result<(), Box<dyn std::error::Error>> {
@@ -21,7 +24,7 @@ fn public_api() -> Result<(), Box<dyn std::error::Error>> {
         .toolchain("nightly")
         .build()?;
 
-    let public_api = PublicApi::from_rustdoc_json(rustdoc_json, Options::default())?;
+    let public_api = public_api::Builder::from_rustdoc_json(rustdoc_json).build()?;
 
     expect_test::expect_file!["public-api.txt"].assert_eq(&public_api.to_string());
 
@@ -34,9 +37,8 @@ fn not_simplified() {
     let build_dir = tempdir().unwrap();
 
     assert_public_api(
-        rustdoc_json_path_for_crate("../test-apis/example_api-v0.2.0", &build_dir),
+        builder_for_crate("../test-apis/example_api-v0.2.0", &build_dir),
         "./expected-output/example_api-v0.2.0-not-simplified.txt",
-        Options::default(),
     );
 }
 
@@ -45,13 +47,12 @@ fn simplified_without_auto_derived_impls() {
     // Create independent build dir so all tests can run in parallel
     let build_dir = tempdir().unwrap();
 
-    let mut options = simplified();
-    options.omit_auto_derived_impls = true;
-
     assert_public_api(
-        rustdoc_json_path_for_crate("../test-apis/example_api-v0.2.0", &build_dir),
+        builder_for_crate("../test-apis/example_api-v0.2.0", &build_dir)
+            .omit_auto_derived_impls(true)
+            .omit_blanket_impls(true)
+            .omit_auto_trait_impls(true),
         "./expected-output/example_api-v0.2.0-simplified_without_auto_derived_impls.txt",
-        options,
     );
 }
 
@@ -60,13 +61,9 @@ fn omit_blanket_impls() {
     // Create independent build dir so all tests can run in parallel
     let build_dir = tempdir().unwrap();
 
-    let mut options = Options::default();
-    options.omit_blanket_impls = true;
-
     assert_public_api(
-        rustdoc_json_path_for_crate("../test-apis/example_api-v0.2.0", &build_dir),
+        builder_for_crate("../test-apis/example_api-v0.2.0", &build_dir).omit_blanket_impls(true),
         "./expected-output/example_api-v0.2.0-omit_blanket_impls.txt",
-        options,
     );
 }
 
@@ -75,13 +72,10 @@ fn omit_auto_trait_impls() {
     // Create independent build dir so all tests can run in parallel
     let build_dir = tempdir().unwrap();
 
-    let mut options = Options::default();
-    options.omit_auto_trait_impls = true;
-
     assert_public_api(
-        rustdoc_json_path_for_crate("../test-apis/example_api-v0.2.0", &build_dir),
+        builder_for_crate("../test-apis/example_api-v0.2.0", &build_dir)
+            .omit_auto_trait_impls(true),
         "./expected-output/example_api-v0.2.0-omit_auto_trait_impls.txt",
-        options,
     );
 }
 
@@ -165,8 +159,8 @@ fn comprehensive_api() {
     // Create independent build dir so all tests can run in parallel
     let build_dir = tempdir().unwrap();
 
-    assert_simplified_public_api(
-        rustdoc_json_path_for_crate("../test-apis/comprehensive_api", &build_dir),
+    assert_public_api(
+        simplified_builder_for_crate("../test-apis/comprehensive_api", &build_dir),
         "./expected-output/comprehensive_api.txt",
     );
 }
@@ -176,8 +170,8 @@ fn comprehensive_api_proc_macro() {
     // Create independent build dir so all tests can run in parallel
     let build_dir = tempdir().unwrap();
 
-    assert_simplified_public_api(
-        rustdoc_json_path_for_crate("../test-apis/comprehensive_api_proc_macro", &build_dir),
+    assert_public_api(
+        simplified_builder_for_crate("../test-apis/comprehensive_api_proc_macro", &build_dir),
         "./expected-output/comprehensive_api_proc_macro.txt",
     );
 }
@@ -190,10 +184,10 @@ fn comprehensive_api_debug_sorting_no_stack_overflow() {
     // Create independent build dir so all tests can run in parallel
     let build_dir = tempdir().unwrap();
 
-    let mut options = Options::default();
-    options.debug_sorting = true;
     let rustdoc_json = rustdoc_json_path_for_crate("../test-apis/comprehensive_api", &build_dir);
-    let _api = PublicApi::from_rustdoc_json(rustdoc_json, options)
+    let _api = public_api::Builder::from_rustdoc_json(rustdoc_json)
+        .debug_sorting(true)
+        .build()
         .unwrap()
         .to_string();
 }
@@ -202,18 +196,8 @@ fn comprehensive_api_debug_sorting_no_stack_overflow() {
 fn invalid_json() {
     let invalid_json = NamedTempFile::new().unwrap();
     write!(invalid_json.as_file(), "}}}}}}}}}}").unwrap();
-    let result = PublicApi::from_rustdoc_json(invalid_json, Options::default());
+    let result = public_api::Builder::from_rustdoc_json(invalid_json.path()).build();
     assert!(matches!(result, Err(Error::SerdeJsonError(_))));
-}
-
-#[test]
-fn options() {
-    let options = Options::default();
-
-    // If we don't do this, we will not have code coverage 100% of functions in
-    // lib.rs, which is more annoying than doing this clone
-    #[allow(clippy::clone_on_copy)]
-    let _ = options.clone();
 }
 
 struct LibWithJson {
@@ -252,44 +236,25 @@ fn rustdoc_json_for_lib(lib: &str) -> LibWithJson {
 }
 
 fn assert_public_api_diff(
-    old_json: impl AsRef<Path>,
-    new_json: impl AsRef<Path>,
+    old_json: impl Into<PathBuf>,
+    new_json: impl Into<PathBuf>,
     expected: impl AsRef<Path>,
 ) {
-    let options = Options::default();
-    let old = PublicApi::from_rustdoc_json(old_json, options).unwrap();
-    let new = PublicApi::from_rustdoc_json(new_json, options).unwrap();
+    let old = public_api::Builder::from_rustdoc_json(old_json)
+        .build()
+        .unwrap();
+    let new = public_api::Builder::from_rustdoc_json(new_json)
+        .build()
+        .unwrap();
 
     let diff = public_api::diff::PublicApiDiff::between(old, new);
     expect_file![expected.as_ref()].assert_debug_eq(&diff);
 }
 
 /// Asserts that the public API of the crate in the given rustdoc JSON file
-/// matches the expected output. For brevity, Auto Trait or Blanket impls are
-/// not included.
-fn assert_simplified_public_api(json: impl AsRef<Path>, expected: impl AsRef<Path>) {
-    assert_public_api(json, expected, simplified());
-}
-
-/// Asserts that the public API of the crate in the given rustdoc JSON file
 /// matches the expected output.
-fn assert_public_api(
-    rustdoc_json: impl AsRef<Path>,
-    expected_output: impl AsRef<Path>,
-    options: Options,
-) {
-    let api = PublicApi::from_rustdoc_json(rustdoc_json, options)
-        .unwrap()
-        .to_string();
+fn assert_public_api(builder: public_api::Builder, expected_output: impl AsRef<Path>) {
+    let api = builder.build().unwrap().to_string();
 
     expect_file![expected_output.as_ref()].assert_eq(&api);
-}
-
-/// Returns options for a so called "simplified" API, which is an API without
-/// Auto Trait or Blanket impls, to reduce public item noise.
-fn simplified() -> Options {
-    let mut options = Options::default();
-    options.omit_blanket_impls = true;
-    options.omit_auto_trait_impls = true;
-    options
 }

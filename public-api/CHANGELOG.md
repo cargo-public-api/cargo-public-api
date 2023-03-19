@@ -1,5 +1,9 @@
 # `public-api` changelog
 
+## Unreleased v0.27.4
+* Deprecate `PublicApi::from_rustdoc_json()`. Use `public_api::Builder::from_rustdoc_json()` instead.
+* Deprecate `Options`. Use `public_api::Builder` methods instead.
+
 ## v0.27.3
 * Bump deps
 

@@ -22,7 +22,7 @@ expect-test = "1.4.1"
 tempfile = "3.4.0"
 
 [dev-dependencies.predicates]
-version = "2.1.5"
+version = "3.0.1"
 default-features = false
 
 [dev-dependencies.public-api]

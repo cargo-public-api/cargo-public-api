@@ -18,7 +18,7 @@ Usage: cargo public-api completions <SHELL>
 
 Arguments:
   <SHELL>
-          [possible values: bash, elvish, fig, fish, powershell, zsh]
+          [possible values: bash, elvish, fig, fish, nushell, powershell, zsh]
 
 Options:
   -h, --help

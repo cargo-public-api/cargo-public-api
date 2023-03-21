@@ -16,6 +16,8 @@ jobs:
       name: crates.io
       url: https://crates.io/crates/rustdoc-json
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # git push
     steps:
       - uses: actions/checkout@v3
 

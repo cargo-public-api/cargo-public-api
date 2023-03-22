@@ -10,6 +10,8 @@ jobs:
   auto-merge:
     if: github.repository == 'Enselic/cargo-public-api' && startsWith(github.head_ref, 'dependabot/')
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write # gh pr merge
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:

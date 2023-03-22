@@ -57,6 +57,8 @@ jobs:
   release:
     needs: publish
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # softprops/action-gh-release
     steps:
       - uses: actions/checkout@v3
 

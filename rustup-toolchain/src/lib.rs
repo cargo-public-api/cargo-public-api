@@ -33,6 +33,54 @@ pub type Result<T> = std::result::Result<T, Error>;
 /// global lock.
 static RUSTUP_MUTEX: std::sync::Mutex<()> = std::sync::Mutex::new(());
 
+/// Installs a rustup toolchain with the configured properties.
+#[derive(Debug, Clone)]
+pub struct Installer {
+    profile: String,
+    toolchain: String,
+}
+
+impl Default for Installer {
+    fn default() -> Self {
+        Self {
+            profile: "minimal".to_string(),
+            toolchain: "stable".to_string(),
+        }
+    }
+}
+
+impl Installer {
+    /// What toolchain to install (default: `"stable"`)
+    #[must_use]
+    pub fn toolchain(mut self, toolchain: impl Into<String>) -> Self {
+        self.toolchain = toolchain.into();
+        self
+    }
+
+    /// What to pass as `--profile` (default: `"minimal"`)
+    #[must_use]
+    pub fn profile(mut self, profile: impl Into<String>) -> Self {
+        self.profile = profile.into();
+        self
+    }
+
+    /// Install the configured toolchain if it is not already installed.
+    ///
+    /// # Errors
+    ///
+    /// If `rustup` is not installed on your system, for example.
+    pub fn run(self) -> Result<()> {
+        // The reason we check if the toolchain is installed rather than always
+        // doing `rustup install toolchain` is because otherwise there will be noisy
+        // "already installed" output from `rustup install toolchain`.
+        if !is_installed(&self.toolchain)? {
+            install(&self.profile, &self.toolchain)?;
+        }
+
+        Ok(())
+    }
+}
+
 /// Installs a toolchain if it is not already installed.
 ///
 /// As a workaround [Rustup (including proxies) is not safe for concurrent
@@ -43,12 +91,13 @@ static RUSTUP_MUTEX: std::sync::Mutex<()> = std::sync::Mutex::new(());
 /// # Errors
 ///
 /// If `rustup` is not installed on your system, for example.
+#[deprecated(
+    since = "0.1.4",
+    note = "Please use `rustup_toolchain::Installer::default().toolchain(toolchain).run()` instead"
+)]
 pub fn ensure_installed(toolchain: &str) -> Result<()> {
-    // The reason we check if the toolchain is installed rather than always
-    // doing `rustup install toolchain` is because otherwise there will be noisy
-    // "already installed" output from `rustup install toolchain`.
     if !is_installed(toolchain)? {
-        install(toolchain)?;
+        install("minimal", toolchain)?;
     }
 
     Ok(())
@@ -78,7 +127,7 @@ pub fn is_installed(toolchain: &str) -> Result<bool> {
         .success())
 }
 
-fn install(toolchain: &str) -> Result<()> {
+fn install(profile: &str, toolchain: &str) -> Result<()> {
     let _guard = RUSTUP_MUTEX.lock().map_err(|_| Error::StdSyncPoisonError)?;
 
     let status = std::process::Command::new("rustup")
@@ -86,7 +135,7 @@ fn install(toolchain: &str) -> Result<()> {
         .arg("install")
         .arg("--no-self-update")
         .arg("--profile")
-        .arg("minimal")
+        .arg(profile)
         .arg(toolchain)
         .status()?;
 

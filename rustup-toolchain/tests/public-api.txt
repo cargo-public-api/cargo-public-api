@@ -36,6 +36,42 @@ impl<T> core::borrow::BorrowMut<T> for rustup_toolchain::Error where T: core::ma
 pub fn rustup_toolchain::Error::borrow_mut(&mut self) -> &mut T
 impl<T> core::convert::From<T> for rustup_toolchain::Error
 pub fn rustup_toolchain::Error::from(t: T) -> T
+pub struct rustup_toolchain::Installer
+impl rustup_toolchain::Installer
+pub fn rustup_toolchain::Installer::profile(self, profile: impl core::convert::Into<alloc::string::String>) -> Self
+pub fn rustup_toolchain::Installer::run(self) -> rustup_toolchain::Result<()>
+pub fn rustup_toolchain::Installer::toolchain(self, toolchain: impl core::convert::Into<alloc::string::String>) -> Self
+impl core::default::Default for rustup_toolchain::Installer
+pub fn rustup_toolchain::Installer::default() -> Self
+impl core::clone::Clone for rustup_toolchain::Installer
+pub fn rustup_toolchain::Installer::clone(&self) -> rustup_toolchain::Installer
+impl core::fmt::Debug for rustup_toolchain::Installer
+pub fn rustup_toolchain::Installer::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::Send for rustup_toolchain::Installer
+impl core::marker::Sync for rustup_toolchain::Installer
+impl core::marker::Unpin for rustup_toolchain::Installer
+impl core::panic::unwind_safe::RefUnwindSafe for rustup_toolchain::Installer
+impl core::panic::unwind_safe::UnwindSafe for rustup_toolchain::Installer
+impl<T, U> core::convert::Into<U> for rustup_toolchain::Installer where U: core::convert::From<T>
+pub fn rustup_toolchain::Installer::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for rustup_toolchain::Installer where U: core::convert::Into<T>
+pub type rustup_toolchain::Installer::Error = core::convert::Infallible
+pub fn rustup_toolchain::Installer::try_from(value: U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for rustup_toolchain::Installer where U: core::convert::TryFrom<T>
+pub type rustup_toolchain::Installer::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn rustup_toolchain::Installer::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for rustup_toolchain::Installer where T: core::clone::Clone
+pub type rustup_toolchain::Installer::Owned = T
+pub fn rustup_toolchain::Installer::clone_into(&self, target: &mut T)
+pub fn rustup_toolchain::Installer::to_owned(&self) -> T
+impl<T> core::any::Any for rustup_toolchain::Installer where T: 'static + core::marker::Sized
+pub fn rustup_toolchain::Installer::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for rustup_toolchain::Installer where T: core::marker::Sized
+pub fn rustup_toolchain::Installer::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for rustup_toolchain::Installer where T: core::marker::Sized
+pub fn rustup_toolchain::Installer::borrow_mut(&mut self) -> &mut T
+impl<T> core::convert::From<T> for rustup_toolchain::Installer
+pub fn rustup_toolchain::Installer::from(t: T) -> T
 pub fn rustup_toolchain::ensure_installed(toolchain: &str) -> rustup_toolchain::Result<()>
 pub fn rustup_toolchain::is_installed(toolchain: &str) -> rustup_toolchain::Result<bool>
 pub type rustup_toolchain::Result<T> = core::result::Result<T, rustup_toolchain::Error>

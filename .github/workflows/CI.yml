@@ -12,7 +12,7 @@ env:
 
 jobs:
   all-jobs:
-    if: always()
+    if: always() # Otherwise this job is skipped if the matrix job fails
     name: all-jobs
     runs-on: ubuntu-latest
     needs:
@@ -23,8 +23,7 @@ jobs:
       - cargo-deny
       - cargo-test
     steps:
-      - run: |
-          [ "${{ needs.cargo-test.result }}" = "success" ]
+      - run: jq --exit-status 'all(.result == "success")' <<< '${{ toJson(needs) }}'
 
   cargo-fmt:
     name: cargo fmt -- --check

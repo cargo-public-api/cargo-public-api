@@ -117,9 +117,7 @@ This creates a `tests/public-api.txt` file in your project that you `git add` to
 
 For completeness, items belonging to _Blanket Implementations_, _Auto Trait Implementations_, and _Auto Derived Implementations_, such as
 
- * `impl<T> Borrow<T> for T`
  * `impl<T, U> Into<U> for T where U: From<T>`
- * `impl Send for ...`
  * `impl Sync for ...`
  * `impl Debug for ...` / `#[derive(Debug)]`
 

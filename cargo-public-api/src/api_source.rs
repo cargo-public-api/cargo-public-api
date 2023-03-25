@@ -42,20 +42,21 @@ impl ApiSource for CurrentDir {
 /// contains the version. The name of the package is obtained via [`Args`].
 /// Either via `-p` or via `--manifest-path`.
 pub struct PublishedCrate {
-    version: String,
+    version: Option<String>,
 }
 
 impl PublishedCrate {
-    pub fn new(version: &str) -> Self {
+    pub fn new(version: Option<&str>) -> Self {
         Self {
-            version: version.to_owned(),
+            version: version.map(ToOwned::to_owned),
         }
     }
 }
 
 impl ApiSource for PublishedCrate {
     fn obtain_api(&self, args: &Args) -> Result<public_api::PublicApi> {
-        let rustdoc_json = crate::published_crate::build_rustdoc_json(&self.version, args)?;
+        let rustdoc_json =
+            crate::published_crate::build_rustdoc_json(self.version.as_deref(), args)?;
         public_api_from_rustdoc_json(rustdoc_json, args)
     }
 }

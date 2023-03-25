@@ -329,50 +329,27 @@ fn main_task_from_args(args: &Args) -> MainTask {
     }
 }
 
-fn arg_to_api_source(arg: &str) -> Result<Box<dyn ApiSource>> {
-    if is_json_file(arg) {
-        Ok(RustdocJson::new(arg.into()).boxed())
-    } else if semver::Version::parse(arg).is_ok() {
-        Ok(PublishedCrate::new(arg).boxed())
-    } else {
-        bail!("Use `ref1..ref2` syntax to diff git commits");
+fn arg_to_api_source(arg: Option<&str>) -> Result<Box<dyn ApiSource>> {
+    match arg {
+        Some(arg) if is_json_file(arg) => Ok(RustdocJson::new(arg.into()).boxed()),
+        Some(arg) if semver::Version::parse(arg).is_ok() => {
+            Ok(PublishedCrate::new(Some(arg)).boxed())
+        }
+        None => Ok(PublishedCrate::new(None).boxed()),
+        _ => bail!("Use `ref1..ref2` syntax to diff git commits"),
     }
 }
 
 fn main_task_from_diff_args(args: &Args, diff_args: &DiffArgs) -> Result<MainTask> {
-    let first_arg = diff_args.args.get(0);
-    let second_arg = diff_args.args.get(1);
-    if diff_args.args.is_empty() {
-        bail!(
-            "Must specify what to diff.
-
-Examples:
-
-Diff against a specific version of the crate published to crates.io:
-
-    cargo public-api diff 1.2.3
-
-Diff between two git commits:
-
-    cargo public-api diff v0.2.0..v0.3.0
-
-To select a package in a workspace, use the --package flag:
-
-    cargo public-api --package my-package diff ...
-
-See
-
-    cargo public-api diff --help
-
-for more.
-"
-        );
-    } else if diff_args.args.len() > 2 {
+    if diff_args.args.len() > 2 {
         bail!(
             "Expected 1 or 2 arguments, but got {}",
             diff_args.args.len()
         )
     }
+
+    let first_arg = diff_args.args.get(0);
+    let second_arg = diff_args.args.get(1);
 
     let main_task = match (first_arg, second_arg) {
         (Some(first), None) if first.contains("...") => {
@@ -391,15 +368,16 @@ for more.
         (Some(first), None)
             if semver::Version::parse(first).is_ok() || first == LATEST_VERSION_ARG =>
         {
-            MainTask::print_diff(PublishedCrate::new(first).boxed(), CurrentDir.boxed())
+            MainTask::print_diff(PublishedCrate::new(Some(first)).boxed(), CurrentDir.boxed())
         }
+        (Some(first), Some(second)) => MainTask::print_diff(
+            arg_to_api_source(Some(first))?,
+            arg_to_api_source(Some(second))?,
+        ),
+        (None, _) => MainTask::print_diff(PublishedCrate::new(None).boxed(), CurrentDir.boxed()),
         (Some(first), None) => {
             bail!("Invalid published crate version syntax: {first}");
         }
-        (Some(first), Some(second)) => {
-            MainTask::print_diff(arg_to_api_source(first)?, arg_to_api_source(second)?)
-        }
-        _ => unreachable!("We should never get here"),
     };
 
     Ok(main_task)

@@ -86,8 +86,8 @@ Then add the following test to your project. As the author of the below test cod
 ```rust
 #[test]
 fn public_api() {
-    // Install a proper nightly toolchain if it is missing
-    rustup_toolchain::ensure_installed(public_api::MINIMUM_NIGHTLY_RUST_VERSION).unwrap();
+    // Install a compatible nightly toolchain if it is missing
+    rustup_toolchain::install(public_api::MINIMUM_NIGHTLY_RUST_VERSION).unwrap();
 
     // Build rustdoc JSON
     let rustdoc_json = rustdoc_json::Builder::default()

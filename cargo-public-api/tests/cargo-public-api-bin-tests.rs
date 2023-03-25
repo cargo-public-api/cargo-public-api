@@ -1223,7 +1223,7 @@ impl TestCmd {
     /// `cargo +toolchain public-api --simplified`
     /// Also installs the toolchain if it is not installed.
     fn with_proxy_toolchain(toolchain: &str) -> Self {
-        rustup_toolchain::ensure_installed(toolchain).unwrap();
+        rustup_toolchain::install(toolchain).unwrap();
         Self::new_impl(
             TestCmdType::Subcommand {
                 toolchain: Some(toolchain),
@@ -1239,7 +1239,7 @@ impl TestCmd {
     }
 
     fn with_toolchain(mut self, toolchain: &str) -> Self {
-        rustup_toolchain::ensure_installed(toolchain).unwrap();
+        rustup_toolchain::install(toolchain).unwrap();
         self.cmd.arg("--toolchain").arg(toolchain);
         self
     }

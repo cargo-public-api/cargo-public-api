@@ -6,7 +6,7 @@ use std::{io::BufRead, str::from_utf8};
 
 use assert_cmd::assert::Assert;
 use assert_cmd::Command;
-use public_api::MINIMUM_NIGHTLY_VERSION;
+use public_api::MINIMUM_NIGHTLY_RUST_VERSION;
 
 use tempfile::{tempdir, TempDir};
 
@@ -141,11 +141,11 @@ fn no_args_shows_help() {
 }
 
 #[test]
-fn print_minimum_nightly_version() {
+fn print_minimum_nightly_rust_version() {
     let mut cmd = Command::cargo_bin("public-api").unwrap();
-    cmd.arg("--print-minimum-nightly-version");
+    cmd.arg("--print-minimum-nightly-rust-version");
     cmd.assert()
-        .stdout(format!("{MINIMUM_NIGHTLY_VERSION}\n"))
+        .stdout(format!("{MINIMUM_NIGHTLY_RUST_VERSION}\n"))
         .stderr("")
         .success();
 }
@@ -190,7 +190,7 @@ commit and then pass the path of both files to this utility:
 
 ",
         env!("CARGO_PKG_VERSION"),
-        MINIMUM_NIGHTLY_VERSION,
+        MINIMUM_NIGHTLY_RUST_VERSION,
     )
 }
 

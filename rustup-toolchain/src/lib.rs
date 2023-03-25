@@ -25,7 +25,7 @@ pub enum Error {
     RustupToolchainInstallError,
 }
 
-/// Shorthand for [`std::result::Result<T, public_api::Error>`].
+/// Shorthand for [`std::result::Result<T, rustup_toolchain::Error>`].
 pub type Result<T> = std::result::Result<T, Error>;
 
 /// As a workaround for [Rustup (including proxies) is not safe for concurrent
@@ -35,7 +35,7 @@ static RUSTUP_MUTEX: std::sync::Mutex<()> = std::sync::Mutex::new(());
 
 /// Installs a toolchain if it is not already installed.
 ///
-/// As a workaround [Rustup (including proxies) is not safe for concurrent
+/// As a workaround for [Rustup (including proxies) is not safe for concurrent
 /// use](https://github.com/rust-lang/rustup/issues/988) this function is
 /// protected by a process-global lock. If you use multiple processes, you need
 /// to prevent concurrent `rustup` usage yourself.

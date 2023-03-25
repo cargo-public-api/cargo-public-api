@@ -361,15 +361,6 @@ fn diff_public_items_with_subcommand() {
 }
 
 #[test]
-fn diff_without_args() {
-    let mut cmd = TestCmd::new().with_test_repo();
-    cmd.arg("diff");
-    cmd.assert()
-        .stderr(contains("Error: Must specify what to diff"))
-        .failure();
-}
-
-#[test]
 fn diff_with_invalid_published_crate_version() {
     let mut cmd = TestCmd::new().with_test_repo();
     cmd.arg("diff");
@@ -762,8 +753,22 @@ fn diff_between_two_published_versions() {
         .success();
 }
 
+/// Test that `cargo public-api diff latest` works
 #[test]
 fn diff_against_latest_published_version() {
+    diff_against_latest_published_version_impl(
+        Some("latest"),
+        "Resolved `diff latest` to `diff 0.3.0`",
+    );
+}
+
+/// Test that `cargo public-api diff` resolves to `cargo public-api diff latest`
+#[test]
+fn diff_implicitly_against_latest_published_version() {
+    diff_against_latest_published_version_impl(None, "Resolved `diff` to `diff 0.3.0`");
+}
+
+fn diff_against_latest_published_version_impl(arg: Option<&str>, expected_stderr: &str) {
     // Create a test repo. It already is at the latest version
     let test_repo = TestRepo::new();
 
@@ -773,10 +778,12 @@ fn diff_against_latest_published_version() {
     let mut cmd = TestCmd::new().with_separate_target_dir();
     cmd.current_dir(test_repo.path());
     cmd.arg("diff");
-    cmd.arg("latest");
+    if let Some(arg) = arg {
+        cmd.arg(arg);
+    }
     cmd.assert()
         .stdout_or_update("./expected-output/diff-latest.txt")
-        .stderr(contains("Resolved `diff latest` to `diff 0.3.0`"))
+        .stderr(contains(expected_stderr))
         .success();
 }
 

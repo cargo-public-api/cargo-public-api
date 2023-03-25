@@ -6,14 +6,22 @@ use crate::{Args, LATEST_VERSION_ARG};
 use anyhow::{anyhow, Result};
 use std::path::PathBuf;
 
-pub fn build_rustdoc_json(version: impl Into<String>, args: &Args) -> Result<PathBuf> {
+pub fn build_rustdoc_json(version: Option<&str>, args: &Args) -> Result<PathBuf> {
     let package_name = package_name_from_args(args).ok_or_else(|| anyhow!("You must specify a package with either `-p package-name` or `--manifest-path path/to/Cargo.toml`"))?;
 
-    let mut version = version.into();
-    if version == LATEST_VERSION_ARG {
-        version = latest_version_for_package(&package_name)?;
-        eprintln!("Resolved `diff {LATEST_VERSION_ARG}` to `diff {version}`");
-    }
+    let version = match version {
+        Some(LATEST_VERSION_ARG) | None => {
+            let resolved = if version.is_none() {
+                "`diff`"
+            } else {
+                "`diff latest`"
+            };
+            let version = latest_version_for_package(&package_name)?;
+            eprintln!("Resolved {resolved} to `diff {version}`");
+            version
+        }
+        Some(version) => version.into(),
+    };
 
     let spec = PackageSpec {
         name: package_name,

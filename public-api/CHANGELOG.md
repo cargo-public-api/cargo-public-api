@@ -1,6 +1,6 @@
 # `public-api` changelog
 
-## Unreleased v0.27.4
+## v0.28.0
 * Rename `MINIMUM_NIGHTLY_VERSION` to `MINIMUM_NIGHTLY_RUST_VERSION` for clarity
 * Deprecate `PublicApi::from_rustdoc_json()`. Use `public_api::Builder::from_rustdoc_json()` instead.
 * Deprecate `Options`. Use `public_api::Builder` methods instead.

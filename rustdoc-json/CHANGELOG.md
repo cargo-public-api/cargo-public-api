@@ -1,5 +1,8 @@
 # rustdoc-json
 
+## v0.8.3
+* Bump deps
+
 ## v0.8.2
 * Bump deps, most notably `toml` from 0.5.11 to 0.7.2
 

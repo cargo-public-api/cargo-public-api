@@ -11,7 +11,8 @@ jobs:
     if: github.repository == 'Enselic/cargo-public-api' && startsWith(github.head_ref, 'dependabot/')
     runs-on: ubuntu-latest
     permissions:
-      pull-requests: write # gh pr merge
+      contents: write # gh pr merge
+      pull-requests: write # gh pr review
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:

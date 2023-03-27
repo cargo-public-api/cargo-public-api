@@ -30,7 +30,7 @@ semver = "1.0.17"
 thiserror = "1.0.39"
 cargo_metadata = "0.15.3"
 toml = "0.7.3"
-serde = { version = "1.0.155", features = ["derive"] }
+serde = { version = "1.0.158", features = ["derive"] }
 
 [dependencies.clap]
 version = "4.1.11"

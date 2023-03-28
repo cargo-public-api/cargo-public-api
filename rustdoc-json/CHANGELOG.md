@@ -1,5 +1,8 @@
 # rustdoc-json
 
+## v0.8.4
+* Make `rustdoc_json::Builder::clear_toolchain()` actually clear the toolchain
+
 ## v0.8.3
 * Bump deps
 

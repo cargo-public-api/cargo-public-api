@@ -242,7 +242,7 @@ impl Builder {
     /// Clear a toolchain previously set with [`Self::toolchain`].
     #[must_use]
     pub fn clear_toolchain(mut self) -> Self {
-        self.target_dir = None;
+        self.toolchain = None;
         self
     }
 

@@ -43,7 +43,7 @@ optional = true
 
 [dependencies.rustdoc-json]
 path = "../rustdoc-json"
-version = "0.8.2"
+version = "0.8.4"
 
 [dependencies.public-api]
 path = "../public-api"

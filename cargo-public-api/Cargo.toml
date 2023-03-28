@@ -27,7 +27,7 @@ diff = "0.1.13"
 dirs = "5.0.0"
 home = "0.5.4"
 semver = "1.0.17"
-thiserror = "1.0.39"
+thiserror = "1.0.40"
 cargo_metadata = "0.15.3"
 toml = "0.7.3"
 serde = { version = "1.0.158", features = ["derive"] }

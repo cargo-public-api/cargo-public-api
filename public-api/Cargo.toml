@@ -18,7 +18,7 @@ version = "1.0.158"
 features = ["derive"]
 
 [dependencies.serde_json]
-version = "1.0.94"
+version = "1.0.95"
 features = ["unbounded_depth"]
 
 [dependencies.rustdoc-types]

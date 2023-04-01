@@ -734,6 +734,7 @@ dependencies = [
  "expect-test",
  "hashbag",
  "itertools",
+ "predicates",
  "pretty_assertions",
  "rustdoc-json",
  "rustdoc-types",

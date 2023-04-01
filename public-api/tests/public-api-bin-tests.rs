@@ -6,6 +6,7 @@ use std::{io::BufRead, str::from_utf8};
 
 use assert_cmd::assert::Assert;
 use assert_cmd::Command;
+use predicates::str::contains;
 use public_api::MINIMUM_NIGHTLY_RUST_VERSION;
 
 use tempfile::{tempdir, TempDir};
@@ -31,54 +32,6 @@ fn print_public_api_not_simplified() {
             .stderr("")
             .success();
     });
-}
-
-#[test]
-fn print_diff() {
-    cmd_with_rustdoc_json_args(
-        &[
-            "../test-apis/example_api-v0.1.0",
-            "../test-apis/example_api-v0.2.0",
-        ],
-        |mut cmd| {
-            cmd.assert()
-                .stdout_or_update("./expected-output/print_diff.txt")
-                .stderr("")
-                .success();
-        },
-    );
-}
-
-#[test]
-fn print_diff_reversed() {
-    cmd_with_rustdoc_json_args(
-        &[
-            "../test-apis/example_api-v0.2.0",
-            "../test-apis/example_api-v0.1.0",
-        ],
-        |mut cmd| {
-            cmd.assert()
-                .stdout_or_update("./expected-output/print_diff_reversed.txt")
-                .stderr("")
-                .success();
-        },
-    );
-}
-
-#[test]
-fn print_no_diff() {
-    cmd_with_rustdoc_json_args(
-        &[
-            "../test-apis/example_api-v0.2.0",
-            "../test-apis/example_api-v0.2.0",
-        ],
-        |mut cmd| {
-            cmd.assert()
-                .stdout_or_update("./expected-output/print_no_diff.txt")
-                .stderr("")
-                .success();
-        },
-    );
 }
 
 /// Uses a bash one-liner to test that public-api gracefully handles
@@ -141,13 +94,12 @@ fn no_args_shows_help() {
 }
 
 #[test]
-fn too_many_args_shows_help() {
+fn too_many_args_shows_err() {
     let mut cmd = Command::cargo_bin("public-api").unwrap();
-    cmd.args(["too", "many", "args"]);
+    cmd.args(["too", "many"]);
     cmd.assert()
-        .stdout(expected_help_text())
-        .stderr("")
-        .success();
+        .stderr(contains("Diffing support has been removed"))
+        .failure();
 }
 
 fn expected_help_text() -> String {
@@ -171,11 +123,6 @@ where RUSTDOC_JSON_FILE is the path to the output of
 which you can find in
 
     ./target/doc/${{CRATE}}.json
-
-To diff the public API between two commits, you generate one rustdoc JSON file for each
-commit and then pass the path of both files to this utility:
-
-    public-api <RUSTDOC_JSON_FILE_OLD> <RUSTDOC_JSON_FILE_NEW>
 
 
 ",

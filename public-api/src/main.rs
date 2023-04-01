@@ -7,15 +7,17 @@
 use std::io::{stdout, ErrorKind, Write};
 use std::path::{Path, PathBuf};
 
-use public_api::diff::PublicApiDiff;
 use public_api::{PublicApi, MINIMUM_NIGHTLY_RUST_VERSION};
 
 #[derive(thiserror::Error, Debug)]
+#[allow(clippy::enum_variant_names)]
 enum Error {
     #[error(transparent)]
     PublicApiError(#[from] public_api::Error),
     #[error(transparent)]
     StdIoError(#[from] std::io::Error),
+    #[error("{0}")]
+    Message(String),
 }
 
 type Result<T> = std::result::Result<T, Error>;
@@ -37,10 +39,9 @@ fn main_() -> Result<()> {
     } else if files.len() == 1 {
         let path = &files[0];
         print_public_api(path, &args)?;
-    } else if files.len() == 2 {
-        let old = &files[0];
-        let new = &files[1];
-        print_public_api_diff(old, new, &args)?;
+    } else {
+        Err(Error::Message("Diffing support has been removed from the `public-api` bin (but the library still supports it of course). \
+        Please use `cargo-public-api` instead for CLI diffing. It is much better.".into()))?;
     }
 
     Ok(())
@@ -52,54 +53,6 @@ fn print_public_api(path: &Path, args: &Args) -> Result<()> {
     }
 
     Ok(())
-}
-
-fn print_public_api_diff(old: &Path, new: &Path, args: &Args) -> Result<()> {
-    let old = public_api_from_args(old, args)?;
-    let new = public_api_from_args(new, args)?;
-
-    let diff = PublicApiDiff::between(old, new);
-    print_diff_with_headers(&diff, &mut stdout(), "Removed:", "Changed:", "Added:")?;
-
-    Ok(())
-}
-
-fn print_diff_with_headers(
-    diff: &PublicApiDiff,
-    w: &mut impl std::io::Write,
-    header_removed: &str,
-    header_changed: &str,
-    header_added: &str,
-) -> std::io::Result<()> {
-    print_items_with_header(w, header_removed, &diff.removed, |w, item| {
-        writeln!(w, "-{item}")
-    })?;
-    print_items_with_header(w, header_changed, &diff.changed, |w, item| {
-        writeln!(w, "-{}", item.old)?;
-        writeln!(w, "+{}", item.new)
-    })?;
-    print_items_with_header(w, header_added, &diff.added, |w, item| {
-        writeln!(w, "+{item}")
-    })?;
-
-    Ok(())
-}
-
-fn print_items_with_header<W: std::io::Write, T>(
-    w: &mut W,
-    header: &str,
-    items: &[T],
-    print_fn: impl Fn(&mut W, &T) -> std::io::Result<()>,
-) -> std::io::Result<()> {
-    writeln!(w, "{header}")?;
-    if items.is_empty() {
-        writeln!(w, "(nothing)")?;
-    } else {
-        for item in items {
-            print_fn(w, item)?;
-        }
-    }
-    writeln!(w)
 }
 
 fn print_usage() -> std::io::Result<()> {
@@ -124,11 +77,6 @@ where RUSTDOC_JSON_FILE is the path to the output of
 which you can find in
 
     ./target/doc/${{CRATE}}.json
-
-To diff the public API between two commits, you generate one rustdoc JSON file for each
-commit and then pass the path of both files to this utility:
-
-    public-api <RUSTDOC_JSON_FILE_OLD> <RUSTDOC_JSON_FILE_NEW>
 
 ",
         env!("CARGO_PKG_VERSION"),

@@ -25,16 +25,11 @@ type Result<T> = std::result::Result<T, Error>;
 struct Args {
     help: bool,
     simplified: bool,
-    print_minimum_nightly_rust_version: bool,
     files: Vec<PathBuf>,
 }
 
 fn main_() -> Result<()> {
     let args = args();
-    if args.print_minimum_nightly_rust_version {
-        println!("{MINIMUM_NIGHTLY_RUST_VERSION}");
-        return Ok(());
-    }
 
     let files = &args.files;
     if args.help || files.is_empty() || files.len() > 2 {
@@ -156,8 +151,6 @@ fn args() -> Args {
     for arg in std::env::args_os().skip(1) {
         if arg == "--simplified" {
             args.simplified = true;
-        } else if arg == "--print-minimum-nightly-rust-version" {
-            args.print_minimum_nightly_rust_version = true;
         } else if arg == "--help" || arg == "-h" {
             args.help = true;
         } else {

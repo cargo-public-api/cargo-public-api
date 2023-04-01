@@ -141,16 +141,6 @@ fn no_args_shows_help() {
 }
 
 #[test]
-fn print_minimum_nightly_rust_version() {
-    let mut cmd = Command::cargo_bin("public-api").unwrap();
-    cmd.arg("--print-minimum-nightly-rust-version");
-    cmd.assert()
-        .stdout(format!("{MINIMUM_NIGHTLY_RUST_VERSION}\n"))
-        .stderr("")
-        .success();
-}
-
-#[test]
 fn too_many_args_shows_help() {
     let mut cmd = Command::cargo_bin("public-api").unwrap();
     cmd.args(["too", "many", "args"]);

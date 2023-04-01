@@ -14,7 +14,6 @@ jobs:
   cargo-install:
     runs-on: ubuntu-latest
     steps:
-      - run: cargo install public-api
       - run: cargo install cargo-public-api
 
   # The purpose of running every night is to detect when a change to

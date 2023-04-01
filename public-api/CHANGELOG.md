@@ -1,5 +1,8 @@
 # `public-api` changelog
 
+## Unreleased v0.29.0
+* Remove the `public-api` bin. Use `cargo public-api` instead.
+
 ## v0.28.0
 * Rename `MINIMUM_NIGHTLY_VERSION` to `MINIMUM_NIGHTLY_RUST_VERSION` for clarity
 * Deprecate `PublicApi::from_rustdoc_json()`. Use `public_api::Builder::from_rustdoc_json()` instead.

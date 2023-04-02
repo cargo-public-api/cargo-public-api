@@ -28,8 +28,10 @@ mod git_utils;
 
 mod create_test_git_repo;
 
-/// A toolchain that produces rustdoc JSON that we do not understand how to parse.
-const UNUSABLE_TOOLCHAIN: &str = "nightly-2022-06-01";
+/// A toolchain that is old enough to produce compilation errors. In other
+/// words, we never even try to parse any rustdoc JSON output, because we do not
+/// get that far.
+const COMPILATION_ERROR_TOOLCHAIN: &str = "nightly-2022-06-01";
 
 #[test]
 fn list_public_items() {
@@ -132,19 +134,29 @@ fn renamed_binary_works_as_subcommand() {
         .success();
 }
 
+/// Test that we can use a custom toolchain by using a toolchain that should
+/// result in a compilation error. If we get a compilation error, we know that
+/// the custom toolchain is being used.
+///
+/// This test uses the `--toolchain` option.
 #[test]
-fn custom_toolchain() {
+fn compilation_error_toolchain() {
     test_unusable_toolchain(
         TestCmd::new()
-            .with_toolchain(UNUSABLE_TOOLCHAIN)
+            .with_toolchain(COMPILATION_ERROR_TOOLCHAIN)
             .with_separate_target_dir(),
+        "error[E0658]: generic associated types are unstable",
     );
 }
 
+/// Test that we can specify a custom toolchain via the `+toolchain` mechanism.
+/// This also differs slightly from `compilation_error_toolchain()` by checking
+/// for a generic error message rather than a specific one.
 #[test]
 fn custom_toolchain_via_proxy() {
     test_unusable_toolchain(
-        TestCmd::with_proxy_toolchain(UNUSABLE_TOOLCHAIN).with_separate_target_dir(),
+        TestCmd::with_proxy_toolchain(COMPILATION_ERROR_TOOLCHAIN).with_separate_target_dir(),
+        "Failed to build rustdoc JSON",
     );
 }
 
@@ -154,7 +166,7 @@ fn custom_toolchain_via_proxy() {
 ///
 /// For more info on the rustup proxy mechanism, see
 /// <https://rust-lang.github.io/rustup/concepts/index.html#how-rustup-works>.
-fn test_unusable_toolchain(mut cmd: TestCmd) {
+fn test_unusable_toolchain(mut cmd: TestCmd, expected_stderr: &str) {
     // Test against comprehensive_api, because we want any rustdoc JSON format
     // incompatibilities to be detected
     cmd.args([
@@ -165,9 +177,7 @@ fn test_unusable_toolchain(mut cmd: TestCmd) {
     // The test uses a too old nightly toolchain, which should make the tool
     // fail if it's used. If it fails, we assume the custom toolchain is being
     // used.
-    cmd.assert()
-        .stderr(contains("Failed to build rustdoc JSON"))
-        .failure();
+    cmd.assert().stderr(contains(expected_stderr)).failure();
 }
 
 #[test]

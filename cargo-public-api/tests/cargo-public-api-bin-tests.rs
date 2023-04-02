@@ -17,6 +17,7 @@ use std::{
 
 use assert_cmd::assert::Assert;
 use assert_cmd::Command;
+use chrono::{Days, NaiveDate};
 use predicates::prelude::PredicateBooleanExt;
 use predicates::str::contains;
 
@@ -132,6 +133,26 @@ fn renamed_binary_works_as_subcommand() {
         .assert()
         .stdout_or_update("../../docs/short-help.txt")
         .success();
+}
+
+/// This allows us to test two things, namely that
+/// * [`MINIMUM_NIGHTLY_RUST_VERSION`] is not set too high
+/// * `cargo pubic-api` suggests the nightly toolchain might be too old when a
+///   too old nightly toolchain is used
+#[test]
+fn one_day_before_minimum_nightly_rust_version() {
+    test_unusable_toolchain(
+        TestCmd::new()
+            .with_toolchain(&get_toolchain_one_day_before_minimal_toolchain())
+            .with_separate_target_dir(),
+        &format!(
+            "This version of `cargo public-api` requires at least:
+
+    {MINIMUM_NIGHTLY_RUST_VERSION}
+
+"
+        ),
+    );
 }
 
 /// Test that we can use a custom toolchain by using a toolchain that should
@@ -1400,4 +1421,44 @@ fn assert_cargo_public_api_not_in_cargo_home_bin() {
         "Found {path:?} which will override `./target/debug/cargo-public-api` and thus interfere with tests. \
          Either `rm {path:?}` or ignore this warning with `CARGO_PUBLIC_API_INSTALLED_FOR_TESTS=1 cargo test`. \
          Tip: Use `cargo-public-api` from your build dir instead of installing it: `export PATH=~/src/cargo-public-api/target/debug:\"$PATH\"`");
+}
+
+/// See where this is used for an explanation of why we have this helper.
+fn get_toolchain_one_day_before_minimal_toolchain() -> String {
+    nightly_version_minus_one_day(get_minimum_toolchain())
+}
+
+/// Convert e.g. `nightly-2023-01-23` to `nightly-2023-01-22`, i.e. minus a day.
+fn nightly_version_minus_one_day(nightly_version: impl AsRef<str>) -> String {
+    let date = nightly_version
+        .as_ref()
+        .strip_prefix("nightly-")
+        .expect("nightly version should start with 'nightly-'");
+    let date = NaiveDate::parse_from_str(date, "%Y-%m-%d")
+        .expect("nightly version should be in 'YYYY-MM-DD' format");
+    format!(
+        "nightly-{}",
+        date.checked_sub_days(Days::new(1))
+            .unwrap()
+            .format("%Y-%m-%d")
+    )
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_nightly_version_minus_one_day() {
+        let cases = [
+            ("nightly-2023-01-01", "nightly-2022-12-31"),
+            ("nightly-2023-01-02", "nightly-2023-01-01"),
+            ("nightly-2023-11-02", "nightly-2023-11-01"),
+            ("nightly-2023-11-01", "nightly-2023-10-31"),
+            ("nightly-2023-11-01", "nightly-2023-10-31"),
+        ];
+        for case in cases {
+            assert_eq!(nightly_version_minus_one_day(case.0), case.1);
+        }
+    }
 }

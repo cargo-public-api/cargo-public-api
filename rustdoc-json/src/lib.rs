@@ -35,7 +35,7 @@ pub enum BuildError {
     VirtualManifest(PathBuf),
 
     /// A general error. Refer to the attached error message for more info.
-    #[error("Failed to build rustdoc JSON. Stderr: {0}")]
+    #[error("Failed to build rustdoc JSON: {0}")]
     General(String),
 
     /// An error originating from `cargo-manifest`.

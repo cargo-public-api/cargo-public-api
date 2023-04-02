@@ -57,6 +57,11 @@ version = "0.1.4"
 version = "3.0.2"
 default-features = false
 
+[dev-dependencies.chrono]
+version = "0.4.24"
+default-features = false
+features = ["std"]
+
 [dev-dependencies]
 assert_cmd = "2.0.10"
 expect-test = "1.4.1"

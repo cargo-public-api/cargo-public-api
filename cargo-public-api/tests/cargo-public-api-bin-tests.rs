@@ -145,7 +145,7 @@ fn compilation_error_toolchain() {
         TestCmd::new()
             .with_toolchain(COMPILATION_ERROR_TOOLCHAIN)
             .with_separate_target_dir(),
-        "error[E0658]: generic associated types are unstable",
+        "generic associated types are unstable",
     );
 }
 

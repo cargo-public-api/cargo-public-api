@@ -20,7 +20,7 @@ diff-latest = ["dep:crates-index"]
 [dependencies]
 nu-ansi-term = "0.47.0"
 anyhow = "1.0.70"
-is-terminal = "0.4.5"
+is-terminal = "0.4.6"
 cargo-manifest = "0.7.1"
 clap_complete_command = "0.5.1"
 diff = "0.1.13"

@@ -20,6 +20,8 @@ jobs:
       name: preview-release-notes
       url: https://github.com/cargo-public-api/cargo-public-api.github.io/blob/main/release-notes-preview.md
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # generate-notes
     steps:
       - uses: actions/checkout@v3
         with:

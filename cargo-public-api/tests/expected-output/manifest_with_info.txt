@@ -1,0 +1,10 @@
+[lib]
+path = "lib.rs"
+
+[package]
+edition = "2021"
+name = "crate-downloader"
+version = "0.1.0"
+
+[dependencies.example-api]
+version = "=0.1.1"

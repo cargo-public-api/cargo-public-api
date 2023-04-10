@@ -207,7 +207,7 @@ impl PackageSpec {
 mod tests {
     use super::*;
     use clap::Parser as _;
-    use pretty_assertions::assert_eq;
+    use expect_test::expect_file;
 
     #[test]
     fn manifest_simple() {
@@ -220,20 +220,7 @@ mod tests {
         )
         .unwrap()
         .0;
-        assert_eq!(
-            manifest,
-            r#"[lib]
-path = "lib.rs"
-
-[package]
-edition = "2021"
-name = "crate-downloader"
-version = "0.1.0"
-
-[dependencies.example-api]
-version = "=0.1.1"
-"#
-        );
+        expect_file!("../tests/expected-output/manifest_simple.txt").assert_eq(&manifest);
     }
 
     #[test]
@@ -294,19 +281,6 @@ version = "=0.1.1"
             &package,
         )
         .unwrap();
-        assert_eq!(
-            manifest,
-            r#"[lib]
-path = "lib.rs"
-
-[package]
-edition = "2021"
-name = "crate-downloader"
-version = "0.1.0"
-
-[dependencies.example-api]
-version = "=0.1.1"
-"#
-        );
+        expect_file!("../tests/expected-output/manifest_with_info.txt").assert_eq(&manifest);
     }
 }

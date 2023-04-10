@@ -35,7 +35,7 @@ jobs:
               --data "{
                   \"tag_name\":\"main\",
                   \"target_commitish\":\"main\"
-              }" > .response
+              }" | tee .response
 
           # Create header
           echo "## Preview of auto-generated release notes" > release-notes-preview.md

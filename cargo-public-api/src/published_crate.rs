@@ -69,22 +69,13 @@ pub fn build_rustdoc_json(version: Option<&str>, args: &Args) -> Result<PathBuf>
 /// Gets the most recent version for the given package, by querying the
 /// crates.io index that users have locally.
 fn latest_version_for_package(package_name: &str) -> Result<String> {
-    #[cfg(feature = "diff-latest")]
-    {
-        let index = crates_index::Index::new_cargo_default()?;
-        let crate_ = index.crate_(package_name).ok_or_else(|| {
-            anyhow!("Could not find crate `{package_name}` in the crates.io index")
-        })?;
+    let index = crates_index::Index::new_cargo_default()?;
+    let crate_ = index
+        .crate_(package_name)
+        .ok_or_else(|| anyhow!("Could not find crate `{package_name}` in the crates.io index"))?;
 
-        let version = crate_.highest_version();
-        Ok(version.version().to_string())
-    }
-    #[cfg(not(feature = "diff-latest"))]
-    {
-        Err(anyhow!(
-            "Can not find `latest` version of `{package_name}`; the `diff-latest` feature needs to be enabled for `cargo-public-api`"
-        ))
-    }
+    let version = crate_.highest_version();
+    Ok(version.version().to_string())
 }
 
 /// Returns the package name from `-p package-name` or from inside

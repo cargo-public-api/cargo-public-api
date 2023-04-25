@@ -11,12 +11,6 @@ categories = ["command-line-utilities", "development-tools::cargo-plugins"]
 license = "MIT"
 repository = "https://github.com/Enselic/cargo-public-api"
 
-[features]
-default = ["diff-latest"]
-# Enable `cargo public-api diff latest`. Requires 33 more deps (most notably the
-# `git2` crate) so that the crates.io index can be updated and read.
-diff-latest = ["dep:crates-index"]
-
 [dependencies]
 nu-ansi-term = "0.47.0"
 anyhow = "1.0.70"
@@ -39,7 +33,6 @@ features = ["derive", "wrap_help"]
 [dependencies.crates-index]
 version = "0.19.7"
 default-features = false
-optional = true
 
 [dependencies.rustdoc-json]
 path = "../rustdoc-json"

@@ -79,4 +79,3 @@ jobs:
       - run: rustup install --profile minimal nightly
       - uses: Swatinem/rust-cache@v2
       - run: cargo test --locked
-      - run: cargo build --locked --no-default-features # Build without "diff-latest" feature

@@ -12,12 +12,12 @@ pub fn build_rustdoc_json(version: Option<&str>, args: &Args) -> Result<PathBuf>
     let version = match version {
         Some(LATEST_VERSION_ARG) | None => {
             let resolved = if version.is_none() {
-                "`diff`"
+                "diff"
             } else {
-                "`diff latest`"
+                "diff latest"
             };
             let version = latest_version_for_package(&package_name)?;
-            eprintln!("Resolved {resolved} to `diff {version}`");
+            eprintln!("Resolved `{resolved}` to `diff {version}`");
             version
         }
         Some(version) => version.into(),

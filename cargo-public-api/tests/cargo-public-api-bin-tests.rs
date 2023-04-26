@@ -126,6 +126,7 @@ fn renamed_binary_works_as_subcommand() {
     // Now copy the file (but make sure to clean up after the test)
     let regular_bin = bin_dir.join(format!("cargo-public-api{EXE_SUFFIX}"));
     let renamed_bin = RmOnDrop(bin_dir.join(format!("cargo-public-api-v0.13.0{EXE_SUFFIX}")));
+    #[allow(clippy::needless_borrow)] // False positive :(
     std::fs::copy(regular_bin, &renamed_bin.0).unwrap();
 
     // Now the command should succeed

@@ -4,31 +4,21 @@
 
 use crate::{Args, LATEST_VERSION_ARG};
 use anyhow::{anyhow, Result};
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 pub fn build_rustdoc_json(version: Option<&str>, args: &Args) -> Result<PathBuf> {
     let package_name = package_name_from_args(args).ok_or_else(|| anyhow!("You must specify a package with either `-p package-name` or `--manifest-path path/to/Cargo.toml`"))?;
 
-    let version = match version {
-        Some(LATEST_VERSION_ARG) | None => {
-            let resolved = if version.is_none() {
-                "diff"
-            } else {
-                "diff latest"
-            };
-            let version = latest_version_for_package(&package_name)?;
-            eprintln!("Resolved `{resolved}` to `diff {version}`");
-            version
-        }
-        Some(version) => version.into(),
-    };
+    let index = crates_index::Index::new_cargo_default()?;
+    let crate_ = index.crate_(&package_name).ok_or_else(|| {
+        anyhow!(
+            "Could not find crate `{package_name}` in {:?}",
+            index.path()
+        )
+    })?;
 
-    let spec = PackageSpec {
-        name: package_name,
-        version,
-    };
-
-    let build_dir = build_dir(args, &spec);
+    let crate_version = get_crate_version(&crate_, version, index.path())?;
+    let build_dir = build_dir(args, &crate_version);
     std::fs::create_dir_all(&build_dir)?;
 
     let write_file = |name: &str, contents: &str| -> std::io::Result<PathBuf> {
@@ -39,16 +29,24 @@ pub fn build_rustdoc_json(version: Option<&str>, args: &Args) -> Result<PathBuf>
     };
 
     write_file("lib.rs", "// empty lib")?;
-    let (manifest, needs_resolved_package) = manifest_simple(args, &spec)?;
+    let (manifest, needs_resolved_package) =
+        manifest_simple(args, crate_version.name(), crate_version.version())?;
     let manifest = write_file("Cargo.toml", &manifest)?;
 
     if needs_resolved_package {
         let mut metadata = cargo_metadata::MetadataCommand::new();
         metadata.manifest_path(&manifest);
         let metadata = metadata.exec()?;
-        if let Some(package) = metadata.packages.iter().find(|p| p.name == spec.name) {
+        if let Some(package) = metadata
+            .packages
+            .iter()
+            .find(|p| p.name == crate_version.name())
+        {
             // XXX if metadata doesn't find a package, rustdoc will tell us why, so we can continue
-            write_file("Cargo.toml", &manifest_with_info(args, &spec, package)?)?;
+            write_file(
+                "Cargo.toml",
+                &manifest_with_info(args, crate_version.name(), crate_version.version(), package)?,
+            )?;
         };
     }
 
@@ -61,21 +59,44 @@ pub fn build_rustdoc_json(version: Option<&str>, args: &Args) -> Result<PathBuf>
         .all_features(false)
         .features(Vec::<&str>::new())
         .no_default_features(false)
-        .manifest_path(&manifest)
-        .package(&spec.name);
+        .manifest_path(manifest)
+        .package(crate_version.name());
     crate::api_source::build_rustdoc_json(builder)
 }
 
-/// Gets the most recent version for the given package, by querying the
-/// crates.io index that users have locally.
-fn latest_version_for_package(package_name: &str) -> Result<String> {
-    let index = crates_index::Index::new_cargo_default()?;
-    let crate_ = index
-        .crate_(package_name)
-        .ok_or_else(|| anyhow!("Could not find crate `{package_name}` in the crates.io index"))?;
-
-    let version = crate_.highest_version();
-    Ok(version.version().to_string())
+fn get_crate_version(
+    crate_: &crates_index::Crate,
+    version: Option<&str>,
+    index_path: &Path,
+) -> Result<crates_index::Version, anyhow::Error> {
+    match version {
+        Some(LATEST_VERSION_ARG) | None => {
+            let resolved = if version.is_none() {
+                "diff"
+            } else {
+                "diff latest"
+            };
+            let crate_version = crate_.highest_version().clone();
+            eprintln!(
+                "Resolved `{resolved}` to `diff {}`",
+                crate_version.version()
+            );
+            Ok(crate_version)
+        }
+        Some(version) => crate_
+            .versions()
+            .iter()
+            .find(|cv| cv.version() == version)
+            .map(Clone::clone)
+            .ok_or_else(|| {
+                anyhow!(
+                    "Could not find version `{}` of crate `{}` in {:?}",
+                    version,
+                    crate_.name(),
+                    index_path,
+                )
+            }),
+    }
 }
 
 /// Returns the package name from `-p package-name` or from inside
@@ -92,7 +113,7 @@ fn package_name_from_args(args: &Args) -> Option<String> {
 /// For users we prefer a non-temporary dir so repeated builds can be
 /// incremental. But when tests run, they will set `args.target_dir` to a
 /// temporary dir so that tests can run in parallel without interference.
-fn build_dir(args: &Args, spec: &PackageSpec) -> PathBuf {
+fn build_dir(args: &Args, spec: &crates_index::Version) -> PathBuf {
     let mut build_dir = if let Some(target_dir) = &args.target_dir {
         target_dir.clone()
     } else {
@@ -101,12 +122,14 @@ fn build_dir(args: &Args, spec: &PackageSpec) -> PathBuf {
 
     build_dir.push("cargo-public-api");
     build_dir.push("build-root-for-published-crates");
-    build_dir.push(spec.as_dir_name());
+    build_dir.push(spec.name());
+    build_dir.push("-");
+    build_dir.push(spec.version());
     build_dir
 }
 
 /// Create the manifest for a package given cargo cli arguments. Returns a boolean to signify if [`manifest_with_info`] needs to be called
-fn manifest_simple(args: &Args, spec: &PackageSpec) -> Result<(String, bool)> {
+fn manifest_simple(args: &Args, crate_name: &str, crate_version: &str) -> Result<(String, bool)> {
     let setup = toml::toml! {
         [package]
         name = "crate-downloader"
@@ -126,9 +149,9 @@ fn manifest_simple(args: &Args, spec: &PackageSpec) -> Result<(String, bool)> {
     Ok((
         format!(
             "{setup}\n[dependencies.{}]\n{}",
-            spec.name,
+            crate_name,
             toml::to_string(&cargo_manifest::DependencyDetail {
-                version: Some(format!("={}", spec.version)),
+                version: Some(format!("={crate_version}")),
                 default_features: no_default_features.then(|| false),
                 features: if features.is_empty() {
                     None
@@ -144,7 +167,8 @@ fn manifest_simple(args: &Args, spec: &PackageSpec) -> Result<(String, bool)> {
 
 fn manifest_with_info(
     args: &Args,
-    spec: &PackageSpec,
+    crate_name: &str,
+    crate_version: &str,
     package: &cargo_metadata::Package,
 ) -> Result<String> {
     let setup = toml::toml! {
@@ -165,9 +189,9 @@ fn manifest_with_info(
             all_features: true, ..
         } => format!(
             "[dependencies.{}]\n{}",
-            spec.name,
+            crate_name,
             toml::to_string(&cargo_manifest::DependencyDetail {
-                version: Some(format!("={}", spec.version)),
+                version: Some(format!("={crate_version}")),
                 features: if features.is_empty() {
                     None
                 } else {
@@ -176,22 +200,10 @@ fn manifest_with_info(
                 ..Default::default()
             })?
         ),
-        _ => return Ok(manifest_simple(args, spec)?.0),
+        _ => return Ok(manifest_simple(args, crate_name, crate_version)?.0),
     };
 
     Ok(format!("{setup}\n{dep}"))
-}
-
-#[derive(Debug, PartialEq, Eq)]
-struct PackageSpec {
-    name: String,
-    version: String,
-}
-
-impl PackageSpec {
-    fn as_dir_name(&self) -> PathBuf {
-        PathBuf::from(format!("{}-{}", self.name, self.version))
-    }
 }
 
 #[cfg(test)]
@@ -204,10 +216,8 @@ mod tests {
     fn manifest_simple() {
         let manifest = super::manifest_simple(
             &Args::try_parse_from(["test", "-p", "example-api", "diff", "0.1.1"].iter()).unwrap(),
-            &PackageSpec {
-                name: "example-api".to_owned(),
-                version: "0.1.1".to_owned(),
-            },
+            "example-api",
+            "0.1.1",
         )
         .unwrap()
         .0;
@@ -265,10 +275,8 @@ mod tests {
         .unwrap();
         let manifest = super::manifest_with_info(
             &Args::try_parse_from(["test", "-p", "example-api", "diff", "0.1.1"].iter()).unwrap(),
-            &PackageSpec {
-                name: "example-api".to_owned(),
-                version: "0.1.1".to_owned(),
-            },
+            "example-api",
+            "0.1.1",
             &package,
         )
         .unwrap();

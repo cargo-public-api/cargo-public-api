@@ -29,26 +29,8 @@ pub fn build_rustdoc_json(version: Option<&str>, args: &Args) -> Result<PathBuf>
     };
 
     write_file("lib.rs", "// empty lib")?;
-    let (manifest, needs_resolved_package) =
-        manifest_simple(args, crate_version.name(), crate_version.version())?;
+    let manifest = manifest_for(args, &crate_version)?;
     let manifest = write_file("Cargo.toml", &manifest)?;
-
-    if needs_resolved_package {
-        let mut metadata = cargo_metadata::MetadataCommand::new();
-        metadata.manifest_path(&manifest);
-        let metadata = metadata.exec()?;
-        if let Some(package) = metadata
-            .packages
-            .iter()
-            .find(|p| p.name == crate_version.name())
-        {
-            // XXX if metadata doesn't find a package, rustdoc will tell us why, so we can continue
-            write_file(
-                "Cargo.toml",
-                &manifest_with_info(args, crate_version.name(), crate_version.version(), package)?,
-            )?;
-        };
-    }
 
     // Since we used `crate::builder_from_args(args)` above it means that if
     // `args.target_dir` is set, both the dummy crate and the real crate will
@@ -113,7 +95,7 @@ fn package_name_from_args(args: &Args) -> Option<String> {
 /// For users we prefer a non-temporary dir so repeated builds can be
 /// incremental. But when tests run, they will set `args.target_dir` to a
 /// temporary dir so that tests can run in parallel without interference.
-fn build_dir(args: &Args, spec: &crates_index::Version) -> PathBuf {
+fn build_dir(args: &Args, crate_version: &crates_index::Version) -> PathBuf {
     let mut build_dir = if let Some(target_dir) = &args.target_dir {
         target_dir.clone()
     } else {
@@ -122,14 +104,15 @@ fn build_dir(args: &Args, spec: &crates_index::Version) -> PathBuf {
 
     build_dir.push("cargo-public-api");
     build_dir.push("build-root-for-published-crates");
-    build_dir.push(spec.name());
+    build_dir.push(crate_version.name());
     build_dir.push("-");
-    build_dir.push(spec.version());
+    build_dir.push(crate_version.version());
     build_dir
 }
 
-/// Create the manifest for a package given cargo cli arguments. Returns a boolean to signify if [`manifest_with_info`] needs to be called
-fn manifest_simple(args: &Args, crate_name: &str, crate_version: &str) -> Result<(String, bool)> {
+/// Creates a manifest with a dependency so we can "trick" cargo into
+/// downloading the dependency for us.
+fn manifest_for(args: &Args, spec: &crates_index::Version) -> Result<String> {
     let setup = toml::toml! {
         [package]
         name = "crate-downloader"
@@ -146,140 +129,20 @@ fn manifest_simple(args: &Args, crate_name: &str, crate_version: &str) -> Result
         ..
     } = args;
 
-    Ok((
-        format!(
-            "{setup}\n[dependencies.{}]\n{}",
-            crate_name,
-            toml::to_string(&cargo_manifest::DependencyDetail {
-                version: Some(format!("={crate_version}")),
-                default_features: no_default_features.then(|| false),
-                features: if features.is_empty() {
-                    None
-                } else {
-                    Some(features.clone())
-                },
-                ..Default::default()
-            })?
-        ),
-        *all_features,
+    Ok(format!(
+        "{setup}\n[dependencies.{}]\n{}",
+        spec.name(),
+        toml::to_string(&cargo_manifest::DependencyDetail {
+            version: Some(format!("={}", spec.version())),
+            default_features: no_default_features.then(|| false),
+            features: if *all_features {
+                Some(spec.features().keys().map(Clone::clone).collect())
+            } else if !features.is_empty() {
+                Some(features.clone())
+            } else {
+                None
+            },
+            ..Default::default()
+        })?
     ))
-}
-
-fn manifest_with_info(
-    args: &Args,
-    crate_name: &str,
-    crate_version: &str,
-    package: &cargo_metadata::Package,
-) -> Result<String> {
-    let setup = toml::toml! {
-        [package]
-        name = "crate-downloader"
-        version = "0.1.0"
-        edition = "2021"
-        [lib]
-        path = "lib.rs"
-    };
-    let features = package
-        .features
-        .keys()
-        .map(Clone::clone)
-        .collect::<Vec<_>>();
-    let dep = match args {
-        Args {
-            all_features: true, ..
-        } => format!(
-            "[dependencies.{}]\n{}",
-            crate_name,
-            toml::to_string(&cargo_manifest::DependencyDetail {
-                version: Some(format!("={crate_version}")),
-                features: if features.is_empty() {
-                    None
-                } else {
-                    Some(features)
-                },
-                ..Default::default()
-            })?
-        ),
-        _ => return Ok(manifest_simple(args, crate_name, crate_version)?.0),
-    };
-
-    Ok(format!("{setup}\n{dep}"))
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use clap::Parser as _;
-    use expect_test::expect_file;
-
-    #[test]
-    fn manifest_simple() {
-        let manifest = super::manifest_simple(
-            &Args::try_parse_from(["test", "-p", "example-api", "diff", "0.1.1"].iter()).unwrap(),
-            "example-api",
-            "0.1.1",
-        )
-        .unwrap()
-        .0;
-        expect_file!("../tests/expected-output/manifest_simple.txt").assert_eq(&manifest);
-    }
-
-    #[test]
-    fn manifest_with_info() {
-        let package = serde_json::from_str(
-            r#"{
-        "name": "bin",
-        "version": "0.1.0",
-        "id": "bin 0.1.0 (path+file://)",
-        "license": null,
-        "license_file": null,
-        "description": null,
-        "source": null,
-        "dependencies": [],
-        "targets":
-        [
-          {
-            "kind":
-            [
-              "lib"
-            ],
-            "crate_types":
-            [
-              "lib"
-            ],
-            "name": "lib",
-            "src_path": "/src/lib.rs",
-            "edition": "2021",
-            "doc": true,
-            "doctest": false,
-            "test": true
-          }
-        ],
-        "features": {},
-        "manifest_path": "/Cargo.toml",
-        "metadata": null,
-        "publish": null,
-        "authors": [],
-        "categories": [],
-        "keywords": [],
-        "readme": null,
-        "repository": null,
-        "homepage": null,
-        "documentation": null,
-        "edition": "2021",
-        "links": null,
-        "default_run": null,
-        "rust_version": null
-      }"#,
-        )
-        .unwrap();
-        let manifest = super::manifest_with_info(
-            &Args::try_parse_from(["test", "-p", "example-api", "diff", "0.1.1"].iter()).unwrap(),
-            "example-api",
-            "0.1.1",
-            &package,
-        )
-        .unwrap();
-        expect_file!("../tests/expected-output/manifest_with_info.txt").assert_eq(&manifest);
-    }
 }

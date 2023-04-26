@@ -402,6 +402,18 @@ fn diff_with_invalid_published_crate_version() {
 }
 
 #[test]
+fn diff_with_invalid_published_crate_version_number() {
+    let mut cmd = TestCmd::new().with_test_repo();
+    cmd.arg("diff");
+    cmd.arg("9999.9999.9999");
+    cmd.assert()
+        .stderr(predicates::str::starts_with(
+            "Error: Could not find version `9999.9999.9999` of crate `example_api`",
+        ))
+        .failure();
+}
+
+#[test]
 fn diff_with_invalid_manifest_path() {
     let mut cmd = TestCmd::new().with_test_repo();
     cmd.arg("--manifest-path=/does/not/exists/Cargo.toml");

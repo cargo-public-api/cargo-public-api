@@ -18,6 +18,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: |
-          gh pr review ${{ github.event.pull_request.number }} --comment --body "If CI passes, this dependabot PR will be [auto-merged (squashed)](https://github.com/Enselic/cargo-public-api/blob/main/.github/workflows/Auto-merge-dependabot-PRs.yml) 🚀"
+          gh pr review ${{ github.event.pull_request.number }} --comment --body "If CI passes, this dependabot PR will be [auto-merged](https://github.com/Enselic/cargo-public-api/blob/main/.github/workflows/Auto-merge-dependabot-PRs.yml) 🚀"
       - run: |
           gh pr merge --auto --squash ${{ github.event.pull_request.number }}

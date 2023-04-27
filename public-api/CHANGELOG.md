@@ -1,6 +1,6 @@
 # `public-api` changelog
 
-## Unreleased v0.29.0
+## v0.29.0
 * Remove the `public-api` bin. Use `cargo public-api` instead.
 
 ## v0.28.0

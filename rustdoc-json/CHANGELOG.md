@@ -1,5 +1,9 @@
 # rustdoc-json
 
+## v0.8.5
+* Simplify `BuildError::General` error message
+* Bump deps
+
 ## v0.8.4
 * Make `rustdoc_json::Builder::clear_toolchain()` actually clear the toolchain
 

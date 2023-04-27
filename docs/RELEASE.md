@@ -29,6 +29,7 @@
 
 ### `rustdoc-json`
 
+1. Run `tag=$(git tag --sort=-creatordate | grep ^rustdoc-json-v | head -n1) ; echo "Latest release is $tag" ; git diff $tag -- rustdoc-json/` to see if a release is needed.
 1. Update `rustdoc-json/CHANGELOG.md`
 1. Bump the `version` in **rustdoc-json/Cargo.toml**.
     * Also bump dependents: `git grep -A1 'path = "../rustdoc-json"'`
@@ -37,6 +38,7 @@
 
 ### `rustup-toolchain`
 
+1. Run `tag=$(git tag --sort=-creatordate | grep ^rustup-toolchain-v | head -n1) ; echo "Latest release is $tag" ; git diff $tag -- rustup-toolchain/` to see if a release is needed.
 1. Update `rustup-toolchain/CHANGELOG.md`
 1. Bump the `version` in **rustup-toolchain/Cargo.toml**
     * Also bump dependents: `git grep -A1 'path = "../rustup-toolchain"'`

@@ -27,7 +27,7 @@ toml = "0.7.3"
 serde = { version = "1.0.160", features = ["derive"] }
 
 [dependencies.clap]
-version = "4.2.4"
+version = "4.2.5"
 features = ["derive", "wrap_help"]
 
 [dependencies.crates-index]

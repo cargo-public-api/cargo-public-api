@@ -30,7 +30,10 @@ anyhow = "1.0.71"
 assert_cmd = "2.0.11"
 expect-test = "1.4.1"
 tempfile = "3.5.0"
-itertools = { version = "0.10.5", default-features = false }
+
+[dev-dependencies.itertools]
+version = "0.10.5"
+default-features = false
 
 [dev-dependencies.rustdoc-json]
 path = "../rustdoc-json"

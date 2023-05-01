@@ -13,7 +13,7 @@ repository = "https://github.com/Enselic/cargo-public-api"
 
 [dependencies]
 nu-ansi-term = "0.47.0"
-anyhow = "1.0.70"
+anyhow = "1.0.71"
 is-terminal = "0.4.7"
 cargo-manifest = "0.8.0"
 clap_complete_command = "0.5.1"

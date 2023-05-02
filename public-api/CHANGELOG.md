@@ -1,5 +1,8 @@
 # `public-api` changelog
 
+## v0.29.1
+* Prevent infinite RAM usage by hardening recursion detection
+
 ## v0.29.0
 * Remove the `public-api` bin. Use `cargo public-api` instead.
 

@@ -100,7 +100,7 @@ impl<'c> ItemProcessor<'c> {
                 self.process_impl_item(unprocessed_item, item, impl_);
             }
             _ => {
-                self.process_item(unprocessed_item, item, None);
+                self.process_item_unless_recursive(unprocessed_item, item, None);
             }
         }
     }
@@ -177,6 +177,30 @@ impl<'c> ItemProcessor<'c> {
         }
 
         self.process_item(unprocessed_item, item, None);
+    }
+
+    /// Make sure the item we are about to process is not already part of the
+    /// item path. If it is, we have encountered recursion. Stop processing in
+    /// that case.
+    fn process_item_unless_recursive(
+        &mut self,
+        unprocessed_item: UnprocessedItem<'c>,
+        item: &'c Item,
+        overridden_name: Option<String>,
+    ) {
+        if unprocessed_item
+            .parent_path
+            .iter()
+            .any(|m| m.item.id == item.id)
+        {
+            let recursion_breaker = unprocessed_item.finish(
+                item,
+                Some(format!("<<{}>>", item.name.as_deref().unwrap_or(""))),
+            );
+            self.output.push(recursion_breaker);
+        } else {
+            self.process_item(unprocessed_item, item, overridden_name);
+        }
     }
 
     /// Process an item. Setup jobs for its children and impls and and then put

@@ -61,3 +61,13 @@ pub mod issue_145 {
 
     pub fn publicly_renamed_from_private_mod_arg_type(_transform: PubliclyRenamedFromPrivateMod) {}
 }
+
+/// Regression test for <https://github.com/Enselic/cargo-public-api/issues/410>
+pub mod issue_410 {
+    pub mod container {
+        pub mod super_glob {
+            pub use super::*;
+        }
+    }
+    pub use container::super_glob;
+}

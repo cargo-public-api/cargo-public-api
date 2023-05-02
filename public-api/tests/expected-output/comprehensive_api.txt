@@ -57,6 +57,12 @@ pub fn comprehensive_api::exports::issue_145::privately_renamed_arg_type(_transf
 pub fn comprehensive_api::exports::issue_145::privately_renamed_external_arg_type(_transform: comprehensive_api::exports::issue_145::external::External)
 pub fn comprehensive_api::exports::issue_145::publicly_renamed_external(_transform: comprehensive_api::exports::issue_145::external_2::External)
 pub fn comprehensive_api::exports::issue_145::publicly_renamed_from_private_mod_arg_type(_transform: comprehensive_api::exports::issue_145::external_3::External)
+pub mod comprehensive_api::exports::issue_410
+pub mod comprehensive_api::exports::issue_410::container
+pub mod comprehensive_api::exports::issue_410::container::super_glob
+pub use comprehensive_api::exports::issue_410::container::super_glob::<<super::*>>
+pub mod comprehensive_api::exports::issue_410::super_glob
+pub mod comprehensive_api::exports::issue_410::super_glob::<<super_glob>>
 pub mod comprehensive_api::exports::recursion_1
 pub mod comprehensive_api::exports::recursion_1::recursion_2
 pub use comprehensive_api::exports::recursion_1::recursion_2::recursion_1

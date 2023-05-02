@@ -1,0 +1,12 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug cargo-public-api",
+            "type": "lldb", // https://marketplace.visualstudio.com/items?itemName=vadimcn.vscode-lldb
+            "request": "launch",
+            "program": "${workspaceFolder}/target/debug/cargo-public-api",
+            "args": [],
+        }
+    ]
+}

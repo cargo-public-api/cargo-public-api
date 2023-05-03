@@ -33,8 +33,8 @@ impl DenyMethod {
 #[derive(Copy, Clone, Debug, Eq, PartialEq, clap::ValueEnum)]
 #[value(rename_all = "lower")]
 pub enum Color {
-    /// Colors will be used if stdout is a terminal. If you pipe the output to a
-    /// file, colors will be disabled by default.
+    /// Colors will be used if stdout is a terminal. Colors will not be used if
+    /// stdout is a regular file.
     Auto,
 
     /// Colors will never be used.

@@ -5,9 +5,7 @@
 1. First release `rustdoc-json` and `rustup-toolchain` if needed. See below.
 1. Update `public-api/CHANGELOG.md`
 1. Create a PR that targets `main` that
-    1. Bumps to the same `version` in
-        * **Cargo.toml** `[workspace.package.version]`
-        * Dependents that you find with `git grep -A1 'path = "../public-api"'`
+    1. Bumps version with `cargo set-version -p public-api x.y.z`
     2. If you bump 0.x.0 version, also update the [compatibility matrix](https://github.com/Enselic/cargo-public-api#compatibility-matrix).
     1. If `MINIMUM_NIGHTLY_RUST_VERSION` must be bumped, bump it. If you bump it, also
         *  bump it in [compatibility matrix](https://github.com/Enselic/cargo-public-api#compatibility-matrix)
@@ -31,8 +29,7 @@
 
 1. Run `tag=$(git tag --sort=-creatordate | grep ^rustdoc-json-v | head -n1) ; echo "Latest release is $tag" ; git diff $tag -- rustdoc-json/` to see if a release is needed.
 1. Update `rustdoc-json/CHANGELOG.md`
-1. Bump the `version` in **rustdoc-json/Cargo.toml**.
-    * Also bump dependents: `git grep -A1 'path = "../rustdoc-json"'`
+1. Bump version with `cargo set-version -p rustdoc-json x.y.z`
 1. Run https://github.com/Enselic/cargo-public-api/actions/workflows/Release-rustdoc-json.yml workflow from `main` ([instructions](https://github.com/Enselic/cargo-public-api/blob/main/docs/development.md#how-to-trigger-main-branch-workflow))
 1. Done!
 
@@ -40,8 +37,7 @@
 
 1. Run `tag=$(git tag --sort=-creatordate | grep ^rustup-toolchain-v | head -n1) ; echo "Latest release is $tag" ; git diff $tag -- rustup-toolchain/` to see if a release is needed.
 1. Update `rustup-toolchain/CHANGELOG.md`
-1. Bump the `version` in **rustup-toolchain/Cargo.toml**
-    * Also bump dependents: `git grep -A1 'path = "../rustup-toolchain"'`
+1. Bump version with `cargo set-version -p rustup-toolchain x.y.z`
 1. Run https://github.com/Enselic/cargo-public-api/actions/workflows/Release-rustup-toolchain.yml workflow from `main` ([instructions](https://github.com/Enselic/cargo-public-api/blob/main/docs/development.md#how-to-trigger-main-branch-workflow))
 1. Done!
 

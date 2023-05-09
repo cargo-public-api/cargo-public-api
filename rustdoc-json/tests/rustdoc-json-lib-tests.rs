@@ -40,6 +40,11 @@ fn package_target_bin() {
 }
 
 #[test]
+fn package_target_bin_with_hypen() {
+    test_alternative_package_target(PackageTarget::Bin("with-hypen".into()));
+}
+
+#[test]
 fn package_target_bin_2() {
     test_alternative_package_target(PackageTarget::Bin("main2".into()));
 }

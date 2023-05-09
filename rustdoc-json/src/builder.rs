@@ -144,8 +144,8 @@ fn rustdoc_json_path_for_manifest_path(
 
             lib_name.replace('-', "_")
         }
-        PackageTarget::Bin(package)
-        | PackageTarget::Example(package)
+        PackageTarget::Bin(package) => package.replace('-', "_"),
+        PackageTarget::Example(package)
         | PackageTarget::Test(package)
         | PackageTarget::Bench(package) => package.clone(),
     };

@@ -8,6 +8,11 @@ edition = "2021"
 test_dep_1 = { path = "../test_dep_1_0_0", package = "test_dep" }
 test_dep_2 = { path = "../test_dep_2_0_0", package = "test_dep" }
 
+
+[[bin]]
+name = "with-hypen"
+path = "src/bin/with_hypen.rs"
+
 # Exclude this package from the top level workspace by declaring our own empty
 # workspace
 [workspace]

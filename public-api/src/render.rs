@@ -336,7 +336,7 @@ impl<'c> RenderingContext<'c> {
                 args: _,
                 self_type,
                 trait_,
-            } => self.render_qualified_path(self_type, trait_, name),
+            } => self.render_qualified_path(self_type, trait_.as_ref(), name),
         }
     }
 
@@ -651,18 +651,22 @@ impl<'c> RenderingContext<'c> {
         output
     }
 
-    fn render_qualified_path(&self, type_: &Type, trait_: &Path, name: &str) -> Vec<Token> {
+    fn render_qualified_path(&self, type_: &Type, trait_: Option<&Path>, name: &str) -> Vec<Token> {
         let mut output = vec![];
-        match type_ {
-            Type::Generic(name) if name == "Self" && trait_.name.is_empty() => {
+        match (type_, trait_) {
+            (Type::Generic(name), Some(trait_)) if name == "Self" && trait_.name.is_empty() => {
                 output.push(Token::keyword("Self"));
             }
-            _ => {
-                output.push(Token::symbol("<"));
+            (_, trait_) => {
+                if trait_.is_some() {
+                    output.push(Token::symbol("<"));
+                }
                 output.extend(self.render_type(type_));
-                output.extend(vec![ws!(), Token::keyword("as"), ws!()]);
-                output.extend(self.render_resolved_path(trait_));
-                output.push(Token::symbol(">"));
+                if let Some(trait_) = trait_ {
+                    output.extend(vec![ws!(), Token::keyword("as"), ws!()]);
+                    output.extend(self.render_resolved_path(trait_));
+                    output.push(Token::symbol(">"));
+                }
             }
         }
         output.push(Token::symbol("::"));
@@ -1276,11 +1280,11 @@ mod test {
                         bindings: vec![],
                     }),
                     self_type: Box::new(Type::Generic(s!("type"))),
-                    trait_: Path {
+                    trait_: Some(Path {
                         name: String::from("trait"),
                         args: None,
                         id: Id(s!("id")),
-                    },
+                    }),
                 })
             },
             vec![

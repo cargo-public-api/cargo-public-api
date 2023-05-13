@@ -54,4 +54,9 @@ exclude = [
 
     # Test for feature flags
     "test-apis/features",
+
+    # Contains a public API that use unstable Rust features. Not used in
+    # regression tests. Only use for one-off experiments, e.g. to understand
+    # impact of rustdoc JSON format changes.
+    "test-apis/nightly_api",
 ]

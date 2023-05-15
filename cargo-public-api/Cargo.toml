@@ -31,7 +31,7 @@ version = "4.2.7"
 features = ["derive", "wrap_help"]
 
 [dependencies.crates-index]
-version = "0.19.7"
+version = "0.19.10"
 default-features = false
 
 [dependencies.rustdoc-json]

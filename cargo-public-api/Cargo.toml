@@ -23,7 +23,7 @@ home = "0.5.5"
 semver = "1.0.17"
 thiserror = "1.0.40"
 cargo_metadata = "0.15.4"
-toml = "0.7.3"
+toml = "0.7.4"
 serde = { version = "1.0.163", features = ["derive"] }
 
 [dependencies.clap]

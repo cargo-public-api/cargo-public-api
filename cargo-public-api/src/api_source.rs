@@ -181,9 +181,16 @@ This version of `cargo public-api` requires at least:
 
     {MINIMUM_NIGHTLY_RUST_VERSION}
 
-If you have that, it might be `cargo public-api` that is out of date. Try
-to install the latest version with `cargo install cargo-public-api`. If the
-issue remains, please report at
+Ensure your nightly toolchain is up to date with:
+
+    rustup install nightly --profile minimal
+
+If that does not help, it might be `cargo public-api` that is out of date. Try
+to install the latest version with
+
+    cargo install --locked cargo-public-api
+
+If the issue remains, please report at
 
     https://github.com/Enselic/cargo-public-api/issues",
             )

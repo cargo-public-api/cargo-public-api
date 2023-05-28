@@ -6,6 +6,7 @@
             "type": "lldb", // https://marketplace.visualstudio.com/items?itemName=vadimcn.vscode-lldb
             "request": "launch",
             "program": "${workspaceFolder}/target/debug/cargo-public-api",
+            "preLaunchTask": "rust: cargo build",
             "args": [],
         }
     ]

@@ -226,35 +226,41 @@ impl<'c> RenderingContext<'c> {
     fn render_path(&self, path: &[NameableItem]) -> Vec<Token> {
         let mut output = vec![];
         for item in path {
-            let token_fn = if matches!(item.item.inner, ItemEnum::Function(_)) {
-                Token::function
-            } else if matches!(
-                item.item.inner,
-                ItemEnum::Trait(_)
-                    | ItemEnum::Struct(_)
-                    | ItemEnum::Union(_)
-                    | ItemEnum::Enum(_)
-                    | ItemEnum::Typedef(_)
-            ) {
-                Token::type_
-            } else {
-                Token::identifier
-            };
-
-            if self.options.debug_sorting {
-                // There is always a sortable name, so we can push the name
-                // unconditionally
-                output.push(token_fn(item.sortable_name(self)));
-                output.push(Token::symbol("::"));
-            } else if let Some(name) = item.name() {
-                // If we are not debugging, some items (read: impls) do not have
-                // a name, so only push a name if it exists
-                output.push(token_fn(name.to_string()));
-                output.push(Token::symbol("::"));
-            }
+            output.extend(self.render_nameable_item(item));
         }
         if !path.is_empty() {
-            output.pop();
+            output.pop(); // Remove last "::" so "a::b::c::" becomes "a::b::c"
+        }
+        output
+    }
+
+    fn render_nameable_item(&self, item: &NameableItem) -> Vec<Token> {
+        let mut output = vec![];
+        let token_fn = if matches!(item.item.inner, ItemEnum::Function(_)) {
+            Token::function
+        } else if matches!(
+            item.item.inner,
+            ItemEnum::Trait(_)
+                | ItemEnum::Struct(_)
+                | ItemEnum::Union(_)
+                | ItemEnum::Enum(_)
+                | ItemEnum::Typedef(_)
+        ) {
+            Token::type_
+        } else {
+            Token::identifier
+        };
+
+        if self.options.debug_sorting {
+            // There is always a sortable name, so we can push the name
+            // unconditionally
+            output.push(token_fn(item.sortable_name(self)));
+            output.push(Token::symbol("::"));
+        } else if let Some(name) = item.name() {
+            // If we are not debugging, some items (read: impls) do not have
+            // a name, so only push a name if it exists
+            output.push(token_fn(name.to_string()));
+            output.push(Token::symbol("::"));
         }
         output
     }

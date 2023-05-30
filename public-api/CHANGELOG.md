@@ -1,5 +1,8 @@
 # `public-api` changelog
 
+## v0.30.0
+* Support `nightly-2023-05-24` and later
+
 ## v0.29.1
 * Prevent infinite RAM usage by hardening recursion detection
 

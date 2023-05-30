@@ -37,11 +37,14 @@ impl<'c> NameableItem<'c> {
         if let Some(name) = self.name() {
             sortable_name.push_str(name);
         } else if let ItemEnum::Impl(impl_) = &self.item.inner {
-            // In order for items of impls to be grouped together with its
-            // impl, add the "name" of the impl to the sorting prefix.
-            sortable_name.push_str(&crate::tokens::tokens_to_string(
-                &context.render_impl(impl_, &[]),
-            ));
+            // In order for items of impls to be grouped together with its impl,
+            // add the "name" of the impl to the sorting prefix. Ignore `!` when
+            // sorting however, because that just messes the expected order up.
+            sortable_name.push_str(&crate::tokens::tokens_to_string(&context.render_impl(
+                impl_,
+                &[],
+                true, /* disregard_negativity */
+            )));
 
             // If this is an inherent impl, additionally add the concatenated
             // names of all associated items to the "name" of the impl. This makes

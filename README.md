@@ -66,6 +66,8 @@ $ cargo public-api diff ref1..ref2
 
 ### … as a CI Check
 
+<!-- Keep this section in sync with ./public-api/README.md#public-api-surface-test-in-ci -->
+
 With a regular `cargo test` that you run in CI you will be able to
 * prevent accidental changes to your public API
 * review the public API diff of deliberate changes

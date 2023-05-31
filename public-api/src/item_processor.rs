@@ -215,10 +215,7 @@ impl<'c> ItemProcessor<'c> {
         let children = children_for_item(item).into_iter().flatten();
         let impls = impls_for_item(item).into_iter().flatten();
 
-        // Use .rev() so order is preserved with .push_front(). Use
-        // .push_front() so that e.g items for struct fields are finished right
-        // after their corresponding struct is finished.
-        for id in children.chain(impls).rev() {
+        for id in children.chain(impls) {
             self.add_to_work_queue(finished_item.path().into(), id);
         }
 

@@ -13,7 +13,7 @@ $ cargo install --locked cargo-public-api
 Ensure **nightly-2023-05-24** or later is installed (does not need to be the active toolchain) so `cargo public-api` can build **rustdoc JSON** for you:
 
 ```console
-$ rustup install --profile minimal nightly
+$ rustup install nightly --profile minimal
 ```
 
 # Usage

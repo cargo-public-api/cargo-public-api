@@ -99,7 +99,9 @@ impl<'c> RenderingContext<'c> {
             ),
             ItemEnum::Trait(trait_) => self.render_trait(trait_, item_path),
             ItemEnum::TraitAlias(_) => self.render_simple(&["trait", "alias"], item_path),
-            ItemEnum::Impl(impl_) => self.render_impl(impl_, item_path),
+            ItemEnum::Impl(impl_) => {
+                self.render_impl(impl_, item_path, false /* disregard_negativity */)
+            }
             ItemEnum::Typedef(inner) => {
                 let mut output = self.render_simple(&["type"], item_path);
                 output.extend(self.render_generics(&inner.generics));
@@ -591,7 +593,12 @@ impl<'c> RenderingContext<'c> {
         output
     }
 
-    pub(crate) fn render_impl(&self, impl_: &Impl, path: &[NameableItem]) -> Vec<Token> {
+    pub(crate) fn render_impl(
+        &self,
+        impl_: &Impl,
+        path: &[NameableItem],
+        disregard_negativity: bool,
+    ) -> Vec<Token> {
         let mut output = vec![];
 
         if self.options.debug_sorting {
@@ -610,7 +617,7 @@ impl<'c> RenderingContext<'c> {
         output.push(ws!());
 
         if let Some(trait_) = &impl_.trait_ {
-            if impl_.negative {
+            if !disregard_negativity && impl_.negative {
                 output.push(Token::symbol("!"));
             }
             output.extend(self.render_resolved_path(trait_));

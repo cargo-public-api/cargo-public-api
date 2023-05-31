@@ -1,0 +1,19 @@
+pub mod auto_traits
+pub struct auto_traits::NotSendNorSync
+impl !core::marker::Send for auto_traits::NotSendNorSync
+impl !core::marker::Sync for auto_traits::NotSendNorSync
+impl core::marker::Unpin for auto_traits::NotSendNorSync
+impl core::panic::unwind_safe::RefUnwindSafe for auto_traits::NotSendNorSync
+impl core::panic::unwind_safe::UnwindSafe for auto_traits::NotSendNorSync
+pub struct auto_traits::SendAndSync
+impl core::marker::Send for auto_traits::SendAndSync
+impl core::marker::Sync for auto_traits::SendAndSync
+impl core::marker::Unpin for auto_traits::SendAndSync
+impl core::panic::unwind_safe::RefUnwindSafe for auto_traits::SendAndSync
+impl core::panic::unwind_safe::UnwindSafe for auto_traits::SendAndSync
+pub struct auto_traits::SendNotSync
+impl core::marker::Send for auto_traits::SendNotSync
+impl !core::marker::Sync for auto_traits::SendNotSync
+impl core::marker::Unpin for auto_traits::SendNotSync
+impl !core::panic::unwind_safe::RefUnwindSafe for auto_traits::SendNotSync
+impl core::panic::unwind_safe::UnwindSafe for auto_traits::SendNotSync

@@ -176,6 +176,17 @@ fn comprehensive_api_proc_macro() {
     );
 }
 
+#[test]
+fn auto_traits() {
+    // Create independent build dir so all tests can run in parallel
+    let build_dir = tempdir().unwrap();
+
+    assert_public_api(
+        builder_for_crate("../test-apis/auto_traits", &build_dir).omit_blanket_impls(true),
+        "./expected-output/auto_traits.txt",
+    );
+}
+
 /// Test that `debug_sorting` does not result in stack overflow because of
 /// recursion. This can quite easily happen unless we test for it continuously.
 /// We don't care what the exact output is, just that we don't crash.

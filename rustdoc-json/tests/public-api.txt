@@ -17,11 +17,11 @@ impl core::fmt::Display for rustdoc_json::BuildError
 pub fn rustdoc_json::BuildError::fmt(&self, __formatter: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::fmt::Debug for rustdoc_json::BuildError
 pub fn rustdoc_json::BuildError::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
-impl !core::panic::unwind_safe::RefUnwindSafe for rustdoc_json::BuildError
-impl !core::panic::unwind_safe::UnwindSafe for rustdoc_json::BuildError
 impl core::marker::Send for rustdoc_json::BuildError
 impl core::marker::Sync for rustdoc_json::BuildError
 impl core::marker::Unpin for rustdoc_json::BuildError
+impl !core::panic::unwind_safe::RefUnwindSafe for rustdoc_json::BuildError
+impl !core::panic::unwind_safe::UnwindSafe for rustdoc_json::BuildError
 impl<E> core::any::Provider for rustdoc_json::BuildError where E: core::error::Error + core::marker::Sized
 pub fn rustdoc_json::BuildError::provide<'a>(&'a self, demand: &mut core::any::Demand<'a>)
 impl<T, U> core::convert::Into<U> for rustdoc_json::BuildError where U: core::convert::From<T>

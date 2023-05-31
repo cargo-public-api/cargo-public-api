@@ -1,4 +1,4 @@
-use super::intermediate_public_item::NameableItem;
+use super::nameable_item::NameableItem;
 use crate::{
     crate_wrapper::CrateWrapper, intermediate_public_item::IntermediatePublicItem,
     public_item::PublicItem, render::RenderingContext, BuilderOptions as Options, PublicApi,

@@ -1,5 +1,6 @@
 #![allow(clippy::unused_self)]
-use crate::intermediate_public_item::{IntermediatePublicItem, NameableItem};
+use crate::intermediate_public_item::IntermediatePublicItem;
+use crate::nameable_item::NameableItem;
 use crate::tokens::Token;
 use crate::BuilderOptions as Options;
 use std::ops::Deref;

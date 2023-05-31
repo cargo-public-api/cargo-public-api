@@ -1,6 +1,7 @@
 use rustdoc_types::Item;
 
 use crate::nameable_item::NameableItem;
+use crate::path_component::PathComponent;
 use crate::public_item::PublicItemPath;
 use crate::render::RenderingContext;
 use crate::tokens::Token;
@@ -11,21 +12,25 @@ use crate::tokens::Token;
 /// one [`crate::PublicItem`].
 #[derive(Clone, Debug)]
 pub struct IntermediatePublicItem<'c> {
-    path: Vec<NameableItem<'c>>,
+    path: Vec<PathComponent<'c>>,
 }
 
 impl<'c> IntermediatePublicItem<'c> {
-    pub fn new(path: Vec<NameableItem<'c>>) -> Self {
+    pub fn new(path: Vec<PathComponent<'c>>) -> Self {
         Self { path }
     }
 
     #[must_use]
     pub fn item(&self) -> &'c Item {
-        self.path().last().expect("path must not be empty").item
+        self.path()
+            .last()
+            .expect("path must not be empty")
+            .item
+            .item
     }
 
     #[must_use]
-    pub fn path(&self) -> &[NameableItem<'c>] {
+    pub fn path(&self) -> &[PathComponent<'c>] {
         &self.path
     }
 
@@ -34,13 +39,13 @@ impl<'c> IntermediatePublicItem<'c> {
     pub fn sortable_path(&self, context: &RenderingContext) -> PublicItemPath {
         self.path()
             .iter()
-            .map(|p| NameableItem::sortable_name(p, context))
+            .map(|p| NameableItem::sortable_name(&p.item, context))
             .collect()
     }
 
     #[must_use]
     pub fn path_contains_renamed_item(&self) -> bool {
-        self.path().iter().any(|m| m.overridden_name.is_some())
+        self.path().iter().any(|m| m.item.overridden_name.is_some())
     }
 
     pub fn render_token_stream(&self, context: &RenderingContext) -> Vec<Token> {

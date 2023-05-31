@@ -35,6 +35,7 @@ mod error;
 mod intermediate_public_item;
 mod item_processor;
 mod nameable_item;
+mod path_component;
 mod public_item;
 mod render;
 pub mod tokens;

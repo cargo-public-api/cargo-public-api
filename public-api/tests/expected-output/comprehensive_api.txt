@@ -79,7 +79,7 @@ pub mod comprehensive_api::exports::v1
 pub fn comprehensive_api::exports::v1::foo()
 pub fn comprehensive_api::exports::v1::foo2()
 pub mod comprehensive_api::functions
-pub async fn comprehensive_api::functions::async_fn() -> ()
+pub async fn comprehensive_api::functions::async_fn()
 pub async fn comprehensive_api::functions::async_fn_ret_bool() -> bool
 pub const fn comprehensive_api::functions::const_fn()
 pub fn comprehensive_api::functions::dyn_arg_one_trait(d: &dyn std::io::Write)

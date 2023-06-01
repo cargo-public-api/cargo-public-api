@@ -110,7 +110,7 @@ pub fn public_api::tokens::Token::partial_cmp(&self, other: &public_api::tokens:
 impl core::fmt::Debug for public_api::tokens::Token
 pub fn public_api::tokens::Token::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::hash::Hash for public_api::tokens::Token
-pub fn public_api::tokens::Token::hash<__H: core::hash::Hasher>(&self, state: &mut __H) -> ()
+pub fn public_api::tokens::Token::hash<__H: core::hash::Hasher>(&self, state: &mut __H)
 impl core::marker::StructuralEq for public_api::tokens::Token
 impl core::marker::StructuralPartialEq for public_api::tokens::Token
 impl core::marker::Send for public_api::tokens::Token

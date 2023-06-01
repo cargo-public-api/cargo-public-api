@@ -1438,7 +1438,7 @@ fn assert_cargo_public_api_not_in_cargo_home_bin() {
 
 /// See where this is used for an explanation of why we have this helper.
 fn get_toolchain_one_day_before_minimal_toolchain() -> String {
-    nightly_version_minus_one_day(get_minimum_toolchain())
+    nightly_version_minus_one_day(MINIMUM_NIGHTLY_RUST_VERSION)
 }
 
 /// Convert e.g. `nightly-2023-01-23` to `nightly-2023-01-22`, i.e. minus a day.

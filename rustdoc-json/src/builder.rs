@@ -130,19 +130,16 @@ fn rustdoc_json_path_for_manifest_path(
 
     // get the name of the crate/binary/example/test/bench
     let package_target_name = match package_target {
-        PackageTarget::Lib => {
-            let lib_name = match package {
-                Some(package) => package.to_owned(),
-                None => package_name(&manifest_path)?,
-            };
-
-            lib_name.replace('-', "_")
-        }
-        PackageTarget::Bin(package) => package.replace('-', "_"),
-        PackageTarget::Example(package)
+        PackageTarget::Lib => match package {
+            Some(package) => package.to_owned(),
+            None => package_name(&manifest_path)?,
+        },
+        PackageTarget::Bin(package)
+        | PackageTarget::Example(package)
         | PackageTarget::Test(package)
         | PackageTarget::Bench(package) => package.clone(),
-    };
+    }
+    .replace('-', "_");
 
     let mut rustdoc_json_path = target_dir;
     // if one has specified a target explicitly then Cargo appends that target triple name as a subfolder

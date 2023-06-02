@@ -40,8 +40,8 @@ fn package_target_bin() {
 }
 
 #[test]
-fn package_target_bin_with_hypen() {
-    test_alternative_package_target(PackageTarget::Bin("with-hypen".into()));
+fn package_target_bin_with_hyphen() {
+    test_alternative_package_target(PackageTarget::Bin("with-hyphen".into()));
 }
 
 #[test]

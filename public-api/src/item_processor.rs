@@ -1,10 +1,11 @@
 use super::nameable_item::NameableItem;
 use crate::{
     crate_wrapper::CrateWrapper, intermediate_public_item::IntermediatePublicItem,
-    public_item::PublicItem, render::RenderingContext, BuilderOptions as Options, PublicApi,
+    path_component::PathComponent, public_item::PublicItem, render::RenderingContext,
+    BuilderOptions as Options, PublicApi,
 };
 use rustdoc_types::{
-    Crate, Id, Impl, Import, Item, ItemEnum, Module, Struct, StructKind, VariantKind,
+    Crate, Id, Impl, Import, Item, ItemEnum, Module, Struct, StructKind, Type, VariantKind,
 };
 use std::{
     collections::{HashMap, VecDeque},
@@ -21,7 +22,7 @@ use std::{
 #[derive(Debug)]
 struct UnprocessedItem<'c> {
     /// The path to the item to process.
-    parent_path: Vec<NameableItem<'c>>,
+    parent_path: Vec<PathComponent<'c>>,
 
     /// The Id of the item to process.
     id: &'c Id,
@@ -69,7 +70,7 @@ impl<'c> ItemProcessor<'c> {
     /// want to insert the struct fields BEFORE everything else, so that these
     /// items remain grouped together. And the same applies for many kinds of
     /// groupings (enums, impls, etc).
-    fn add_to_work_queue(&mut self, parent_path: Vec<NameableItem<'c>>, id: &'c Id) {
+    fn add_to_work_queue(&mut self, parent_path: Vec<PathComponent<'c>>, id: &'c Id) {
         self.work_queue
             .push_front(UnprocessedItem { parent_path, id });
     }
@@ -176,7 +177,7 @@ impl<'c> ItemProcessor<'c> {
             return;
         }
 
-        self.process_item(unprocessed_item, item, None);
+        self.process_item_for_type(unprocessed_item, item, None, Some(&impl_.for_));
     }
 
     /// Make sure the item we are about to process is not already part of the
@@ -191,11 +192,12 @@ impl<'c> ItemProcessor<'c> {
         if unprocessed_item
             .parent_path
             .iter()
-            .any(|m| m.item.id == item.id)
+            .any(|m| m.item.item.id == item.id)
         {
             let recursion_breaker = unprocessed_item.finish(
                 item,
                 Some(format!("<<{}>>", item.name.as_deref().unwrap_or(""))),
+                None,
             );
             self.output.push(recursion_breaker);
         } else {
@@ -211,12 +213,38 @@ impl<'c> ItemProcessor<'c> {
         item: &'c Item,
         overridden_name: Option<String>,
     ) {
-        let finished_item = unprocessed_item.finish(item, overridden_name);
+        self.process_item_for_type(unprocessed_item, item, overridden_name, None);
+    }
+
+    /// Process an item. Setup jobs for its children and impls and and then put
+    /// it in the output.
+    fn process_item_for_type(
+        &mut self,
+        unprocessed_item: UnprocessedItem<'c>,
+        item: &'c Item,
+        overridden_name: Option<String>,
+        type_: Option<&'c Type>,
+    ) {
+        let finished_item = unprocessed_item.finish(item, overridden_name, type_);
+
         let children = children_for_item(item).into_iter().flatten();
         let impls = impls_for_item(item).into_iter().flatten();
 
-        for id in children.chain(impls) {
+        for id in children {
             self.add_to_work_queue(finished_item.path().into(), id);
+        }
+
+        // As usual, impls are special. We want impl items to appear grouped
+        // with the trait or type it involves. But when _rendering_ we want to
+        // use the type that we implement for, so that e.g. generic arguments
+        // can be shown. So hide the "sorting path" of the impl. We'll instead
+        // render the path to the type the impl is for.
+        for id in impls {
+            let mut path = finished_item.path().to_vec();
+            for a in &mut path {
+                a.hide = true;
+            }
+            self.add_to_work_queue(path, id);
         }
 
         self.output.push(finished_item);
@@ -227,10 +255,10 @@ impl<'c> ItemProcessor<'c> {
     /// which case we need to break the recursion.
     fn get_item_if_not_in_path(
         &mut self,
-        parent_path: &[NameableItem<'c>],
+        parent_path: &[PathComponent<'c>],
         id: &'c Id,
     ) -> Option<&'c Item> {
-        if parent_path.iter().any(|m| m.item.id == *id) {
+        if parent_path.iter().any(|m| m.item.item.id == *id) {
             // The item is already in the path! Break import recursion...
             return None;
         }
@@ -260,15 +288,24 @@ impl<'c> ItemProcessor<'c> {
 
 impl<'c> UnprocessedItem<'c> {
     /// Turns an [`UnprocessedItem`] into a finished [`IntermediatePublicItem`].
-    fn finish(self, item: &'c Item, overridden_name: Option<String>) -> IntermediatePublicItem<'c> {
+    fn finish(
+        self,
+        item: &'c Item,
+        overridden_name: Option<String>,
+        type_: Option<&'c Type>,
+    ) -> IntermediatePublicItem<'c> {
         // Transfer path ownership to output item
         let mut path = self.parent_path;
 
         // Complete the path with the last item
-        path.push(NameableItem {
-            item,
-            overridden_name,
-            sorting_prefix: sorting_prefix(item),
+        path.push(PathComponent {
+            item: NameableItem {
+                item,
+                overridden_name,
+                sorting_prefix: sorting_prefix(item),
+            },
+            type_,
+            hide: false,
         });
 
         // Done

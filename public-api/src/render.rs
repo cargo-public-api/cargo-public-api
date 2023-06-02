@@ -1,6 +1,7 @@
 #![allow(clippy::unused_self)]
 use crate::intermediate_public_item::IntermediatePublicItem;
 use crate::nameable_item::NameableItem;
+use crate::path_component::PathComponent;
 use crate::tokens::Token;
 use crate::BuilderOptions as Options;
 use std::ops::Deref;
@@ -215,7 +216,7 @@ impl<'c> RenderingContext<'c> {
         resolved_fields
     }
 
-    fn render_simple(&self, tags: &[&str], path: &[NameableItem]) -> Vec<Token> {
+    fn render_simple(&self, tags: &[&str], path: &[PathComponent]) -> Vec<Token> {
         let mut output = pub_();
         output.extend(
             tags.iter()
@@ -226,10 +227,23 @@ impl<'c> RenderingContext<'c> {
         output
     }
 
-    fn render_path(&self, path: &[NameableItem]) -> Vec<Token> {
+    fn render_path(&self, path: &[PathComponent]) -> Vec<Token> {
         let mut output = vec![];
-        for item in path {
-            output.extend(self.render_nameable_item(item));
+        for component in path {
+            if component.hide {
+                continue;
+            }
+
+            let (tokens, push_a_separator) = component.type_.map_or_else(
+                || self.render_nameable_item(&component.item),
+                |ty| self.render_type_and_separator(ty),
+            );
+
+            output.extend(tokens);
+
+            if push_a_separator {
+                output.push(Token::symbol("::"));
+            }
         }
         if !path.is_empty() {
             output.pop(); // Remove last "::" so "a::b::c::" becomes "a::b::c"
@@ -237,7 +251,8 @@ impl<'c> RenderingContext<'c> {
         output
     }
 
-    fn render_nameable_item(&self, item: &NameableItem) -> Vec<Token> {
+    fn render_nameable_item(&self, item: &NameableItem) -> (Vec<Token>, bool) {
+        let mut push_a_separator = false;
         let mut output = vec![];
         let token_fn = if matches!(item.item.inner, ItemEnum::Function(_)) {
             Token::function
@@ -258,14 +273,14 @@ impl<'c> RenderingContext<'c> {
             // There is always a sortable name, so we can push the name
             // unconditionally
             output.push(token_fn(item.sortable_name(self)));
-            output.push(Token::symbol("::"));
+            push_a_separator = true;
         } else if let Some(name) = item.name() {
             // If we are not debugging, some items (read: impls) do not have
             // a name, so only push a name if it exists
             output.push(token_fn(name.to_string()));
-            output.push(Token::symbol("::"));
+            push_a_separator = true;
         }
-        output
+        (output, push_a_separator)
     }
 
     #[allow(clippy::needless_pass_by_value)]
@@ -320,6 +335,10 @@ impl<'c> RenderingContext<'c> {
         self.render_option_type(&Some(ty))
     }
 
+    fn render_type_and_separator(&self, ty: &Type) -> (Vec<Token>, bool) {
+        (self.render_type(ty), true)
+    }
+
     #[allow(clippy::ref_option_ref, clippy::trivially_copy_pass_by_ref)] // Because of `render_sequence()` arg types
     fn render_option_type(&self, ty: &Option<&Type>) -> Vec<Token> {
         let Some(ty) = ty else { return vec![Token::symbol("_")] }; // The `_` in `EnumWithStrippedTupleVariants::DoubleFirstHidden(_, bool)`
@@ -349,7 +368,7 @@ impl<'c> RenderingContext<'c> {
         }
     }
 
-    fn render_trait(&self, trait_: &Trait, path: &[NameableItem]) -> Vec<Token> {
+    fn render_trait(&self, trait_: &Trait, path: &[PathComponent]) -> Vec<Token> {
         let mut output = pub_();
         if trait_.is_unsafe {
             output.extend(vec![Token::qualifier("unsafe"), ws!()]);
@@ -597,7 +616,7 @@ impl<'c> RenderingContext<'c> {
     pub(crate) fn render_impl(
         &self,
         impl_: &Impl,
-        path: &[NameableItem],
+        path: &[PathComponent],
         disregard_negativity: bool,
     ) -> Vec<Token> {
         let mut output = vec![];

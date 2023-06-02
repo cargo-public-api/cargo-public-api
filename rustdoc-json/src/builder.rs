@@ -132,13 +132,7 @@ fn rustdoc_json_path_for_manifest_path(
     let package_target_name = match package_target {
         PackageTarget::Lib => {
             let lib_name = match package {
-                Some(package) => {
-                    // a package `crate@1.0.0` will be documented as `crate.json`
-                    package
-                        .split_once('@')
-                        .map_or(package, |(start, _end)| start)
-                        .to_owned()
-                }
+                Some(package) => package.to_owned(),
                 None => package_name(&manifest_path)?,
             };
 

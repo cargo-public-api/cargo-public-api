@@ -1414,17 +1414,14 @@ fn add_to_path(dir: impl Into<PathBuf>) {
 
 /// Since `rustup` always prepends `$CARGO_HOME/bin` to `$PATH` [1], make sure
 /// `cargo-public-api` is not there, so that tests will use the freshly built
-/// `cargo-public-api` rather than something old. This check can be annoying in
-/// case you WANT to have `cargo-public-api` installed though, so you can
-/// opt-out by doing `CARGO_PUBLIC_API_INSTALLED_FOR_TESTS=1 cargo test`.
+/// `cargo-public-api` rather than something old. The best way to keep
+/// `cargo-public-api` in your PATH without interfering with tests is to rename
+/// it. See what command to use in the assertion message below.
 ///
 /// [1]
 /// <https://github.com/rust-lang/rustup/blob/a223e5ad6549e5fb0c56932fd0e79af9de898ad4/src/toolchain.rs#L446-L453>
 fn assert_cargo_public_api_not_in_cargo_home_bin() {
-    let (Some(mut path), None) = (
-        home::cargo_home().ok(),
-        env::var_os("CARGO_PUBLIC_API_INSTALLED_FOR_TESTS"),
-    ) else { return };
+    let Some(mut path) = home::cargo_home().ok() else { return };
 
     path.push("bin");
     path.push("cargo-public-api");
@@ -1432,13 +1429,12 @@ fn assert_cargo_public_api_not_in_cargo_home_bin() {
     assert!(
         std::fs::metadata(&path).is_err(),
         "Found {path:?} which will override `./target/debug/cargo-public-api` and thus interfere with tests. \
-         Either `rm {path:?}` or ignore this warning with `CARGO_PUBLIC_API_INSTALLED_FOR_TESTS=1 cargo test`. \
-         Tip: Use `cargo-public-api` from your build dir instead of installing it: `export PATH=~/src/cargo-public-api/target/debug:\"$PATH\"`");
+         Run `mv -v ~/.cargo/bin/cargo-public-api ~/.cargo/bin/$(~/.cargo/bin/cargo-public-api --version | tr ' ' '-')` to fix.");
 }
 
 /// See where this is used for an explanation of why we have this helper.
 fn get_toolchain_one_day_before_minimal_toolchain() -> String {
-    nightly_version_minus_one_day(get_minimum_toolchain())
+    nightly_version_minus_one_day(MINIMUM_NIGHTLY_RUST_VERSION)
 }
 
 /// Convert e.g. `nightly-2023-01-23` to `nightly-2023-01-22`, i.e. minus a day.

@@ -15,7 +15,7 @@ repository = "https://github.com/Enselic/cargo-public-api"
 nu-ansi-term = "0.47.0"
 anyhow = "1.0.71"
 is-terminal = "0.4.7"
-cargo-manifest = "0.8.0"
+cargo-manifest = "0.9.0"
 clap_complete_command = "0.5.1"
 diff = "0.1.13"
 dirs = "5.0.0"
@@ -23,15 +23,15 @@ home = "0.5.5"
 semver = "1.0.17"
 thiserror = "1.0.40"
 cargo_metadata = "0.15.4"
-toml = "0.7.3"
-serde = { version = "1.0.162", features = ["derive"] }
+toml = "0.7.4"
+serde = { version = "1.0.163", features = ["derive"] }
 
 [dependencies.clap]
 version = "4.2.7"
 features = ["derive", "wrap_help"]
 
 [dependencies.crates-index]
-version = "0.19.7"
+version = "0.19.10"
 default-features = false
 
 [dependencies.rustdoc-json]
@@ -40,7 +40,7 @@ version = "0.8.5"
 
 [dependencies.public-api]
 path = "../public-api"
-version = "0.29.1"
+version = "0.30.0"
 
 [dev-dependencies.rustup-toolchain]
 path = "../rustup-toolchain"

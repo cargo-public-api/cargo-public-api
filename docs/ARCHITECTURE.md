@@ -12,8 +12,6 @@ This tool is based on rustdoc JSON.
 
 To list the public API of a crate, we first build rustdoc JSON for it, and then parse the rustdoc JSON. Building happens with the help of the [`rustdoc-json`](https://crates.io/crates/rustdoc-json) crate. All the JSON parsing and analysis is done in the [`public-api`](https://crates.io/crates/public-api) crate. The code for these crates are found in the corresponding directories. `cargo-public-api` is essentially a convenient wrapper on top of these low-level crates. But it does contain a fair amount of its own code. It needs to manipulate git repos and write syntax highlighted output, for example.
 
-If you have a rustdoc JSON file, you can use the `public-api` binary directly on it, without using `cargo-public-api` at all.
-
 ## Diffing
 
 Diffing is essentially:

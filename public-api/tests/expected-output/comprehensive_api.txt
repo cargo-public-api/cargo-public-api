@@ -79,7 +79,7 @@ pub mod comprehensive_api::exports::v1
 pub fn comprehensive_api::exports::v1::foo()
 pub fn comprehensive_api::exports::v1::foo2()
 pub mod comprehensive_api::functions
-pub async fn comprehensive_api::functions::async_fn() -> ()
+pub async fn comprehensive_api::functions::async_fn()
 pub async fn comprehensive_api::functions::async_fn_ret_bool() -> bool
 pub const fn comprehensive_api::functions::const_fn()
 pub fn comprehensive_api::functions::dyn_arg_one_trait(d: &dyn std::io::Write)
@@ -114,7 +114,7 @@ pub struct comprehensive_api::higher_ranked_trait_bounds::Foo<'a>
 pub comprehensive_api::higher_ranked_trait_bounds::Foo::some_func: for<'c> fn(val: &'c i32) -> i32
 pub comprehensive_api::higher_ranked_trait_bounds::Foo::some_trait: &'a dyn for<'b> comprehensive_api::higher_ranked_trait_bounds::Trait<'b>
 impl<'a> comprehensive_api::higher_ranked_trait_bounds::Foo<'a>
-pub fn comprehensive_api::higher_ranked_trait_bounds::Foo::bar<T>() where T: comprehensive_api::higher_ranked_trait_bounds::Trait<'a>
+pub fn comprehensive_api::higher_ranked_trait_bounds::Foo<'a>::bar<T>() where T: comprehensive_api::higher_ranked_trait_bounds::Trait<'a>
 pub trait comprehensive_api::higher_ranked_trait_bounds::B<'x>
 impl<'a> comprehensive_api::higher_ranked_trait_bounds::B<'a> for dyn for<'b> comprehensive_api::higher_ranked_trait_bounds::Trait<'b>
 pub trait comprehensive_api::higher_ranked_trait_bounds::Trait<'x>
@@ -122,9 +122,14 @@ pub fn comprehensive_api::higher_ranked_trait_bounds::test1<T>() where for<'a> &
 pub fn comprehensive_api::higher_ranked_trait_bounds::test2<T>() where for<'a, 'b> &'a T: comprehensive_api::higher_ranked_trait_bounds::Trait<'b>
 pub fn comprehensive_api::higher_ranked_trait_bounds::test3<F>() where F: for<'a, 'b> core::ops::function::Fn(&'a u8, &'b u8)
 pub mod comprehensive_api::impls
+pub mod comprehensive_api::impls::issue_429
+pub struct comprehensive_api::impls::issue_429::Handle<T>(_)
+impl comprehensive_api::impls::issue_429::Handle<u32>
+pub fn comprehensive_api::impls::issue_429::Handle<u32>::get_u32() -> u32
+pub type comprehensive_api::impls::issue_429::HU32 = comprehensive_api::impls::issue_429::Handle<u32>
 pub struct comprehensive_api::impls::GatTestStruct1<'a, T>(_)
 impl<'a, T> comprehensive_api::traits::Simple for comprehensive_api::impls::GatTestStruct1<'a, T>
-pub fn comprehensive_api::impls::GatTestStruct1::act()
+pub fn comprehensive_api::impls::GatTestStruct1<'a, T>::act()
 pub struct comprehensive_api::impls::GatTestStruct2<T>(_)
 pub struct comprehensive_api::impls::TestItemGrouping
 impl comprehensive_api::traits::TraitReferencingOwnAssociatedType for comprehensive_api::impls::TestItemGrouping
@@ -137,7 +142,7 @@ pub fn comprehensive_api::impls::TestItemGrouping::bar() -> <Self as comprehensi
 pub trait comprehensive_api::impls::ForUnit
 pub fn comprehensive_api::impls::ForUnit::for_unit()
 impl comprehensive_api::impls::ForUnit for ()
-pub fn comprehensive_api::impls::ForUnit::for_unit()
+pub fn ()::for_unit()
 pub mod comprehensive_api::macros
 pub mod comprehensive_api::statics
 pub static comprehensive_api::statics::ANSWER: i8
@@ -175,11 +180,11 @@ pub struct comprehensive_api::structs::WithLifetimeAndGenericParam<'a, T>
 pub comprehensive_api::structs::WithLifetimeAndGenericParam::t: T
 pub comprehensive_api::structs::WithLifetimeAndGenericParam::unit_ref: &'a comprehensive_api::structs::Unit
 impl<'b, T> comprehensive_api::structs::WithLifetimeAndGenericParam<'b, T>
-pub fn comprehensive_api::structs::WithLifetimeAndGenericParam::new_any(unit_ref: &'b comprehensive_api::structs::Unit, t: T) -> Self
+pub fn comprehensive_api::structs::WithLifetimeAndGenericParam<'b, T>::new_any(unit_ref: &'b comprehensive_api::structs::Unit, t: T) -> Self
 impl<'b, T> comprehensive_api::structs::WithLifetimeAndGenericParam<'b, T>
-pub fn comprehensive_api::structs::WithLifetimeAndGenericParam::new_any_duplicate(unit_ref: &'b comprehensive_api::structs::Unit, t: T) -> Self
+pub fn comprehensive_api::structs::WithLifetimeAndGenericParam<'b, T>::new_any_duplicate(unit_ref: &'b comprehensive_api::structs::Unit, t: T) -> Self
 impl<'b> comprehensive_api::structs::WithLifetimeAndGenericParam<'b, alloc::string::String>
-pub fn comprehensive_api::structs::WithLifetimeAndGenericParam::new(unit_ref: &'b comprehensive_api::structs::Unit, t: alloc::string::String) -> Self
+pub fn comprehensive_api::structs::WithLifetimeAndGenericParam<'b, alloc::string::String>::new(unit_ref: &'b comprehensive_api::structs::Unit, t: alloc::string::String) -> Self
 pub struct comprehensive_api::structs::WithTraitBounds<T: core::fmt::Display + core::fmt::Debug>
 pub mod comprehensive_api::traits
 pub trait comprehensive_api::traits::AssociatedConst
@@ -195,32 +200,32 @@ pub type comprehensive_api::traits::GenericAssociatedTypes::WhereSelfSized where
 pub type comprehensive_api::traits::GenericAssociatedTypes::WhereSimple<T> where T: comprehensive_api::traits::Simple
 pub type comprehensive_api::traits::GenericAssociatedTypes::WithLifetime<'a>
 impl comprehensive_api::traits::GenericAssociatedTypes for comprehensive_api::structs::Unit
-pub type comprehensive_api::traits::GenericAssociatedTypes::SimpleBound = comprehensive_api::impls::GatTestStruct1<'static, usize>
-pub type comprehensive_api::traits::GenericAssociatedTypes::WhereSelfSized = comprehensive_api::structs::Unit
-pub type comprehensive_api::traits::GenericAssociatedTypes::WhereSimple<T: comprehensive_api::traits::Simple> = comprehensive_api::impls::GatTestStruct2<T>
-pub type comprehensive_api::traits::GenericAssociatedTypes::WithLifetime<'a> = comprehensive_api::impls::GatTestStruct1<'a, bool>
+pub type comprehensive_api::structs::Unit::SimpleBound = comprehensive_api::impls::GatTestStruct1<'static, usize>
+pub type comprehensive_api::structs::Unit::WhereSelfSized = comprehensive_api::structs::Unit
+pub type comprehensive_api::structs::Unit::WhereSimple<T: comprehensive_api::traits::Simple> = comprehensive_api::impls::GatTestStruct2<T>
+pub type comprehensive_api::structs::Unit::WithLifetime<'a> = comprehensive_api::impls::GatTestStruct1<'a, bool>
 pub trait comprehensive_api::traits::Simple
 pub fn comprehensive_api::traits::Simple::act()
 impl comprehensive_api::traits::Simple for comprehensive_api::structs::Unit
-pub fn comprehensive_api::traits::Simple::act()
+pub fn comprehensive_api::structs::Unit::act()
 impl<'a, T> comprehensive_api::traits::Simple for comprehensive_api::impls::GatTestStruct1<'a, T>
-pub fn comprehensive_api::traits::Simple::act()
+pub fn comprehensive_api::impls::GatTestStruct1<'a, T>::act()
 pub trait comprehensive_api::traits::TraitReferencingOwnAssociatedType
 pub type comprehensive_api::traits::TraitReferencingOwnAssociatedType::OwnAssociatedType
 pub fn comprehensive_api::traits::TraitReferencingOwnAssociatedType::own_associated_type_output(&self) -> Self::OwnAssociatedType
 pub fn comprehensive_api::traits::TraitReferencingOwnAssociatedType::own_associated_type_output_explicit_as(&self) -> <Self as comprehensive_api::traits::TraitReferencingOwnAssociatedType>::OwnAssociatedType
 impl comprehensive_api::traits::TraitReferencingOwnAssociatedType for comprehensive_api::impls::TestItemGrouping
-pub type comprehensive_api::traits::TraitReferencingOwnAssociatedType::OwnAssociatedType = bool
-pub fn comprehensive_api::traits::TraitReferencingOwnAssociatedType::own_associated_type_output(&self) -> Self::OwnAssociatedType
-pub fn comprehensive_api::traits::TraitReferencingOwnAssociatedType::own_associated_type_output_explicit_as(&self) -> <Self as comprehensive_api::traits::TraitReferencingOwnAssociatedType>::OwnAssociatedType
+pub type comprehensive_api::impls::TestItemGrouping::OwnAssociatedType = bool
+pub fn comprehensive_api::impls::TestItemGrouping::own_associated_type_output(&self) -> Self::OwnAssociatedType
+pub fn comprehensive_api::impls::TestItemGrouping::own_associated_type_output_explicit_as(&self) -> <Self as comprehensive_api::traits::TraitReferencingOwnAssociatedType>::OwnAssociatedType
 pub trait comprehensive_api::traits::TraitWithBounds: private_mod::PubTraitInPrivateMod + comprehensive_api::traits::Simple + core::marker::Send
 pub trait comprehensive_api::traits::TraitWithBoundsAndGenerics<U>: comprehensive_api::traits::Simple
 pub trait comprehensive_api::traits::TraitWithGenerics<T, U>
 pub type comprehensive_api::traits::TraitWithGenerics::Foo
 pub fn comprehensive_api::traits::TraitWithGenerics::bar() -> <Self as comprehensive_api::traits::TraitWithGenerics<T, U>>::Foo
 impl<T, U> comprehensive_api::traits::TraitWithGenerics<T, U> for comprehensive_api::impls::TestItemGrouping
-pub type comprehensive_api::traits::TraitWithGenerics::Foo = u8
-pub fn comprehensive_api::traits::TraitWithGenerics::bar() -> <Self as comprehensive_api::traits::TraitWithGenerics<T, U>>::Foo
+pub type comprehensive_api::impls::TestItemGrouping::Foo = u8
+pub fn comprehensive_api::impls::TestItemGrouping::bar() -> <Self as comprehensive_api::traits::TraitWithGenerics<T, U>>::Foo
 pub unsafe trait comprehensive_api::traits::UnsafeTrait
 pub mod comprehensive_api::typedefs
 pub type comprehensive_api::typedefs::RedefinedResult<T, E> = core::result::Result<T, E>
@@ -233,25 +238,25 @@ pub macro comprehensive_api::simple_macro!
 pub struct comprehensive_api::Plain
 pub comprehensive_api::Plain::x: usize
 impl comprehensive_api::structs::Plain
-pub fn comprehensive_api::Plain::f()
-pub fn comprehensive_api::Plain::new() -> comprehensive_api::structs::Plain
-pub fn comprehensive_api::Plain::s1(self)
-pub fn comprehensive_api::Plain::s2(&self)
-pub fn comprehensive_api::Plain::s3(&mut self)
+pub fn comprehensive_api::structs::Plain::f()
+pub fn comprehensive_api::structs::Plain::new() -> comprehensive_api::structs::Plain
+pub fn comprehensive_api::structs::Plain::s1(self)
+pub fn comprehensive_api::structs::Plain::s2(&self)
+pub fn comprehensive_api::structs::Plain::s3(&mut self)
 impl<'a> comprehensive_api::structs::Plain
-pub fn comprehensive_api::Plain::s4(&'a self)
+pub fn comprehensive_api::structs::Plain::s4(&'a self)
 impl<'a> comprehensive_api::structs::Plain
-pub fn comprehensive_api::Plain::s5(&'a self)
+pub fn comprehensive_api::structs::Plain::s5(&'a self)
 pub struct comprehensive_api::RenamedPlain
 pub comprehensive_api::RenamedPlain::x: usize
 impl comprehensive_api::structs::Plain
-pub fn comprehensive_api::RenamedPlain::f()
-pub fn comprehensive_api::RenamedPlain::new() -> comprehensive_api::structs::Plain
-pub fn comprehensive_api::RenamedPlain::s1(self)
-pub fn comprehensive_api::RenamedPlain::s2(&self)
-pub fn comprehensive_api::RenamedPlain::s3(&mut self)
+pub fn comprehensive_api::structs::Plain::f()
+pub fn comprehensive_api::structs::Plain::new() -> comprehensive_api::structs::Plain
+pub fn comprehensive_api::structs::Plain::s1(self)
+pub fn comprehensive_api::structs::Plain::s2(&self)
+pub fn comprehensive_api::structs::Plain::s3(&mut self)
 impl<'a> comprehensive_api::structs::Plain
-pub fn comprehensive_api::RenamedPlain::s4(&'a self)
+pub fn comprehensive_api::structs::Plain::s4(&'a self)
 impl<'a> comprehensive_api::structs::Plain
-pub fn comprehensive_api::RenamedPlain::s5(&'a self)
+pub fn comprehensive_api::structs::Plain::s5(&'a self)
 pub struct comprehensive_api::StructInPrivateMod

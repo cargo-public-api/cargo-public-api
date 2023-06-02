@@ -1,5 +1,5 @@
 [workspace.package]
-version = "0.29.1"
+version = "0.30.0"
 
 [workspace]
 members = [
@@ -41,6 +41,10 @@ exclude = [
     # https://stackoverflow.com/questions/56713877/why-do-proc-macros-have-to-be-defined-in-proc-macro-crate
     "test-apis/comprehensive_api_proc_macro",
 
+    # Tests that requires auto traits. Normally we omit auto trait impls because
+    # they make the output very repetitive.
+    "test-apis/auto_traits",
+
     # Contains different versions of the same small API. Used mainly to test
     # test the API-diffing functionality of this library.
     "test-apis/example_api-v0.1.0",
@@ -54,4 +58,9 @@ exclude = [
 
     # Test for feature flags
     "test-apis/features",
+
+    # Contains a public API that use unstable Rust features. Not used in
+    # regression tests. Only use for one-off experiments, e.g. to understand
+    # impact of rustdoc JSON format changes.
+    "test-apis/nightly_api",
 ]

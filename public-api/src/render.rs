@@ -1,5 +1,7 @@
 #![allow(clippy::unused_self)]
-use crate::intermediate_public_item::{IntermediatePublicItem, NameableItem};
+use crate::intermediate_public_item::IntermediatePublicItem;
+use crate::nameable_item::NameableItem;
+use crate::path_component::PathComponent;
 use crate::tokens::Token;
 use crate::BuilderOptions as Options;
 use std::ops::Deref;
@@ -99,7 +101,9 @@ impl<'c> RenderingContext<'c> {
             ),
             ItemEnum::Trait(trait_) => self.render_trait(trait_, item_path),
             ItemEnum::TraitAlias(_) => self.render_simple(&["trait", "alias"], item_path),
-            ItemEnum::Impl(impl_) => self.render_impl(impl_, item_path),
+            ItemEnum::Impl(impl_) => {
+                self.render_impl(impl_, item_path, false /* disregard_negativity */)
+            }
             ItemEnum::Typedef(inner) => {
                 let mut output = self.render_simple(&["type"], item_path);
                 output.extend(self.render_generics(&inner.generics));
@@ -212,7 +216,7 @@ impl<'c> RenderingContext<'c> {
         resolved_fields
     }
 
-    fn render_simple(&self, tags: &[&str], path: &[NameableItem]) -> Vec<Token> {
+    fn render_simple(&self, tags: &[&str], path: &[PathComponent]) -> Vec<Token> {
         let mut output = pub_();
         output.extend(
             tags.iter()
@@ -223,40 +227,60 @@ impl<'c> RenderingContext<'c> {
         output
     }
 
-    fn render_path(&self, path: &[NameableItem]) -> Vec<Token> {
+    fn render_path(&self, path: &[PathComponent]) -> Vec<Token> {
         let mut output = vec![];
-        for item in path {
-            let token_fn = if matches!(item.item.inner, ItemEnum::Function(_)) {
-                Token::function
-            } else if matches!(
-                item.item.inner,
-                ItemEnum::Trait(_)
-                    | ItemEnum::Struct(_)
-                    | ItemEnum::Union(_)
-                    | ItemEnum::Enum(_)
-                    | ItemEnum::Typedef(_)
-            ) {
-                Token::type_
-            } else {
-                Token::identifier
-            };
+        for component in path {
+            if component.hide {
+                continue;
+            }
 
-            if self.options.debug_sorting {
-                // There is always a sortable name, so we can push the name
-                // unconditionally
-                output.push(token_fn(item.sortable_name(self)));
-                output.push(Token::symbol("::"));
-            } else if let Some(name) = item.name() {
-                // If we are not debugging, some items (read: impls) do not have
-                // a name, so only push a name if it exists
-                output.push(token_fn(name.to_string()));
+            let (tokens, push_a_separator) = component.type_.map_or_else(
+                || self.render_nameable_item(&component.item),
+                |ty| self.render_type_and_separator(ty),
+            );
+
+            output.extend(tokens);
+
+            if push_a_separator {
                 output.push(Token::symbol("::"));
             }
         }
         if !path.is_empty() {
-            output.pop();
+            output.pop(); // Remove last "::" so "a::b::c::" becomes "a::b::c"
         }
         output
+    }
+
+    fn render_nameable_item(&self, item: &NameableItem) -> (Vec<Token>, bool) {
+        let mut push_a_separator = false;
+        let mut output = vec![];
+        let token_fn = if matches!(item.item.inner, ItemEnum::Function(_)) {
+            Token::function
+        } else if matches!(
+            item.item.inner,
+            ItemEnum::Trait(_)
+                | ItemEnum::Struct(_)
+                | ItemEnum::Union(_)
+                | ItemEnum::Enum(_)
+                | ItemEnum::Typedef(_)
+        ) {
+            Token::type_
+        } else {
+            Token::identifier
+        };
+
+        if self.options.debug_sorting {
+            // There is always a sortable name, so we can push the name
+            // unconditionally
+            output.push(token_fn(item.sortable_name(self)));
+            push_a_separator = true;
+        } else if let Some(name) = item.name() {
+            // If we are not debugging, some items (read: impls) do not have
+            // a name, so only push a name if it exists
+            output.push(token_fn(name.to_string()));
+            push_a_separator = true;
+        }
+        (output, push_a_separator)
     }
 
     #[allow(clippy::needless_pass_by_value)]
@@ -311,6 +335,10 @@ impl<'c> RenderingContext<'c> {
         self.render_option_type(&Some(ty))
     }
 
+    fn render_type_and_separator(&self, ty: &Type) -> (Vec<Token>, bool) {
+        (self.render_type(ty), true)
+    }
+
     #[allow(clippy::ref_option_ref, clippy::trivially_copy_pass_by_ref)] // Because of `render_sequence()` arg types
     fn render_option_type(&self, ty: &Option<&Type>) -> Vec<Token> {
         let Some(ty) = ty else { return vec![Token::symbol("_")] }; // The `_` in `EnumWithStrippedTupleVariants::DoubleFirstHidden(_, bool)`
@@ -336,11 +364,11 @@ impl<'c> RenderingContext<'c> {
                 args: _,
                 self_type,
                 trait_,
-            } => self.render_qualified_path(self_type, trait_, name),
+            } => self.render_qualified_path(self_type, trait_.as_ref(), name),
         }
     }
 
-    fn render_trait(&self, trait_: &Trait, path: &[NameableItem]) -> Vec<Token> {
+    fn render_trait(&self, trait_: &Trait, path: &[PathComponent]) -> Vec<Token> {
         let mut output = pub_();
         if trait_.is_unsafe {
             output.extend(vec![Token::qualifier("unsafe"), ws!()]);
@@ -585,7 +613,12 @@ impl<'c> RenderingContext<'c> {
         output
     }
 
-    pub(crate) fn render_impl(&self, impl_: &Impl, path: &[NameableItem]) -> Vec<Token> {
+    pub(crate) fn render_impl(
+        &self,
+        impl_: &Impl,
+        path: &[PathComponent],
+        disregard_negativity: bool,
+    ) -> Vec<Token> {
         let mut output = vec![];
 
         if self.options.debug_sorting {
@@ -604,7 +637,7 @@ impl<'c> RenderingContext<'c> {
         output.push(ws!());
 
         if let Some(trait_) = &impl_.trait_ {
-            if impl_.negative {
+            if !disregard_negativity && impl_.negative {
                 output.push(Token::symbol("!"));
             }
             output.extend(self.render_resolved_path(trait_));
@@ -651,18 +684,22 @@ impl<'c> RenderingContext<'c> {
         output
     }
 
-    fn render_qualified_path(&self, type_: &Type, trait_: &Path, name: &str) -> Vec<Token> {
+    fn render_qualified_path(&self, type_: &Type, trait_: Option<&Path>, name: &str) -> Vec<Token> {
         let mut output = vec![];
-        match type_ {
-            Type::Generic(name) if name == "Self" && trait_.name.is_empty() => {
+        match (type_, trait_) {
+            (Type::Generic(name), Some(trait_)) if name == "Self" && trait_.name.is_empty() => {
                 output.push(Token::keyword("Self"));
             }
-            _ => {
-                output.push(Token::symbol("<"));
+            (_, trait_) => {
+                if trait_.is_some() {
+                    output.push(Token::symbol("<"));
+                }
                 output.extend(self.render_type(type_));
-                output.extend(vec![ws!(), Token::keyword("as"), ws!()]);
-                output.extend(self.render_resolved_path(trait_));
-                output.push(Token::symbol(">"));
+                if let Some(trait_) = trait_ {
+                    output.extend(vec![ws!(), Token::keyword("as"), ws!()]);
+                    output.extend(self.render_resolved_path(trait_));
+                    output.push(Token::symbol(">"));
+                }
             }
         }
         output.push(Token::symbol("::"));
@@ -1276,11 +1313,11 @@ mod test {
                         bindings: vec![],
                     }),
                     self_type: Box::new(Type::Generic(s!("type"))),
-                    trait_: Path {
+                    trait_: Some(Path {
                         name: String::from("trait"),
                         args: None,
                         id: Id(s!("id")),
-                    },
+                    }),
                 })
             },
             vec![

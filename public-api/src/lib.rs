@@ -34,6 +34,8 @@ mod crate_wrapper;
 mod error;
 mod intermediate_public_item;
 mod item_processor;
+mod nameable_item;
+mod path_component;
 mod public_item;
 mod render;
 pub mod tokens;
@@ -56,7 +58,7 @@ pub use public_item::PublicItem;
 /// The rustdoc JSON format is still changing, so every now and then we update
 /// this library to support the latest format. If you use this version of
 /// nightly or later, you should be fine.
-pub const MINIMUM_NIGHTLY_RUST_VERSION: &str = "nightly-2023-01-04";
+pub const MINIMUM_NIGHTLY_RUST_VERSION: &str = "nightly-2023-05-24";
 
 /// Deprecated, use [`MINIMUM_NIGHTLY_RUST_VERSION`] instead.
 #[deprecated(since = "0.27.4", note = "Use MINIMUM_NIGHTLY_RUST_VERSION instead")]

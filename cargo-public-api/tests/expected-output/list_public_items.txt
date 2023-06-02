@@ -70,7 +70,7 @@ pub fn public_api::tokens::Token::partial_cmp(&self, other: &public_api::tokens:
 impl core::fmt::Debug for public_api::tokens::Token
 pub fn public_api::tokens::Token::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::hash::Hash for public_api::tokens::Token
-pub fn public_api::tokens::Token::hash<__H: core::hash::Hasher>(&self, state: &mut __H) -> ()
+pub fn public_api::tokens::Token::hash<__H: core::hash::Hasher>(&self, state: &mut __H)
 impl core::marker::StructuralEq for public_api::tokens::Token
 impl core::marker::StructuralPartialEq for public_api::tokens::Token
 impl core::marker::Send for public_api::tokens::Token
@@ -91,11 +91,11 @@ impl core::fmt::Display for public_api::Error
 pub fn public_api::Error::fmt(&self, __formatter: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::fmt::Debug for public_api::Error
 pub fn public_api::Error::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
-impl !core::panic::unwind_safe::RefUnwindSafe for public_api::Error
-impl !core::panic::unwind_safe::UnwindSafe for public_api::Error
 impl core::marker::Send for public_api::Error
 impl core::marker::Sync for public_api::Error
 impl core::marker::Unpin for public_api::Error
+impl !core::panic::unwind_safe::RefUnwindSafe for public_api::Error
+impl !core::panic::unwind_safe::UnwindSafe for public_api::Error
 pub struct public_api::Builder
 impl public_api::Builder
 pub fn public_api::Builder::build(self) -> public_api::Result<public_api::PublicApi>

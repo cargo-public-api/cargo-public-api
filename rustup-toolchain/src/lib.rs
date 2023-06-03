@@ -47,7 +47,6 @@ pub fn install(toolchain: impl AsRef<str>) -> Result<()> {
     // The reason we check if the toolchain is installed rather than always
     // doing `rustup install toolchain` is because otherwise there will be noisy
     // "already installed" output from `rustup install toolchain`.
-    #[allow(deprecated)]
     if !is_installed(toolchain.as_ref())? {
         run_rustup_install(toolchain)?;
     }
@@ -62,12 +61,16 @@ pub fn ensure_installed(toolchain: &str) -> Result<()> {
     install(toolchain)
 }
 
-/// Deprecated
-#[allow(clippy::missing_errors_doc)]
-#[deprecated(
-    since = "0.1.4",
-    note = "Not needed, because `install()` already checks if the toolchain is installed already."
-)]
+/// Check if a toolchain is installed.
+///
+/// As a workaround [Rustup (including proxies) is not safe for concurrent
+/// use](https://github.com/rust-lang/rustup/issues/988) this function is
+/// protected by a process-global lock. If you use multiple processes, you need
+/// to prevent concurrent `rustup` usage yourself.
+///
+/// # Errors
+///
+/// If `rustup` is not installed on your system, for example.
 pub fn is_installed(toolchain: &str) -> Result<bool> {
     let _guard = RUSTUP_MUTEX.lock().map_err(|_| Error::StdSyncPoisonError)?;
 

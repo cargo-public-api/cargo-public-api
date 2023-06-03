@@ -1,5 +1,9 @@
 # `public-api` changelog
 
+## v0.31.0
+* Change rendering of `impl` items to include generic args of the implementor
+* Ignore `!` when sorting `impl`s to make `Send` and `Sync` order stable
+
 ## v0.30.0
 * Support `nightly-2023-05-24` and later
 

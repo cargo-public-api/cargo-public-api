@@ -1,5 +1,9 @@
 # rustdoc-json
 
+## v0.8.6
+* Replace `-` with `_` also in e.g. bin packages
+* Remove support for `"crate_name@1.2.3"` to `Builder::package_target()`. I don't think anyone uses that. Let me know if you do and if I need to yank this release and bump to v0.9.0.
+
 ## v0.8.5
 * Simplify `BuildError::General` error message
 * Bump deps

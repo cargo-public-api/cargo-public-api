@@ -36,7 +36,7 @@ default-features = false
 
 [dependencies.rustdoc-json]
 path = "../rustdoc-json"
-version = "0.8.5"
+version = "0.8.6"
 
 [dependencies.public-api]
 path = "../public-api"

@@ -4,12 +4,9 @@ API changes and semver violations via CI or a CLI.
 Usage: cargo public-api [OPTIONS] [COMMAND]
 
 Commands:
-  diff
-          Diff the public API against a published version of the crate, or between commits.
-  completions
-          Generate completion scripts for many different shells.
-  help
-          Print this message or the help of the given subcommand(s)
+  diff         Diff the public API against a published version of the crate, or between commits.
+  completions  Generate completion scripts for many different shells.
+  help         Print this message or the help of the given subcommand(s)
 
 Options:
       --manifest-path <PATH>
@@ -33,14 +30,11 @@ Options:
           Omit specified items
 
           Possible values:
-          - blanket-impls:
-            Omit items that belong to Blanket Implementations such as `impl<T> Any for T`, `impl<T>
+          - blanket-impls:      Omit items that belong to Blanket Implementations such as `impl<T> Any for T`, `impl<T>
             Borrow<T> for T`, and `impl<T, U> Into<U> for T where U: From<T>`
-          - auto-trait-impls:
-            Omit items that belong to Auto Trait Implementations such as `impl Send for ...`, `impl
+          - auto-trait-impls:   Omit items that belong to Auto Trait Implementations such as `impl Send for ...`, `impl
             Sync for ...`, and `impl Unpin for ...`
-          - auto-derived-impls:
-            Omit items that belong to Auto Derived Implementations such as `Clone`, `Debug`, and
+          - auto-derived-impls: Omit items that belong to Auto Derived Implementations such as `Clone`, `Debug`, and
             `Eq`
 
   -F, --features <FEATURES>...
@@ -62,13 +56,10 @@ Options:
           `--color=always`.
 
           Possible values:
-          - auto:
-            Colors will be used if stdout is a terminal. Colors will not be used if stdout is a
+          - auto:   Colors will be used if stdout is a terminal. Colors will not be used if stdout is a
             regular file
-          - never:
-            Colors will never be used
-          - always:
-            Colors will always be used
+          - never:  Colors will never be used
+          - always: Colors will always be used
 
   -h, --help
           Print help (see a summary with '-h')

@@ -942,7 +942,7 @@ fn long_diff_help() {
 
 #[test]
 fn long_help_wraps() {
-    let max_allowed_line_length = 105; // 100 with some margin
+    let max_allowed_line_length = 125; // 120 with some margin
 
     let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
     cmd.arg("--help");

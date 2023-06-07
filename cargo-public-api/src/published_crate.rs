@@ -9,7 +9,12 @@ use std::path::{Path, PathBuf};
 pub fn build_rustdoc_json(version: Option<&str>, args: &Args) -> Result<PathBuf> {
     let package_name = package_name_from_args(args).ok_or_else(|| anyhow!("You must specify a package with either `-p package-name` or `--manifest-path path/to/Cargo.toml`"))?;
 
-    let index = crates_index::Index::new_cargo_default()?;
+    let index = crates_index::Index::new_cargo_default().map_err(|e| match e {
+        // We have to look inside the string until the there is an enum variant
+        // https://github.com/frewsxcv/rust-crates-index/blob/286b2251ae8a286f8992831f7a845f88227107dd/src/bare_index.rs#L352-L353
+        crates_index::Error::Url(msg) if msg.contains("invalid HEAD") => anyhow!("sparse crates.io index not supported yet, see https://github.com/Enselic/cargo-public-api/issues/408"),
+        err => anyhow!(err),
+    })?;
     let crate_ = index.crate_(&package_name).ok_or_else(|| {
         anyhow!(
             "Could not find crate `{package_name}` in {:?}",

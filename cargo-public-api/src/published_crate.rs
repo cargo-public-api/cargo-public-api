@@ -3,26 +3,14 @@
 //! project.
 
 use crate::{Args, LATEST_VERSION_ARG};
-use anyhow::{anyhow, Result};
-use std::path::{Path, PathBuf};
+use anyhow::{anyhow, Context, Result};
+use crates_index::{Crate, Version};
+use std::path::PathBuf;
 
 pub fn build_rustdoc_json(version: Option<&str>, args: &Args) -> Result<PathBuf> {
     let package_name = package_name_from_args(args).ok_or_else(|| anyhow!("You must specify a package with either `-p package-name` or `--manifest-path path/to/Cargo.toml`"))?;
-
-    let index = crates_index::Index::new_cargo_default().map_err(|e| match e {
-        // We have to look inside the string until the there is an enum variant
-        // https://github.com/frewsxcv/rust-crates-index/blob/286b2251ae8a286f8992831f7a845f88227107dd/src/bare_index.rs#L352-L353
-        crates_index::Error::Url(msg) if msg.contains("invalid HEAD") => anyhow!("sparse crates.io index not supported yet, see https://github.com/Enselic/cargo-public-api/issues/408"),
-        err => anyhow!(err),
-    })?;
-    let crate_ = index.crate_(&package_name).ok_or_else(|| {
-        anyhow!(
-            "Could not find crate `{package_name}` in {:?}",
-            index.path()
-        )
-    })?;
-
-    let crate_version = get_crate_version(&crate_, version, index.path())?;
+    let crate_ = http_get_crate(&package_name, args.verbose)?;
+    let crate_version = get_crate_version(&crate_, version)?;
     let build_dir = build_dir(args, &crate_version);
     std::fs::create_dir_all(&build_dir)?;
 
@@ -51,11 +39,7 @@ pub fn build_rustdoc_json(version: Option<&str>, args: &Args) -> Result<PathBuf>
     crate::api_source::build_rustdoc_json(builder)
 }
 
-fn get_crate_version(
-    crate_: &crates_index::Crate,
-    version: Option<&str>,
-    index_path: &Path,
-) -> Result<crates_index::Version, anyhow::Error> {
+fn get_crate_version(crate_: &Crate, version: Option<&str>) -> Result<Version, anyhow::Error> {
     match version {
         Some(LATEST_VERSION_ARG) | None => {
             let resolved = if version.is_none() {
@@ -77,10 +61,9 @@ fn get_crate_version(
             .map(Clone::clone)
             .ok_or_else(|| {
                 anyhow!(
-                    "Could not find version `{}` of crate `{}` in {:?}",
+                    "Could not find version `{}` of crate `{}`",
                     version,
                     crate_.name(),
-                    index_path,
                 )
             }),
     }
@@ -150,4 +133,35 @@ fn manifest_for(args: &Args, spec: &crates_index::Version) -> Result<String> {
             ..Default::default()
         })?
     ))
+}
+
+// We use curl to significantly reduce the number of needed deps compared to
+// e.g. reqwest.
+#[allow(clippy::similar_names)]
+fn http_get_crate(name: &str, verbose: bool) -> Result<Crate> {
+    let mut body: Vec<u8> = vec![];
+    let dep_path = cargo_util::registry::make_dep_path(name, false /* prefix_only */);
+    let url = format!("https://index.crates.io/{dep_path}");
+    if verbose {
+        eprintln!("Using {url:?} to get info about crate {name:?}");
+    }
+
+    let mut curl = curl::easy::Easy::new();
+    curl.url(&url)?;
+    curl.follow_location(true)?;
+
+    let mut list = curl::easy::List::new();
+    list.append("Accept: application/json")?;
+    curl.http_headers(list)?;
+
+    {
+        let mut transfer = curl.transfer();
+        transfer.write_function(|data| {
+            body.extend_from_slice(data);
+            Ok(data.len())
+        })?;
+        transfer.perform()?;
+    }
+
+    Crate::from_slice(&body).with_context(|| anyhow!("Could not find crate `{name}`"))
 }

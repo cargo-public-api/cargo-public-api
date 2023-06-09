@@ -403,6 +403,38 @@ fn diff_with_invalid_published_crate_version() {
 }
 
 #[test]
+fn diff_with_crate_not_published() {
+    let tempdir = tempfile::tempdir().unwrap();
+
+    let write_file = |name: &str, contents: &str| -> std::io::Result<PathBuf> {
+        let mut path = tempdir.path().to_owned();
+        path.push(name);
+        std::fs::write(&path, contents)?;
+        Ok(path)
+    };
+
+    let manifest = toml::toml! {
+        [package]
+        name = "this-create-has-not-been-published-and-never-will"
+        version = "0.1.0"
+        [lib]
+        path = "lib.rs"
+    };
+
+    write_file("Cargo.toml", &manifest.to_string()).unwrap();
+    write_file("lib.rs", "// empty lib").unwrap();
+
+    let mut cmd = TestCmd::new();
+    cmd.current_dir(tempdir.path());
+    cmd.arg("diff");
+    cmd.assert()
+        .stderr(contains(
+            "Error: Could not find crate `this-create-has-not-been-published-and-never-will`",
+        ))
+        .failure();
+}
+
+#[test]
 fn diff_with_invalid_published_crate_version_number() {
     let mut cmd = TestCmd::new().with_test_repo();
     cmd.arg("diff");

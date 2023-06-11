@@ -9,7 +9,6 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
-  CARGO_REGISTRIES_CRATES_IO_PROTOCOL: git # Until https://github.com/Enselic/cargo-public-api/issues/408 "Support sparse creates.io registry" is fixed
 
 jobs:
   all-jobs:
@@ -67,12 +66,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os:
-          - macos-latest
-          - ubuntu-latest
-          - windows-latest
-    name: cargo test (${{ matrix.os }})
-    runs-on: ${{ matrix.os }}
+        variant:
+          - { name: Ubuntu,  os: ubuntu-latest,  protocol: git    }
+          - { name: Ubuntu,  os: ubuntu-latest,  protocol: sparse }
+          - { name: macOS,   os: macos-latest,   protocol: sparse }
+          - { name: Windows, os: windows-latest, protocol: sparse }
+    name: cargo test (${{ matrix.variant.name }} ${{ matrix.variant.protocol }})
+    runs-on: ${{ matrix.variant.os }}
+    env:
+      CARGO_REGISTRIES_CRATES_IO_PROTOCOL: ${{ matrix.variant.protocol }}
     steps:
       - uses: actions/checkout@v3
       - run: zsh --version || (sudo apt-get install -y zsh && zsh --version)

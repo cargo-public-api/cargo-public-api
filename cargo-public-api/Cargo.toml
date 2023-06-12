@@ -12,7 +12,7 @@ license = "MIT"
 repository = "https://github.com/Enselic/cargo-public-api"
 
 [dependencies]
-nu-ansi-term = "0.47.0"
+nu-ansi-term = "0.48.0"
 anyhow = "1.0.71"
 is-terminal = "0.4.7"
 cargo-manifest = "0.9.0"

@@ -14,7 +14,7 @@ hashbag = { version = "0.1.11", default-features = false }
 thiserror = "1.0.40"
 
 [dependencies.serde]
-version = "1.0.163"
+version = "1.0.164"
 features = ["derive"]
 
 [dependencies.serde_json]
@@ -29,7 +29,7 @@ version = "0.22.0"
 anyhow = "1.0.71"
 assert_cmd = "2.0.11"
 expect-test = "1.4.1"
-tempfile = "3.5.0"
+tempfile = "3.6.0"
 
 [dev-dependencies.itertools]
 version = "0.10.5"

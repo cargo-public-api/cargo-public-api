@@ -12,7 +12,7 @@ license = "MIT"
 repository = "https://github.com/Enselic/cargo-public-api"
 
 [dependencies]
-nu-ansi-term = "0.47.0"
+nu-ansi-term = "0.48.0"
 anyhow = "1.0.71"
 is-terminal = "0.4.7"
 cargo-manifest = "0.9.0"
@@ -25,10 +25,10 @@ semver = "1.0.17"
 thiserror = "1.0.40"
 cargo_metadata = "0.15.4"
 toml = "0.7.4"
-serde = { version = "1.0.163", features = ["derive"] }
+serde = { version = "1.0.164", features = ["derive"] }
 
 [dependencies.clap]
-version = "4.3.1"
+version = "4.3.3"
 features = ["derive", "wrap_help"]
 
 [dependencies.curl]
@@ -63,6 +63,6 @@ features = ["std"]
 assert_cmd = "2.0.11"
 expect-test = "1.4.1"
 remove_dir_all = "0.8.2"
-tempfile = "3.5.0"
+tempfile = "3.6.0"
 cargo_metadata = "0.15.4"
 serde_json = "1.0.96"

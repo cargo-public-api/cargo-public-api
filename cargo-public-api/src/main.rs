@@ -21,6 +21,7 @@ mod git_utils;
 mod plain;
 mod published_crate;
 mod toolchain;
+mod vendor;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None, bin_name = "cargo public-api")]

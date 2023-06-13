@@ -2,6 +2,7 @@
 //! rustdoc JSON for. We then build rustdoc JSON for the crate using this dummy
 //! project.
 
+use crate::vendor::crates_index;
 use crate::{Args, LATEST_VERSION_ARG};
 use anyhow::{anyhow, Context, Result};
 use crates_index::{Crate, Version};

@@ -21,11 +21,11 @@ clap_complete_command = "0.5.1"
 diff = "0.1.13"
 dirs = "5.0.0"
 home = "0.5.5"
+rustc-hash = "1.1.0"
 semver = "1.0.17"
 thiserror = "1.0.40"
 cargo_metadata = "0.15.4"
 toml = "0.7.4"
-serde = { version = "1.0.164", features = ["derive"] }
 
 [dependencies.clap]
 version = "4.3.3"
@@ -34,9 +34,9 @@ features = ["derive", "wrap_help"]
 [dependencies.curl]
 version = "0.4.44"
 
-[dependencies.crates-index]
-version = "0.19.10"
-default-features = false
+[dependencies.hex]
+version = "0.4.3"
+features = ["serde"]
 
 [dependencies.rustdoc-json]
 path = "../rustdoc-json"
@@ -45,6 +45,18 @@ version = "0.8.6"
 [dependencies.public-api]
 path = "../public-api"
 version = "0.31.1"
+
+[dependencies.serde]
+version = "1.0.164"
+features = ["rc"]
+
+[dependencies.serde_json]
+version = "1.0.96"
+default-features = false
+
+[dependencies.smol_str]
+version = "0.2.0"
+features = ["serde"]
 
 [dev-dependencies.rustup-toolchain]
 path = "../rustup-toolchain"
@@ -65,4 +77,3 @@ expect-test = "1.4.1"
 remove_dir_all = "0.8.2"
 tempfile = "3.6.0"
 cargo_metadata = "0.15.4"
-serde_json = "1.0.96"

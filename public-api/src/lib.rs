@@ -10,7 +10,11 @@
 //! toolchain can build **rustdoc JSON**.
 //!
 //! You use the [`rustdoc-json`](https://crates.io/crates/rustdoc_json) library
-//! to programmatically build rustdoc JSON. See below for example code.
+//! to programmatically build rustdoc JSON. See below for example code. To
+//! manually build rustdoc JSON you would typically do something like this:
+//! ```sh
+//! cargo +nightly rustdoc -- -Z unstable-options --output-format json
+//! ```
 //!
 //! # Examples
 //!

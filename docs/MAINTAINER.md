@@ -12,6 +12,10 @@ Here are some guidelines if you are a maintainer:
 
 **E.** Avoid having large and long-lived branches. That increases the risk of future merge conflicts and sadness. Prefer many, small, incremental, short-lived PRs that is regularly merged to main.
 
+## Performance
+
+Correct output is much more important than fast code. If we need to regress on performance to e.g. fix a bug, we fix the bug. Performance is secondary. That said, it can be interesting to keep track of performance. See https://github.com/cargo-public-api/cargo-public-api-benchmarks for some tooling regarding this.
+
 ## Release strategy
 
 The release philosophy of this project is that it is perfectly fine to make more than one release per week, if circumstances makes that sensible. Why should users have to wait for even a single bugfix? It is better to release whenever there is something new. But sometimes it makes sense to wait 1-2 weeks to make a release, for example to batch up some ongoing PRs. Or sometimes you just feel like doing it that way.

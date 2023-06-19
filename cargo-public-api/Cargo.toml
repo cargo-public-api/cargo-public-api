@@ -51,7 +51,7 @@ version = "1.0.164"
 features = ["rc"]
 
 [dependencies.serde_json]
-version = "1.0.96"
+version = "1.0.97"
 default-features = false
 
 [dependencies.smol_str]

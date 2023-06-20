@@ -6,13 +6,13 @@ List and diff the public API of Rust library crates by analyzing rustdoc JSON ou
 
 ## … as a Rust library
 
-See [docs.rs](https://docs.rs/public-api/latest/public_api/index.html) for library documentation and complete example code.
+See [docs.rs](https://docs.rs/public-api/latest/public_api/index.html) for library documentation and example code.
 
 ## … as a CLI
 
 Use [`cargo public-api`](https://github.com/Enselic/cargo-public-api) for CLI use cases.
 
-## … as a public API surface test in CI
+## … as a CI Check
 
 <!-- Keep this section in sync with the ./README.md#-as-a-ci-check -->
 

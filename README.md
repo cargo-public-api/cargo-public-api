@@ -181,6 +181,10 @@ pub fn bat::PrettyPrinter::input_files<I, P>(&mut self, paths: I) -> &mut Self w
 
 See [CONTRIBUTING.md](./docs/CONTRIBUTING.md).
 
+# Changelog
+
+See [CHANGELOG.md](./CHANGELOG.md).
+
 ## Maintainers
 
 - [Enselic](https://github.com/Enselic)

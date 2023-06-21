@@ -24,7 +24,13 @@ mod toolchain;
 mod vendor;
 
 #[derive(Parser, Debug)]
-#[command(author, version, about, long_about = None, bin_name = "cargo public-api")]
+#[command(
+    author,
+    version,
+    about = "List and diff the public API of Rust library crates between releases and commits.",
+    long_about = "List and diff the public API of Rust library crates between releases and commits. Website: https://github.com/Enselic/cargo-public-api",
+    bin_name = "cargo public-api"
+)]
 #[allow(clippy::struct_excessive_bools)]
 pub struct Args {
     /// Path to `Cargo.toml`.

@@ -1,5 +1,4 @@
-List and diff the public API of Rust library crates between releases and commits. Detect breaking
-API changes and semver violations via CI or a CLI.
+List and diff the public API of Rust library crates between releases and commits.
 
 Usage: cargo public-api [OPTIONS] [COMMAND]
 

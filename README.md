@@ -153,13 +153,13 @@ $ cargo public-api -sss    # Shorter form of above command
 | 0.10.x — 0.11.x  | nightly-2022-03-14 — nightly-2022-05-18 |
 | earlier versions | see [here](https://github.com/Enselic/cargo-public-api/blob/0a37c971bb4ffa9bb11cf9fad9fef19aa67a986a/README.md#compatibility-matrix) |
 
-# Contributing
-
-See [CONTRIBUTING.md](./docs/CONTRIBUTING.md).
-
 # Changelog
 
 See [CHANGELOG.md](./CHANGELOG.md).
+
+# Contributing
+
+See [CONTRIBUTING.md](./docs/CONTRIBUTING.md).
 
 ## Maintainers
 

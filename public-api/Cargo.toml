@@ -32,7 +32,7 @@ expect-test = "1.4.1"
 tempfile = "3.6.0"
 
 [dev-dependencies.itertools]
-version = "0.10.5"
+version = "0.11.0"
 default-features = false
 
 [dev-dependencies.rustdoc-json]

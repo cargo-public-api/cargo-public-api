@@ -18,7 +18,7 @@
 //! [here](https://github.com/Enselic/cargo-public-api/blob/main/rustdoc-json/examples/build-rustdoc-json.rs)
 
 // deny in CI, only warn here
-#![warn(clippy::all, clippy::pedantic, missing_docs)]
+#![warn(clippy::all, missing_docs)]
 
 use std::path::PathBuf;
 

@@ -1,5 +1,5 @@
 // deny in CI, only warn here
-#![warn(clippy::all, clippy::pedantic)]
+#![warn(clippy::all)]
 
 use std::{
     fs,

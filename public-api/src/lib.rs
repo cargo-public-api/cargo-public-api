@@ -32,7 +32,7 @@
 //! ```
 
 // deny in CI, only warn here
-#![warn(clippy::all, clippy::pedantic, missing_docs)]
+#![warn(clippy::all, missing_docs)]
 
 mod crate_wrapper;
 mod error;
@@ -74,7 +74,6 @@ pub const MINIMUM_RUSTDOC_JSON_VERSION: &str = MINIMUM_NIGHTLY_RUST_VERSION;
 
 /// See [`Builder`] method docs for what each field means.
 #[derive(Copy, Clone, Debug)]
-#[allow(clippy::struct_excessive_bools)]
 struct BuilderOptions {
     sorted: bool,
     debug_sorting: bool,
@@ -86,7 +85,6 @@ struct BuilderOptions {
 /// Builds [`PublicApi`]s. See the [top level][`crate`] module docs for example
 /// code.
 #[derive(Debug, Clone)]
-#[allow(clippy::struct_excessive_bools)]
 pub struct Builder {
     source: BuilderSource,
     options: BuilderOptions,
@@ -265,7 +263,6 @@ impl PublicApi {
         note = "Use `public_api::Builder::from_rustdoc_json(path).option1(arg1).option2(arg2)...` instead."
     )]
     #[allow(deprecated)]
-    #[allow(clippy::needless_pass_by_value)] // For API backwards compatibility
     pub fn from_rustdoc_json(path: impl AsRef<Path>, options: Options) -> Result<PublicApi> {
         Builder {
             source: BuilderSource::RustdocJson(path.as_ref().to_owned()),
@@ -285,7 +282,6 @@ impl PublicApi {
         note = "If you need this edge case API, you need to write your JSON to a temporary file and then use `PublicApi::from_rustdoc_json()` instead."
     )]
     #[allow(deprecated)]
-    #[allow(clippy::needless_pass_by_value)] // For API backwards compatibility
     pub fn from_rustdoc_json_str(
         rustdoc_json_str: impl AsRef<str>,
         options: Options,

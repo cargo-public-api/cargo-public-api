@@ -138,7 +138,6 @@ fn manifest_for(args: &Args, spec: &crates_index::Version) -> Result<String> {
 
 // We use curl to significantly reduce the number of needed deps compared to
 // e.g. reqwest.
-#[allow(clippy::similar_names)]
 fn http_get_crate(name: &str, verbose: bool) -> Result<Crate> {
     let mut body: Vec<u8> = vec![];
     let dep_path = cargo_util::registry::make_dep_path(name, false /* prefix_only */);

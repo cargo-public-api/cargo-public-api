@@ -82,7 +82,6 @@ fn print_item(args: &Args, w: &mut dyn Write, item: &PublicItem) -> Result<()> {
     }
 }
 
-#[allow(clippy::option_option)]
 fn color_active(color: Option<Option<crate::arg_types::Color>>) -> bool {
     match color {
         // An explicit color was specified: `--color=...`
@@ -117,7 +116,6 @@ fn color_item_token(token: &Token, bg: Option<Color>) -> AnsiString<'_> {
             |bg| color.on(bg).paint(text.to_string()),
         )
     };
-    #[allow(clippy::match_same_arms)]
     match token {
         Token::Symbol(text) => style(Style::default(), text),
         Token::Qualifier(text) => style(Color::Blue.into(), text),

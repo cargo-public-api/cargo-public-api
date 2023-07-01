@@ -111,10 +111,10 @@ fn color_token_stream<'a>(tokens: impl Iterator<Item = &'a Token>, bg: Option<Co
 /// terminal to always provide a readable and consistent color scheme.
 /// An extra color can be provided to be used as background color.
 fn color_item_token(token: &Token, bg: Option<Color>) -> AnsiString<'_> {
-    let style = |colour: Style, text: &str| {
+    let style = |color: Style, text: &str| {
         bg.map_or_else(
-            || colour.paint(text.to_string()),
-            |bg| colour.on(bg).paint(text.to_string()),
+            || color.paint(text.to_string()),
+            |bg| color.on(bg).paint(text.to_string()),
         )
     };
     #[allow(clippy::match_same_arms)]

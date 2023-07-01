@@ -39,7 +39,6 @@ impl ChangedPublicItem {
 /// ```txt
 /// println!("{:#?}", public_api_diff);
 /// ```
-#[allow(clippy::module_name_repetitions)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct PublicApiDiff {
     /// Items that have been removed from the public API. A MAJOR change, in

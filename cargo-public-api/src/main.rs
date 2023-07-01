@@ -1,5 +1,5 @@
 // deny in CI, only warn here
-#![warn(clippy::all, clippy::pedantic)]
+#![warn(clippy::all)]
 
 use std::ffi::OsString;
 use std::io::stdout;
@@ -31,7 +31,6 @@ mod vendor;
     long_about = "List and diff the public API of Rust library crates between releases and commits. Website: https://github.com/Enselic/cargo-public-api",
     bin_name = "cargo public-api"
 )]
-#[allow(clippy::struct_excessive_bools)]
 pub struct Args {
     /// Path to `Cargo.toml`.
     #[arg(long, value_name = "PATH", default_value = "Cargo.toml")]
@@ -76,7 +75,6 @@ pub struct Args {
     ///
     /// By default, `--color=auto` is active. Using just `--color` without an
     /// arg is equivalent to `--color=always`.
-    #[allow(clippy::option_option)]
     #[arg(long, value_enum)]
     color: Option<Option<Color>>,
 
@@ -134,7 +132,6 @@ pub struct Args {
 
 /// The subcommand used for diffing.
 #[derive(Parser, Debug)]
-#[allow(clippy::struct_excessive_bools)]
 struct DiffArgs {
     /// Exit with failure if the specified API diff is detected.
     ///

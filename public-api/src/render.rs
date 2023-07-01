@@ -35,7 +35,6 @@ pub struct RenderingContext<'c> {
 }
 
 impl<'c> RenderingContext<'c> {
-    #[allow(clippy::too_many_lines)]
     pub fn token_stream(&self, public_item: &IntermediatePublicItem<'c>) -> Vec<Token> {
         let item = public_item.item();
         let item_path = public_item.path();
@@ -283,7 +282,6 @@ impl<'c> RenderingContext<'c> {
         (output, push_a_separator)
     }
 
-    #[allow(clippy::needless_pass_by_value)]
     fn render_sequence<T>(
         &self,
         start: Vec<Token>,
@@ -295,7 +293,6 @@ impl<'c> RenderingContext<'c> {
         self.render_sequence_impl(start, end, between, false, sequence, render)
     }
 
-    #[allow(clippy::needless_pass_by_value)]
     fn render_sequence_if_not_empty<T>(
         &self,
         start: Vec<Token>,
@@ -307,7 +304,6 @@ impl<'c> RenderingContext<'c> {
         self.render_sequence_impl(start, end, between, true, sequence, render)
     }
 
-    #[allow(clippy::needless_pass_by_value)]
     fn render_sequence_impl<T>(
         &self,
         start: Vec<Token>,
@@ -339,7 +335,6 @@ impl<'c> RenderingContext<'c> {
         (self.render_type(ty), true)
     }
 
-    #[allow(clippy::ref_option_ref, clippy::trivially_copy_pass_by_ref)] // Because of `render_sequence()` arg types
     fn render_option_type(&self, ty: &Option<&Type>) -> Vec<Token> {
         let Some(ty) = ty else { return vec![Token::symbol("_")] }; // The `_` in `EnumWithStrippedTupleVariants::DoubleFirstHidden(_, bool)`
         match ty {
@@ -1335,7 +1330,6 @@ mod test {
         );
     }
 
-    #[allow(clippy::needless_pass_by_value)]
     fn assert_render(
         render_fn: impl Fn(RenderingContext) -> Vec<Token>,
         expected: Vec<Token>,

@@ -41,7 +41,7 @@ jobs:
       - run: RUSTDOCFLAGS='--deny warnings' cargo doc --locked --no-deps --document-private-items
 
   cargo-clippy:
-    name: cargo clippy -- --deny clippy::all --deny clippy::pedantic ...
+    name: cargo clippy -- --deny clippy::all ...
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

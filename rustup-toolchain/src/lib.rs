@@ -55,7 +55,6 @@ pub fn install(toolchain: impl AsRef<str>) -> Result<()> {
 }
 
 /// Deprecated
-#[allow(clippy::missing_errors_doc)]
 #[deprecated(since = "0.1.4", note = "Renamed to `install()` for brevity.")]
 pub fn ensure_installed(toolchain: &str) -> Result<()> {
     install(toolchain)

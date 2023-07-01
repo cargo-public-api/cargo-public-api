@@ -267,7 +267,6 @@ impl Crate {
         mut bytes: &[u8],
         dedupe: &mut DedupeContext,
     ) -> io::Result<Crate> {
-        #[allow(clippy::trivially_copy_pass_by_ref)]
         fn is_newline(&c: &u8) -> bool {
             c == b'\n'
         }

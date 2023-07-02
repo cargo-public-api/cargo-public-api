@@ -7,10 +7,10 @@ List and diff the public API of Rust library crates between releases and commits
 Install the `cargo public-api` subcommand with a recent regular **stable** Rust toolchain:
 
 ```console
-$ cargo install cargo-public-api --locked
+$ cargo +stable install cargo-public-api --locked
 ```
 
-Ensure **nightly-2023-05-24** or later is installed (does not need to be the active toolchain) so `cargo public-api` can build **rustdoc JSON** for you:
+Ensure **nightly-2023-05-24** or later is installed (does not need to be the active toolchain) so `cargo public-api` can build rustdoc JSON for you:
 
 ```console
 $ rustup install nightly --profile minimal

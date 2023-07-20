@@ -26,7 +26,7 @@ There is one external event that usually means we want to make a release as soon
 
 For `public-api` and `cargo-public-api` (which always have the same version number):
 
-* **x.0.0**: We bump to 1.0.0 earliest when the rustdoc JSON format has stabilized, which probably will take many more months, maybe years.
+* **x.0.0**: We bump to 1.0.0 earliest when the rustdoc JSON format has [stabilized](https://rust-lang.zulipchat.com/#narrow/stream/266220-rustdoc/topic/Rustdoc.20JSON.3A.20Stabilization.20criteria).
 
 * **0.x.0**: We bump it when
   * The `public-api` lib or the `cargo-public-api` CLI has had backwards incompatible changes.

@@ -336,7 +336,9 @@ impl<'c> RenderingContext<'c> {
     }
 
     fn render_option_type(&self, ty: &Option<&Type>) -> Vec<Token> {
-        let Some(ty) = ty else { return vec![Token::symbol("_")] }; // The `_` in `EnumWithStrippedTupleVariants::DoubleFirstHidden(_, bool)`
+        let Some(ty) = ty else {
+            return vec![Token::symbol("_")];
+        }; // The `_` in `EnumWithStrippedTupleVariants::DoubleFirstHidden(_, bool)`
         match ty {
             Type::ResolvedPath(path) => self.render_resolved_path(path),
             Type::DynTrait(dyn_trait) => self.render_dyn_trait(dyn_trait),

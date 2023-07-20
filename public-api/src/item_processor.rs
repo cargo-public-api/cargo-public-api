@@ -384,7 +384,7 @@ pub(crate) enum ImplKind {
 
 impl ImplKind {
     fn from(impl_item: &Item, impl_: &Impl) -> Self {
-        let has_blanket_impl = matches!(impl_.blanket_impl, Some(_));
+        let has_blanket_impl = impl_.blanket_impl.is_some();
         let is_automatically_derived = impl_item
             .attrs
             .iter()

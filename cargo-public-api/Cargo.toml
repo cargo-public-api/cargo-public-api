@@ -23,7 +23,7 @@ dirs = "5.0.0"
 home = "0.5.5"
 rustc-hash = "1.1.0"
 semver = "1.0.18"
-thiserror = "1.0.43"
+thiserror = "1.0.44"
 cargo_metadata = "0.15.4"
 toml = "0.7.6"
 

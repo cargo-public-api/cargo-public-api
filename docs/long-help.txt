@@ -30,12 +30,12 @@ Options:
           Omit specified items
 
           Possible values:
-          - blanket-impls:      Omit items that belong to Blanket Implementations such as `impl<T> Any for T`, `impl<T>
-            Borrow<T> for T`, and `impl<T, U> Into<U> for T where U: From<T>`
-          - auto-trait-impls:   Omit items that belong to Auto Trait Implementations such as `impl Send for ...`, `impl
-            Sync for ...`, and `impl Unpin for ...`
-          - auto-derived-impls: Omit items that belong to Auto Derived Implementations such as `Clone`, `Debug`, and
-            `Eq`
+          - blanket-impls:      Omit items that belong to Blanket Implementations such as `impl<T>
+            Any for T`, `impl<T> Borrow<T> for T`, and `impl<T, U> Into<U> for T where U: From<T>`
+          - auto-trait-impls:   Omit items that belong to Auto Trait Implementations such as `impl
+            Send for ...`, `impl Sync for ...`, and `impl Unpin for ...`
+          - auto-derived-impls: Omit items that belong to Auto Derived Implementations such as
+            `Clone`, `Debug`, and `Eq`
 
   -F, --features <FEATURES>...
           Space or comma separated list of features to activate
@@ -56,8 +56,8 @@ Options:
           `--color=always`.
 
           Possible values:
-          - auto:   Colors will be used if stdout is a terminal. Colors will not be used if stdout is a
-            regular file
+          - auto:   Colors will be used if stdout is a terminal. Colors will not be used if stdout
+            is a regular file
           - never:  Colors will never be used
           - always: Colors will always be used
 

@@ -14,7 +14,7 @@ hashbag = { version = "0.1.11", default-features = false }
 thiserror = "1.0.44"
 
 [dependencies.serde]
-version = "1.0.175"
+version = "1.0.179"
 features = ["derive"]
 
 [dependencies.serde_json]

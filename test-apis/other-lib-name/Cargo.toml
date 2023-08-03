@@ -1,0 +1,7 @@
+[package]
+edition = "2021"
+name = "other-lib-name"
+version = "0.1.0"
+
+[lib]
+name = "other_name"

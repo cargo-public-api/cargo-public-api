@@ -10,3 +10,12 @@ updates:
     labels:
       - "category-exclude"
       - "dependencies"
+    ignore:
+      - dependency-name: "semver"
+        update-types: ["version-update:semver-patch"]
+      - dependency-name: "serde"
+        update-types: ["version-update:semver-patch"]
+      - dependency-name: "serde_json"
+        update-types: ["version-update:semver-patch"]
+      - dependency-name: "thiserror"
+        update-types: ["version-update:semver-patch"]

@@ -57,6 +57,13 @@ exclude = [
     # To test that we pass --cap-lints when building rustdoc JSON
     "test-apis/lint_error",
 
+    # Has `[lib] name = "other_name"` in Cargo.toml so that package name and lib
+    # name are different.
+    "test-apis/other-lib-name",
+
+    # Contains no lib, only a bin.
+    "test-apis/no-lib",
+
     # Test for feature flags
     "test-apis/features",
 

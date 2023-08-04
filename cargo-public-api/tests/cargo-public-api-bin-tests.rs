@@ -104,6 +104,40 @@ fn list_public_items_with_lint_error() {
         .success();
 }
 
+/// Ensure we can handle when
+///
+/// ```
+/// [lib]
+/// name = "foo"
+/// ```
+///
+/// has a different name than
+///
+/// ```
+/// [package]
+/// name = "bar"
+/// ```
+///
+/// in `Cargo.toml`.
+#[test]
+fn list_public_items_with_other_lib_name() {
+    let mut cmd = TestCmd::new().with_separate_target_dir();
+    cmd.args(["--manifest-path", "../test-apis/other-lib-name/Cargo.toml"]);
+    cmd.assert()
+        .stdout_or_update("./expected-output/other_lib_name.txt")
+        .success();
+}
+
+#[test]
+fn list_public_items_with_no_lib() {
+    let mut cmd = TestCmd::new().with_separate_target_dir();
+    cmd.args(["--manifest-path", "../test-apis/no-lib/Cargo.toml"]);
+    cmd.assert()
+        .stderr(contains("error")) // Be aware of ANSI color escape codes!
+        .stderr(contains("no library targets found in package `no-lib`"))
+        .failure();
+}
+
 /// Test that `cargo-public-api` can be renamed to `cargo-public-api-v0.13.0`
 /// and still be invoked as `cargo public-api-v0.13.0` i.e. as a cargo
 /// subcommand.

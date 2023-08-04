@@ -115,7 +115,7 @@ fn cargo_rustdoc_command(options: &Builder) -> Command {
 }
 
 /// Returns `./target/doc/crate_name.json`. Also takes care of transforming
-/// `crate-name` to `crate_name`.
+/// `crate-name` to `crate_name`. Also handles `[lib] name = "foo"`.
 fn rustdoc_json_path_for_manifest_path(
     manifest_path: impl AsRef<Path>,
     package: Option<&str>,
@@ -165,10 +165,11 @@ fn target_directory(manifest_path: impl AsRef<Path>) -> Result<PathBuf, BuildErr
 /// `Cargo.toml` manifest path.
 fn package_name(manifest_path: impl AsRef<Path>) -> Result<String, BuildError> {
     let manifest = cargo_manifest::Manifest::from_path(manifest_path.as_ref())?;
-    Ok(manifest
+    let package_name = manifest
         .package
         .ok_or_else(|| BuildError::VirtualManifest(manifest_path.as_ref().to_owned()))?
-        .name)
+        .name;
+    Ok(manifest.lib.and_then(|p| p.name).unwrap_or(package_name))
 }
 
 /// Builds rustdoc JSON. There are many build options. Refer to the docs to

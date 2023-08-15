@@ -1,4 +1,4 @@
-use is_terminal::IsTerminal;
+use std::io::IsTerminal;
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq, clap::ValueEnum)]
 #[value(rename_all = "lower")]

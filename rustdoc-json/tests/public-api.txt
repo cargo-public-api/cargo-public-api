@@ -22,8 +22,6 @@ impl core::marker::Sync for rustdoc_json::BuildError
 impl core::marker::Unpin for rustdoc_json::BuildError
 impl !core::panic::unwind_safe::RefUnwindSafe for rustdoc_json::BuildError
 impl !core::panic::unwind_safe::UnwindSafe for rustdoc_json::BuildError
-impl<E> core::any::Provider for rustdoc_json::BuildError where E: core::error::Error + core::marker::Sized
-pub fn rustdoc_json::BuildError::provide<'a>(&'a self, demand: &mut core::any::Demand<'a>)
 impl<T, U> core::convert::Into<U> for rustdoc_json::BuildError where U: core::convert::From<T>
 pub fn rustdoc_json::BuildError::into(self) -> U
 impl<T, U> core::convert::TryFrom<U> for rustdoc_json::BuildError where U: core::convert::Into<T>

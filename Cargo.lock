@@ -181,7 +181,6 @@ dependencies = [
  "expect-test",
  "hex",
  "home",
- "is-terminal",
  "nu-ansi-term",
  "predicates",
  "public-api",

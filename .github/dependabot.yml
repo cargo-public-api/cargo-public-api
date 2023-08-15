@@ -11,6 +11,8 @@ updates:
       - "category-exclude"
       - "dependencies"
     ignore:
+      - dependency-name: "clap"
+        update-types: ["version-update:semver-patch"]
       - dependency-name: "semver"
         update-types: ["version-update:semver-patch"]
       - dependency-name: "serde"

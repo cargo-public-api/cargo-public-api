@@ -29,7 +29,7 @@ version = "0.22.0"
 anyhow = "1.0.75"
 assert_cmd = "2.0.12"
 expect-test = "1.4.1"
-tempfile = "3.7.1"
+tempfile = "3.8.0"
 
 [dev-dependencies.itertools]
 version = "0.11.0"

@@ -22,8 +22,8 @@ With a regular `cargo test` that you run in CI you will be able to
 
 First add the latest versions of the necessary libraries to your `[dev-dependencies]`:
 
-```console
-$ cargo add --dev \
+```sh
+cargo add --dev \
     rustup-toolchain \
     rustdoc-json \
     public-api \
@@ -56,8 +56,8 @@ fn public_api() {
 
 Before you run the test the first time you need to bless the current public API:
 
-```console
-$ UPDATE_EXPECT=1 cargo test public_api
+```sh
+UPDATE_EXPECT=1 cargo test public_api
 ```
 
 This creates a `tests/public-api.txt` file in your project that you `git add` together with your other project files. Whenever you change the public API, you need to bless it again with the above command. If you forget to bless, the test will fail, together with instructions on how to bless.

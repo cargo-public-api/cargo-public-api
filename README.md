@@ -151,13 +151,7 @@ cargo public-api -sss
 | 0.26.x — 0.29.x  | nightly-2023-01-04 — nightly-2023-05-23 |
 | 0.20.x — 0.25.x  | nightly-2022-09-28 — nightly-2023-01-03 |
 | 0.19.x           | nightly-2022-09-08 — nightly-2022-09-27 |
-| 0.18.x           | nightly-2022-09-07                      |
-| 0.17.x           | nightly-2022-09-06                      |
-| 0.15.x — 0.16.x  | nightly-2022-08-15 — nightly-2022-09-05 |
-| 0.13.x — 0.14.x  | nightly-2022-08-10 — nightly-2022-08-14 |
-| 0.12.x           | nightly-2022-05-19 — nightly-2022-08-09 |
-| 0.10.x — 0.11.x  | nightly-2022-03-14 — nightly-2022-05-18 |
-| earlier versions | see [here](https://github.com/Enselic/cargo-public-api/blob/0a37c971bb4ffa9bb11cf9fad9fef19aa67a986a/README.md#compatibility-matrix) |
+| earlier versions | see [here](https://github.com/Enselic/cargo-public-api/blob/37a43e761b7bfae6e43d01a00ba79d54b9f29212/README.md#compatibility-matrix) |
 
 # Changelog
 

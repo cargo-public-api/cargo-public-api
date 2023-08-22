@@ -1,5 +1,8 @@
 # `public-api` changelog
 
+## v0.32.0
+* Remove all deprecated API
+
 ## v0.31.0
 * Change rendering of `impl` items to include generic args of the implementor
 * Ignore `!` when sorting `impl`s to make `Send` and `Sync` order stable

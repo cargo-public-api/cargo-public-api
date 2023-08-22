@@ -6,14 +6,14 @@ List and diff the public API of Rust library crates between releases and commits
 
 Install the `cargo public-api` subcommand with a recent regular **stable** Rust toolchain:
 
-```console
-$ cargo +stable install cargo-public-api --locked
+```sh
+cargo +stable install cargo-public-api --locked
 ```
 
 Ensure **nightly-2023-05-24** or later is installed (does not need to be the active toolchain) so `cargo public-api` can build rustdoc JSON for you:
 
-```console
-$ rustup install nightly --profile minimal
+```sh
+rustup install nightly --profile minimal
 ```
 
 # Usage
@@ -22,14 +22,14 @@ $ rustup install nightly --profile minimal
 
 This example lists the public API of the `regex` crate. First we clone the repo:
 
-```console
-$ git clone https://github.com/rust-lang/regex ; cd regex
+```sh
+git clone https://github.com/rust-lang/regex ; cd regex
 ```
 
 Now we can list the public API of `regex` by running
 
-```console
-$ cargo public-api
+```sh
+cargo public-api
 ```
 
 which will print the public API of `regex` with one line per public item in the API:
@@ -42,8 +42,8 @@ which will print the public API of `regex` with one line per public item in the 
 
 To diff the public API of the `regex` crate in the **current directory** against  **published version 1.6.0** on [crates.io](https://crates.io/crates/regex/1.6.0):
 
-```console
-$ cargo public-api diff 1.6.0
+```sh
+cargo public-api diff 1.6.0
 ```
 
 <img src="docs/img/diff-specific-published-version.webp" alt="colored output of diffing a public api">
@@ -51,17 +51,19 @@ $ cargo public-api diff 1.6.0
 
 ### … Against the Latest Published Version
 
+```sh
+cargo public-api diff latest
+```
+
 ```console
-$ cargo public-api diff latest
 Resolved `diff latest` to `diff 1.7.1`
 [...]
 ```
 
 ### … Between Git Refs
 
-```console
-$ cargo public-api diff ref1..ref2
-[...]
+```sh
+cargo public-api diff ref1..ref2
 ```
 
 ### … as a CI Check
@@ -74,8 +76,8 @@ With a regular `cargo test` that you run in CI you will be able to
 
 First add the latest versions of the necessary libraries to your `[dev-dependencies]`:
 
-```console
-$ cargo add --dev \
+```sh
+cargo add --dev \
     rustup-toolchain \
     rustdoc-json \
     public-api \
@@ -109,8 +111,8 @@ fn public_api() {
 
 Before you run the test the first time you need to bless the current public API:
 
-```console
-$ UPDATE_EXPECT=1 cargo test public_api
+```sh
+UPDATE_EXPECT=1 cargo test public_api
 ```
 
 This creates a `tests/public-api.txt` file in your project that you `git add` together with your other project files. Whenever you change the public API, you need to bless it again with the above command. If you forget to bless, the test will fail, together with instructions on how to bless.
@@ -129,12 +131,16 @@ are included in the list of public items by default. Use
  * `--omit auto-trait-impls`
  * `--omit auto-derived-impls`
 
-respectively to omit such items from the output to make it much less noisy. For convenience you can also use `-s` (`--simplified`) to achieve the same thing:
+respectively to omit such items from the output to make it much less noisy:
 
-```console
-$ cargo public-api --omit blanket-impls,auto-trait-impls,auto-derived-impls
+```sh
+cargo public-api --omit blanket-impls,auto-trait-impls,auto-derived-impls
+```
 
-$ cargo public-api -sss    # Shorter form of above command
+For convenience you can also use `-s` (`--simplified`) to achieve the same thing. This is a shorter form of the above command:
+
+```sh
+cargo public-api -sss
 ```
 
 # Compatibility Matrix

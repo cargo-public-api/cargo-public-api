@@ -60,7 +60,7 @@ Resolved `diff latest` to `diff 1.7.1`
 [...]
 ```
 
-### … Between Git Refs
+### … Between Git Commits
 
 ```sh
 cargo public-api diff ref1..ref2

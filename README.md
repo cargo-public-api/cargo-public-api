@@ -55,11 +55,6 @@ cargo public-api diff 1.6.0
 cargo public-api diff latest
 ```
 
-```console
-Resolved `diff latest` to `diff 1.7.1`
-[...]
-```
-
 ### … Between Git Commits
 
 ```sh

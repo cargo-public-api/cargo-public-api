@@ -103,7 +103,7 @@ impl<'c> RenderingContext<'c> {
             ItemEnum::Impl(impl_) => {
                 self.render_impl(impl_, item_path, false /* disregard_negativity */)
             }
-            ItemEnum::Typedef(inner) => {
+            ItemEnum::TypeAlias(inner) => {
                 let mut output = self.render_simple(&["type"], item_path);
                 output.extend(self.render_generics(&inner.generics));
                 output.extend(equals());
@@ -261,7 +261,7 @@ impl<'c> RenderingContext<'c> {
                 | ItemEnum::Struct(_)
                 | ItemEnum::Union(_)
                 | ItemEnum::Enum(_)
-                | ItemEnum::Typedef(_)
+                | ItemEnum::TypeAlias(_)
         ) {
             Token::type_
         } else {

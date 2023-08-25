@@ -46,7 +46,7 @@ pub mod tokens;
 
 pub mod diff;
 
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 // Documented at the definition site so cargo doc picks it up
 pub use error::{Error, Result};
@@ -64,14 +64,6 @@ pub use public_item::PublicItem;
 /// nightly or later, you should be fine.
 pub const MINIMUM_NIGHTLY_RUST_VERSION: &str = "nightly-2023-08-25";
 
-/// Deprecated, use [`MINIMUM_NIGHTLY_RUST_VERSION`] instead.
-#[deprecated(since = "0.27.4", note = "Use MINIMUM_NIGHTLY_RUST_VERSION instead")]
-pub const MINIMUM_NIGHTLY_VERSION: &str = MINIMUM_NIGHTLY_RUST_VERSION;
-
-/// Deprecated, use [`MINIMUM_NIGHTLY_RUST_VERSION`] instead.
-#[deprecated(since = "0.27.0", note = "Use MINIMUM_NIGHTLY_RUST_VERSION instead")]
-pub const MINIMUM_RUSTDOC_JSON_VERSION: &str = MINIMUM_NIGHTLY_RUST_VERSION;
-
 /// See [`Builder`] method docs for what each field means.
 #[derive(Copy, Clone, Debug)]
 struct BuilderOptions {
@@ -86,7 +78,7 @@ struct BuilderOptions {
 /// code.
 #[derive(Debug, Clone)]
 pub struct Builder {
-    source: BuilderSource,
+    rustdoc_json: PathBuf,
     options: BuilderOptions,
 }
 
@@ -103,7 +95,7 @@ impl Builder {
             omit_auto_derived_impls: false,
         };
         Self {
-            source: BuilderSource::RustdocJson(path.into()),
+            rustdoc_json: path.into(),
             options,
         }
     }
@@ -182,12 +174,7 @@ impl Builder {
     /// E.g. if the [JSON](Builder::from_rustdoc_json) is invalid or if the file
     /// can't be read.
     pub fn build(self) -> Result<PublicApi> {
-        let s = match &self.source {
-            BuilderSource::RustdocJson(path) => std::fs::read_to_string(path)?,
-            BuilderSource::RustdocJsonStr(s) => s.clone(),
-        };
-
-        from_rustdoc_json_str(s, self.options)
+        from_rustdoc_json_str(std::fs::read_to_string(self.rustdoc_json)?, self.options)
     }
 }
 
@@ -233,66 +220,6 @@ pub struct PublicApi {
 }
 
 impl PublicApi {
-    /// Takes a [`Path`] to a rustdoc JSON file and returns a [`PublicApi`] with
-    /// [`PublicItem`]s where each [`PublicItem`] is one public item of the
-    /// crate, i.e. part of the crate's public API. Use [`Self::items()`] or
-    /// [`Self::into_items()`] to get the items.
-    ///
-    /// There exists a convenient `cargo public-api` subcommand wrapper for this
-    /// function found at <https://github.com/Enselic/cargo-public-api> that
-    /// builds the rustdoc JSON for you and then invokes this function. If you don't
-    /// want to use that wrapper, use [`rustdoc_json`](https://crates.io/crates/rustdoc_json)
-    /// to build and return the path to the rustdoc json or call
-    /// ```bash
-    /// cargo +nightly rustdoc --lib -- -Z unstable-options --output-format json
-    /// ```
-    /// to generate the rustdoc JSON that this function takes as input. The output
-    /// is put in `./target/doc/your_library.json`. As mentioned,
-    /// [`rustdoc_json`](https://crates.io/crates/rustdoc_json) does this for you.
-    ///
-    /// For reference, the rustdoc JSON format is documented at
-    /// <https://rust-lang.github.io/rfcs/2963-rustdoc-json.html>. But the format is
-    /// still a moving target. Open PRs and issues for rustdoc JSON itself can be
-    /// found at <https://github.com/rust-lang/rust/labels/A-rustdoc-json>.
-    ///
-    /// # Errors
-    ///
-    /// E.g. if the JSON is invalid or if the file can't be read.
-    #[deprecated(
-        since = "0.27.4",
-        note = "Use `public_api::Builder::from_rustdoc_json(path).option1(arg1).option2(arg2)...` instead."
-    )]
-    #[allow(deprecated)]
-    pub fn from_rustdoc_json(path: impl AsRef<Path>, options: Options) -> Result<PublicApi> {
-        Builder {
-            source: BuilderSource::RustdocJson(path.as_ref().to_owned()),
-            options: options.into(),
-        }
-        .build()
-    }
-
-    /// Same as [`Self::from_rustdoc_json`], but the rustdoc JSON is read from a
-    /// `&str` rather than a file.
-    ///
-    /// # Errors
-    ///
-    /// E.g. if the JSON is invalid.
-    #[deprecated(
-        since = "0.27.1",
-        note = "If you need this edge case API, you need to write your JSON to a temporary file and then use `PublicApi::from_rustdoc_json()` instead."
-    )]
-    #[allow(deprecated)]
-    pub fn from_rustdoc_json_str(
-        rustdoc_json_str: impl AsRef<str>,
-        options: Options,
-    ) -> Result<PublicApi> {
-        Builder {
-            source: BuilderSource::RustdocJsonStr(rustdoc_json_str.as_ref().to_owned()),
-            options: options.into(),
-        }
-        .build()
-    }
-
     /// Returns an iterator over all public items in the public API
     pub fn items(&self) -> impl Iterator<Item = &'_ PublicItem> {
         self.items.iter()
@@ -351,58 +278,4 @@ fn deserialize_without_recursion_limit(rustdoc_json_str: &str) -> Result<rustdoc
     let mut deserializer = serde_json::Deserializer::from_str(rustdoc_json_str);
     deserializer.disable_recursion_limit();
     Ok(serde::de::Deserialize::deserialize(&mut deserializer)?)
-}
-
-/// Temporary enum until we have removed [`PublicApi::from_rustdoc_json_str`]
-#[derive(Debug, Clone)]
-enum BuilderSource {
-    RustdocJson(PathBuf),
-    RustdocJsonStr(String),
-}
-
-/// Deprecated. Use [`public_api::Builder`](crate::Builder) instead.
-#[derive(Debug, Clone, Copy)]
-#[allow(clippy::struct_excessive_bools)]
-#[non_exhaustive]
-#[deprecated(
-    since = "0.27.4",
-    note = "Use `public_api::Builder::from_rustdoc_json(path).option1(arg1).option2(arg2)...` instead."
-)]
-pub struct Options {
-    /// Deprecated. Use [`crate::Builder::sorted`] instead.
-    pub sorted: bool,
-    /// Deprecated. Use [`crate::Builder::debug_sorting`] instead.
-    pub debug_sorting: bool,
-    /// Deprecated. Use [`crate::Builder::omit_blanket_impls`] instead.
-    pub omit_blanket_impls: bool,
-    /// Deprecated. Use [`crate::Builder::omit_auto_trait_impls`] instead.
-    pub omit_auto_trait_impls: bool,
-    /// Deprecated. Use [`crate::Builder::omit_auto_derived_impls`] instead.
-    pub omit_auto_derived_impls: bool,
-}
-
-#[allow(deprecated)]
-impl Default for Options {
-    fn default() -> Self {
-        Self {
-            sorted: true,
-            debug_sorting: false,
-            omit_blanket_impls: false,
-            omit_auto_trait_impls: false,
-            omit_auto_derived_impls: false,
-        }
-    }
-}
-
-#[allow(deprecated)]
-impl From<Options> for BuilderOptions {
-    fn from(options: Options) -> Self {
-        Self {
-            sorted: options.sorted,
-            debug_sorting: options.debug_sorting,
-            omit_blanket_impls: options.omit_blanket_impls,
-            omit_auto_trait_impls: options.omit_auto_trait_impls,
-            omit_auto_derived_impls: options.omit_auto_derived_impls,
-        }
-    }
 }

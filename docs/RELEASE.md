@@ -10,7 +10,7 @@
     1. If `MINIMUM_NIGHTLY_RUST_VERSION` must be bumped, bump it. If you bump it, also
         *  bump it in [compatibility matrix](https://github.com/Enselic/cargo-public-api#compatibility-matrix)
         *  bump it in `cargo-public-api` [installation instructions](https://github.com/Enselic/cargo-public-api#installation)
-        * `rm cargo-public-api/MINIMUM_NIGHTLY_VERSION_FOR_TESTS`
+        * `rm cargo-public-api/MINIMUM_NIGHTLY_RUST_VERSION_FOR_TESTS`
 
 1. Preview what the auto-generated release-notes will look like by going [here](https://github.com/cargo-public-api/cargo-public-api.github.io/blob/main/release-notes-preview.md). It is automatically updated, but you can also trigger manually [here](https://github.com/Enselic/cargo-public-api/actions/workflows/Preview-release-notes.yml)
     * The target audience for the release notes is users of the `cargo-public-api` CLI. But we also want to credit contributors to our libraries with a mention in the release notes, so we should also include such PRs in the release notes. For libs we also want to update the corresponding `CHANGELOG.md` file though.

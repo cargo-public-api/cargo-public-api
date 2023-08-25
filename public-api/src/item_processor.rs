@@ -346,7 +346,7 @@ pub(crate) fn sorting_prefix(item: &Item) -> u8 {
 
         ItemEnum::Function(_) => 17,
 
-        ItemEnum::Typedef(_) => 19,
+        ItemEnum::TypeAlias(_) => 19,
 
         ItemEnum::Impl(impl_) => match ImplKind::from(item, impl_) {
             ImplKind::Inherent => 20,

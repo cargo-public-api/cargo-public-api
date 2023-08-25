@@ -47,3 +47,23 @@ Run this (WARNING: destructive) command for a while and then scroll back and loo
 ```bash
 while true ; do git clean -xdf ; cargo --quiet test ; cargo --quiet test ; sleep 1 ; done | grep -v -e '0 failed' -e 'running [0-9]\+ test'
 ```
+
+## Minimal dev env
+
+If you get problems in your regular dev env it can help to debug in a minimal environment with minimal variability:
+
+```sh
+docker run -it ubuntu
+```
+
+```sh
+apt-get update -y && apt-get install -y build-essential libssl-dev pkg-config curl git zsh
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+source "$HOME/.cargo/env"
+cargo install cargo-audit
+cargo install cargo-deny
+rustup install nightly --profile minimal
+git clone https://github.com/Enselic/cargo-public-api.git
+cd cargo-public-api/
+./scripts/run-ci-locally.sh
+```

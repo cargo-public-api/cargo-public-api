@@ -1,6 +1,7 @@
 # `public-api` changelog
 
 ## v0.32.0
+* Support `nightly-2023-08-25` and later
 * Remove all deprecated API
 
 ## v0.31.0

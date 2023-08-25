@@ -16,8 +16,6 @@ impl core::marker::Sync for rustup_toolchain::Error
 impl core::marker::Unpin for rustup_toolchain::Error
 impl !core::panic::unwind_safe::RefUnwindSafe for rustup_toolchain::Error
 impl !core::panic::unwind_safe::UnwindSafe for rustup_toolchain::Error
-impl<E> core::any::Provider for rustup_toolchain::Error where E: core::error::Error + core::marker::Sized
-pub fn rustup_toolchain::Error::provide<'a>(&'a self, demand: &mut core::any::Demand<'a>)
 impl<T, U> core::convert::Into<U> for rustup_toolchain::Error where U: core::convert::From<T>
 pub fn rustup_toolchain::Error::into(self) -> U
 impl<T, U> core::convert::TryFrom<U> for rustup_toolchain::Error where U: core::convert::Into<T>

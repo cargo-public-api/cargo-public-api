@@ -95,6 +95,7 @@ pub const fn rustdoc_json::Builder::silent(self, silent: bool) -> Self
 pub fn rustdoc_json::Builder::target(self, target: alloc::string::String) -> Self
 pub fn rustdoc_json::Builder::target_dir(self, target_dir: impl core::convert::AsRef<std::path::Path>) -> Self
 pub fn rustdoc_json::Builder::toolchain(self, toolchain: impl core::convert::Into<alloc::string::String>) -> Self
+pub const fn rustdoc_json::Builder::verbose(self, verbose: bool) -> Self
 impl core::default::Default for rustdoc_json::Builder
 pub fn rustdoc_json::Builder::default() -> Self
 impl core::clone::Clone for rustdoc_json::Builder

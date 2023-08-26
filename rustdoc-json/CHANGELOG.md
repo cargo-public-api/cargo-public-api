@@ -1,5 +1,8 @@
 # rustdoc-json
 
+## v0.8.8
+* Add `rustdoc_json::Builder::verbose(bool)`
+
 ## v0.8.7
 * Handle when `[package]` `name` differs from `[lib]` `name`
 

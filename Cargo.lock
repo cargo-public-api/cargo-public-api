@@ -198,9 +198,9 @@ dependencies = [
 
 [[package]]
 name = "cargo-util"
-version = "0.2.4"
+version = "0.2.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a5e2320a2b1242f9181a3347ae0884bb497e1853d299da99780fa1e96f9abe23"
+checksum = "dd54c8b94a0c851d687924460637361c355afafa72d973fe8644499fbdee8fae"
 dependencies = [
  "anyhow",
  "core-foundation",
@@ -215,7 +215,7 @@ dependencies = [
  "shell-escape",
  "tempfile",
  "walkdir",
- "windows-sys 0.45.0",
+ "windows-sys 0.48.0",
 ]
 
 [[package]]

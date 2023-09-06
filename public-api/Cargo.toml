@@ -6,6 +6,7 @@ description = "List and diff the public API of Rust library crates. Relies on ru
 homepage = "https://github.com/Enselic/cargo-public-api/tree/main/public-api"
 documentation = "https://docs.rs/public-api"
 readme = "README.md"
+keywords = ["semver", "rustdoc-json", "diff", "cargo"]
 license = "MIT"
 repository = "https://github.com/Enselic/cargo-public-api/tree/main/public-api"
 

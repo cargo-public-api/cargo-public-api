@@ -6,6 +6,7 @@ description = "Utilities for working with rustup toolchains."
 homepage = "https://github.com/Enselic/cargo-public-api/tree/main/rustup-toolchain"
 documentation = "https://docs.rs/rustup-toolchain"
 readme = "README.md"
+keywords = ["toolchain", "rustup"]
 license = "MIT"
 repository = "https://github.com/Enselic/cargo-public-api/tree/main/rustup-toolchain"
 

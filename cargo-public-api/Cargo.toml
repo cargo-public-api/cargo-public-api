@@ -63,7 +63,7 @@ path = "../rustup-toolchain"
 version = "0.1.5"
 
 [dev-dependencies.predicates]
-version = "3.0.3"
+version = "3.0.4"
 default-features = false
 
 [dev-dependencies.chrono]

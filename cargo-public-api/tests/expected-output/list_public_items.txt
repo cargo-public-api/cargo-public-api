@@ -8,7 +8,7 @@ pub fn public_api::diff::ChangedPublicItem::grouping_cmp(&self, other: &Self) ->
 impl core::clone::Clone for public_api::diff::ChangedPublicItem
 pub fn public_api::diff::ChangedPublicItem::clone(&self) -> public_api::diff::ChangedPublicItem
 impl core::cmp::Eq for public_api::diff::ChangedPublicItem
-impl core::cmp::PartialEq<public_api::diff::ChangedPublicItem> for public_api::diff::ChangedPublicItem
+impl core::cmp::PartialEq for public_api::diff::ChangedPublicItem
 pub fn public_api::diff::ChangedPublicItem::eq(&self, other: &public_api::diff::ChangedPublicItem) -> bool
 impl core::fmt::Debug for public_api::diff::ChangedPublicItem
 pub fn public_api::diff::ChangedPublicItem::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
@@ -29,7 +29,7 @@ pub fn public_api::diff::PublicApiDiff::is_empty(&self) -> bool
 impl core::clone::Clone for public_api::diff::PublicApiDiff
 pub fn public_api::diff::PublicApiDiff::clone(&self) -> public_api::diff::PublicApiDiff
 impl core::cmp::Eq for public_api::diff::PublicApiDiff
-impl core::cmp::PartialEq<public_api::diff::PublicApiDiff> for public_api::diff::PublicApiDiff
+impl core::cmp::PartialEq for public_api::diff::PublicApiDiff
 pub fn public_api::diff::PublicApiDiff::eq(&self, other: &public_api::diff::PublicApiDiff) -> bool
 impl core::fmt::Debug for public_api::diff::PublicApiDiff
 pub fn public_api::diff::PublicApiDiff::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
@@ -63,9 +63,9 @@ pub fn public_api::tokens::Token::clone(&self) -> public_api::tokens::Token
 impl core::cmp::Eq for public_api::tokens::Token
 impl core::cmp::Ord for public_api::tokens::Token
 pub fn public_api::tokens::Token::cmp(&self, other: &public_api::tokens::Token) -> core::cmp::Ordering
-impl core::cmp::PartialEq<public_api::tokens::Token> for public_api::tokens::Token
+impl core::cmp::PartialEq for public_api::tokens::Token
 pub fn public_api::tokens::Token::eq(&self, other: &public_api::tokens::Token) -> bool
-impl core::cmp::PartialOrd<public_api::tokens::Token> for public_api::tokens::Token
+impl core::cmp::PartialOrd for public_api::tokens::Token
 pub fn public_api::tokens::Token::partial_cmp(&self, other: &public_api::tokens::Token) -> core::option::Option<core::cmp::Ordering>
 impl core::fmt::Debug for public_api::tokens::Token
 pub fn public_api::tokens::Token::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
@@ -133,7 +133,7 @@ impl public_api::PublicItem
 pub fn public_api::PublicItem::grouping_cmp(&self, other: &Self) -> core::cmp::Ordering
 pub fn public_api::PublicItem::tokens(&self) -> impl core::iter::traits::iterator::Iterator<Item = &public_api::tokens::Token>
 impl core::cmp::Eq for public_api::PublicItem
-impl core::cmp::PartialEq<public_api::PublicItem> for public_api::PublicItem
+impl core::cmp::PartialEq for public_api::PublicItem
 pub fn public_api::PublicItem::eq(&self, other: &Self) -> bool
 impl core::fmt::Debug for public_api::PublicItem
 pub fn public_api::PublicItem::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result

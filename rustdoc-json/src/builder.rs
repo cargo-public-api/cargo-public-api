@@ -17,7 +17,14 @@ pub fn run_cargo_rustdoc(options: Builder) -> Result<PathBuf, BuildError> {
     if options.verbose {
         eprintln!("Running: {:?}", cmd);
     }
-    if cmd.status()?.success() {
+    let command_result = cmd
+        .status()
+        .map_err(|source| BuildError::CannotRunCommand {
+            command: cmd,
+            source,
+        })?;
+
+    if command_result.success() {
         rustdoc_json_path_for_manifest_path(
             options.manifest_path,
             options.package.as_deref(),

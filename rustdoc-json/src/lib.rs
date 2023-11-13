@@ -46,6 +46,17 @@ pub enum BuildError {
     #[error(transparent)]
     CargoMetadataError(#[from] cargo_metadata::Error),
 
+    /// Cannot run a command dues to std::io::Error
+    #[error("Cannot run command {:?}", .command.get_program())]
+    CannotRunCommand {
+        /// The command that failed
+        command: std::process::Command,
+
+        /// The underlying IO error
+        #[source]
+        source: std::io::Error,
+    },
+
     /// Some kind of IO error occurred.
     #[error(transparent)]
     IoError(#[from] std::io::Error),

@@ -39,7 +39,7 @@ default-features = false
 
 [dev-dependencies.rustdoc-json]
 path = "../rustdoc-json"
-version = "0.8.7"
+version = "0.8.8"
 
 [dev-dependencies.predicates]
 version = "3.0.4"

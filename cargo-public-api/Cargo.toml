@@ -40,11 +40,11 @@ features = ["serde"]
 
 [dependencies.rustdoc-json]
 path = "../rustdoc-json"
-version = "0.8.7"
+version = "0.8.8"
 
 [dependencies.public-api]
 path = "../public-api"
-version = "0.32.0"
+version = "0.33.0"
 
 [dependencies.serde]
 version = "1.0.179"
@@ -60,7 +60,7 @@ features = ["serde"]
 
 [dev-dependencies.rustup-toolchain]
 path = "../rustup-toolchain"
-version = "0.1.5"
+version = "0.1.6"
 
 [dev-dependencies.predicates]
 version = "3.0.4"

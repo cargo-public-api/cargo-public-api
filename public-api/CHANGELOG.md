@@ -1,5 +1,8 @@
 # `public-api` changelog
 
+## v0.33.0
+* Avoid textual API diff when changing an inherent impl to an auto-derived impl.
+
 ## v0.32.0
 * Support `nightly-2023-08-25` and later
 * Remove all deprecated API

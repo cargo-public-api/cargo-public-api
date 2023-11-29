@@ -60,7 +60,7 @@ features = ["serde"]
 
 [dev-dependencies.rustup-toolchain]
 path = "../rustup-toolchain"
-version = "0.1.5"
+version = "0.1.6"
 
 [dev-dependencies.predicates]
 version = "3.0.4"

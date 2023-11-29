@@ -1,5 +1,8 @@
 # rustup-toolchain
 
+## v0.1.6
+* Add `package.keywords` to `Cargo.toml`.
+
 ## v0.1.5
 * Remove deprecation of `is_installed()` since there are legitimate use cases for it.
 

@@ -10,6 +10,8 @@ use std::{
 use expect_test::expect_file;
 use public_api::Error;
 
+use pretty_assertions::assert_eq;
+
 use tempfile::{tempdir, NamedTempFile, TempDir};
 
 mod common;
@@ -142,6 +144,42 @@ impl Foo {
 }
 
 #[test]
+fn diff_empty_when_changing_inherent_impl_to_auto_derived_impl() {
+    let v1 = rustdoc_json_for_lib(
+        r#"
+#[derive(Clone)]
+pub enum Foo {
+    A,
+    B,
+}
+
+impl Default for Foo {
+    fn default() -> Foo {
+        Foo::A
+    }
+}
+    "#,
+    );
+
+    let v2 = rustdoc_json_for_lib(
+        r#"
+#[derive(Clone, Default)]
+pub enum Foo {
+    #[default]
+    A,
+    B,
+}
+    "#,
+    );
+
+    // Note: The test will pass with assert_public_api_diff() because it uses
+    // [`public_api::diff::PublicApiDiff::between`] which is smart enough to
+    // realize there is no diff. But we also want to make sure the above case
+    // does not resut in any textual diff either.
+    assert_no_textual_public_api_diff(v1.json_path, v2.json_path);
+}
+
+#[test]
 fn diff_with_removed_items() {
     // Create independent build dirs so all tests can run in parallel
     let build_dir = tempdir().unwrap();
@@ -260,6 +298,22 @@ fn assert_public_api_diff(
 
     let diff = public_api::diff::PublicApiDiff::between(old, new);
     expect_file![expected.as_ref()].assert_debug_eq(&diff);
+}
+
+// PublicApiDiff::between() is smarter than a textual diff, but in some cases we
+// still care about a textual diff. When we care about the textual diff, we use
+// this function.
+fn assert_no_textual_public_api_diff(old_json: impl Into<PathBuf>, new_json: impl Into<PathBuf>) {
+    let old = public_api::Builder::from_rustdoc_json(old_json)
+        .build()
+        .unwrap()
+        .to_string();
+    let new = public_api::Builder::from_rustdoc_json(new_json)
+        .build()
+        .unwrap()
+        .to_string();
+
+    assert_eq!(new, old);
 }
 
 /// Asserts that the public API of the crate in the given rustdoc JSON file

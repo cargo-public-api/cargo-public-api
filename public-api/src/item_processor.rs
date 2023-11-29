@@ -351,8 +351,8 @@ pub(crate) fn sorting_prefix(item: &Item) -> u8 {
         ItemEnum::Impl(impl_) => match ImplKind::from(item, impl_) {
             // To not cause a diff when changing a manual impl to an
             // auto-derived impl (or vice versa), we put them in the same group.
-            ImplKind::Inherent | ImplKind::AutoDerived => 20,
-            ImplKind::Trait => 21,
+            ImplKind::Inherent => 20,
+            ImplKind::Trait | ImplKind::AutoDerived => 21,
             ImplKind::AutoTrait => 23,
             ImplKind::Blanket => 24,
         },

@@ -352,7 +352,7 @@ fn main_task_from_diff_args(args: &Args, diff_args: &DiffArgs) -> Result<MainTas
         )
     }
 
-    let first_arg = diff_args.args.get(0);
+    let first_arg = diff_args.args.first();
     let second_arg = diff_args.args.get(1);
 
     let main_task = match (first_arg, second_arg) {

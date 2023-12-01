@@ -28,7 +28,7 @@ cargo_metadata = "0.18.1"
 toml = "0.8.2"
 
 [dependencies.clap]
-version = "4.4.0"
+version = "4.4.10"
 features = ["derive", "wrap_help"]
 
 [dependencies.curl]

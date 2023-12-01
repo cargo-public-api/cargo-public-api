@@ -31,6 +31,7 @@ mod vendor;
     long_about = "List and diff the public API of Rust library crates between releases and commits. Website: https://github.com/Enselic/cargo-public-api",
     bin_name = "cargo public-api"
 )]
+#[command(flatten_help = true)]
 pub struct Args {
     /// Path to `Cargo.toml`.
     #[arg(long, value_name = "PATH", default_value = "Cargo.toml")]
@@ -145,8 +146,25 @@ struct DiffArgs {
     #[arg(long)]
     force: bool,
 
-    /// What to diff. See `cargo public-api diff --help` for examples and more
-    /// info.
+    #[clap(verbatim_doc_comment)]
+    /// What to diff.
+    ///
+    /// EXAMPLES
+    /// ========
+    ///
+    /// Diff current working tree version of `specific-crate` against published version 1.2.3:
+    ///
+    ///     cargo public-api -p specific-crate diff 1.2.3
+    ///
+    /// Diff between commits:
+    ///
+    ///     cargo public-api diff v0.2.0..v0.3.0
+    ///
+    /// See
+    ///
+    ///     cargo public-api diff --help
+    ///
+    /// for more examples and more info.
     args: Vec<String>,
 }
 
@@ -169,27 +187,27 @@ enum Subcommand {
     /// EXAMPLES:
     /// =========
     ///
-    /// Diffing a published version of a crate against the current working tree:
+    /// Diff a published version of a crate against the current working tree:
     ///
     ///     cargo public-api diff 1.2.3
     ///
-    /// Diffing the latest version of a crate against the current working tree:
+    /// Diff the latest version of a crate against the current working tree:
     ///
     ///     cargo public-api diff latest
     ///
-    /// Diffing between two published versions of any crate:
+    /// Diff between two published versions of any crate:
     ///
     ///     cargo public-api -p example_api diff 0.1.0 0.2.0
     ///
-    /// Diffing working tree against a published version of a specific crate in the workspace:
+    /// Diff current working tree version of `specific-crate` against published version 1.2.3:
     ///
     ///     cargo public-api -p specific-crate diff 1.2.3
     ///
-    /// Diffing between commits:
+    /// Diff between commits:
     ///
     ///     cargo public-api diff v0.2.0..v0.3.0
     ///
-    /// Diffing between rustdoc JSON files:
+    /// Diff between rustdoc JSON files:
     ///
     ///     cargo public-api diff first.json second.json
     ///

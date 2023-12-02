@@ -3,7 +3,7 @@ Diff the public API against a published version of the crate, or between commits
 Usage: cargo public-api diff [OPTIONS] [ARGS]...
 
 Arguments:
-  [ARGS]...  What to diff. See `cargo public-api diff --help` for examples and more info
+  [ARGS]...  What to diff.
 
 Options:
       --deny <DENY>  Exit with failure if the specified API diff is detected [possible values: all,

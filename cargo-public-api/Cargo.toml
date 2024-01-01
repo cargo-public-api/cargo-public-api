@@ -75,5 +75,5 @@ features = ["std"]
 assert_cmd = "2.0.12"
 expect-test = "1.4.1"
 remove_dir_all = "0.8.2"
-tempfile = "3.8.1"
+tempfile = "3.9.0"
 cargo_metadata = "0.18.1"

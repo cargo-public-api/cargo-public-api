@@ -31,7 +31,7 @@ anyhow = "1.0.75"
 assert_cmd = "2.0.12"
 expect-test = "1.4.1"
 pretty_assertions = "1.2.3"
-tempfile = "3.8.1"
+tempfile = "3.9.0"
 
 [dev-dependencies.itertools]
 version = "0.12.0"

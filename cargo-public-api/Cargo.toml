@@ -55,7 +55,7 @@ version = "1.0.104"
 default-features = false
 
 [dependencies.smol_str]
-version = "0.2.0"
+version = "0.2.1"
 features = ["serde"]
 
 [dev-dependencies.rustup-toolchain]

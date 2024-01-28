@@ -1,5 +1,8 @@
 # rustdoc-json
 
+## v0.8.9
+* Bump deps. Most notably cargo-manifest from 0.12.0 to 0.13.0.
+
 ## v0.8.8
 * Add `rustdoc_json::Builder::verbose(bool)`
 

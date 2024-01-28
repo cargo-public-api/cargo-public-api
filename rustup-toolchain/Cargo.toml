@@ -18,7 +18,7 @@ expect-test = "1.4.1"
 
 [dev-dependencies.rustdoc-json]
 path = "../rustdoc-json"
-version = "0.8.8"
+version = "0.8.9"
 
 [dev-dependencies.public-api]
 path = "../public-api"

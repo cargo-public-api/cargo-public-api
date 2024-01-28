@@ -12,7 +12,6 @@ impl core::cmp::PartialEq for public_api::diff::ChangedPublicItem
 pub fn public_api::diff::ChangedPublicItem::eq(&self, other: &public_api::diff::ChangedPublicItem) -> bool
 impl core::fmt::Debug for public_api::diff::ChangedPublicItem
 pub fn public_api::diff::ChangedPublicItem::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
-impl core::marker::StructuralEq for public_api::diff::ChangedPublicItem
 impl core::marker::StructuralPartialEq for public_api::diff::ChangedPublicItem
 impl core::marker::Send for public_api::diff::ChangedPublicItem
 impl core::marker::Sync for public_api::diff::ChangedPublicItem
@@ -33,7 +32,6 @@ impl core::cmp::PartialEq for public_api::diff::PublicApiDiff
 pub fn public_api::diff::PublicApiDiff::eq(&self, other: &public_api::diff::PublicApiDiff) -> bool
 impl core::fmt::Debug for public_api::diff::PublicApiDiff
 pub fn public_api::diff::PublicApiDiff::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
-impl core::marker::StructuralEq for public_api::diff::PublicApiDiff
 impl core::marker::StructuralPartialEq for public_api::diff::PublicApiDiff
 impl core::marker::Send for public_api::diff::PublicApiDiff
 impl core::marker::Sync for public_api::diff::PublicApiDiff
@@ -71,7 +69,6 @@ impl core::fmt::Debug for public_api::tokens::Token
 pub fn public_api::tokens::Token::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::hash::Hash for public_api::tokens::Token
 pub fn public_api::tokens::Token::hash<__H: core::hash::Hasher>(&self, state: &mut __H)
-impl core::marker::StructuralEq for public_api::tokens::Token
 impl core::marker::StructuralPartialEq for public_api::tokens::Token
 impl core::marker::Send for public_api::tokens::Token
 impl core::marker::Sync for public_api::tokens::Token

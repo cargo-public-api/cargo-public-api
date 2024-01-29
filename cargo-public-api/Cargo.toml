@@ -67,7 +67,7 @@ version = "3.1.0"
 default-features = false
 
 [dev-dependencies.chrono]
-version = "0.4.31"
+version = "0.4.33"
 default-features = false
 features = ["std"]
 

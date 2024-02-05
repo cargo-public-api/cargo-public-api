@@ -1081,11 +1081,7 @@ fn append_to_lib_rs_in_test_repo(test_repo: &TestRepo, to_append: &str) {
     let mut lib_rs_path = test_repo.path().to_owned();
     lib_rs_path.push("src/lib.rs");
 
-    let mut lib_rs = OpenOptions::new()
-        .write(true)
-        .append(true)
-        .open(&lib_rs_path)
-        .unwrap();
+    let mut lib_rs = OpenOptions::new().append(true).open(&lib_rs_path).unwrap();
 
     writeln!(lib_rs, "{to_append}").unwrap();
 }

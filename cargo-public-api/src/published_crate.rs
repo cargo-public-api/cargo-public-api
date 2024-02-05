@@ -59,7 +59,7 @@ fn get_crate_version(crate_: &Crate, version: Option<&str>) -> Result<Version, a
             .versions()
             .iter()
             .find(|cv| cv.version() == version)
-            .map(Clone::clone)
+            .cloned()
             .ok_or_else(|| {
                 anyhow!(
                     "Could not find version `{}` of crate `{}`",

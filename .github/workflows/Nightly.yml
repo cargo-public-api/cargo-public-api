@@ -33,7 +33,7 @@ jobs:
       url: https://github.com/EnselicCICD/cargo-public-api
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - run: rustup install nightly --profile minimal
       - uses: Swatinem/rust-cache@v2
       - run: sudo apt-get install -y zsh && zsh --version

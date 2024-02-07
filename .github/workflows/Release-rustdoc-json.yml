@@ -19,7 +19,7 @@ jobs:
     permissions:
       contents: write # git push
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       # Figure out what tag to use
       - name: calculate version

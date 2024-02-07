@@ -29,14 +29,14 @@ jobs:
     name: cargo fmt -- --check
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - run: cargo fmt -- --check
 
   cargo-doc:
     name: RUSTDOCFLAGS='--deny warnings' cargo doc
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: Swatinem/rust-cache@v2
       - run: RUSTDOCFLAGS='--deny warnings' cargo doc --locked --no-deps --document-private-items
 
@@ -44,7 +44,7 @@ jobs:
     name: cargo clippy -- --deny clippy::all ...
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: Swatinem/rust-cache@v2
       - run: scripts/cargo-clippy.sh
 
@@ -52,14 +52,14 @@ jobs:
     name: cargo audit
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - run: scripts/cargo-audit.sh
 
   cargo-deny:
     name: cargo deny
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: EmbarkStudios/cargo-deny-action@v1
 
   cargo-test:
@@ -76,7 +76,7 @@ jobs:
     env:
       CARGO_REGISTRIES_CRATES_IO_PROTOCOL: ${{ matrix.variant.protocol }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - run: zsh --version || (sudo apt-get install -y zsh && zsh --version)
         if: runner.os != 'Windows'
       - run: rustup install nightly --profile minimal

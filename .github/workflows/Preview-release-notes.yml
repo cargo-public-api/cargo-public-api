@@ -23,7 +23,7 @@ jobs:
     permissions:
       contents: write # generate-notes
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           repository: cargo-public-api/cargo-public-api.github.io
           ssh-key: ${{ secrets.CARGO_PUBLIC_API_GITHUB_PAGES_DEPLOY_KEY }}

@@ -19,7 +19,7 @@ jobs:
     permissions:
       contents: write # git push
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       # Figure out what tag to use. Do this first since we want to ensure that
       # the same tag is used for both public-api and cargo-public-api before we
@@ -62,7 +62,7 @@ jobs:
     permissions:
       contents: write # softprops/action-gh-release
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: calculate version
         id: version

@@ -15,7 +15,7 @@ cargo_metadata = "0.18.1"
 cargo-manifest = "0.13.0"
 serde = { version = "1.0.179", features = ["derive"] }
 thiserror = "1.0.44"
-toml = "0.8.9"
+toml = "0.8.10"
 
 [dev-dependencies]
 assert_cmd = "2.0.13"

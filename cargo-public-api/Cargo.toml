@@ -32,7 +32,7 @@ version = "4.5.0"
 features = ["derive", "wrap_help"]
 
 [dependencies.curl]
-version = "0.4.44"
+version = "0.4.46"
 
 [dependencies.hex]
 version = "0.4.3"

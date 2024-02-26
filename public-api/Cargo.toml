@@ -28,7 +28,7 @@ version = "0.23.0"
 
 [dev-dependencies]
 anyhow = "1.0.75"
-assert_cmd = "2.0.13"
+assert_cmd = "2.0.14"
 expect-test = "1.4.1"
 pretty_assertions = "1.2.3"
 tempfile = "3.10.0"

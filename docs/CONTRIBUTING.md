@@ -54,7 +54,7 @@ pub fn bat::PrettyPrinter::input_files<I, P>(&mut self, paths: I) -> &mut Self w
 
 ## Minimum required stable Rust version
 
-This project is guaranteed to build with the latest stable Rust toolchain. More specifically, the toolchain that is installed by default on GitHub's `ubuntu-latest` runner. You can see [here](https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-Readme.md#rust-tools) what version that currently is.
+This project is guaranteed to build with the latest stable Rust toolchain. More specifically, the toolchain that is installed by default on GitHub's `ubuntu-latest` runner. You can see [here](https://github.com/actions/runner-images/blob/main/images/ubuntu/Ubuntu2204-Readme.md#rust-tools) what version that currently is.
 
 Note that the toolchain required to build this project is distinct from the toolchain required to build the rustdoc JSON that this project relies on. See below for more info.
 

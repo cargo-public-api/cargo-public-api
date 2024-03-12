@@ -17,6 +17,7 @@ impl core::fmt::Debug for rustdoc_json::BuildError
 pub fn rustdoc_json::BuildError::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::fmt::Display for rustdoc_json::BuildError
 pub fn rustdoc_json::BuildError::fmt(&self, __formatter: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::Freeze for rustdoc_json::BuildError
 impl core::marker::Send for rustdoc_json::BuildError
 impl core::marker::Sync for rustdoc_json::BuildError
 impl core::marker::Unpin for rustdoc_json::BuildError
@@ -52,6 +53,7 @@ impl core::default::Default for rustdoc_json::PackageTarget
 pub fn rustdoc_json::PackageTarget::default() -> rustdoc_json::PackageTarget
 impl core::fmt::Debug for rustdoc_json::PackageTarget
 pub fn rustdoc_json::PackageTarget::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::Freeze for rustdoc_json::PackageTarget
 impl core::marker::Send for rustdoc_json::PackageTarget
 impl core::marker::Sync for rustdoc_json::PackageTarget
 impl core::marker::Unpin for rustdoc_json::PackageTarget
@@ -102,6 +104,7 @@ impl core::default::Default for rustdoc_json::Builder
 pub fn rustdoc_json::Builder::default() -> Self
 impl core::fmt::Debug for rustdoc_json::Builder
 pub fn rustdoc_json::Builder::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::Freeze for rustdoc_json::Builder
 impl core::marker::Send for rustdoc_json::Builder
 impl core::marker::Sync for rustdoc_json::Builder
 impl core::marker::Unpin for rustdoc_json::Builder

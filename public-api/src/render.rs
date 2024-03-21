@@ -1021,10 +1021,7 @@ mod test {
         };
     }
 
-    use std::collections::HashMap;
-
     use super::*;
-    use rustdoc_types::Id;
 
     #[test]
     fn test_type_infer() {

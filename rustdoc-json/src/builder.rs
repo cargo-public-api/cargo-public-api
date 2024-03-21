@@ -246,7 +246,7 @@ impl Builder {
     /// Set the relative or absolute path to `Cargo.toml`. Default: `Cargo.toml`
     #[must_use]
     pub fn manifest_path(mut self, manifest_path: impl AsRef<Path>) -> Self {
-        self.manifest_path = manifest_path.as_ref().to_owned();
+        manifest_path.as_ref().clone_into(&mut self.manifest_path);
         self
     }
 

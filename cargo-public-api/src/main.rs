@@ -114,21 +114,22 @@ pub struct Args {
     #[arg(long, value_name = "PATH", hide = true)]
     target_dir: Option<PathBuf>,
 
-    /// Build rustdoc JSON with a toolchain other than `nightly`.
-    ///
-    /// Consider using `cargo +toolchain public-api` instead.
-    ///
-    /// Useful if you have built a toolchain from source for example, or if you
-    /// want to use a fixed toolchain in CI.
-    #[arg(long, value_parser = parse_toolchain, hide = true)]
-    toolchain: Option<String>,
-
     /// Forwarded to rustdoc JSON build command
     #[arg(long, hide = true)]
     cap_lints: Option<String>,
 
     #[command(subcommand)]
     subcommand: Option<Subcommand>,
+}
+
+/// We don't want `toolchain` in [Args] because we only support the `cargo
+/// +toolchain public-api` way of picking toolchain. But we still want to
+/// resolve the toolchain to use once and pass it around a bit. This helper
+/// structs solves this for us.
+#[derive(Debug)]
+struct ArgsAndToolchain {
+    args: Args,
+    toolchain: Option<String>,
 }
 
 /// The subcommand used for diffing.
@@ -289,28 +290,28 @@ pub enum Action {
 const LATEST_VERSION_ARG: &str = "latest";
 
 fn main_() -> Result<()> {
-    let args = get_args();
+    let argst = get_args();
 
     // A list of actions to perform after we have listed or diffed. Typical
     // examples: restore a git branch or check that a diff is allowed
     let mut final_actions = vec![];
 
     // Now figure out our main task. Typically listing or diffing the public API
-    let main_task = main_task(&args)?;
+    let main_task = main_task(&argst.args)?;
 
     // If the task we are going to do shortly involves checking out a different
     // commit, set up a restoration of the current branch
     if main_task.changes_commit() {
         final_actions.push(Action::RestoreBranch {
-            name: current_branch_or_commit(args.git_root()?)?,
+            name: current_branch_or_commit(argst.args.git_root()?)?,
         });
     }
 
     // Now we perform the main task
     let result = match main_task {
-        MainTask::PrintList { api } => print_public_items(&args, api.as_ref()),
+        MainTask::PrintList { api } => print_public_items(&argst, api.as_ref()),
         MainTask::PrintDiff { old_api, new_api } => print_diff(
-            &args,
+            &argst,
             old_api.as_ref(),
             new_api.as_ref(),
             &mut final_actions,
@@ -327,7 +328,7 @@ fn main_() -> Result<()> {
     // Handle any final actions, such as checking the diff and restoring the
     // original git branch
     for action in final_actions {
-        action.perform(&args)?;
+        action.perform(&argst.args)?;
     }
 
     result
@@ -427,14 +428,18 @@ fn check_diff(deny: &[DenyMethod], diff: &PublicApiDiff) -> Result<()> {
     }
 }
 
-fn print_public_items(args: &Args, public_api: &dyn ApiSource) -> Result<()> {
-    Plain::print_items(&mut stdout(), args, public_api.obtain_api(args)?.items())?;
+fn print_public_items(argst: &ArgsAndToolchain, public_api: &dyn ApiSource) -> Result<()> {
+    Plain::print_items(
+        &mut stdout(),
+        &argst.args,
+        public_api.obtain_api(argst)?.items(),
+    )?;
 
     Ok(())
 }
 
 fn print_diff(
-    args: &Args,
+    argst: &ArgsAndToolchain,
     old: &dyn ApiSource,
     new: &dyn ApiSource,
     final_actions: &mut Vec<Action>,
@@ -446,13 +451,13 @@ fn print_diff(
         }
     }
 
-    let old = old.obtain_api(args)?;
-    let new = new.obtain_api(args)?;
+    let old = old.obtain_api(argst)?;
+    let new = new.obtain_api(argst)?;
     let diff = PublicApiDiff::between(old, new);
 
-    Plain::print_diff(&mut stdout(), args, &diff)?;
+    Plain::print_diff(&mut stdout(), &argst.args, &diff)?;
 
-    if let Some(Some(deny)) = args.diff_args().map(|a| &a.deny) {
+    if let Some(Some(deny)) = argst.args.diff_args().map(|a| &a.deny) {
         final_actions.push(check_diff(deny, diff));
     }
 
@@ -529,7 +534,7 @@ impl Args {
 /// Note that we also want to support the binary being installed with a
 /// non-standard name such as `~/.cargo/bin/cargo-public-api-v0.13.0`. So we
 /// can't assume the bin name is `cargo-public-api`.
-fn get_args() -> Args {
+fn get_args() -> ArgsAndToolchain {
     let subcommand_name = subcommand_name(std::env::args_os().next().unwrap());
     let args_os = std::env::args_os()
         .enumerate()
@@ -537,9 +542,8 @@ fn get_args() -> Args {
         .map(|(_, arg)| arg);
 
     let mut args = Args::parse_from(args_os);
-    resolve_toolchain(&mut args);
     resolve_simplified(&mut args);
-    args
+    resolve_toolchain(args)
 }
 
 /// Strips the `cargo-` prefix from the bin name as well as any extension. For
@@ -559,13 +563,17 @@ fn subcommand_name(bin: OsString) -> Option<OsString> {
 }
 
 /// Check if using a stable compiler, and use nightly if it is.
-fn resolve_toolchain(args: &mut Args) {
-    if toolchain::is_probably_stable(args.toolchain.as_deref()) {
-        if let Some(toolchain) = args.toolchain.clone().or_else(toolchain::from_rustup) {
+fn resolve_toolchain(args: Args) -> ArgsAndToolchain {
+    let toolchain = if toolchain::is_probably_stable() {
+        if let Some(toolchain) = toolchain::from_rustup() {
             eprintln!("Warning: using the `{toolchain}` toolchain for gathering the public api is not possible, switching to `nightly`");
         }
-        args.toolchain = Some("nightly".to_owned());
-    }
+        Some("nightly".to_owned())
+    } else {
+        None
+    };
+
+    ArgsAndToolchain { args, toolchain }
 }
 
 /// Translates `--simplified` into `--omit` args.
@@ -606,15 +614,6 @@ fn git_checkout(args: &Args, commit: &str) -> Result<()> {
             .map(|diff_args| diff_args.force)
             .unwrap_or_default(),
     )
-}
-
-// Validate that the toolchain does not start with a `+` character.
-fn parse_toolchain(s: &str) -> Result<String, &'static str> {
-    if s.starts_with('+') {
-        Err("toolchain must not start with a `+`")
-    } else {
-        Ok(s.to_owned())
-    }
 }
 
 /// Wrapper to handle <https://github.com/rust-lang/rust/issues/46016>

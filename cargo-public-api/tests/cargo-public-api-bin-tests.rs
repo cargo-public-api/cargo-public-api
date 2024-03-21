@@ -176,8 +176,7 @@ fn renamed_binary_works_as_subcommand() {
 #[test]
 fn one_day_before_minimum_nightly_rust_version() {
     test_unusable_toolchain(
-        TestCmd::new()
-            .with_toolchain(&get_toolchain_one_day_before_minimal_toolchain())
+        TestCmd::with_proxy_toolchain(&get_toolchain_one_day_before_minimal_toolchain())
             .with_separate_target_dir(),
         &format!(
             "This version of `cargo public-api` requires at least:
@@ -197,9 +196,7 @@ fn one_day_before_minimum_nightly_rust_version() {
 #[test]
 fn compilation_error_toolchain() {
     test_unusable_toolchain(
-        TestCmd::new()
-            .with_toolchain(COMPILATION_ERROR_TOOLCHAIN)
-            .with_separate_target_dir(),
+        TestCmd::with_proxy_toolchain(COMPILATION_ERROR_TOOLCHAIN).with_separate_target_dir(),
         "generic associated types are unstable",
     );
 }
@@ -1346,12 +1343,6 @@ impl TestCmd {
     /// Disable colors to make asserts on output insensitive to color codes.
     fn without_cargo_colors(mut self) -> Self {
         self.cmd.env("CARGO_TERM_COLOR", "never");
-        self
-    }
-
-    fn with_toolchain(mut self, toolchain: &str) -> Self {
-        rustup_toolchain::install(toolchain).unwrap();
-        self.cmd.arg("--toolchain").arg(toolchain);
         self
     }
 

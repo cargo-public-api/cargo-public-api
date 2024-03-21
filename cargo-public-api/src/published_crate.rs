@@ -3,12 +3,13 @@
 //! project.
 
 use crate::vendor::crates_index;
-use crate::{Args, LATEST_VERSION_ARG};
+use crate::{Args, ArgsAndToolchain, LATEST_VERSION_ARG};
 use anyhow::{anyhow, Context, Result};
 use crates_index::{Crate, Version};
 use std::path::PathBuf;
 
-pub fn build_rustdoc_json(version: Option<&str>, args: &Args) -> Result<PathBuf> {
+pub fn build_rustdoc_json(version: Option<&str>, argst: &ArgsAndToolchain) -> Result<PathBuf> {
+    let args = &argst.args;
     let package_name = package_name_from_args(args).ok_or_else(|| anyhow!("You must specify a package with either `-p package-name` or `--manifest-path path/to/Cargo.toml`"))?;
     let crate_ = http_get_crate(&package_name, args.verbose)?;
     let crate_version = get_crate_version(&crate_, version)?;
@@ -30,7 +31,7 @@ pub fn build_rustdoc_json(version: Option<&str>, args: &Args) -> Result<PathBuf>
     // `args.target_dir` is set, both the dummy crate and the real crate will
     // write to the same JSON path since they have the same project name! That
     // won't work. So always clear the target dir before we use the builder.
-    let builder = crate::api_source::builder_from_args(args)
+    let builder = crate::api_source::builder_from_args(argst)
         .clear_target_dir()
         .all_features(false)
         .features(Vec::<&str>::new())

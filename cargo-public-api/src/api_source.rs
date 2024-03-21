@@ -6,13 +6,13 @@ use std::path::{Path, PathBuf};
 
 use public_api::{PublicApi, MINIMUM_NIGHTLY_RUST_VERSION};
 
-use crate::{git_utils, Args, Subcommand};
+use crate::{git_utils, Args, ArgsAndToolchain, Subcommand};
 
 /// Represents some place from which a public API can be obtained.
 /// Examples: a published crate, a git commit, an existing file.
 pub trait ApiSource {
     /// Do the work necessary to obtain the public API.
-    fn obtain_api(&self, args: &Args) -> Result<PublicApi>;
+    fn obtain_api(&self, argst: &ArgsAndToolchain) -> Result<PublicApi>;
 
     /// If this source modifies the local git repo. If that is the case, whoever
     /// uses this API source must make sure to restore the git repo to the
@@ -34,8 +34,8 @@ pub trait ApiSource {
 pub struct CurrentDir;
 
 impl ApiSource for CurrentDir {
-    fn obtain_api(&self, args: &Args) -> Result<PublicApi> {
-        public_api_for_current_dir(args)
+    fn obtain_api(&self, argst: &ArgsAndToolchain) -> Result<PublicApi> {
+        public_api_for_current_dir(argst)
     }
 }
 /// The API is obtained from a crate published to crates.io. This struct only
@@ -54,10 +54,10 @@ impl PublishedCrate {
 }
 
 impl ApiSource for PublishedCrate {
-    fn obtain_api(&self, args: &Args) -> Result<public_api::PublicApi> {
+    fn obtain_api(&self, argst: &ArgsAndToolchain) -> Result<public_api::PublicApi> {
         let rustdoc_json =
-            crate::published_crate::build_rustdoc_json(self.version.as_deref(), args)?;
-        public_api_from_rustdoc_json(rustdoc_json, args)
+            crate::published_crate::build_rustdoc_json(self.version.as_deref(), argst)?;
+        public_api_from_rustdoc_json(rustdoc_json, &argst.args)
     }
 }
 
@@ -76,9 +76,9 @@ impl Commit {
 }
 
 impl ApiSource for Commit {
-    fn obtain_api(&self, args: &Args) -> Result<PublicApi> {
-        crate::git_checkout(args, &self.commit)?;
-        public_api_for_current_dir(args)
+    fn obtain_api(&self, argst: &ArgsAndToolchain) -> Result<PublicApi> {
+        crate::git_checkout(&argst.args, &self.commit)?;
+        public_api_for_current_dir(argst)
     }
 
     fn changes_commit(&self) -> bool {
@@ -98,23 +98,23 @@ impl RustdocJson {
 }
 
 impl ApiSource for RustdocJson {
-    fn obtain_api(&self, args: &Args) -> Result<PublicApi> {
-        public_api_from_rustdoc_json(&self.path, args)
+    fn obtain_api(&self, argst: &ArgsAndToolchain) -> Result<PublicApi> {
+        public_api_from_rustdoc_json(&self.path, &argst.args)
     }
 }
 
 /// Builds the public API for the library in the current working directory. Note
 /// that we sometimes checkout a different commit before invoking this function,
 /// which means it will return the public API of that commit.
-fn public_api_for_current_dir(args: &Args) -> Result<PublicApi> {
-    let json_path = rustdoc_json_for_current_dir(args)?;
-    public_api_from_rustdoc_json(json_path, args)
+fn public_api_for_current_dir(argst: &ArgsAndToolchain) -> Result<PublicApi> {
+    let json_path = rustdoc_json_for_current_dir(argst)?;
+    public_api_from_rustdoc_json(json_path, &argst.args)
 }
 
 /// Builds the rustdoc JSON for the library in the current working directory.
 /// Also see [`public_api_for_current_dir()`].
-fn rustdoc_json_for_current_dir(args: &Args) -> Result<PathBuf> {
-    let builder = builder_from_args(args);
+fn rustdoc_json_for_current_dir(argst: &ArgsAndToolchain) -> Result<PathBuf> {
+    let builder = builder_from_args(argst);
     build_rustdoc_json(builder)
 }
 
@@ -136,14 +136,15 @@ fn public_api_builder_from_args(rustdoc_json: &Path, args: &Args) -> public_api:
 }
 
 /// Creates a rustdoc JSON builder based on the args to this program.
-pub fn builder_from_args(args: &Args) -> rustdoc_json::Builder {
+pub fn builder_from_args(argst: &ArgsAndToolchain) -> rustdoc_json::Builder {
+    let args = &argst.args;
     let mut builder = rustdoc_json::Builder::default()
         .manifest_path(&args.manifest_path)
         .verbose(args.verbose)
         .all_features(args.all_features)
         .no_default_features(args.no_default_features)
         .features(&args.features);
-    if let Some(toolchain) = &args.toolchain {
+    if let Some(toolchain) = &argst.toolchain {
         builder = builder.toolchain(toolchain);
     }
     if let Some(target_dir) = &args.target_dir {

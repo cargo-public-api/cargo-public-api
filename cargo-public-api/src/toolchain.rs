@@ -3,15 +3,8 @@
 ///
 /// See <https://rust-lang.github.io/rustup/overrides.html> for some
 /// more info of how different toolchains can be activated.
-pub fn is_probably_stable(toolchain: Option<&str>) -> bool {
-    let mut cmd = toolchain.map_or_else(
-        || std::process::Command::new("cargo"),
-        |toolchain| {
-            let mut cmd = std::process::Command::new("rustup");
-            cmd.args(["run", toolchain, "cargo"]);
-            cmd
-        },
-    );
+pub fn is_probably_stable() -> bool {
+    let mut cmd = std::process::Command::new("cargo");
     cmd.arg("--version");
 
     let Ok(output) = cmd.output() else {

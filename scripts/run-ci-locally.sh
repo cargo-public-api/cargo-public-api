@@ -18,6 +18,8 @@ cargo build --locked # Build with default features
 
 cargo test --locked
 
+scripts/cargo-test-without-rustup.sh
+
 if command -v cargo-audit >/dev/null; then
     scripts/cargo-audit.sh
 else

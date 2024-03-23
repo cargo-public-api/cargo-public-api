@@ -13,11 +13,15 @@ const OVERRIDDEN_TOOLCHAIN: Option<&str> = option_env!("RUSTDOC_JSON_OVERRIDDEN_
 /// Run `cargo rustdoc` to produce rustdoc JSON and return the path to the built
 /// file.
 pub fn run_cargo_rustdoc(options: Builder) -> Result<PathBuf, BuildError> {
-    let mut cmd = cargo_rustdoc_command(&options);
+    let mut cmd = cargo_rustdoc_command(&options)?;
     if options.verbose {
         eprintln!("Running: {:?}", cmd);
     }
-    if cmd.status()?.success() {
+    if cmd
+        .status()
+        .map_err(|e| BuildError::General(format!("Failed to run `{cmd:?}`: {e}")))?
+        .success()
+    {
         rustdoc_json_path_for_manifest_path(
             options.manifest_path,
             options.package.as_deref(),
@@ -40,7 +44,7 @@ pub fn run_cargo_rustdoc(options: Builder) -> Result<PathBuf, BuildError> {
 /// ```bash
 /// cargo +nightly rustdoc --lib --manifest-path Cargo.toml -- -Z unstable-options --output-format json --cap-lints warn
 /// ```
-fn cargo_rustdoc_command(options: &Builder) -> Command {
+fn cargo_rustdoc_command(options: &Builder) -> Result<Command, BuildError> {
     let Builder {
         toolchain: requested_toolchain,
         manifest_path,
@@ -58,16 +62,19 @@ fn cargo_rustdoc_command(options: &Builder) -> Command {
         cap_lints,
     } = options;
 
-    let mut command = OVERRIDDEN_TOOLCHAIN
-        .or(requested_toolchain.as_deref())
-        .map_or_else(
-            || Command::new("cargo"),
-            |toolchain| {
-                let mut cmd = Command::new("rustup");
-                cmd.args(["run", toolchain, "cargo"]);
-                cmd
-            },
-        );
+    let mut command = match OVERRIDDEN_TOOLCHAIN.or(requested_toolchain.as_deref()) {
+        None => Command::new("cargo"),
+        Some(toolchain) => {
+            if !rustup_installed() {
+                return Err(BuildError::General(String::from(
+                    "required program rustup not found in PATH. Is it installed?",
+                )));
+            }
+            let mut cmd = Command::new("rustup");
+            cmd.args(["run", toolchain, "cargo"]);
+            cmd
+        }
+    };
 
     command.arg("rustdoc");
     match package_target {
@@ -115,7 +122,7 @@ fn cargo_rustdoc_command(options: &Builder) -> Command {
     if let Some(cap_lints) = cap_lints {
         command.args(["--cap-lints", cap_lints]);
     }
-    command
+    Ok(command)
 }
 
 /// Returns `./target/doc/crate_name.json`. Also takes care of transforming
@@ -154,6 +161,15 @@ fn rustdoc_json_path_for_manifest_path(
     rustdoc_json_path.push(package_target_name);
     rustdoc_json_path.set_extension("json");
     Ok(rustdoc_json_path)
+}
+
+/// Checks if the `rustup` program can be found in `PATH`.
+pub fn rustup_installed() -> bool {
+    let mut check_rustup = std::process::Command::new("rustup");
+    check_rustup.arg("--version");
+    check_rustup.stdout(std::process::Stdio::null());
+    check_rustup.stderr(std::process::Stdio::null());
+    check_rustup.status().map(|s| s.success()).unwrap_or(false)
 }
 
 /// Typically returns the absolute path to the regular cargo `./target`

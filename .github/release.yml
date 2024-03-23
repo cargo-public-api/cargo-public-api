@@ -4,6 +4,9 @@ changelog:
     labels:
       - category-exclude
   categories:
+    - title: Breaking Changes
+      labels:
+        - category-breaking-change
     - title: New Features
       labels:
         - category-enhancement

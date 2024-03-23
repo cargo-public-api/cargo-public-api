@@ -1,4 +1,4 @@
-name: Release cargo-public-api + public-api
+name: Release cargo-public-api
 
 on:
   workflow_dispatch:
@@ -28,7 +28,7 @@ jobs:
           version=$(cargo read-manifest --manifest-path cargo-public-api/Cargo.toml | jq --raw-output .version)
           echo "GIT_TAG=v${version}" >> $GITHUB_OUTPUT
 
-      # Try to cargo publish rustdoc-json. If this succeeds we will tag the
+      # Try to cargo publish cargo-public-api. If this succeeds we will tag the
       # release. This is because we don't want to have a situation where a
       # version exists at crates.io but not as a git tag.
       - run: cargo publish -p cargo-public-api
@@ -55,7 +55,7 @@ jobs:
           version=$(cargo read-manifest --manifest-path cargo-public-api/Cargo.toml | jq --raw-output .version)
           echo "GIT_TAG=v${version}" >> $GITHUB_OUTPUT
 
-      - uses: softprops/action-gh-release@d4e8205d7e959a9107da6396278b2f1f07af0f9b # 2022-12-09
+      - uses: softprops/action-gh-release@d4e8205d7e959a9107da6396278b2f1f07af0f9b # 2022-12-09, audited by me personally
         with:
           tag_name: ${{ steps.version.outputs.GIT_TAG }}
           generate_release_notes: true

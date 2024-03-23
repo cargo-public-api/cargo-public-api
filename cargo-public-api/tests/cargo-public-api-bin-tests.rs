@@ -372,10 +372,6 @@ fn minimal_toolchain_works() {
 }
 
 #[test]
-#[cfg_attr(
-    target_family = "windows",
-    ignore = "suddenly started to fail in CI but not locally, no idea why"
-)]
 fn warn_when_using_beta() {
     let mut cmd = TestCmd::with_proxy_toolchain("beta").with_separate_target_dir();
 

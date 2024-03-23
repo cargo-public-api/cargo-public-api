@@ -26,7 +26,6 @@ jobs:
         id: version
         run: |
           version=$(cargo read-manifest --manifest-path rustdoc-json/Cargo.toml | jq --raw-output .version)
-          echo "VERSION=${version}" >> $GITHUB_OUTPUT
           echo "GIT_TAG=rustdoc-json-v${version}" >> $GITHUB_OUTPUT
 
       # Try to cargo publish rustdoc-json. If this succeeds we will tag the

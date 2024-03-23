@@ -1,4 +1,4 @@
-name: Release rustup-toolchain
+name: Release public-api
 
 on:
   workflow_dispatch:
@@ -14,7 +14,7 @@ jobs:
     needs: ci
     environment:
       name: crates.io
-      url: https://crates.io/crates/rustup-toolchain
+      url: https://crates.io/crates/public-api
     runs-on: ubuntu-latest
     permissions:
       contents: write # git push
@@ -25,13 +25,13 @@ jobs:
       - name: calculate version
         id: version
         run: |
-          version=$(cargo read-manifest --manifest-path rustup-toolchain/Cargo.toml | jq --raw-output .version)
-          echo "GIT_TAG=rustup-toolchain-v${version}" >> $GITHUB_OUTPUT
+          version=$(cargo read-manifest --manifest-path public-api/Cargo.toml | jq --raw-output .version)
+          echo "GIT_TAG=public-api-v${version}" >> $GITHUB_OUTPUT
 
-      # Try to cargo publish rustup-toolchain. If this succeeds we will tag the
+      # Try to cargo publish public-api. If this succeeds we will tag the
       # release. This is because we don't want to have a situation where a
       # version exists at crates.io but not as a git tag.
-      - run: cargo publish -p rustup-toolchain
+      - run: cargo publish -p public-api
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
 
@@ -41,5 +41,5 @@ jobs:
           git tag ${{ steps.version.outputs.GIT_TAG }}
           git push origin ${{ steps.version.outputs.GIT_TAG }}
 
-      # Do not create a GitHub release. That is only done for public-api and
-      # cargo-public-api. A git tag is sufficient for rustup-toolchain.
+      # Do not create a GitHub release. That is only done for cargo-public-api.
+      # A git tag is sufficient for public-api.

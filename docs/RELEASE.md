@@ -22,7 +22,7 @@ If `MINIMUM_NIGHTLY_RUST_VERSION` must be bumped then
 
 ### `cargo-public-api`
 
-1. First release `rustup-toolchain`, `rustdoc-json` and `public-api` if needed, in that order. See below.
+1. First release `rustup-toolchain`, `rustdoc-json` and `public-api` if needed, in that order. See below. Note: Because of circular dependencies you must release one helper package at a time from `main`. You can't update all crates in a single commit.
 1. Run `tag=$(git tag --sort=-creatordate | grep ^v | head -n1) ; git diff $tag` to see what is new in the release.
 1. For each PR included in the release, adjust its `[category-*]` according to [release.yml](https://github.com/Enselic/cargo-public-api/blob/main/.github/release.yml) and tweak the PR title if necessary to turn it into good release note entry.
 1. Preview the [auto-generated release notes](https://github.com/cargo-public-api/cargo-public-api.github.io/blob/main/release-notes-preview.md) which our CI [continuously](https://github.com/Enselic/cargo-public-api/actions/workflows/Preview-release-notes.yml) updates.

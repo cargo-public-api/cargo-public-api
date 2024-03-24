@@ -140,7 +140,7 @@ cargo public-api -sss
 
 # Compatibility Matrix
 
-| cargo-public-api | Understands the rustdoc JSON output of  |
+| Version          | Understands the rustdoc JSON output of  |
 | ---------------- | --------------------------------------- |
 | 0.32.x — 0.34.x  | nightly-2023-08-25 —                    |
 | 0.30.x — 0.31.x  | nightly-2023-05-24 — nightly-2023-08-24 |

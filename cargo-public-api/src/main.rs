@@ -2,7 +2,7 @@
 #![warn(clippy::all)]
 
 use std::ffi::OsString;
-use std::io::stdout;
+use std::io::{stderr, stdout};
 use std::path::{Path, PathBuf};
 
 use anyhow::{anyhow, bail, Result};
@@ -290,6 +290,13 @@ pub enum Action {
 const LATEST_VERSION_ARG: &str = "latest";
 
 fn main_() -> Result<()> {
+    // We use the same underlying tracing library as the Rust compiler. Run with
+    // the env var `RUST_LOG` set to e.g. `debug` to get started.
+    tracing_subscriber::fmt()
+        .with_env_filter(tracing_subscriber::EnvFilter::from_default_env())
+        .with_writer(stderr) // See https://github.com/tokio-rs/tracing/issues/2492
+        .init();
+
     let argst = get_args();
 
     // A list of actions to perform after we have listed or diffed. Typical

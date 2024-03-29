@@ -28,6 +28,16 @@ Please see [RELEASE.md](./RELEASE.md).
 
 # Maintainer tips
 
+## Debugging with `tracing`
+
+E.g.
+
+```sh
+RUST_LOG=debug cargo run -- --manifest-path test-apis/example_api-v0.1.0/Cargo.toml -sss
+```
+
+See the [tracing](https://docs.rs/tracing) docs for more info.
+
 ## Finding flaky tests
 
 Run this (WARNING: destructive) command for a while and then scroll back and look at the output. It will find flakiness both in the case of requiring a clean build, and in case of requiring an incremental build. You can also remove the `git clean` of course.

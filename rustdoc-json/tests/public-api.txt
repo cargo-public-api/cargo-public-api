@@ -41,6 +41,8 @@ impl<T> core::borrow::BorrowMut<T> for rustdoc_json::BuildError where T: core::m
 pub fn rustdoc_json::BuildError::borrow_mut(&mut self) -> &mut T
 impl<T> core::convert::From<T> for rustdoc_json::BuildError
 pub fn rustdoc_json::BuildError::from(t: T) -> T
+impl<T> tracing::instrument::Instrument for rustdoc_json::BuildError
+impl<T> tracing::instrument::WithSubscriber for rustdoc_json::BuildError
 #[non_exhaustive] pub enum rustdoc_json::PackageTarget
 pub rustdoc_json::PackageTarget::Bench(alloc::string::String)
 pub rustdoc_json::PackageTarget::Bin(alloc::string::String)
@@ -79,6 +81,8 @@ impl<T> core::borrow::BorrowMut<T> for rustdoc_json::PackageTarget where T: core
 pub fn rustdoc_json::PackageTarget::borrow_mut(&mut self) -> &mut T
 impl<T> core::convert::From<T> for rustdoc_json::PackageTarget
 pub fn rustdoc_json::PackageTarget::from(t: T) -> T
+impl<T> tracing::instrument::Instrument for rustdoc_json::PackageTarget
+impl<T> tracing::instrument::WithSubscriber for rustdoc_json::PackageTarget
 pub struct rustdoc_json::Builder
 impl rustdoc_json::Builder
 pub const fn rustdoc_json::Builder::all_features(self, all_features: bool) -> Self
@@ -97,7 +101,6 @@ pub const fn rustdoc_json::Builder::silent(self, silent: bool) -> Self
 pub fn rustdoc_json::Builder::target(self, target: alloc::string::String) -> Self
 pub fn rustdoc_json::Builder::target_dir(self, target_dir: impl core::convert::AsRef<std::path::Path>) -> Self
 pub fn rustdoc_json::Builder::toolchain(self, toolchain: impl core::convert::Into<alloc::string::String>) -> Self
-pub const fn rustdoc_json::Builder::verbose(self, verbose: bool) -> Self
 impl core::clone::Clone for rustdoc_json::Builder
 pub fn rustdoc_json::Builder::clone(&self) -> rustdoc_json::Builder
 impl core::default::Default for rustdoc_json::Builder
@@ -130,3 +133,5 @@ impl<T> core::borrow::BorrowMut<T> for rustdoc_json::Builder where T: core::mark
 pub fn rustdoc_json::Builder::borrow_mut(&mut self) -> &mut T
 impl<T> core::convert::From<T> for rustdoc_json::Builder
 pub fn rustdoc_json::Builder::from(t: T) -> T
+impl<T> tracing::instrument::Instrument for rustdoc_json::Builder
+impl<T> tracing::instrument::WithSubscriber for rustdoc_json::Builder

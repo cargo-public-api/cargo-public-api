@@ -140,7 +140,6 @@ pub fn builder_from_args(argst: &ArgsAndToolchain) -> rustdoc_json::Builder {
     let args = &argst.args;
     let mut builder = rustdoc_json::Builder::default()
         .manifest_path(&args.manifest_path)
-        .verbose(args.verbose)
         .all_features(args.all_features)
         .no_default_features(args.no_default_features)
         .features(&args.features);

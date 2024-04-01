@@ -857,6 +857,18 @@ fn diff_against_published_version() {
         .success();
 }
 
+#[test]
+fn diff_against_published_version_with_lib_name_different_from_package_name() {
+    let mut cmd = TestCmd::new();
+    cmd.arg("--manifest-path");
+    cmd.arg("../test-apis/other-lib-name/Cargo.toml");
+    cmd.arg("diff");
+    cmd.arg("0.1.0");
+    cmd.assert()
+        .stdout_or_update("./expected-output/other-lib-name-diff.txt")
+        .success();
+}
+
 /// Tests that we can diff between two published versions of an arbitrary crate
 /// that does not need to be in the current workspace.
 #[test]

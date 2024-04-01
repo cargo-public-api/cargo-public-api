@@ -141,10 +141,7 @@ fn rustdoc_json_path_for_manifest_path(
 
     // get the name of the crate/binary/example/test/bench
     let package_target_name = match package_target {
-        PackageTarget::Lib => match package {
-            Some(package) => package.to_owned(),
-            None => package_name(&manifest_path)?,
-        },
+        PackageTarget::Lib => library_name(manifest_path, package)?,
         PackageTarget::Bin(package)
         | PackageTarget::Example(package)
         | PackageTarget::Test(package)
@@ -182,14 +179,40 @@ fn target_directory(manifest_path: impl AsRef<Path>) -> Result<PathBuf, BuildErr
 }
 
 /// Figures out the name of the library crate corresponding to the given
-/// `Cargo.toml` manifest path.
-fn package_name(manifest_path: impl AsRef<Path>) -> Result<String, BuildError> {
-    let manifest = cargo_manifest::Manifest::from_path(manifest_path.as_ref())?;
-    let package_name = manifest
-        .package
-        .ok_or_else(|| BuildError::VirtualManifest(manifest_path.as_ref().to_owned()))?
-        .name;
-    Ok(manifest.lib.and_then(|p| p.name).unwrap_or(package_name))
+/// `Cargo.toml` and `package_name` (in case Cargo.toml is a workspace root).
+fn library_name(
+    manifest_path: impl AsRef<Path>,
+    package_name: Option<&str>,
+) -> Result<String, BuildError> {
+    let package_name = if let Some(package_name) = package_name {
+        package_name.to_owned()
+    } else {
+        // We must figure out the package name ourselves from the manifest.
+        let manifest = cargo_manifest::Manifest::from_path(manifest_path.as_ref())?;
+        manifest
+            .package
+            .ok_or_else(|| BuildError::VirtualManifest(manifest_path.as_ref().to_owned()))?
+            .name
+            .to_owned()
+    };
+
+    let mut metadata_cmd = cargo_metadata::MetadataCommand::new();
+    metadata_cmd.manifest_path(manifest_path.as_ref());
+    let metadata = metadata_cmd.exec()?;
+
+    let package = metadata
+        .packages
+        .iter()
+        .find(|p| p.name == package_name)
+        .ok_or_else(|| BuildError::VirtualManifest(manifest_path.as_ref().to_owned()))?;
+
+    for target in &package.targets {
+        if target.kind.iter().map(|s| s.as_str()).any(|s| s == "lib") {
+            return Ok(target.name.to_owned());
+        }
+    }
+
+    Ok(package.name.clone())
 }
 
 /// Builds rustdoc JSON. There are many build options. Refer to the docs to

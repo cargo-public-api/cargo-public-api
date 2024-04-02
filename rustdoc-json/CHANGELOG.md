@@ -2,6 +2,7 @@
 
 ## v0.9.0
 * Remove `rustdoc_json::Builder::verbose()` and use the `tracing` crate for debug logging instead.
+* Print a nice error message if `rustup` is not in `PATH`.
 * Bump cargo-manifest from v0.13.0 to 0.14.0.
 
 ## v0.8.9

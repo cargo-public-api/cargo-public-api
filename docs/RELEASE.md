@@ -40,7 +40,7 @@ If `MINIMUM_NIGHTLY_RUST_VERSION` must be bumped then
 1. Bump version with `cargo set-version -p public-api x.y.z`
     * If you bump 0.x.0 version, also update the [compatibility matrix](https://github.com/Enselic/cargo-public-api#compatibility-matrix).
     * If `MINIMUM_NIGHTLY_RUST_VERSION` must be bumped, see [notes](./RELEASE.md#bumping-minimum_nightly_rust_version).
-1. Run https://github.com/Enselic/cargo-public-api/actions/workflows/Release-rustdoc-json.yml workflow from `main` ([instructions](https://github.com/Enselic/cargo-public-api/blob/main/docs/development.md#how-to-trigger-main-branch-workflow))
+1. Run https://github.com/Enselic/cargo-public-api/actions/workflows/Release-public-api.yml workflow from `main` ([instructions](https://github.com/Enselic/cargo-public-api/blob/main/docs/development.md#how-to-trigger-main-branch-workflow))
 1. Done!
 
 ### `rustdoc-json`

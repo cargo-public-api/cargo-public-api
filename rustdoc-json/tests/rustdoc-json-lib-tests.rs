@@ -102,25 +102,3 @@ fn silent_build() {
             "Found `{stderr_substring_if_not_silent}` in stderr, but stderr should be silent!"
         ));
 }
-
-#[test]
-fn verbose_build() {
-    use assert_cmd::Command;
-    use predicates::str::contains;
-
-    let stderr_substring_if_verbose = "Running: ";
-    Command::cargo_bin("test-verbose-build")
-        .unwrap()
-        .arg("--verbose")
-        .assert()
-        .stderr(contains(stderr_substring_if_verbose))
-        .failure();
-
-    Command::cargo_bin("test-verbose-build")
-        .unwrap()
-        .assert()
-        .try_stderr(contains(stderr_substring_if_verbose))
-        .expect_err(&format!(
-            "Found `{stderr_substring_if_verbose}` in stderr without --verbose!"
-        ));
-}

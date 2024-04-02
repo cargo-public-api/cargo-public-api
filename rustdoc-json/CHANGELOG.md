@@ -1,5 +1,9 @@
 # rustdoc-json
 
+## v0.9.0
+* Remove `rustdoc_json::Builder::verbose()` and use the `tracing` crate for debug logging instead.
+* Bump cargo-manifest from v0.13.0 to 0.14.0.
+
 ## v0.8.9
 * Bump deps. Most notably cargo-manifest from 0.12.0 to 0.13.0.
 

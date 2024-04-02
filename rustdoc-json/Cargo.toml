@@ -17,6 +17,10 @@ serde = { version = "1.0.179", features = ["derive"] }
 thiserror = "1.0.44"
 toml = "0.8.12"
 
+[dependencies.tracing]
+version = "0.1.40"
+features = ["attributes"]
+
 [dev-dependencies]
 assert_cmd = "2.0.14"
 expect-test = "1.4.1"

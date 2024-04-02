@@ -169,6 +169,24 @@ fn renamed_binary_works_as_subcommand() {
         .success();
 }
 
+#[test]
+fn debug_logging() {
+    // From `info!("Running {cmd:?}")` at rustdoc-json/src/builder.rs.
+    let indication_1 = "Running ";
+
+    // From `#[instrument(...)]` on `fn rustdoc_json_path_for_manifest_path()`.
+    let indication_2 = "rustdoc_json_path_for_manifest_path";
+
+    let mut cmd = TestCmd::new().with_test_repo();
+    cmd.cmd().env("RUST_LOG", "debug");
+    cmd.assert()
+        .stderr(
+            predicates::str::contains(indication_1).and(predicates::str::contains(indication_2)),
+        )
+        .stdout_or_update("./expected-output/test_repo_api_latest.txt")
+        .success();
+}
+
 /// This allows us to test two things, namely that
 /// * [`MINIMUM_NIGHTLY_RUST_VERSION`] is not set too high
 /// * `cargo pubic-api` suggests the nightly toolchain might be too old when a
@@ -1436,6 +1454,10 @@ impl TestCmd {
     pub fn args(&mut self, args: impl IntoIterator<Item = impl AsRef<OsStr>>) -> &mut Self {
         self.cmd.args(args);
         self
+    }
+
+    pub fn cmd(&mut self) -> &mut Command {
+        &mut self.cmd
     }
 
     pub fn assert(&mut self) -> Assert {

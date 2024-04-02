@@ -1,4 +1,5 @@
 use super::BuildError;
+use tracing::*;
 
 use std::{
     path::{Path, PathBuf},
@@ -14,16 +15,14 @@ const OVERRIDDEN_TOOLCHAIN: Option<&str> = option_env!("RUSTDOC_JSON_OVERRIDDEN_
 /// file.
 pub fn run_cargo_rustdoc(options: Builder) -> Result<PathBuf, BuildError> {
     let mut cmd = cargo_rustdoc_command(&options)?;
-    if options.verbose {
-        eprintln!("Running: {:?}", cmd);
-    }
+    info!("Running {cmd:?}");
     if cmd
         .status()
         .map_err(|e| BuildError::General(format!("Failed to run `{cmd:?}`: {e}")))?
         .success()
     {
         rustdoc_json_path_for_manifest_path(
-            options.manifest_path,
+            &options.manifest_path,
             options.package.as_deref(),
             &options.package_target,
             options.target_dir.as_deref(),
@@ -52,7 +51,6 @@ fn cargo_rustdoc_command(options: &Builder) -> Result<Command, BuildError> {
         target,
         quiet,
         silent,
-        verbose: _,
         no_default_features,
         all_features,
         features,
@@ -127,8 +125,9 @@ fn cargo_rustdoc_command(options: &Builder) -> Result<Command, BuildError> {
 
 /// Returns `./target/doc/crate_name.json`. Also takes care of transforming
 /// `crate-name` to `crate_name`. Also handles `[lib] name = "foo"`.
+#[instrument(ret(level = Level::DEBUG))]
 fn rustdoc_json_path_for_manifest_path(
-    manifest_path: impl AsRef<Path>,
+    manifest_path: &Path,
     package: Option<&str>,
     package_target: &PackageTarget,
     target_dir: Option<&Path>,
@@ -136,7 +135,7 @@ fn rustdoc_json_path_for_manifest_path(
 ) -> Result<PathBuf, BuildError> {
     let target_dir = match target_dir {
         Some(target_dir) => target_dir.to_owned(),
-        None => target_directory(&manifest_path)?,
+        None => target_directory(manifest_path)?,
     };
 
     // get the name of the crate/binary/example/test/bench
@@ -225,7 +224,6 @@ pub struct Builder {
     target: Option<String>,
     quiet: bool,
     silent: bool,
-    verbose: bool,
     no_default_features: bool,
     all_features: bool,
     features: Vec<String>,
@@ -244,7 +242,6 @@ impl Default for Builder {
             target: None,
             quiet: false,
             silent: false,
-            verbose: false,
             no_default_features: false,
             all_features: false,
             features: vec![],
@@ -316,15 +313,6 @@ impl Builder {
     #[must_use]
     pub const fn silent(mut self, silent: bool) -> Self {
         self.silent = silent;
-        self
-    }
-
-    /// Whether or not to print verbose output for debugging purposes on stderr.
-    /// The format of the output can change in patch releases. Do not rely on it
-    /// in any way. Default: `false`
-    #[must_use]
-    pub const fn verbose(mut self, verbose: bool) -> Self {
-        self.verbose = verbose;
         self
     }
 

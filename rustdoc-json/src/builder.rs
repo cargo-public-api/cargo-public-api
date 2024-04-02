@@ -142,10 +142,10 @@ fn rustdoc_json_path_for_manifest_path(
     // get the name of the crate/binary/example/test/bench
     let package_target_name = match package_target {
         PackageTarget::Lib => library_name(manifest_path, package)?,
-        PackageTarget::Bin(package)
-        | PackageTarget::Example(package)
-        | PackageTarget::Test(package)
-        | PackageTarget::Bench(package) => package.clone(),
+        PackageTarget::Bin(name)
+        | PackageTarget::Example(name)
+        | PackageTarget::Test(name)
+        | PackageTarget::Bench(name) => name.clone(),
     }
     .replace('-', "_");
 

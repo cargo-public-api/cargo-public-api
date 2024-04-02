@@ -175,7 +175,7 @@ pub enum Foo {
     // Note: The test will pass with assert_public_api_diff() because it uses
     // [`public_api::diff::PublicApiDiff::between`] which is smart enough to
     // realize there is no diff. But we also want to make sure the above case
-    // does not resut in any textual diff either.
+    // does not result in any textual diff either.
     assert_no_textual_public_api_diff(v1.json_path, v2.json_path);
 }
 

@@ -34,11 +34,11 @@ mod vendor;
 #[command(flatten_help = true)]
 pub struct Args {
     /// Path to `Cargo.toml`.
-    #[arg(long, value_name = "PATH", default_value = "Cargo.toml")]
+    #[arg(global = true, long, value_name = "PATH", default_value = "Cargo.toml")]
     manifest_path: PathBuf,
 
     /// Name of package in workspace to list or diff the public API for.
-    #[arg(long, short)]
+    #[arg(global = true, long, short)]
     package: Option<String>,
 
     /// Omit noisy items. Can be used more than once.
@@ -49,34 +49,34 @@ pub struct Args {
     /// | -ss   | --omit blanket-impls,auto-trait-impls                    |
     /// | -sss  | --omit blanket-impls,auto-trait-impls,auto-derived-impls |
     #[clap(verbatim_doc_comment)]
-    #[arg(short, long, action = clap::ArgAction::Count)]
+    #[arg(global = true, short, long, action = clap::ArgAction::Count)]
     simplified: u8,
 
     /// Omit specified items.
-    #[arg(long, value_enum, value_delimiter = ',')]
+    #[arg(global = true, long, value_enum, value_delimiter = ',')]
     omit: Option<Vec<Omit>>,
 
     /// Space or comma separated list of features to activate
-    #[arg(long, short = 'F', num_args = 1..)]
+    #[arg(global = true, long, short = 'F', num_args = 1..)]
     features: Vec<String>,
 
     /// Activate all available features
-    #[arg(long)]
+    #[arg(global = true, long)]
     all_features: bool,
 
     /// Do not activate the `default` feature
-    #[arg(long)]
+    #[arg(global = true, long)]
     no_default_features: bool,
 
     /// Build for the target triple
-    #[arg(long)]
+    #[arg(global = true, long)]
     target: Option<String>,
 
     /// When to color the output.
     ///
     /// By default, `--color=auto` is active. Using just `--color` without an
     /// arg is equivalent to `--color=always`.
-    #[arg(long, value_enum)]
+    #[arg(global = true, long, value_enum)]
     color: Option<Option<Color>>,
 
     /// List the public API based on the given rustdoc JSON file.
@@ -91,31 +91,31 @@ pub struct Args {
     ///
     ///     cargo public-api --rustdoc-json ~/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/share/doc/rust/json/std.json
     ///
-    #[arg(long, value_name = "RUSTDOC_JSON_PATH", hide = true)]
+    #[arg(global = true, long, value_name = "RUSTDOC_JSON_PATH", hide = true)]
     rustdoc_json: Option<String>,
 
     /// Show detailed info about processing.
     ///
     /// For debugging purposes. The output is not stable and can change across
     /// patch versions.
-    #[arg(long, hide = true)]
+    #[arg(global = true, long, hide = true)]
     verbose: bool,
 
     /// Show the hidden "sorting prefix" that makes items nicely grouped
     ///
     /// Only intended for debugging this tool.
-    #[arg(long, hide = true)]
+    #[arg(global = true, long, hide = true)]
     debug_sorting: bool,
 
     /// Where to put rustdoc JSON build artifacts.
     ///
     /// Hidden by default because it will typically not be needed by users.
     /// Mainly useful to allow tests to run in parallel.
-    #[arg(long, value_name = "PATH", hide = true)]
+    #[arg(global = true, long, value_name = "PATH", hide = true)]
     target_dir: Option<PathBuf>,
 
     /// Forwarded to rustdoc JSON build command
-    #[arg(long, hide = true)]
+    #[arg(global = true, long, hide = true)]
     cap_lints: Option<String>,
 
     #[command(subcommand)]

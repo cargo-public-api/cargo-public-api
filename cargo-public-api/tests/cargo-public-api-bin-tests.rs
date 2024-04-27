@@ -799,6 +799,17 @@ fn diff_public_items_with_color() {
 }
 
 #[test]
+fn diff_public_items_with_color_arg_after_diff_subcommand() {
+    let mut cmd = TestCmd::new().with_test_repo();
+    cmd.arg("diff");
+    cmd.arg("v0.1.0..v0.2.0");
+    cmd.arg("--color=always");
+    cmd.assert()
+        .stdout_or_update("./expected-output/example_api_diff_v0.1.0_to_v0.2.0_colored.txt")
+        .success();
+}
+
+#[test]
 fn list_public_items_with_color() {
     list_public_items_with_color_impl("--color=always");
 }
@@ -943,6 +954,18 @@ fn diff_published_explicit_package() {
     cmd.arg("example_api");
     cmd.arg("diff");
     cmd.arg("0.1.0");
+    cmd.assert()
+        .stdout_or_update("./expected-output/diff_published.txt")
+        .success();
+}
+
+#[test]
+fn diff_published_explicit_package_after_diff_subcommand() {
+    let mut cmd = TestCmd::new().with_test_repo();
+    cmd.arg("diff");
+    cmd.arg("0.1.0");
+    cmd.arg("-p");
+    cmd.arg("example_api");
     cmd.assert()
         .stdout_or_update("./expected-output/diff_published.txt")
         .success();

@@ -3,7 +3,7 @@ https://github.com/Enselic/cargo-public-api
 
 Usage: cargo public-api [OPTIONS]
        cargo public-api diff [OPTIONS] [ARGS]...
-       cargo public-api completions <SHELL>
+       cargo public-api completions [OPTIONS] <SHELL>
        cargo public-api help [COMMAND]...
 
 Options:

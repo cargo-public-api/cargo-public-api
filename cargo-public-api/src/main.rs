@@ -22,6 +22,7 @@ mod plain;
 mod published_crate;
 mod toolchain;
 mod vendor;
+mod json;
 
 #[derive(Parser, Debug)]
 #[command(
@@ -118,8 +119,18 @@ pub struct Args {
     #[arg(global = true, long, hide = true)]
     cap_lints: Option<String>,
 
+    /// The format to print the output with
+    #[arg(global = true, long, value_enum, default_value = "stdout")]
+    output: OutputFormat,
+
     #[command(subcommand)]
     subcommand: Option<Subcommand>,
+}
+
+#[derive(Debug, Copy, Clone, PartialEq, Eq, clap::ValueEnum)]
+enum OutputFormat {
+    Stdout,
+    Json,
 }
 
 /// We don't want `toolchain` in [Args] because we only support the `cargo
@@ -436,11 +447,18 @@ fn check_diff(deny: &[DenyMethod], diff: &PublicApiDiff) -> Result<()> {
 }
 
 fn print_public_items(argst: &ArgsAndToolchain, public_api: &dyn ApiSource) -> Result<()> {
-    Plain::print_items(
-        &mut stdout(),
-        &argst.args,
-        public_api.obtain_api(argst)?.items(),
-    )?;
+    match argst.args.output {
+        OutputFormat::Stdout => {
+            Plain::print_items(
+                &mut stdout(),
+                &argst.args,
+                public_api.obtain_api(argst)?.items(),
+            )?;
+        }
+        OutputFormat::Json => {
+            crate::json::Json::print_items(&mut stdout(), public_api.obtain_api(argst)?)?;
+        }
+    }
 
     Ok(())
 }
@@ -462,7 +480,10 @@ fn print_diff(
     let new = new.obtain_api(argst)?;
     let diff = PublicApiDiff::between(old, new);
 
-    Plain::print_diff(&mut stdout(), &argst.args, &diff)?;
+    match argst.args.output {
+        OutputFormat::Stdout => Plain::print_diff(&mut stdout(), &argst.args, &diff)?,
+        OutputFormat::Json => crate::json::Json::print_diff(&mut stdout(), &diff)?,
+    }
 
     if let Some(Some(deny)) = argst.args.diff_args().map(|a| &a.deny) {
         final_actions.push(check_diff(deny, diff));

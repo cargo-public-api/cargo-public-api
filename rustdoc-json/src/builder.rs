@@ -1,6 +1,7 @@
 use super::BuildError;
 use tracing::*;
 
+use std::io::Write;
 use std::{
     path::{Path, PathBuf},
     process::Command,
@@ -11,16 +12,42 @@ use std::{
 /// specify what toolchain, by temporarily changing this.
 const OVERRIDDEN_TOOLCHAIN: Option<&str> = option_env!("RUSTDOC_JSON_OVERRIDDEN_TOOLCHAIN_HACK"); // Some("nightly-2022-07-16");
 
-/// Run `cargo rustdoc` to produce rustdoc JSON and return the path to the built
-/// file.
-pub fn run_cargo_rustdoc(options: Builder) -> Result<PathBuf, BuildError> {
+struct CaptureOutput<O, E> {
+    stdout: O,
+    stderr: E,
+}
+
+fn run_cargo_rustdoc<O, E>(
+    options: Builder,
+    capture_output: Option<CaptureOutput<O, E>>,
+) -> Result<PathBuf, BuildError>
+where
+    O: Write,
+    E: Write,
+{
     let mut cmd = cargo_rustdoc_command(&options)?;
     info!("Running {cmd:?}");
-    if cmd
-        .status()
-        .map_err(|e| BuildError::General(format!("Failed to run `{cmd:?}`: {e}")))?
-        .success()
-    {
+
+    let status = match capture_output {
+        Some(CaptureOutput {
+            mut stdout,
+            mut stderr,
+        }) => {
+            let cmd_result = cmd
+                .output()
+                .map_err(|e| BuildError::General(format!("Failed to run `{cmd:?}`: {e}")))?;
+
+            stdout.write_all(&cmd_result.stdout)?;
+            stderr.write_all(&cmd_result.stderr)?;
+
+            cmd_result.status
+        }
+        None => cmd
+            .status()
+            .map_err(|e| BuildError::General(format!("Failed to run `{cmd:?}`: {e}")))?,
+    };
+
+    if status.success() {
         rustdoc_json_path_for_manifest_path(
             &options.manifest_path,
             options.package.as_deref(),
@@ -33,7 +60,7 @@ pub fn run_cargo_rustdoc(options: Builder) -> Result<PathBuf, BuildError> {
         if manifest.package.is_none() && manifest.workspace.is_some() {
             Err(BuildError::VirtualManifest(options.manifest_path))
         } else {
-            Err(BuildError::General(String::from("See above")))
+            Err(BuildError::CrateBuildError)
         }
     }
 }
@@ -51,6 +78,7 @@ fn cargo_rustdoc_command(options: &Builder) -> Result<Command, BuildError> {
         target,
         quiet,
         silent,
+        color,
         no_default_features,
         all_features,
         features,
@@ -93,6 +121,11 @@ fn cargo_rustdoc_command(options: &Builder) -> Result<Command, BuildError> {
         command.stdout(std::process::Stdio::null());
         command.stderr(std::process::Stdio::null());
     }
+    match *color {
+        Color::Always => command.arg("--color").arg("always"),
+        Color::Never => command.arg("--color").arg("never"),
+        Color::Auto => command.arg("--color").arg("auto"),
+    };
     command.arg("--manifest-path");
     command.arg(manifest_path);
     if let Some(target) = target {
@@ -214,6 +247,17 @@ fn library_name(
     Ok(package.name.clone())
 }
 
+/// Color configuration for the output of `cargo rustdoc`.
+#[derive(Clone, Copy, Debug)]
+pub enum Color {
+    /// Always output colors.
+    Always,
+    /// Never output colors.
+    Never,
+    /// Cargo will decide whether to output colors based on the tty type.
+    Auto,
+}
+
 /// Builds rustdoc JSON. There are many build options. Refer to the docs to
 /// learn about them all. See [top-level docs](crate) for an example on how to use this builder.
 #[derive(Clone, Debug)]
@@ -224,6 +268,7 @@ pub struct Builder {
     target: Option<String>,
     quiet: bool,
     silent: bool,
+    color: Color,
     no_default_features: bool,
     all_features: bool,
     features: Vec<String>,
@@ -242,6 +287,7 @@ impl Default for Builder {
             target: None,
             quiet: false,
             silent: false,
+            color: Color::Auto,
             no_default_features: false,
             all_features: false,
             features: vec![],
@@ -316,6 +362,13 @@ impl Builder {
         self
     }
 
+    /// Color configuration for the output of `cargo rustdoc`.
+    #[must_use]
+    pub const fn color(mut self, color: Color) -> Self {
+        self.color = color;
+        self
+    }
+
     /// Whether or not to pass `--target` to `cargo rustdoc`. Default: `None`
     #[must_use]
     pub fn target(mut self, target: String) -> Self {
@@ -375,8 +428,12 @@ impl Builder {
         self
     }
 
-    /// Generate rustdoc JSON for a library crate. Returns the path to the freshly
+    /// Generate rustdoc JSON for a crate. Returns the path to the freshly
     /// built rustdoc JSON file.
+    ///
+    /// This method will print the stdout and stderr of the `cargo rustdoc` command to the stdout
+    /// and stderr of the calling process. If you want to capture the output, use
+    /// [`Builder::build_with_captured_output()`].
     ///
     /// See [top-level docs](crate) for an example on how to use it.
     ///
@@ -385,11 +442,50 @@ impl Builder {
     /// E.g. if building the JSON fails or if the manifest path does not exist or is
     /// invalid.
     pub fn build(self) -> Result<PathBuf, BuildError> {
-        run_cargo_rustdoc(self)
+        run_cargo_rustdoc::<std::io::Sink, std::io::Sink>(self, None)
+    }
+
+    /// Generate rustdoc JSON for a crate. This works like [`Builder::build()`], but will
+    /// capture the stdout and stderr of the `cargo rustdoc` command. The output will be written to
+    /// the `stdout` and `stderr` parameters. In particular, potential warnings and errors emitted
+    /// by `cargo rustdoc` will be captured to `stderr`. This can be useful if you want to present
+    /// these errors to the user only when the build failed. Here's an example of how that might
+    /// look like:
+    ///
+    /// ```no_run
+    /// # use std::path::PathBuf;
+    /// # use rustdoc_json::BuildError;
+    /// #
+    /// let mut stderr: Vec<u8> = Vec::new();
+    ///
+    /// let result: Result<PathBuf, BuildError> = rustdoc_json::Builder::default()
+    ///     .toolchain("nightly")
+    ///     .manifest_path("Cargo.toml")
+    ///     .build_with_captured_output(std::io::sink(), &mut stderr);
+    ///
+    /// match result {
+    ///     Err(BuildError::CrateBuildError) => {
+    ///         eprintln!("Crate failed to build:\n{}", String::from_utf8_lossy(&stderr));
+    ///     }
+    ///     Err(e) => {
+    ///        eprintln!("Error generating the rustdoc json: {}", e);
+    ///     }
+    ///     Ok(json_path) => {
+    ///         // Do something with the json_path.
+    ///     }
+    /// }
+    /// ```
+    pub fn build_with_captured_output(
+        self,
+        stdout: impl Write,
+        stderr: impl Write,
+    ) -> Result<PathBuf, BuildError> {
+        let capture_output = CaptureOutput { stdout, stderr };
+        run_cargo_rustdoc(self, Some(capture_output))
     }
 }
 
-/// The part of of the package to document
+/// The part of the package to document
 #[derive(Default, Debug, Clone)]
 #[non_exhaustive]
 pub enum PackageTarget {

@@ -23,7 +23,7 @@
 use std::path::PathBuf;
 
 mod builder;
-pub use builder::{Builder, PackageTarget};
+pub use builder::{Builder, Color, PackageTarget};
 
 /// Represents all errors that can occur when using [`Builder::build()`].
 #[derive(thiserror::Error, Debug)]
@@ -37,6 +37,13 @@ pub enum BuildError {
     /// A general error. Refer to the attached error message for more info.
     #[error("Failed to build rustdoc JSON: {0}")]
     General(String),
+
+    /// An error originating from building the crate's documentation.
+    ///
+    /// In this case the user will see the errors on stderr, unless the `cargo rustdoc` output is
+    /// captured (by using [`Builder::build_with_captured_output()`]).
+    #[error("Failed to build crate (see stderr)")]
+    CrateBuildError,
 
     /// An error originating from `cargo-manifest`.
     #[error(transparent)]

@@ -34,7 +34,7 @@ pretty_assertions = "1.2.3"
 tempfile = "3.10.1"
 
 [dev-dependencies.itertools]
-version = "0.12.1"
+version = "0.13.0"
 default-features = false
 
 [dev-dependencies.rustdoc-json]

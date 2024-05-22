@@ -243,7 +243,7 @@ fn invocation_without_rustup_in_path() {
 fn custom_toolchain_via_proxy() {
     test_unusable_toolchain(
         TestCmd::with_proxy_toolchain(COMPILATION_ERROR_TOOLCHAIN).with_separate_target_dir(),
-        "Failed to build crate",
+        "Failed to build rustdoc JSON",
     );
 }
 

@@ -119,7 +119,7 @@ fn capture_output() {
 
     assert!(matches!(
         result,
-        Err(rustdoc_json::BuildError::CrateBuildError)
+        Err(rustdoc_json::BuildError::BuildRustdocJsonError)
     ));
     assert!(stdout.is_empty());
 

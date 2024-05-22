@@ -33,18 +33,20 @@ where
             mut stdout,
             mut stderr,
         }) => {
-            let cmd_result = cmd
-                .output()
-                .map_err(|e| BuildError::General(format!("Failed to run `{cmd:?}`: {e}")))?;
-
-            stdout.write_all(&cmd_result.stdout)?;
-            stderr.write_all(&cmd_result.stderr)?;
-
-            cmd_result.status
+            let output = cmd.output().map_err(|e| {
+                BuildError::CommandExecutionError(format!("Failed to run `{cmd:?}`: {e}"))
+            })?;
+            stdout.write_all(&output.stdout).map_err(|e| {
+                BuildError::CapturedOutputError(format!("Failed to write stdout: {e}"))
+            })?;
+            stderr.write_all(&output.stderr).map_err(|e| {
+                BuildError::CapturedOutputError(format!("Failed to write stderr: {e}"))
+            })?;
+            output.status
         }
-        None => cmd
-            .status()
-            .map_err(|e| BuildError::General(format!("Failed to run `{cmd:?}`: {e}")))?,
+        None => cmd.status().map_err(|e| {
+            BuildError::CommandExecutionError(format!("Failed to run `{cmd:?}`: {e}"))
+        })?,
     };
 
     if status.success() {
@@ -60,7 +62,7 @@ where
         if manifest.package.is_none() && manifest.workspace.is_some() {
             Err(BuildError::VirtualManifest(options.manifest_path))
         } else {
-            Err(BuildError::CrateBuildError)
+            Err(BuildError::BuildRustdocJsonError)
         }
     }
 }
@@ -464,7 +466,7 @@ impl Builder {
     ///     .build_with_captured_output(std::io::sink(), &mut stderr);
     ///
     /// match result {
-    ///     Err(BuildError::CrateBuildError) => {
+    ///     Err(BuildError::BuildRustdocJsonError) => {
     ///         eprintln!("Crate failed to build:\n{}", String::from_utf8_lossy(&stderr));
     ///     }
     ///     Err(e) => {

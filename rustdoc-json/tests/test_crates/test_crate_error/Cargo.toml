@@ -1,0 +1,9 @@
+[package]
+description = "For testing rustdoc-json"
+name = "test_crate_error"
+version = "0.1.0"
+edition = "2021"
+
+# Exclude this package from the top level workspace by declaring our own empty
+# workspace
+[workspace]

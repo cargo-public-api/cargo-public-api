@@ -102,3 +102,32 @@ fn silent_build() {
             "Found `{stderr_substring_if_not_silent}` in stderr, but stderr should be silent!"
         ));
 }
+
+#[test]
+fn capture_output() {
+    let target_dir = tempfile::tempdir().unwrap();
+    let mut stdout = vec![];
+    let mut stderr = vec![];
+
+    let result = rustdoc_json::Builder::default()
+        .toolchain("nightly")
+        .manifest_path("tests/test_crates/test_crate_error/Cargo.toml")
+        .quiet(true) // Make it less noisy to run tests
+        .color(rustdoc_json::Color::Never)
+        .target_dir(&target_dir)
+        .build_with_captured_output(&mut stdout, &mut stderr);
+
+    assert!(matches!(
+        result,
+        Err(rustdoc_json::BuildError::BuildRustdocJsonError)
+    ));
+    assert!(stdout.is_empty());
+
+    let stderr = String::from_utf8(stderr).unwrap();
+
+    assert!(
+        stderr.contains("error: this file contains an unclosed delimiter"),
+        "Got stderr: {}",
+        stderr,
+    );
+}

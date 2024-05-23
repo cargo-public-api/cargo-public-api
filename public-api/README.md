@@ -20,7 +20,7 @@ With a regular `cargo test` that you run in CI you will be able to
 * prevent accidental changes to your public API
 * review the public API diff of deliberate changes
 
-First add the latest versions of the necessary libraries to your `[dev-dependencies]`:
+First add the latest versions of the recommended libraries to your `[dev-dependencies]`:
 
 ```sh
 cargo add --dev \

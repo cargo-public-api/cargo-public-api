@@ -2,7 +2,7 @@
 edition = "2021"
 name = "rustup-toolchain"
 version = "0.1.6"
-description = "Utilities for working with rustup toolchains."
+description = "Utilities for working with rustup toolchains, primarily from cargo test:s."
 homepage = "https://github.com/Enselic/cargo-public-api/tree/main/rustup-toolchain"
 documentation = "https://docs.rs/rustup-toolchain"
 readme = "README.md"

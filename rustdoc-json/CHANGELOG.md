@@ -1,5 +1,10 @@
 # rustdoc-json
 
+## v0.9.1
+* Add `rustdoc_json::Builder::build_with_captured_output(self, stdout: impl std::io::Write, stderr: impl std::io::Write)`.
+* Introduce new errors `rustdoc_json::BuildError::BuildRustdocJsonError`, `BuildError::CapturedOutputError` and `BuildError::CommandExecutionError` and partially switch to those from `BuildError::General`.
+* Add `rustdoc_json::Builder::color(self, color: rustdoc_json::Color)` to control `--color` of `cargo`.
+
 ## v0.9.0
 * Remove `rustdoc_json::Builder::verbose()` and use the `tracing` crate for debug logging instead.
 * Print a nice error message if `rustup` is not in `PATH`.

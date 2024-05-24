@@ -35,7 +35,7 @@ Options:
           - auto-derived-impls: Omit items that belong to Auto Derived Implementations such as
             `Clone`, `Debug`, and `Eq`
 
-  -F, --features <FEATURES>...
+  -F, --features <FEATURES>
           Space or comma separated list of features to activate
 
       --all-features

@@ -985,6 +985,53 @@ fn diff_published_with_all_features() {
 }
 
 #[test]
+fn diff_with_features_separated_by_comma() {
+    let mut cmd = TestCmd::new().with_test_repo_variant(TestRepoVariant::Features);
+    cmd.current_dir("../test-apis/features");
+    cmd.args(["--features", "feature_a,feature_b"]);
+    cmd.args(["diff", "HEAD..HEAD"]);
+    cmd.assert()
+        .stdout_or_update("./expected-output/no_diff.txt")
+        .success();
+}
+
+#[test]
+fn diff_with_features_separated_by_space_in_single_arg() {
+    let mut cmd = TestCmd::new().with_test_repo_variant(TestRepoVariant::Features);
+    cmd.args(["--features", "feature_a feature_b"]);
+    cmd.args(["diff", "HEAD..HEAD"]);
+    cmd.assert()
+        .stdout_or_update("./expected-output/no_diff.txt")
+        .success();
+}
+
+/// Expected to fail with an error looking something like "error: none of the
+/// selected packages contains these features: HEAD..HEAD, diff". But we don't
+/// care exactly how the error looks.
+///
+/// We have the same behavior as regular cargo. This works (which we test in
+/// diff_with_features_separated_by_space_in_single_arg()):
+///
+/// ```sh
+/// cd test-apis/features
+/// cargo build --features "feature_a feature_b"
+/// ```
+///
+/// but this does not work (which we test in this test).
+///
+/// ```sh
+/// cd test-apis/features
+/// cargo build --features feature_a feature_b
+/// ```
+#[test]
+fn diff_with_features_separated_by_space() {
+    let mut cmd = TestCmd::new().with_test_repo_variant(TestRepoVariant::Features);
+    cmd.args(["--features", "feature_a", "feature_b"]);
+    cmd.args(["diff", "HEAD..HEAD"]);
+    cmd.assert().failure();
+}
+
+#[test]
 fn list_public_items_from_json_file() {
     // Create independent build dir so all tests can run in parallel
     let build_dir = tempdir().unwrap();

@@ -6,18 +6,18 @@ Usage: cargo public-api [OPTIONS]
        cargo public-api help [COMMAND]...
 
 Options:
-      --manifest-path <PATH>    Path to `Cargo.toml` [default: Cargo.toml]
-  -p, --package <PACKAGE>       Name of package in workspace to list or diff the public API for
-  -s, --simplified...           Omit noisy items. Can be used more than once.
-      --omit <OMIT>             Omit specified items [possible values: blanket-impls,
-                                auto-trait-impls, auto-derived-impls]
-  -F, --features <FEATURES>...  Space or comma separated list of features to activate
-      --all-features            Activate all available features
-      --no-default-features     Do not activate the `default` feature
-      --target <TARGET>         Build for the target triple
-      --color [<COLOR>]         When to color the output [possible values: auto, never, always]
-  -h, --help                    Print help (see more with '--help')
-  -V, --version                 Print version
+      --manifest-path <PATH>  Path to `Cargo.toml` [default: Cargo.toml]
+  -p, --package <PACKAGE>     Name of package in workspace to list or diff the public API for
+  -s, --simplified...         Omit noisy items. Can be used more than once.
+      --omit <OMIT>           Omit specified items [possible values: blanket-impls,
+                              auto-trait-impls, auto-derived-impls]
+  -F, --features <FEATURES>   Space or comma separated list of features to activate
+      --all-features          Activate all available features
+      --no-default-features   Do not activate the `default` feature
+      --target <TARGET>       Build for the target triple
+      --color [<COLOR>]       When to color the output [possible values: auto, never, always]
+  -h, --help                  Print help (see more with '--help')
+  -V, --version               Print version
 
 cargo public-api diff:
 Diff the public API against a published version of the crate, or between commits.

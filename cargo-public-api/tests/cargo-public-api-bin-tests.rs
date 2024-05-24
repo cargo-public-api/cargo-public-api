@@ -1210,8 +1210,7 @@ fn features_b_c() {
 }
 
 fn test_features(features: &F) {
-    let mut cmd = TestCmd::new().with_separate_target_dir();
-    cmd.current_dir("../test-apis/features");
+    let mut cmd = TestCmd::new().with_test_repo_variant(TestRepoVariant::Features);
 
     if features.none {
         cmd.arg("--no-default-features");
@@ -1258,6 +1257,7 @@ enum TestRepoVariant {
     #[default]
     ExampleApi,
     LintError,
+    Features,
 }
 
 impl TestRepo {
@@ -1275,6 +1275,7 @@ impl TestRepo {
                 ("example_api-v0.3.0", "v0.3.0"),
             ],
             TestRepoVariant::LintError => &[("lint_error", "v0.1.0"), ("lint_error", "v0.1.1")],
+            TestRepoVariant::Features => &[("features", "v0.1.0")],
         };
         create_test_git_repo::create_test_git_repo(tempdir.path(), dirs_and_tags);
 

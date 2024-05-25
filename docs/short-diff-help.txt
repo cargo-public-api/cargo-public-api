@@ -6,19 +6,19 @@ Arguments:
   [ARGS]...  What to diff.
 
 Options:
-      --deny <DENY>             Exit with failure if the specified API diff is detected [possible
-                                values: all, added, changed, removed]
-      --manifest-path <PATH>    Path to `Cargo.toml` [default: Cargo.toml]
-      --force                   Force the diff. For example, when diffing commits, enabling this
-                                option will discard working tree changes during git checkouts of
-                                other commits
-  -p, --package <PACKAGE>       Name of package in workspace to list or diff the public API for
-  -s, --simplified...           Omit noisy items. Can be used more than once.
-      --omit <OMIT>             Omit specified items [possible values: blanket-impls,
-                                auto-trait-impls, auto-derived-impls]
-  -F, --features <FEATURES>...  Space or comma separated list of features to activate
-      --all-features            Activate all available features
-      --no-default-features     Do not activate the `default` feature
-      --target <TARGET>         Build for the target triple
-      --color [<COLOR>]         When to color the output [possible values: auto, never, always]
-  -h, --help                    Print help (see more with '--help')
+      --deny <DENY>           Exit with failure if the specified API diff is detected [possible
+                              values: all, added, changed, removed]
+      --manifest-path <PATH>  Path to `Cargo.toml` [default: Cargo.toml]
+      --force                 Force the diff. For example, when diffing commits, enabling this
+                              option will discard working tree changes during git checkouts of other
+                              commits
+  -p, --package <PACKAGE>     Name of package in workspace to list or diff the public API for
+  -s, --simplified...         Omit noisy items. Can be used more than once.
+      --omit <OMIT>           Omit specified items [possible values: blanket-impls,
+                              auto-trait-impls, auto-derived-impls]
+  -F, --features <FEATURES>   Space or comma separated list of features to activate
+      --all-features          Activate all available features
+      --no-default-features   Do not activate the `default` feature
+      --target <TARGET>       Build for the target triple
+      --color [<COLOR>]       When to color the output [possible values: auto, never, always]
+  -h, --help                  Print help (see more with '--help')

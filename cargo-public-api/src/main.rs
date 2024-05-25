@@ -57,7 +57,7 @@ pub struct Args {
     omit: Option<Vec<Omit>>,
 
     /// Space or comma separated list of features to activate
-    #[arg(global = true, long, short = 'F', num_args = 1..)]
+    #[arg(global = true, long, short = 'F')]
     features: Vec<String>,
 
     /// Activate all available features

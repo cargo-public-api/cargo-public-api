@@ -1,5 +1,8 @@
 # `public-api` changelog
 
+## v0.35.0
+* Support `nightly-2024-06-07`.
+
 ## v0.33.1
 * Fixup 'Avoid textual API diff when changing a trait impl to an auto-derived impl.'
 

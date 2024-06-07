@@ -11,6 +11,7 @@ impl core::fmt::Debug for rustup_toolchain::Error
 pub fn rustup_toolchain::Error::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::fmt::Display for rustup_toolchain::Error
 pub fn rustup_toolchain::Error::fmt(&self, __formatter: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::Freeze for rustup_toolchain::Error
 impl core::marker::Send for rustup_toolchain::Error
 impl core::marker::Sync for rustup_toolchain::Error
 impl core::marker::Unpin for rustup_toolchain::Error

@@ -24,6 +24,8 @@ pub struct ConstArg<T, const N: usize> {
     pub items: [T; N],
 }
 
+pub struct OnlyConstArg<const N: usize> {}
+
 pub struct WithTraitBounds<T: Display + Debug> {
     t: T,
 }

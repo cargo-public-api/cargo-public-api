@@ -151,6 +151,7 @@ pub mut static comprehensive_api::statics::MUT_ANSWER: i8
 pub mod comprehensive_api::structs
 pub struct comprehensive_api::structs::ConstArg<T, const N: usize>
 pub comprehensive_api::structs::ConstArg::items: [T; N]
+pub struct comprehensive_api::structs::OnlyConstArg<const N: usize>
 pub struct comprehensive_api::structs::Plain
 pub comprehensive_api::structs::Plain::x: usize
 impl comprehensive_api::structs::Plain
@@ -228,6 +229,7 @@ pub type comprehensive_api::impls::TestItemGrouping::Foo = u8
 pub fn comprehensive_api::impls::TestItemGrouping::bar() -> <Self as comprehensive_api::traits::TraitWithGenerics<T, U>>::Foo
 pub unsafe trait comprehensive_api::traits::UnsafeTrait
 pub mod comprehensive_api::typedefs
+pub type comprehensive_api::typedefs::ConstArg120 = comprehensive_api::structs::OnlyConstArg<120>
 pub type comprehensive_api::typedefs::RedefinedResult<T, E> = core::result::Result<T, E>
 pub type comprehensive_api::typedefs::TypedefPlain = comprehensive_api::structs::Plain
 pub mod comprehensive_api::unions

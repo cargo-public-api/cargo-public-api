@@ -1,5 +1,8 @@
 # `public-api` changelog
 
+## v0.35.1
+* Don't panic when encountering constants without a type (e.g. `TakesConstGenericArg<120>`)
+
 ## v0.35.0
 * Support `nightly-2024-06-07`.
 

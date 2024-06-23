@@ -37,6 +37,8 @@ impl<T> core::borrow::Borrow<T> for public_api::diff::ChangedPublicItem where T:
 pub fn public_api::diff::ChangedPublicItem::borrow(&self) -> &T
 impl<T> core::borrow::BorrowMut<T> for public_api::diff::ChangedPublicItem where T: core::marker::Sized
 pub fn public_api::diff::ChangedPublicItem::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for public_api::diff::ChangedPublicItem where T: core::clone::Clone
+pub unsafe fn public_api::diff::ChangedPublicItem::clone_to_uninit(&self, dst: *mut T)
 impl<T> core::convert::From<T> for public_api::diff::ChangedPublicItem
 pub fn public_api::diff::ChangedPublicItem::from(t: T) -> T
 pub struct public_api::diff::PublicApiDiff
@@ -78,6 +80,8 @@ impl<T> core::borrow::Borrow<T> for public_api::diff::PublicApiDiff where T: cor
 pub fn public_api::diff::PublicApiDiff::borrow(&self) -> &T
 impl<T> core::borrow::BorrowMut<T> for public_api::diff::PublicApiDiff where T: core::marker::Sized
 pub fn public_api::diff::PublicApiDiff::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for public_api::diff::PublicApiDiff where T: core::clone::Clone
+pub unsafe fn public_api::diff::PublicApiDiff::clone_to_uninit(&self, dst: *mut T)
 impl<T> core::convert::From<T> for public_api::diff::PublicApiDiff
 pub fn public_api::diff::PublicApiDiff::from(t: T) -> T
 pub mod public_api::tokens
@@ -136,6 +140,8 @@ impl<T> core::borrow::Borrow<T> for public_api::tokens::Token where T: core::mar
 pub fn public_api::tokens::Token::borrow(&self) -> &T
 impl<T> core::borrow::BorrowMut<T> for public_api::tokens::Token where T: core::marker::Sized
 pub fn public_api::tokens::Token::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for public_api::tokens::Token where T: core::clone::Clone
+pub unsafe fn public_api::tokens::Token::clone_to_uninit(&self, dst: *mut T)
 impl<T> core::convert::From<T> for public_api::tokens::Token
 pub fn public_api::tokens::Token::from(t: T) -> T
 #[non_exhaustive] pub enum public_api::Error
@@ -212,6 +218,8 @@ impl<T> core::borrow::Borrow<T> for public_api::Builder where T: core::marker::S
 pub fn public_api::Builder::borrow(&self) -> &T
 impl<T> core::borrow::BorrowMut<T> for public_api::Builder where T: core::marker::Sized
 pub fn public_api::Builder::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for public_api::Builder where T: core::clone::Clone
+pub unsafe fn public_api::Builder::clone_to_uninit(&self, dst: *mut T)
 impl<T> core::convert::From<T> for public_api::Builder
 pub fn public_api::Builder::from(t: T) -> T
 #[non_exhaustive] pub struct public_api::PublicApi
@@ -288,6 +296,8 @@ impl<T> core::borrow::Borrow<T> for public_api::PublicItem where T: core::marker
 pub fn public_api::PublicItem::borrow(&self) -> &T
 impl<T> core::borrow::BorrowMut<T> for public_api::PublicItem where T: core::marker::Sized
 pub fn public_api::PublicItem::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for public_api::PublicItem where T: core::clone::Clone
+pub unsafe fn public_api::PublicItem::clone_to_uninit(&self, dst: *mut T)
 impl<T> core::convert::From<T> for public_api::PublicItem
 pub fn public_api::PublicItem::from(t: T) -> T
 pub const public_api::MINIMUM_NIGHTLY_RUST_VERSION: &str

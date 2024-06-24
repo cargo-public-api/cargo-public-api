@@ -793,27 +793,25 @@ impl<'c> RenderingContext<'c> {
 
     fn render_constant(&self, constant: &Constant, type_: Option<&Type>) -> Vec<Token> {
         let mut output = vec![];
-        if constant.is_literal {
-            // In general we do not want to include values of e.g. public
-            // constants, since the values themselves do not typically
-            // constitute the public API surface. It is the constant identifier
-            // itself that forms the public API surface. So if we have a type,
-            // we only render the type.
-            //
-            // However, sometimes we do not have any type (e.g. for const
-            // generic args), and it that case it looks weird to not show
-            // anything. So in that case we show the value.
-            if let Some(type_) = type_ {
-                output.extend(self.render_type(type_));
-            } else if let Some(value) = &constant.value {
-                if constant.is_literal {
-                    output.push(Token::primitive(value));
-                } else {
-                    output.push(Token::identifier(value));
-                }
+        // In general we do not want to include values of e.g. public
+        // constants, since the values themselves do not typically
+        // constitute the public API surface. It is the constant identifier
+        // itself that forms the public API surface. So if we have a type,
+        // we only render the type.
+        //
+        // However, sometimes we do not have any type (e.g. for const
+        // generic args), and it that case it looks weird to not show
+        // anything. So in that case we show the value.
+        if let Some(type_) = type_ {
+            output.extend(self.render_type(type_));
+        } else if let Some(value) = &constant.value {
+            if constant.is_literal {
+                output.push(Token::primitive(value));
             } else {
-                output.push(Token::identifier(&constant.expr));
+                output.push(Token::identifier(value));
             }
+        } else {
+            output.push(Token::identifier(&constant.expr));
         }
         output
     }

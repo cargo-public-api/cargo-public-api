@@ -13,7 +13,15 @@ pub comprehensive_api::attributes::C::b: bool
 #[export_name = "something_arbitrary"] pub fn comprehensive_api::attributes::export_name()
 pub fn comprehensive_api::attributes::must_use() -> usize
 pub mod comprehensive_api::constants
-pub const comprehensive_api::constants::CONST: &str
+pub const comprehensive_api::constants::CONST_BOOL: bool
+pub const comprehensive_api::constants::CONST_F64: f64
+pub const comprehensive_api::constants::CONST_FN: 
+pub const comprehensive_api::constants::CONST_I32_ARRAY: 
+pub const comprehensive_api::constants::CONST_I32_F64_TUPLE: 
+pub const comprehensive_api::constants::CONST_OPTION_I32: 
+pub const comprehensive_api::constants::CONST_PLAIN_STRUCT: 
+pub const comprehensive_api::constants::CONST_STR: &str
+pub const comprehensive_api::constants::CONST_USIZE: usize
 pub mod comprehensive_api::enums
 pub enum comprehensive_api::enums::DiverseVariants
 pub comprehensive_api::enums::DiverseVariants::Recursive

@@ -168,7 +168,7 @@ dependencies = [
 
 [[package]]
 name = "cargo-public-api"
-version = "0.35.1"
+version = "0.36.0"
 dependencies = [
  "anyhow",
  "assert_cmd",
@@ -828,7 +828,7 @@ dependencies = [
 
 [[package]]
 name = "public-api"
-version = "0.35.1"
+version = "0.36.0"
 dependencies = [
  "anyhow",
  "assert_cmd",

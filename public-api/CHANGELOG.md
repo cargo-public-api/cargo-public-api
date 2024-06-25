@@ -1,5 +1,8 @@
 # `public-api` changelog
 
+## v0.36.0
+* Render `pub const` types in more cases, such as for arrays and tuples.
+
 ## v0.35.1
 * Don't panic when encountering constants without a type (e.g. `TakesConstGenericArg<120>`)
 

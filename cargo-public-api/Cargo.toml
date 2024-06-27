@@ -65,23 +65,3 @@ features = ["serde"]
 [dependencies.tracing-subscriber]
 version = "0.3.18"
 features = ["env-filter"]
-
-[dev-dependencies.rustup-toolchain]
-path = "../rustup-toolchain"
-version = "0.1.6"
-
-[dev-dependencies.predicates]
-version = "3.1.0"
-default-features = false
-
-[dev-dependencies.chrono]
-version = "0.4.38"
-default-features = false
-features = ["std"]
-
-[dev-dependencies]
-assert_cmd = "2.0.14"
-expect-test = "1.5.0"
-remove_dir_all = "0.8.2"
-tempfile = "3.10.1"
-cargo_metadata = "0.18.1"

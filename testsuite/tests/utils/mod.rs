@@ -2,6 +2,8 @@
 
 use std::path::{Path, PathBuf};
 
+pub mod create_test_git_repo;
+
 pub fn builder_for_crate(
     test_crate: impl AsRef<Path>,
     target_dir: impl AsRef<Path>,

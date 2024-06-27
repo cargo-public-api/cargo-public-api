@@ -13,9 +13,6 @@ members = [
     # High-level CLI for "rustdoc-json" and "public-api"
     "cargo-public-api",
 
-    # Contains various repo-wide tests
-    "repo-tests",
-
     # To maximize cargo test parallelizability we collect as many tests as
     # possible under a single testsuite.
     "testsuite",

@@ -64,7 +64,7 @@ fn newline_at_end_of_all_files() {
 
 #[test]
 fn installation_instructions_in_toplevel_readme() {
-    let readme = include_str!("../../README.md");
+    let readme = include_str!("../../../README.md");
     let expected_installation_instruction =
         format!("Ensure **{MINIMUM_NIGHTLY_RUST_VERSION}** or later");
     assert!(readme.contains(&expected_installation_instruction));

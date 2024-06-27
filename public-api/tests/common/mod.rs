@@ -39,7 +39,13 @@ pub fn rustdoc_json_path_for_crate(
         .target_dir(target_dir)
         .quiet(true)
         .build()
-        .unwrap()
+        .unwrap_or_else(|_| {
+            panic!(
+                "Failed to build rustdoc JSON for {:?} (current dir: {:?}",
+                test_crate.as_ref(),
+                std::env::current_dir()
+            )
+        })
 }
 
 /// Builds rustdoc JSON for the given temporary test crate. A temporary test

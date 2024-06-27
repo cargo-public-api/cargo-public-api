@@ -26,21 +26,10 @@ features = ["unbounded_depth"]
 # path = "/Users/martin/src/rustdoc-types"
 version = "0.26.0"
 
-[dev-dependencies]
-anyhow = "1.0.75"
-assert_cmd = "2.0.14"
-expect-test = "1.5.0"
-pretty_assertions = "1.2.3"
-tempfile = "3.10.1"
-
-[dev-dependencies.itertools]
+[dependencies.itertools]
 version = "0.13.0"
 default-features = false
 
 [dev-dependencies.rustdoc-json]
 path = "../rustdoc-json"
 version = "0.9.1"
-
-[dev-dependencies.predicates]
-version = "3.1.0"
-default-features = false

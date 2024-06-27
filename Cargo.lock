@@ -476,9 +476,9 @@ checksum = "fea41bba32d969b513997752735605054bc0dfa92b4c56bf1189f2e174be7a10"
 
 [[package]]
 name = "either"
-version = "1.8.1"
+version = "1.13.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7fcaabb2fef8c910e7f4c7ce9f67a1283a1715879a7c230ca9d6d1ae31f16d91"
+checksum = "60b1af1c220855b6ceac025d3f6ecdd2b7c4894bfe9cd9bda4fbb4bc7c0d4cf0"
 
 [[package]]
 name = "equivalent"
@@ -830,18 +830,12 @@ dependencies = [
 name = "public-api"
 version = "0.36.0"
 dependencies = [
- "anyhow",
- "assert_cmd",
- "expect-test",
  "hashbag",
  "itertools",
- "predicates",
- "pretty_assertions",
  "rustdoc-json",
  "rustdoc-types",
  "serde",
  "serde_json",
- "tempfile",
  "thiserror",
 ]
 
@@ -1173,12 +1167,15 @@ checksum = "3369f5ac52d5eb6ab48c6b4ffdc8efbcad6b89c765749064ba298f2c68a16a76"
 
 [[package]]
 name = "testsuite"
-version = "0.0.0"
+version = "0.1.0"
 dependencies = [
+ "anyhow",
  "assert_cmd",
  "cargo_metadata",
  "expect-test",
+ "itertools",
  "predicates",
+ "pretty_assertions",
  "public-api",
  "remove_dir_all",
  "rustdoc-json",

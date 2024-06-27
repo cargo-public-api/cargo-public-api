@@ -411,7 +411,7 @@ fn minimal_toolchain_works() {
     ]);
 
     cmd.assert()
-        .stdout_or_update("../../public-api/tests/expected-output/comprehensive_api.txt")
+        .stdout_or_update("../../testsuite/tests/expected-output/comprehensive_api.txt")
         .success();
 }
 
@@ -431,7 +431,7 @@ fn warn_when_using_beta() {
         .stderr(contains(
             "` toolchain for gathering the public api is not possible",
         ))
-        .stdout_or_update("../../public-api/tests/expected-output/comprehensive_api.txt")
+        .stdout_or_update("../../testsuite/tests/expected-output/comprehensive_api.txt")
         .success();
 }
 

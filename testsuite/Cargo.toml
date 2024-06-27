@@ -1,14 +1,11 @@
 [package]
 edition = "2021"
 name = "testsuite"
+version = "0.1.0"
 license = "MIT"
 
 [dependencies.rustdoc-json]
 path = "../rustdoc-json"
-
-[dev-dependencies.predicates]
-version = "3.1.0"
-default-features = false
 
 [dev-dependencies.public-api]
 path = "../public-api"
@@ -16,9 +13,19 @@ path = "../public-api"
 [dev-dependencies.rustup-toolchain]
 path = "../rustup-toolchain"
 
+[dev-dependencies.itertools]
+version = "0.13.0"
+default-features = false
+
+[dev-dependencies.predicates]
+version = "3.1.0"
+default-features = false
+
 [dev-dependencies]
+anyhow = "1.0.75"
 assert_cmd = "2.0.14"
 expect-test = "1.5.0"
 remove_dir_all = "0.8.2"
 tempfile = "3.10.1"
+pretty_assertions = "1.2.3"
 cargo_metadata = "0.18.1"

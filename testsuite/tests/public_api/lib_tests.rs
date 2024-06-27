@@ -35,7 +35,7 @@ fn not_simplified() {
             repo_path("testsuite/test-apis/example_api-v0.2.0"),
             &build_dir,
         ),
-        repo_path("testsuite/tests/expected-output/example_api-v0.2.0-not-simplified.txt"),
+        repo_path("testsuite/expected-output/example_api-v0.2.0-not-simplified.txt"),
     );
 }
 
@@ -52,7 +52,7 @@ fn simplified_without_auto_derived_impls() {
         .omit_auto_derived_impls(true)
         .omit_blanket_impls(true)
         .omit_auto_trait_impls(true),
-        repo_path("testsuite/tests/expected-output/example_api-v0.2.0-simplified_without_auto_derived_impls.txt"),
+        repo_path("testsuite/expected-output/example_api-v0.2.0-simplified_without_auto_derived_impls.txt"),
     );
 }
 
@@ -67,7 +67,7 @@ fn omit_blanket_impls() {
             &build_dir,
         )
         .omit_blanket_impls(true),
-        repo_path("testsuite/tests/expected-output/example_api-v0.2.0-omit_blanket_impls.txt"),
+        repo_path("testsuite/expected-output/example_api-v0.2.0-omit_blanket_impls.txt"),
     );
 }
 
@@ -82,7 +82,7 @@ fn omit_auto_trait_impls() {
             &build_dir,
         )
         .omit_auto_trait_impls(true),
-        repo_path("testsuite/tests/expected-output/example_api-v0.2.0-omit_auto_trait_impls.txt"),
+        repo_path("testsuite/expected-output/example_api-v0.2.0-omit_auto_trait_impls.txt"),
     );
 }
 
@@ -101,7 +101,7 @@ fn diff_with_added_items() {
             repo_path("testsuite/test-apis/example_api-v0.2.0"),
             &build_dir2,
         ),
-        repo_path("testsuite/tests/expected-output/diff_with_added_items.txt"),
+        repo_path("testsuite/expected-output/diff_with_added_items.txt"),
     );
 }
 
@@ -121,7 +121,7 @@ fn empty_diff() {
             repo_path("testsuite/test-apis/comprehensive_api"),
             &build_dir2,
         ),
-        repo_path("testsuite/tests/expected-output/empty_diff.txt"),
+        repo_path("testsuite/expected-output/empty_diff.txt"),
     );
 }
 
@@ -156,7 +156,7 @@ impl Foo {
     assert_public_api_diff(
         v1.json_path,
         v2.json_path,
-        repo_path("testsuite/tests/expected-output/diff_move_item_between_inherent_impls.txt"),
+        repo_path("testsuite/expected-output/diff_move_item_between_inherent_impls.txt"),
     );
 }
 
@@ -211,7 +211,7 @@ fn diff_with_removed_items() {
             repo_path("testsuite/test-apis/example_api-v0.1.0"),
             &build_dir,
         ),
-        repo_path("testsuite/tests/expected-output/diff_with_removed_items.txt"),
+        repo_path("testsuite/expected-output/diff_with_removed_items.txt"),
     );
 }
 
@@ -225,7 +225,7 @@ fn comprehensive_api() {
             repo_path("testsuite/test-apis/comprehensive_api"),
             &build_dir,
         ),
-        repo_path("testsuite/tests/expected-output/comprehensive_api.txt"),
+        repo_path("testsuite/expected-output/comprehensive_api.txt"),
     );
 }
 
@@ -239,7 +239,7 @@ fn comprehensive_api_proc_macro() {
             repo_path("testsuite/test-apis/comprehensive_api_proc_macro"),
             &build_dir,
         ),
-        repo_path("testsuite/tests/expected-output/comprehensive_api_proc_macro.txt"),
+        repo_path("testsuite/expected-output/comprehensive_api_proc_macro.txt"),
     );
 }
 
@@ -251,7 +251,7 @@ fn auto_traits() {
     assert_public_api(
         builder_for_crate(repo_path("testsuite/test-apis/auto_traits"), &build_dir)
             .omit_blanket_impls(true),
-        repo_path("testsuite/tests/expected-output/auto_traits.txt"),
+        repo_path("testsuite/expected-output/auto_traits.txt"),
     );
 }
 

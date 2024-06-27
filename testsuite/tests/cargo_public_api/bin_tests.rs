@@ -46,9 +46,7 @@ fn list_public_items() {
 
     cmd.args(["--manifest-path", "../public-api/Cargo.toml"]);
     cmd.assert()
-        .stdout_or_update(repo_path(
-            "testsuite/tests/expected-output/list_public_items.txt",
-        ))
+        .stdout_or_update(repo_path("testsuite/expected-output/list_public_items.txt"))
         .success();
 }
 
@@ -59,7 +57,7 @@ fn list_public_items_omit_blanket_impls() {
     cmd.arg("blanket-impls");
     cmd.assert()
         .stdout_or_update(repo_path(
-            "testsuite/tests/expected-output/omit-blanket-impls.txt",
+            "testsuite/expected-output/omit-blanket-impls.txt",
         ))
         .success();
 }
@@ -71,7 +69,7 @@ fn list_public_items_omit_auto_trait_impls_impls() {
     cmd.arg("auto-trait-impls");
     cmd.assert()
         .stdout_or_update(repo_path(
-            "testsuite/tests/expected-output/omit-auto-trait-impls.txt",
+            "testsuite/expected-output/omit-auto-trait-impls.txt",
         ))
         .success();
 }
@@ -83,7 +81,7 @@ fn list_public_items_omit_auto_derived_impls() {
     cmd.arg("auto-derived-impls");
     cmd.assert()
         .stdout_or_update(repo_path(
-            "testsuite/tests/expected-output/omit-auto-derived-impls.txt",
+            "testsuite/expected-output/omit-auto-derived-impls.txt",
         ))
         .success();
 }
@@ -94,7 +92,7 @@ fn list_public_items_omit_auto_derived_impls_with_double_s() {
     cmd.arg("-ss"); // Note the double -s
     cmd.assert()
         .stdout_or_update(repo_path(
-            "testsuite/tests/expected-output/omit-auto-derived-impls-with-double-s.txt",
+            "testsuite/expected-output/omit-auto-derived-impls-with-double-s.txt",
         ))
         .success();
 }
@@ -105,7 +103,7 @@ fn list_public_items_omit_auto_derived_impls_with_triple_s() {
     cmd.arg("-sss"); // Note the triple -s
     cmd.assert()
         .stdout_or_update(repo_path(
-            "testsuite/tests/expected-output/omit-auto-derived-impls-with-triple-s.txt",
+            "testsuite/expected-output/omit-auto-derived-impls-with-triple-s.txt",
         ))
         .success();
 }
@@ -118,9 +116,7 @@ fn list_public_items_with_lint_error() {
         "../testsuite/test-apis/lint_error/Cargo.toml",
     ]);
     cmd.assert()
-        .stdout_or_update(repo_path(
-            "testsuite/tests/expected-output/lint_error_list.txt",
-        ))
+        .stdout_or_update(repo_path("testsuite/expected-output/lint_error_list.txt"))
         .success();
 }
 
@@ -147,9 +143,7 @@ fn list_public_items_with_other_lib_name() {
         "../testsuite/test-apis/other-lib-name/Cargo.toml",
     ]);
     cmd.assert()
-        .stdout_or_update(repo_path(
-            "testsuite/tests/expected-output/other_lib_name.txt",
-        ))
+        .stdout_or_update(repo_path("testsuite/expected-output/other_lib_name.txt"))
         .success();
 }
 
@@ -212,7 +206,7 @@ fn debug_logging() {
             predicates::str::contains(indication_1).and(predicates::str::contains(indication_2)),
         )
         .stdout_or_update(repo_path(
-            "testsuite/tests/expected-output/test_repo_api_latest.txt",
+            "testsuite/expected-output/test_repo_api_latest.txt",
         ))
         .success();
 }
@@ -308,7 +302,7 @@ fn list_public_items_explicit_manifest_path() {
     cmd.arg(&test_repo_manifest);
     cmd.assert()
         .stdout_or_update(repo_path(
-            "testsuite/tests/expected-output/example_api-v0.3.0.txt",
+            "testsuite/expected-output/example_api-v0.3.0.txt",
         ))
         .success();
 }
@@ -322,9 +316,7 @@ fn list_public_items_via_package_spec() {
     cmd.arg("--package");
     cmd.arg("specific-crate");
     cmd.assert()
-        .stdout_or_update(repo_path(
-            "testsuite/tests/expected-output/specific-crate.txt",
-        ))
+        .stdout_or_update(repo_path("testsuite/expected-output/specific-crate.txt"))
         .success();
 }
 
@@ -351,7 +343,7 @@ fn target_arg() {
     cmd.arg(get_host_target_triple());
     cmd.assert()
         .stdout_or_update(repo_path(
-            "testsuite/tests/expected-output/test_repo_api_latest.txt",
+            "testsuite/expected-output/test_repo_api_latest.txt",
         ))
         .success();
 }
@@ -378,7 +370,7 @@ fn subcommand_invocation() {
         .with_test_repo();
     cmd.assert()
         .stdout_or_update(repo_path(
-            "testsuite/tests/expected-output/test_repo_api_latest_not_simplified.txt",
+            "testsuite/expected-output/test_repo_api_latest_not_simplified.txt",
         ))
         // Sanity check that rustdoc JSON build progress is shown to users, i.e.
         // that we do not swallow stderr from the cargo rustdoc JSON building
@@ -397,7 +389,7 @@ fn subcommand_invocation_external_manifest() {
     ]);
     cmd.assert()
         .stdout_or_update(repo_path(
-            "testsuite/tests/expected-output/example_api-v0.3.0.txt",
+            "testsuite/expected-output/example_api-v0.3.0.txt",
         ))
         .success();
 }
@@ -416,7 +408,7 @@ fn subcommand_invocation_public_api_arg() {
     cmd.args(["-p", "public-api"]);
     cmd.assert()
         .stdout_or_update(repo_path(
-            "testsuite/tests/expected-output/subcommand_invocation_public_api_arg.txt",
+            "testsuite/expected-output/subcommand_invocation_public_api_arg.txt",
         ))
         .success();
 }
@@ -444,9 +436,7 @@ fn minimal_toolchain_works() {
     ));
 
     cmd.assert()
-        .stdout_or_update(repo_path(
-            "testsuite/tests/expected-output/comprehensive_api.txt",
-        ))
+        .stdout_or_update(repo_path("testsuite/expected-output/comprehensive_api.txt"))
         .success();
 }
 
@@ -466,9 +456,7 @@ fn warn_when_using_beta() {
         .stderr(contains(
             "` toolchain for gathering the public api is not possible",
         ))
-        .stdout_or_update(repo_path(
-            "testsuite/tests/expected-output/comprehensive_api.txt",
-        ))
+        .stdout_or_update(repo_path("testsuite/expected-output/comprehensive_api.txt"))
         .success();
 }
 
@@ -481,7 +469,7 @@ fn diff_public_items() {
     cmd.arg("v0.2.0..v0.3.0");
     cmd.assert()
         .stdout_or_update(repo_path(
-            "testsuite/tests/expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt",
+            "testsuite/expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt",
         ))
         .success();
     let branch_after = git_utils::current_branch(&test_repo_path).unwrap().unwrap();
@@ -498,7 +486,7 @@ fn diff_public_items_with_subcommand() {
     cmd.arg("v0.2.0..v0.3.0");
     cmd.assert()
         .stdout_or_update(repo_path(
-            "testsuite/tests/expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt",
+            "testsuite/expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt",
         ))
         .success();
 }
@@ -639,7 +627,7 @@ fn diff_public_items_detached_head() {
     cmd.arg("v0.2.0..v0.3.0");
     cmd.assert()
         .stdout_or_update(repo_path(
-            "testsuite/tests/expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt",
+            "testsuite/expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt",
         ))
         .success();
 
@@ -677,7 +665,7 @@ fn diff_public_items_with_dirty_tree_succeeds_with_force_option() {
     cmd.arg("--force");
     cmd.assert()
         .stdout_or_update(repo_path(
-            "testsuite/tests/expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt",
+            "testsuite/expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt",
         ))
         .success();
 }
@@ -700,7 +688,7 @@ fn diff_public_items_relative_refs() {
     cmd.arg("HEAD^..HEAD");
     cmd.assert()
         .stdout_or_update(repo_path(
-            "testsuite/tests/expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt",
+            "testsuite/expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt",
         ))
         .success();
 
@@ -783,7 +771,7 @@ fn deny_added_with_diff() {
     cmd.arg("--deny=added");
     cmd.assert()
         .stdout_or_update(repo_path(
-            "testsuite/tests/expected-output/example_api_diff_v0.1.0_to_v0.2.0.txt",
+            "testsuite/expected-output/example_api_diff_v0.1.0_to_v0.2.0.txt",
         ))
         .failure();
 }
@@ -832,7 +820,7 @@ fn diff_public_items_with_manifest_path() {
     cmd.arg("v0.2.0..v0.3.0");
     cmd.assert()
         .stdout_or_update(repo_path(
-            "testsuite/tests/expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt",
+            "testsuite/expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt",
         ))
         .success();
 }
@@ -855,7 +843,7 @@ fn diff_public_items_with_color() {
     cmd.arg("v0.1.0..v0.2.0");
     cmd.assert()
         .stdout_or_update(repo_path(
-            "testsuite/tests/expected-output/example_api_diff_v0.1.0_to_v0.2.0_colored.txt",
+            "testsuite/expected-output/example_api_diff_v0.1.0_to_v0.2.0_colored.txt",
         ))
         .success();
 }
@@ -868,7 +856,7 @@ fn diff_public_items_with_color_arg_after_diff_subcommand() {
     cmd.arg("--color=always");
     cmd.assert()
         .stdout_or_update(repo_path(
-            "testsuite/tests/expected-output/example_api_diff_v0.1.0_to_v0.2.0_colored.txt",
+            "testsuite/expected-output/example_api_diff_v0.1.0_to_v0.2.0_colored.txt",
         ))
         .success();
 }
@@ -888,7 +876,7 @@ fn list_public_items_with_color_impl(color_arg: &str) {
     cmd.arg(color_arg);
     cmd.assert()
         .stdout_or_update(repo_path(
-            "testsuite/tests/expected-output/example_api_v0.3.0_colored.txt",
+            "testsuite/expected-output/example_api_v0.3.0_colored.txt",
         ))
         .success();
 }
@@ -907,7 +895,7 @@ fn diff_public_items_from_files_with_subcommand() {
     cmd.arg(new);
     cmd.assert()
         .stdout_or_update(repo_path(
-            "testsuite/tests/expected-output/example_api_diff_v0.1.0_to_v0.2.0.txt",
+            "testsuite/expected-output/example_api_diff_v0.1.0_to_v0.2.0.txt",
         ))
         .success();
 }
@@ -927,7 +915,7 @@ fn document_private_items() {
     cmd.arg(json);
     cmd.assert()
         .stdout_or_update(repo_path(
-            "testsuite/tests/expected-output/example_api-v0.3.0_document-private-items.txt",
+            "testsuite/expected-output/example_api-v0.3.0_document-private-items.txt",
         ))
         .success();
 }
@@ -953,9 +941,7 @@ fn diff_against_published_version() {
     cmd.arg("diff");
     cmd.arg("0.1.0");
     cmd.assert()
-        .stdout_or_update(repo_path(
-            "testsuite/tests/expected-output/diff_published.txt",
-        ))
+        .stdout_or_update(repo_path("testsuite/expected-output/diff_published.txt"))
         .success();
 }
 
@@ -968,7 +954,7 @@ fn diff_against_published_version_with_lib_name_different_from_package_name() {
     cmd.arg("0.1.0");
     cmd.assert()
         .stdout_or_update(repo_path(
-            "testsuite/tests/expected-output/other-lib-name-diff.txt",
+            "testsuite/expected-output/other-lib-name-diff.txt",
         ))
         .success();
 }
@@ -985,7 +971,7 @@ fn diff_between_two_published_versions() {
     cmd.arg("0.2.0");
     cmd.assert()
         .stdout_or_update(repo_path(
-            "testsuite/tests/expected-output/example_api_diff_v0.1.0_to_v0.2.0.txt",
+            "testsuite/expected-output/example_api_diff_v0.1.0_to_v0.2.0.txt",
         ))
         .success();
 }
@@ -1019,7 +1005,7 @@ fn diff_against_latest_published_version_impl(arg: Option<&str>, expected_stderr
         cmd.arg(arg);
     }
     cmd.assert()
-        .stdout_or_update(repo_path("testsuite/tests/expected-output/diff-latest.txt"))
+        .stdout_or_update(repo_path("testsuite/expected-output/diff-latest.txt"))
         .stderr(contains(expected_stderr))
         .success();
 }
@@ -1032,9 +1018,7 @@ fn diff_published_explicit_package() {
     cmd.arg("diff");
     cmd.arg("0.1.0");
     cmd.assert()
-        .stdout_or_update(repo_path(
-            "testsuite/tests/expected-output/diff_published.txt",
-        ))
+        .stdout_or_update(repo_path("testsuite/expected-output/diff_published.txt"))
         .success();
 }
 
@@ -1046,9 +1030,7 @@ fn diff_published_explicit_package_after_diff_subcommand() {
     cmd.arg("-p");
     cmd.arg("example_api");
     cmd.assert()
-        .stdout_or_update(repo_path(
-            "testsuite/tests/expected-output/diff_published.txt",
-        ))
+        .stdout_or_update(repo_path("testsuite/expected-output/diff_published.txt"))
         .success();
 }
 
@@ -1062,7 +1044,7 @@ fn diff_published_with_all_features() {
     cmd.arg("0.2.1");
     cmd.assert()
         .stdout_or_update(repo_path(
-            "testsuite/tests/expected-output/diff_published_with_features.txt",
+            "testsuite/expected-output/diff_published_with_features.txt",
         ))
         .success();
 }
@@ -1074,7 +1056,7 @@ fn diff_with_features_separated_by_comma() {
     cmd.args(["--features", "feature_a,feature_b"]);
     cmd.args(["diff", "HEAD..HEAD"]);
     cmd.assert()
-        .stdout_or_update(repo_path("testsuite/tests/expected-output/no_diff.txt"))
+        .stdout_or_update(repo_path("testsuite/expected-output/no_diff.txt"))
         .success();
 }
 
@@ -1084,7 +1066,7 @@ fn diff_with_features_separated_by_space_in_single_arg() {
     cmd.args(["--features", "feature_a feature_b"]);
     cmd.args(["diff", "HEAD..HEAD"]);
     cmd.assert()
-        .stdout_or_update(repo_path("testsuite/tests/expected-output/no_diff.txt"))
+        .stdout_or_update(repo_path("testsuite/expected-output/no_diff.txt"))
         .success();
 }
 
@@ -1126,7 +1108,7 @@ fn list_public_items_from_json_file() {
     cmd.arg(json_file);
     cmd.assert()
         .stdout_or_update(repo_path(
-            "testsuite/tests/expected-output/example_api-v0.3.0.txt",
+            "testsuite/expected-output/example_api-v0.3.0.txt",
         ))
         .success();
 }
@@ -1359,7 +1341,7 @@ fn test_features(features: &F) {
 
     cmd.assert()
         .stdout_or_update(repo_path(&format!(
-            "testsuite/tests/expected-output/features-feat{features}.txt"
+            "testsuite/expected-output/features-feat{features}.txt"
         )))
         .success();
 }

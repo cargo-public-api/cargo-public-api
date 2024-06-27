@@ -104,7 +104,7 @@ fn no_diff() {
     assert_public_api_diff(
         rustdoc_json_path_for_crate("../test-apis/comprehensive_api", &build_dir),
         rustdoc_json_path_for_crate("../test-apis/comprehensive_api", &build_dir2),
-        "./expected-output/no_diff.txt",
+        "./expected-output/empty_diff.txt",
     );
 }
 

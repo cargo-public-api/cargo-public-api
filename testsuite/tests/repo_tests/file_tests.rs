@@ -5,6 +5,8 @@ use std::{ffi::OsStr, fs::read_to_string, path::PathBuf};
 
 use public_api::MINIMUM_NIGHTLY_RUST_VERSION;
 
+use crate::utils::repo_path;
+
 #[test]
 fn newline_at_end_of_all_files() {
     // Change dir to repo root
@@ -68,4 +70,21 @@ fn installation_instructions_in_toplevel_readme() {
     let expected_installation_instruction =
         format!("Ensure **{MINIMUM_NIGHTLY_RUST_VERSION}** or later");
     assert!(readme.contains(&expected_installation_instruction));
+}
+
+/// We must only have one top-level .rs file in testsuite/tests, because we want
+/// to run all tests in parallel. See
+/// <https://matklad.github.io/2021/02/27/delete-cargo-integration-tests.html>.
+#[test]
+fn only_one_rs_file_in_testsuite_top_level_tests_dir() {
+    let rs_files = std::fs::read_dir(repo_path("testsuite/tests"))
+        .unwrap()
+        .filter(|entry| entry.as_ref().unwrap().path().extension() == Some(OsStr::new("rs")))
+        .map(|entry| entry.unwrap().path())
+        .collect::<Vec<_>>();
+    assert_eq!(
+        rs_files.len(),
+        1,
+        "Expected only `testsuite/tests/testsuite.rs` in `testsuite/tests`, got {rs_files:?}"
+    );
 }

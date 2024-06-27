@@ -17,7 +17,7 @@ If `MINIMUM_NIGHTLY_RUST_VERSION` must be bumped then
 * by necessity both `cargo-public-api` and `public-api` must be bumped to the same version to make the [compatibility matrix](https://github.com/Enselic/cargo-public-api#compatibility-matrix) consistent.
 * bump it in `cargo-public-api` [installation instructions](https://github.com/Enselic/cargo-public-api#installation)
 * ```
-  rm cargo-public-api/MINIMUM_NIGHTLY_RUST_VERSION_FOR_TESTS
+  rm testsuite/MINIMUM_NIGHTLY_RUST_VERSION_FOR_TESTS
   ```
 
 ## How to release

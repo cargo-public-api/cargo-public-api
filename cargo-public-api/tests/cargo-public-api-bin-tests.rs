@@ -392,7 +392,7 @@ fn subcommand_invocation_public_api_arg() {
 /// required for tests is not the same as required for users, so allow tests to
 /// use a different toolchain if needed
 fn get_minimum_toolchain() -> String {
-    std::fs::read_to_string("../cargo-public-api/MINIMUM_NIGHTLY_RUST_VERSION_FOR_TESTS")
+    std::fs::read_to_string("../testsuite/MINIMUM_NIGHTLY_RUST_VERSION_FOR_TESTS")
         .map(|s| s.trim().to_owned())
         .ok()
         .unwrap_or_else(|| MINIMUM_NIGHTLY_RUST_VERSION.to_owned())

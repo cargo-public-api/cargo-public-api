@@ -15,15 +15,15 @@
 //! support [inherent associated types][1] for rustdoc JSON, we can run the
 //! following commands:
 //! ```sh
-//! $ cargo run -- --toolchain nightly-2023-05-08 --manifest-path test-apis/nightly_api/Cargo.toml -sss
+//! $ cargo run -- --toolchain nightly-2023-05-08 --manifest-path testsuite/test-apis/nightly_api/Cargo.toml -sss
 //! pub mod nightly_api
 //! pub struct nightly_api::StructWithInherentAssociatedType
 //! impl nightly_api::StructWithInherentAssociatedType
 //! pub type nightly_api::StructWithInherentAssociatedType::InherentAssociatedType = u8
 //! pub fn nightly_api::StructWithInherentAssociatedType::inherent_associated_type_output(&self) -> u8
 //!
-//! $ cargo run -- --toolchain nightly-2023-05-09 --manifest-path test-apis/nightly_api/Cargo.toml -sss
-//! Error: Failed to parse rustdoc JSON at "/home/martin/src/cargo-public-api/test-apis/nightly_api/target/doc/comprehensive_api.json".
+//! $ cargo run -- --toolchain nightly-2023-05-09 --manifest-path testsuite/test-apis/nightly_api/Cargo.toml -sss
+//! Error: Failed to parse rustdoc JSON at "/home/martin/src/cargo-public-api/testsuite/test-apis/nightly_api/target/doc/comprehensive_api.json".
 //! [...]
 //! Caused by:
 //!     invalid type: null, expected struct Path at line 1 column 61136

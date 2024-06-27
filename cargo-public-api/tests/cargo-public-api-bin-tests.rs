@@ -98,7 +98,10 @@ fn list_public_items_omit_auto_derived_impls_with_triple_s() {
 #[test]
 fn list_public_items_with_lint_error() {
     let mut cmd = TestCmd::new().with_separate_target_dir();
-    cmd.args(["--manifest-path", "../test-apis/lint_error/Cargo.toml"]);
+    cmd.args([
+        "--manifest-path",
+        "../testsuite/test-apis/lint_error/Cargo.toml",
+    ]);
     cmd.assert()
         .stdout_or_update("./expected-output/lint_error_list.txt")
         .success();
@@ -122,7 +125,10 @@ fn list_public_items_with_lint_error() {
 #[test]
 fn list_public_items_with_other_lib_name() {
     let mut cmd = TestCmd::new().with_separate_target_dir();
-    cmd.args(["--manifest-path", "../test-apis/other-lib-name/Cargo.toml"]);
+    cmd.args([
+        "--manifest-path",
+        "../testsuite/test-apis/other-lib-name/Cargo.toml",
+    ]);
     cmd.assert()
         .stdout_or_update("./expected-output/other_lib_name.txt")
         .success();
@@ -131,7 +137,10 @@ fn list_public_items_with_other_lib_name() {
 #[test]
 fn list_public_items_with_no_lib() {
     let mut cmd = TestCmd::new().with_separate_target_dir();
-    cmd.args(["--manifest-path", "../test-apis/no-lib/Cargo.toml"]);
+    cmd.args([
+        "--manifest-path",
+        "../testsuite/test-apis/no-lib/Cargo.toml",
+    ]);
     cmd.assert()
         .stderr(contains("error")) // Be aware of ANSI color escape codes!
         .stderr(contains("no library targets found in package `no-lib`"))
@@ -258,7 +267,7 @@ fn test_unusable_toolchain(mut cmd: TestCmd, expected_stderr: &str) {
     // incompatibilities to be detected
     cmd.args([
         "--manifest-path",
-        "../test-apis/comprehensive_api/Cargo.toml",
+        "../testsuite/test-apis/comprehensive_api/Cargo.toml",
     ]);
 
     // The test uses a too old nightly toolchain, which should make the tool
@@ -286,7 +295,7 @@ fn list_public_items_explicit_manifest_path() {
 #[test]
 fn list_public_items_via_package_spec() {
     let mut cmd = TestCmd::new().with_separate_target_dir();
-    cmd.current_dir("../test-apis/virtual-manifest");
+    cmd.current_dir("../testsuite/test-apis/virtual-manifest");
     cmd.arg("--package");
     cmd.arg("specific-crate");
     cmd.assert()
@@ -324,7 +333,7 @@ fn target_arg() {
 fn virtual_manifest_error() {
     let mut cmd = TestCmd::new().with_separate_target_dir();
     cmd.arg("--manifest-path");
-    cmd.arg("../test-apis/virtual-manifest/Cargo.toml");
+    cmd.arg("../testsuite/test-apis/virtual-manifest/Cargo.toml");
     cmd.assert()
         .stdout("")
         .stderr(contains(
@@ -355,7 +364,7 @@ fn subcommand_invocation_external_manifest() {
     let mut cmd = TestCmd::as_subcommand().with_separate_target_dir();
     cmd.args([
         "--manifest-path",
-        "../test-apis/example_api-v0.3.0/Cargo.toml",
+        "../testsuite/test-apis/example_api-v0.3.0/Cargo.toml",
     ]);
     cmd.assert()
         .stdout_or_update("./expected-output/example_api-v0.3.0.txt")
@@ -398,7 +407,7 @@ fn minimal_toolchain_works() {
     // incompatibilities to be detected
     cmd.args([
         "--manifest-path",
-        "../test-apis/comprehensive_api/Cargo.toml",
+        "../testsuite/test-apis/comprehensive_api/Cargo.toml",
     ]);
 
     cmd.assert()
@@ -414,7 +423,7 @@ fn warn_when_using_beta() {
     // incompatibilities to be detected
     cmd.args([
         "--manifest-path",
-        "../test-apis/comprehensive_api/Cargo.toml",
+        "../testsuite/test-apis/comprehensive_api/Cargo.toml",
     ]);
 
     cmd.assert()
@@ -833,8 +842,8 @@ fn diff_public_items_from_files_with_subcommand() {
     let build_dir = tempdir().unwrap();
     let build_dir2 = tempdir().unwrap();
 
-    let old = rustdoc_json_path_for_crate("../test-apis/example_api-v0.1.0", &build_dir);
-    let new = rustdoc_json_path_for_crate("../test-apis/example_api-v0.2.0", &build_dir2);
+    let old = rustdoc_json_path_for_crate("../testsuite/test-apis/example_api-v0.1.0", &build_dir);
+    let new = rustdoc_json_path_for_crate("../testsuite/test-apis/example_api-v0.2.0", &build_dir2);
     let mut cmd = TestCmd::new().with_separate_target_dir();
     cmd.arg("diff");
     cmd.arg(old);
@@ -849,10 +858,11 @@ fn document_private_items() {
     // Create independent build dir so all tests can run in parallel
     let build_dir = tempdir().unwrap();
 
-    let json = rustdoc_json_builder_for_crate("../test-apis/example_api-v0.3.0", &build_dir)
-        .document_private_items(true)
-        .build()
-        .unwrap();
+    let json =
+        rustdoc_json_builder_for_crate("../testsuite/test-apis/example_api-v0.3.0", &build_dir)
+            .document_private_items(true)
+            .build()
+            .unwrap();
     let mut cmd = TestCmd::new().with_separate_target_dir();
     cmd.arg("--rustdoc-json");
     cmd.arg(json);
@@ -890,7 +900,7 @@ fn diff_against_published_version() {
 fn diff_against_published_version_with_lib_name_different_from_package_name() {
     let mut cmd = TestCmd::new();
     cmd.arg("--manifest-path");
-    cmd.arg("../test-apis/other-lib-name/Cargo.toml");
+    cmd.arg("../testsuite/test-apis/other-lib-name/Cargo.toml");
     cmd.arg("diff");
     cmd.arg("0.1.0");
     cmd.assert()
@@ -987,7 +997,7 @@ fn diff_published_with_all_features() {
 #[test]
 fn diff_with_features_separated_by_comma() {
     let mut cmd = TestCmd::new().with_test_repo_variant(TestRepoVariant::Features);
-    cmd.current_dir("../test-apis/features");
+    cmd.current_dir("../testsuite/test-apis/features");
     cmd.args(["--features", "feature_a,feature_b"]);
     cmd.args(["diff", "HEAD..HEAD"]);
     cmd.assert()
@@ -1013,14 +1023,14 @@ fn diff_with_features_separated_by_space_in_single_arg() {
 /// diff_with_features_separated_by_space_in_single_arg()):
 ///
 /// ```sh
-/// cd test-apis/features
+/// cd testsuite/test-apis/features
 /// cargo build --features "feature_a feature_b"
 /// ```
 ///
 /// but this does not work (which we test in this test).
 ///
 /// ```sh
-/// cd test-apis/features
+/// cd testsuite/test-apis/features
 /// cargo build --features feature_a feature_b
 /// ```
 #[test]
@@ -1036,7 +1046,8 @@ fn list_public_items_from_json_file() {
     // Create independent build dir so all tests can run in parallel
     let build_dir = tempdir().unwrap();
 
-    let json_file = rustdoc_json_path_for_crate("../test-apis/example_api-v0.3.0", &build_dir);
+    let json_file =
+        rustdoc_json_path_for_crate("../testsuite/test-apis/example_api-v0.3.0", &build_dir);
     let mut cmd = TestCmd::new().with_separate_target_dir();
     cmd.arg("--rustdoc-json");
     cmd.arg(json_file);
@@ -1049,7 +1060,7 @@ fn list_public_items_from_json_file() {
 fn verbose() {
     let mut cmd = TestCmd::new();
     cmd.arg("--manifest-path");
-    cmd.arg("../test-apis/lint_error/Cargo.toml");
+    cmd.arg("../testsuite/test-apis/lint_error/Cargo.toml");
     cmd.arg("--verbose");
     cmd.assert()
         .stdout(contains("Processing \""))

@@ -19,18 +19,18 @@ fn public_api() -> Result<(), Box<dyn std::error::Error>> {
 fn ensure_workspace_inheritance_works() {
     let path = rustdoc_json::Builder::default()
         .toolchain("nightly")
-        .manifest_path("../test-apis/workspace-inheritance/package-with-inheritance/Cargo.toml")
+        .manifest_path(
+            "../testsuite/test-apis/workspace-inheritance/package-with-inheritance/Cargo.toml",
+        )
         .quiet(true) // Make it less noisy to run tests
         .build()
         .unwrap();
 
     assert_eq!(
         path,
-        std::env::current_dir()
-            .unwrap()
-            .parent()
-            .unwrap()
-            .join("test-apis/workspace-inheritance/target/doc/package_with_inheritance.json")
+        std::env::current_dir().unwrap().parent().unwrap().join(
+            "testsuite/test-apis/workspace-inheritance/target/doc/package_with_inheritance.json"
+        )
     );
 }
 

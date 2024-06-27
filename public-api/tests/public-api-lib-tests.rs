@@ -39,7 +39,7 @@ fn not_simplified() {
     let build_dir = tempdir().unwrap();
 
     assert_public_api(
-        builder_for_crate("../test-apis/example_api-v0.2.0", &build_dir),
+        builder_for_crate("../testsuite/test-apis/example_api-v0.2.0", &build_dir),
         "./expected-output/example_api-v0.2.0-not-simplified.txt",
     );
 }
@@ -50,7 +50,7 @@ fn simplified_without_auto_derived_impls() {
     let build_dir = tempdir().unwrap();
 
     assert_public_api(
-        builder_for_crate("../test-apis/example_api-v0.2.0", &build_dir)
+        builder_for_crate("../testsuite/test-apis/example_api-v0.2.0", &build_dir)
             .omit_auto_derived_impls(true)
             .omit_blanket_impls(true)
             .omit_auto_trait_impls(true),
@@ -64,7 +64,8 @@ fn omit_blanket_impls() {
     let build_dir = tempdir().unwrap();
 
     assert_public_api(
-        builder_for_crate("../test-apis/example_api-v0.2.0", &build_dir).omit_blanket_impls(true),
+        builder_for_crate("../testsuite/test-apis/example_api-v0.2.0", &build_dir)
+            .omit_blanket_impls(true),
         "./expected-output/example_api-v0.2.0-omit_blanket_impls.txt",
     );
 }
@@ -75,7 +76,7 @@ fn omit_auto_trait_impls() {
     let build_dir = tempdir().unwrap();
 
     assert_public_api(
-        builder_for_crate("../test-apis/example_api-v0.2.0", &build_dir)
+        builder_for_crate("../testsuite/test-apis/example_api-v0.2.0", &build_dir)
             .omit_auto_trait_impls(true),
         "./expected-output/example_api-v0.2.0-omit_auto_trait_impls.txt",
     );
@@ -88,8 +89,8 @@ fn diff_with_added_items() {
     let build_dir2 = tempdir().unwrap();
 
     assert_public_api_diff(
-        rustdoc_json_path_for_crate("../test-apis/example_api-v0.1.0", &build_dir),
-        rustdoc_json_path_for_crate("../test-apis/example_api-v0.2.0", &build_dir2),
+        rustdoc_json_path_for_crate("../testsuite/test-apis/example_api-v0.1.0", &build_dir),
+        rustdoc_json_path_for_crate("../testsuite/test-apis/example_api-v0.2.0", &build_dir2),
         "./expected-output/diff_with_added_items.txt",
     );
 }
@@ -102,8 +103,8 @@ fn no_diff() {
 
     // No change to the public API
     assert_public_api_diff(
-        rustdoc_json_path_for_crate("../test-apis/comprehensive_api", &build_dir),
-        rustdoc_json_path_for_crate("../test-apis/comprehensive_api", &build_dir2),
+        rustdoc_json_path_for_crate("../testsuite/test-apis/comprehensive_api", &build_dir),
+        rustdoc_json_path_for_crate("../testsuite/test-apis/comprehensive_api", &build_dir2),
         "./expected-output/empty_diff.txt",
     );
 }
@@ -186,8 +187,8 @@ fn diff_with_removed_items() {
     let build_dir2 = tempdir().unwrap();
 
     assert_public_api_diff(
-        rustdoc_json_path_for_crate("../test-apis/example_api-v0.2.0", &build_dir2),
-        rustdoc_json_path_for_crate("../test-apis/example_api-v0.1.0", &build_dir),
+        rustdoc_json_path_for_crate("../testsuite/test-apis/example_api-v0.2.0", &build_dir2),
+        rustdoc_json_path_for_crate("../testsuite/test-apis/example_api-v0.1.0", &build_dir),
         "./expected-output/diff_with_removed_items.txt",
     );
 }
@@ -198,7 +199,7 @@ fn comprehensive_api() {
     let build_dir = tempdir().unwrap();
 
     assert_public_api(
-        simplified_builder_for_crate("../test-apis/comprehensive_api", &build_dir),
+        simplified_builder_for_crate("../testsuite/test-apis/comprehensive_api", &build_dir),
         "./expected-output/comprehensive_api.txt",
     );
 }
@@ -209,7 +210,10 @@ fn comprehensive_api_proc_macro() {
     let build_dir = tempdir().unwrap();
 
     assert_public_api(
-        simplified_builder_for_crate("../test-apis/comprehensive_api_proc_macro", &build_dir),
+        simplified_builder_for_crate(
+            "../testsuite/test-apis/comprehensive_api_proc_macro",
+            &build_dir,
+        ),
         "./expected-output/comprehensive_api_proc_macro.txt",
     );
 }
@@ -220,7 +224,8 @@ fn auto_traits() {
     let build_dir = tempdir().unwrap();
 
     assert_public_api(
-        builder_for_crate("../test-apis/auto_traits", &build_dir).omit_blanket_impls(true),
+        builder_for_crate("../testsuite/test-apis/auto_traits", &build_dir)
+            .omit_blanket_impls(true),
         "./expected-output/auto_traits.txt",
     );
 }
@@ -233,7 +238,8 @@ fn comprehensive_api_debug_sorting_no_stack_overflow() {
     // Create independent build dir so all tests can run in parallel
     let build_dir = tempdir().unwrap();
 
-    let rustdoc_json = rustdoc_json_path_for_crate("../test-apis/comprehensive_api", &build_dir);
+    let rustdoc_json =
+        rustdoc_json_path_for_crate("../testsuite/test-apis/comprehensive_api", &build_dir);
     let _api = public_api::Builder::from_rustdoc_json(rustdoc_json)
         .debug_sorting(true)
         .build()

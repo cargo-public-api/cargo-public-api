@@ -15,7 +15,7 @@ use std::{
 ///
 /// `dest_dir` - The directory where a git repository shall be created.
 ///
-/// `test_api_dir` - The `test-apis` source dir. Used to find the path to the
+/// `test_api_dir` - The `testsuite/test-apis` source dir. Used to find the path to the
 /// `example_api`s.
 pub fn create_test_git_repo(dest_dir: impl AsRef<Path>, dirs_and_tags: &[(&str, &str)]) {
     // Make sure the dest exists
@@ -42,7 +42,7 @@ pub fn create_test_git_repo(dest_dir: impl AsRef<Path>, dirs_and_tags: &[(&str, 
         let tag_name = dir_and_tag.1;
 
         let copy_to_dest = |name| {
-            let mut from = PathBuf::from("../test-apis");
+            let mut from = PathBuf::from("../testsuite/test-apis");
             from.push(dir_name);
             from.push(name);
 

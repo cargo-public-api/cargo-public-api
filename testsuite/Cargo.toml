@@ -3,11 +3,15 @@ edition = "2021"
 name = "testsuite"
 license = "MIT"
 
+[dependencies.rustdoc-json]
+path = "../rustdoc-json"
+
+[dev-dependencies.predicates]
+version = "3.1.0"
+default-features = false
+
 [dev-dependencies.public-api]
 path = "../public-api"
-
-[dev-dependencies.rustdoc-json]
-path = "../rustdoc-json"
 
 [dev-dependencies.rustup-toolchain]
 path = "../rustup-toolchain"

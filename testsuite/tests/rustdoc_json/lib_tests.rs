@@ -1,16 +1,11 @@
 use rustdoc_json::PackageTarget;
 
+use crate::utils::repo_path;
+
 #[test]
-fn public_api() -> Result<(), Box<dyn std::error::Error>> {
-    let rustdoc_json = rustdoc_json::Builder::default()
-        .toolchain("nightly")
-        .build()?;
-
-    let public_api = public_api::Builder::from_rustdoc_json(rustdoc_json).build()?;
-
-    expect_test::expect_file!["public-api.txt"].assert_eq(&public_api.to_string());
-
-    Ok(())
+fn public_api() {
+    expect_test::expect_file!["public-api.txt"]
+        .assert_eq(&crate::utils::build_public_api("rustdoc-json").to_string());
 }
 
 /// Test that there is no error when building rustdoc JSON for a package that
@@ -19,16 +14,16 @@ fn public_api() -> Result<(), Box<dyn std::error::Error>> {
 fn ensure_workspace_inheritance_works() {
     let path = rustdoc_json::Builder::default()
         .toolchain("nightly")
-        .manifest_path(
-            "../testsuite/test-apis/workspace-inheritance/package-with-inheritance/Cargo.toml",
-        )
+        .manifest_path(repo_path(
+            "testsuite/test-apis/workspace-inheritance/package-with-inheritance/Cargo.toml",
+        ))
         .quiet(true) // Make it less noisy to run tests
         .build()
         .unwrap();
 
     assert_eq!(
         path,
-        std::env::current_dir().unwrap().parent().unwrap().join(
+        repo_path(
             "testsuite/test-apis/workspace-inheritance/target/doc/package_with_inheritance.json"
         )
     );
@@ -69,7 +64,7 @@ fn test_alternative_package_target(package_target: PackageTarget) {
 
     let path = rustdoc_json::Builder::default()
         .toolchain("nightly")
-        .manifest_path("../testsuite/test-crates/test_crate/Cargo.toml")
+        .manifest_path(repo_path("testsuite/test-crates/test_crate/Cargo.toml"))
         .quiet(true) // Make it less noisy to run tests
         .package_target(package_target)
         .target_dir(&target_dir)
@@ -111,7 +106,9 @@ fn capture_output() {
 
     let result = rustdoc_json::Builder::default()
         .toolchain("nightly")
-        .manifest_path("../testsuite/test-crates/test_crate_error/Cargo.toml")
+        .manifest_path(repo_path(
+            "testsuite/test-crates/test_crate_error/Cargo.toml",
+        ))
         .quiet(true) // Make it less noisy to run tests
         .color(rustdoc_json::Color::Never)
         .target_dir(&target_dir)

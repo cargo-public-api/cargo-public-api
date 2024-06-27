@@ -953,14 +953,9 @@ checksum = "583034fd73374156e66797ed8e5b0d5690409c9226b22d87cb7f19821c05d152"
 name = "rustdoc-json"
 version = "0.9.1"
 dependencies = [
- "assert_cmd",
  "cargo-manifest",
  "cargo_metadata",
- "expect-test",
- "predicates",
- "public-api",
  "serde",
- "tempfile",
  "thiserror",
  "toml",
  "tracing",
@@ -992,9 +987,6 @@ dependencies = [
 name = "rustup-toolchain"
 version = "0.1.6"
 dependencies = [
- "expect-test",
- "public-api",
- "rustdoc-json",
  "thiserror",
 ]
 
@@ -1186,6 +1178,7 @@ dependencies = [
  "assert_cmd",
  "cargo_metadata",
  "expect-test",
+ "predicates",
  "public-api",
  "remove_dir_all",
  "rustdoc-json",

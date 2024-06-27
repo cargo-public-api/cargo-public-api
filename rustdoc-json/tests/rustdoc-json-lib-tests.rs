@@ -69,7 +69,7 @@ fn test_alternative_package_target(package_target: PackageTarget) {
 
     let path = rustdoc_json::Builder::default()
         .toolchain("nightly")
-        .manifest_path("tests/test_crates/test_crate/Cargo.toml")
+        .manifest_path("../testsuite/test-crates/test_crate/Cargo.toml")
         .quiet(true) // Make it less noisy to run tests
         .package_target(package_target)
         .target_dir(&target_dir)
@@ -111,7 +111,7 @@ fn capture_output() {
 
     let result = rustdoc_json::Builder::default()
         .toolchain("nightly")
-        .manifest_path("tests/test_crates/test_crate_error/Cargo.toml")
+        .manifest_path("../testsuite/test-crates/test_crate_error/Cargo.toml")
         .quiet(true) // Make it less noisy to run tests
         .color(rustdoc_json::Color::Never)
         .target_dir(&target_dir)

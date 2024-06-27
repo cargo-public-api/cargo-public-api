@@ -6,3 +6,7 @@ edition = "2021"
 
 [dependencies.example_api]
 version = "0.2.0"
+
+# Empty workspace declaration as workaround for
+# https://github.com/rust-lang/cargo/issues/14155
+[workspace]

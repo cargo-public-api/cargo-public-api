@@ -15,6 +15,10 @@ members = [
 
     # Contains various repo-wide tests
     "repo-tests",
+
+    # To maximize cargo test parallelizability we collect as many tests as
+    # possible under a single testsuite.
+    "testsuite",
 ]
 
 # Test APIs can't be part of the workspace because

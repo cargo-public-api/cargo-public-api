@@ -3,3 +3,7 @@ description = "For rustdoc JSON formating changes experiements."
 name = "nightly_api"
 version = "0.1.0"
 edition = "2021"
+
+# Empty workspace declaration as workaround for
+# https://github.com/rust-lang/cargo/issues/14155
+[workspace]

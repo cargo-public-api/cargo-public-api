@@ -1187,6 +1187,20 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3369f5ac52d5eb6ab48c6b4ffdc8efbcad6b89c765749064ba298f2c68a16a76"
 
 [[package]]
+name = "testsuite"
+version = "0.0.0"
+dependencies = [
+ "assert_cmd",
+ "cargo_metadata",
+ "expect-test",
+ "public-api",
+ "remove_dir_all",
+ "rustdoc-json",
+ "rustup-toolchain",
+ "tempfile",
+]
+
+[[package]]
 name = "thiserror"
 version = "1.0.56"
 source = "registry+https://github.com/rust-lang/crates.io-index"

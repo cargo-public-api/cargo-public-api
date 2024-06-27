@@ -11,3 +11,7 @@ repository = "https://github.com/Enselic/cargo-public-api/tree/main/testsuite/te
 
 [lib]
 name = "other_name"
+
+# Empty workspace declaration as workaround for
+# https://github.com/rust-lang/cargo/issues/14155
+[workspace]

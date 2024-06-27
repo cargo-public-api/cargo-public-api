@@ -1,4 +1,3 @@
-/// Keep this code in sync with the code in `../../README.md`
 #[test]
 fn public_api() {
     // Install a compatible nightly toolchain if it is missing
@@ -7,6 +6,7 @@ fn public_api() {
     // Build rustdoc JSON
     let rustdoc_json = rustdoc_json::Builder::default()
         .toolchain(public_api::MINIMUM_NIGHTLY_RUST_VERSION)
+        .manifest_path("../rustup-toolchain/Cargo.toml")
         .build()
         .unwrap();
 

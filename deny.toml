@@ -7,5 +7,5 @@ allow = [
 ]
 
 [bans]
-wildcards = "deny"
+wildcards = "allow"
 multiple-versions = "allow"

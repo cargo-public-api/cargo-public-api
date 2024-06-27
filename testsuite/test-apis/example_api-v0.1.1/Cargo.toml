@@ -8,3 +8,7 @@ documentation = "https://docs.rs/example_api"
 readme = "../example_api-v0.1.0/README.md"
 license = "MIT"
 repository = "https://github.com/Enselic/cargo-public-api/tree/main/testsuite/test-apis/example_api-v0.1.0"
+
+# Empty workspace declaration as workaround for
+# https://github.com/rust-lang/cargo/issues/14155
+[workspace]

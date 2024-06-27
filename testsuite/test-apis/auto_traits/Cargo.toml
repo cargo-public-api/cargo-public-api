@@ -8,3 +8,7 @@ documentation = "https://docs.rs/auto_traits"
 readme = "../auto_traits/README.md"
 license = "MIT"
 repository = "https://github.com/Enselic/cargo-public-api/tree/main/testsuite/test-apis/auto_traits"
+
+# Empty workspace declaration as workaround for
+# https://github.com/rust-lang/cargo/issues/14155
+[workspace]

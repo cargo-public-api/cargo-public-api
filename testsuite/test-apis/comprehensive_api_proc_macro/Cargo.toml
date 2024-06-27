@@ -6,3 +6,7 @@ edition = "2021"
 
 [lib]
 proc-macro = true
+
+# Empty workspace declaration as workaround for
+# https://github.com/rust-lang/cargo/issues/14155
+[workspace]

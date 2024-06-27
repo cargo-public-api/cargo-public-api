@@ -10,3 +10,7 @@ default = ["feature_a"]
 feature_a = []
 feature_b = []
 feature_c = []
+
+# Empty workspace declaration as workaround for
+# https://github.com/rust-lang/cargo/issues/14155
+[workspace]

@@ -1,0 +1,20 @@
+[package]
+edition = "2021"
+name = "testsuite"
+license = "MIT"
+
+[dev-dependencies.public-api]
+path = "../public-api"
+
+[dev-dependencies.rustdoc-json]
+path = "../rustdoc-json"
+
+[dev-dependencies.rustup-toolchain]
+path = "../rustup-toolchain"
+
+[dev-dependencies]
+assert_cmd = "2.0.14"
+expect-test = "1.5.0"
+remove_dir_all = "0.8.2"
+tempfile = "3.10.1"
+cargo_metadata = "0.18.1"

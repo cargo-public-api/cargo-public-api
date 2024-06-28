@@ -61,7 +61,7 @@ pub fn repo_path(relative_path_from_repo_root: &str) -> PathBuf {
     let mut repo_root = std::env::current_dir().unwrap();
 
     // `find -name testsuite -type d` only gets one hit and it is in the root.
-    while !repo_root.join("testsuite").is_dir() {
+    while !repo_root.join("testsuite").is_dir() && repo_root.components().count() > 0 {
         let _ = repo_root.pop();
     }
     repo_root.join(relative_path_from_repo_root)

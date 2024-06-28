@@ -24,7 +24,10 @@ use predicates::str::contains;
 use public_api::MINIMUM_NIGHTLY_RUST_VERSION;
 use tempfile::tempdir;
 
-#[path = "../src/git_utils.rs"] // Say NO to copy-paste!
+// We don't want to libify cargo-public-api (at least not yet), but we don't
+// want to copy-paste code or introduce extra dependencies either. So we do this
+// little hack.
+#[path = "../src/git_utils.rs"]
 mod git_utils;
 
 mod create_test_git_repo;

@@ -1610,7 +1610,12 @@ struct RmOnDrop(PathBuf);
 
 impl Drop for RmOnDrop {
     fn drop(&mut self) {
-        std::fs::remove_file(&self.0).unwrap();
+        if let Err(e) = std::fs::remove_file(&self.0) {
+            eprintln!(
+                "Failed to remove file {:?} which is very strange: {:?}",
+                self.0, e
+            );
+        }
     }
 }
 

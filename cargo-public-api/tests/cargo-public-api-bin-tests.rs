@@ -987,7 +987,6 @@ fn diff_published_with_all_features() {
 #[test]
 fn diff_with_features_separated_by_comma() {
     let mut cmd = TestCmd::new().with_test_repo_variant(TestRepoVariant::Features);
-    cmd.current_dir("../test-apis/features");
     cmd.args(["--features", "feature_a,feature_b"]);
     cmd.args(["diff", "HEAD..HEAD"]);
     cmd.assert()

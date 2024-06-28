@@ -37,7 +37,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: Swatinem/rust-cache@v2
       - run: RUSTDOCFLAGS='--deny warnings' cargo doc --locked --no-deps --document-private-items
 
   cargo-clippy:
@@ -45,7 +44,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: Swatinem/rust-cache@v2
       - run: scripts/cargo-clippy.sh
 
   cargo-audit:
@@ -80,7 +78,6 @@ jobs:
       - run: zsh --version || (sudo apt-get install -y zsh && zsh --version)
         if: runner.os != 'Windows'
       - run: rustup install nightly --profile minimal
-      - uses: Swatinem/rust-cache@v2
       - run: cargo test -vvvvv --locked -- --test-threads 1
       - run: scripts/cargo-test-without-rustup.sh
         if: runner.os == 'Linux' # Fails on macOS (strangely) and Windows (expected)

@@ -57,8 +57,16 @@ pub enum BuildError {
     CommandExecutionError(String),
 
     /// An error originating from `cargo-manifest`.
-    #[error(transparent)]
-    CargoManifestError(#[from] cargo_manifest::Error),
+    #[error(
+        "cargo-manifest error on {manifest_path:?} (current dir: {:?}): {error:?}",
+        std::env::current_dir()
+    )]
+    CargoManifestError {
+        /// The path to the manifest in question.
+        manifest_path: PathBuf,
+        /// The error that occurred.
+        error: cargo_manifest::Error,
+    },
 
     /// An error originating from `cargo_metadata`.
     #[error(transparent)]

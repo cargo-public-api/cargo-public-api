@@ -2,14 +2,14 @@ pub mod rustdoc_json
 #[non_exhaustive] pub enum rustdoc_json::BuildError
 pub rustdoc_json::BuildError::BuildRustdocJsonError
 pub rustdoc_json::BuildError::CapturedOutputError(alloc::string::String)
-pub rustdoc_json::BuildError::CargoManifestError(cargo_manifest::error::Error)
+pub rustdoc_json::BuildError::CargoManifestError
+pub rustdoc_json::BuildError::CargoManifestError::error: cargo_manifest::error::Error
+pub rustdoc_json::BuildError::CargoManifestError::manifest_path: std::path::PathBuf
 pub rustdoc_json::BuildError::CargoMetadataError(cargo_metadata::errors::Error)
 pub rustdoc_json::BuildError::CommandExecutionError(alloc::string::String)
 pub rustdoc_json::BuildError::General(alloc::string::String)
 pub rustdoc_json::BuildError::IoError(std::io::error::Error)
 pub rustdoc_json::BuildError::VirtualManifest(std::path::PathBuf)
-impl core::convert::From<cargo_manifest::error::Error> for rustdoc_json::BuildError
-pub fn rustdoc_json::BuildError::from(source: cargo_manifest::error::Error) -> Self
 impl core::convert::From<cargo_metadata::errors::Error> for rustdoc_json::BuildError
 pub fn rustdoc_json::BuildError::from(source: cargo_metadata::errors::Error) -> Self
 impl core::convert::From<std::io::error::Error> for rustdoc_json::BuildError

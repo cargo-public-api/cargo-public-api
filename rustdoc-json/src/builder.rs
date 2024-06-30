@@ -58,7 +58,13 @@ where
             options.target.as_deref(),
         )
     } else {
-        let manifest = cargo_manifest::Manifest::from_path(&options.manifest_path)?;
+        let manifest =
+            cargo_manifest::Manifest::from_path(&options.manifest_path).map_err(|error| {
+                BuildError::CargoManifestError {
+                    manifest_path: options.manifest_path.clone(),
+                    error,
+                }
+            })?;
         if manifest.package.is_none() && manifest.workspace.is_some() {
             Err(BuildError::VirtualManifest(options.manifest_path))
         } else {
@@ -222,7 +228,13 @@ fn library_name(
         package_name.to_owned()
     } else {
         // We must figure out the package name ourselves from the manifest.
-        let manifest = cargo_manifest::Manifest::from_path(manifest_path.as_ref())?;
+        let manifest =
+            cargo_manifest::Manifest::from_path(manifest_path.as_ref()).map_err(|error| {
+                BuildError::CargoManifestError {
+                    manifest_path: manifest_path.as_ref().to_owned(),
+                    error,
+                }
+            })?;
         manifest
             .package
             .ok_or_else(|| BuildError::VirtualManifest(manifest_path.as_ref().to_owned()))?

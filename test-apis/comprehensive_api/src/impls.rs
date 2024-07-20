@@ -33,6 +33,15 @@ impl<'b> WithLifetimeAndGenericParam<'b, String> {
     }
 }
 
+impl<'b> WithLifetimeAndGenericParam<'b, String>
+where
+    'b: 'static,
+{
+    pub fn new_with_lifetime_bound(unit_ref: &'b Unit, t: String) -> Self {
+        WithLifetimeAndGenericParam { unit_ref, t }
+    }
+}
+
 impl<'b, T> WithLifetimeAndGenericParam<'b, T> {
     pub fn new_any(unit_ref: &'b Unit, t: T) -> Self {
         WithLifetimeAndGenericParam { unit_ref, t }

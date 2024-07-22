@@ -42,6 +42,13 @@ where
     }
 }
 
+impl<'b, 'z> WithLifetimeAndGenericParam<'b, String>
+where
+    'b: 'z + 'static,
+{
+    pub fn with_two_lifetime_bounds(unit_ref: &'z Unit, t: String) {}
+}
+
 impl<'b, T> WithLifetimeAndGenericParam<'b, T> {
     pub fn new_any(unit_ref: &'b Unit, t: T) -> Self {
         WithLifetimeAndGenericParam { unit_ref, t }

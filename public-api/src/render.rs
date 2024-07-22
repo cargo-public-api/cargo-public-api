@@ -898,10 +898,17 @@ impl<'c> RenderingContext<'c> {
                 output.extend(self.render_type(type_));
                 output.extend(self.render_generic_bounds_with_colon(bounds));
             }
-            WherePredicate::LifetimePredicate {
-                lifetime,
-                outlives: _,
-            } => output.push(Token::Lifetime(lifetime.clone())),
+            WherePredicate::LifetimePredicate { lifetime, outlives } => {
+                dbg!(lifetime, outlives);
+                output.push(Token::Lifetime(lifetime.clone()));
+                output.extend(self.render_sequence_if_not_empty(
+                    colon(),
+                    vec![],
+                    plus(),
+                    outlives,
+                    |s| vec![Token::Lifetime(s.clone())],
+                ));
+            }
             WherePredicate::EqPredicate { lhs, rhs } => {
                 output.extend(self.render_type(lhs));
                 output.extend(equals());

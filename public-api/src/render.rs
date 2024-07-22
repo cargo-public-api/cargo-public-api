@@ -898,9 +898,9 @@ impl<'c> RenderingContext<'c> {
                 output.extend(self.render_type(type_));
                 output.extend(self.render_generic_bounds_with_colon(bounds));
             }
-            WherePredicate::RegionPredicate {
+            WherePredicate::LifetimePredicate {
                 lifetime,
-                bounds: _,
+                outlives: _,
             } => output.push(Token::Lifetime(lifetime.clone())),
             WherePredicate::EqPredicate { lhs, rhs } => {
                 output.extend(self.render_type(lhs));

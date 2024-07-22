@@ -10,7 +10,7 @@ Install the `cargo public-api` subcommand with a recent regular **stable** Rust 
 cargo +stable install cargo-public-api --locked
 ```
 
-Ensure **nightly-2024-06-07** or later is installed (does not need to be the active toolchain) so `cargo public-api` can build rustdoc JSON for you:
+Ensure **nightly-2024-07-05** or later is installed (does not need to be the active toolchain) so `cargo public-api` can build rustdoc JSON for you:
 
 ```sh
 rustup install nightly --profile minimal
@@ -142,7 +142,8 @@ cargo public-api -sss
 
 | Version          | Understands the rustdoc JSON output of  |
 | ---------------- | --------------------------------------- |
-| 0.35.x — 0.36.x  | nightly-2024-06-07 —                    |
+| 0.37.x —         | nightly-2024-07-05 —                    |
+| 0.35.x — 0.36.x  | nightly-2024-06-07 — nightly-2024-07-04 |
 | 0.32.x — 0.34.x  | nightly-2023-08-25 — nightly-2024-06-06 |
 | 0.30.x — 0.31.x  | nightly-2023-05-24 — nightly-2023-08-24 |
 | earlier versions | see [here](https://github.com/Enselic/cargo-public-api/blob/7056d59cd279610fc61cc9669be3840b0dd8273c/README.md#compatibility-matrix) |

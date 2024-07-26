@@ -1,5 +1,8 @@
 # `public-api` changelog
 
+## v0.37.0
+* Move project from https://github.com/Enselic/cargo-public-api to https://github.com/cargo-public-api/cargo-public-api
+
 ## v0.36.0
 * Render `pub const` types in more cases, such as for arrays and tuples.
 

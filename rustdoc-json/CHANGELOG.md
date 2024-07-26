@@ -1,5 +1,8 @@
 # rustdoc-json
 
+## v0.9.2
+* Move project from https://github.com/Enselic/cargo-public-api to https://github.com/cargo-public-api/cargo-public-api
+
 ## v0.9.1
 * Add `rustdoc_json::Builder::build_with_captured_output(self, stdout: impl std::io::Write, stderr: impl std::io::Write)`.
 * Introduce new errors `rustdoc_json::BuildError::BuildRustdocJsonError`, `BuildError::CapturedOutputError` and `BuildError::CommandExecutionError` and partially switch to those from `BuildError::General`.

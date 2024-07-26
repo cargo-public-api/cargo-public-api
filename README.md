@@ -146,7 +146,7 @@ cargo public-api -sss
 | 0.35.x — 0.36.x  | nightly-2024-06-07 — nightly-2024-07-04 |
 | 0.32.x — 0.34.x  | nightly-2023-08-25 — nightly-2024-06-06 |
 | 0.30.x — 0.31.x  | nightly-2023-05-24 — nightly-2023-08-24 |
-| earlier versions | see [here](https://github.com/Enselic/cargo-public-api/blob/7056d59cd279610fc61cc9669be3840b0dd8273c/README.md#compatibility-matrix) |
+| earlier versions | see [here](https://github.com/cargo-public-api/cargo-public-api/blob/7056d59cd279610fc61cc9669be3840b0dd8273c/README.md#compatibility-matrix) |
 
 # Changelog
 

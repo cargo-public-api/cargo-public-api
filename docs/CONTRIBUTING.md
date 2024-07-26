@@ -7,7 +7,7 @@ Before you get started, you might want to read about the [architecture](./ARCHIT
 Just clone the repo. Then you can make changes and run tests:
 
 ```
-git clone https://github.com/Enselic/cargo-public-api.git ; cd cargo-public-api
+git clone https://github.com/cargo-public-api/cargo-public-api.git ; cd cargo-public-api
 
 cargo test
 ```
@@ -60,7 +60,7 @@ Note that the toolchain required to build this project is distinct from the tool
 
 ## Minimum required nightly Rust version
 
-Since the rustdoc JSON format still changes in incompatible ways, there is a lower bound on what nightly version you can use. For regular users, that minimal nightly version is mentioned in the README.md. For developers however, a more recent version can be needed. This is because even though the rustdoc JSON format is unchanged, its output can change. See [this PR](https://github.com/Enselic/cargo-public-api/pull/84) for just one example.
+Since the rustdoc JSON format still changes in incompatible ways, there is a lower bound on what nightly version you can use. For regular users, that minimal nightly version is mentioned in the README.md. For developers however, a more recent version can be needed. This is because even though the rustdoc JSON format is unchanged, its output can change. See [this PR](https://github.com/cargo-public-api/cargo-public-api/pull/84) for just one example.
 
 Our CI runs every night, so any problems are generally detected quickly. If `cargo test` fails, make sure you have a recent enough nightly toolchain installed.
 

@@ -28,7 +28,7 @@ mod vendor;
     author,
     version,
     about = "List and diff the public API of Rust library crates between releases and commits.",
-    long_about = "List and diff the public API of Rust library crates between releases and commits. Website: https://github.com/Enselic/cargo-public-api",
+    long_about = "List and diff the public API of Rust library crates between releases and commits. Website: https://github.com/cargo-public-api/cargo-public-api",
     bin_name = "cargo public-api"
 )]
 #[command(flatten_help = true)]

@@ -3,9 +3,9 @@ edition = "2021"
 name = "example_api"
 version = "0.2.1"
 description = "Example API used in the cargo-public-api test suite"
-homepage = "https://github.com/Enselic/cargo-public-api/tree/main/test-apis/example_api-v0.2.1"
+homepage = "https://github.com/cargo-public-api/cargo-public-api/tree/main/test-apis/example_api-v0.2.1"
 readme = "../example_api-v0.1.0/README.md"
 license = "MIT"
-repository = "https://github.com/Enselic/cargo-public-api/tree/main/test-apis/example_api-v0.2.1"
+repository = "https://github.com/cargo-public-api/cargo-public-api/tree/main/test-apis/example_api-v0.2.1"
 [features]
 feature = []

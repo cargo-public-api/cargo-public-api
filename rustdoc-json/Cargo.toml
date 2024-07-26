@@ -3,12 +3,12 @@ edition = "2021"
 name = "rustdoc-json"
 version = "0.9.1"
 description = "Utilities for working with rustdoc JSON."
-homepage = "https://github.com/Enselic/cargo-public-api/tree/main/rustdoc-json"
+homepage = "https://github.com/cargo-public-api/cargo-public-api/tree/main/rustdoc-json"
 documentation = "https://docs.rs/rustdoc-json"
 readme = "README.md"
 keywords = ["rustdoc-json", "api", "doc"]
 license = "MIT"
-repository = "https://github.com/Enselic/cargo-public-api/tree/main/rustdoc-json"
+repository = "https://github.com/cargo-public-api/cargo-public-api/tree/main/rustdoc-json"
 
 [dependencies]
 cargo_metadata = "0.18.1"

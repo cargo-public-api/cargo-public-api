@@ -1,5 +1,5 @@
 List and diff the public API of Rust library crates between releases and commits. Website:
-https://github.com/Enselic/cargo-public-api
+https://github.com/cargo-public-api/cargo-public-api
 
 Usage: cargo public-api [OPTIONS]
        cargo public-api diff [OPTIONS] [ARGS]...

@@ -3,12 +3,12 @@ edition = "2021"
 name = "public-api"
 version = "0.36.0"
 description = "List and diff the public API of Rust library crates. Relies on rustdoc JSON output from the nightly toolchain."
-homepage = "https://github.com/Enselic/cargo-public-api/tree/main/public-api"
+homepage = "https://github.com/cargo-public-api/cargo-public-api/tree/main/public-api"
 documentation = "https://docs.rs/public-api"
 readme = "README.md"
 keywords = ["semver", "rustdoc-json", "diff", "cargo"]
 license = "MIT"
-repository = "https://github.com/Enselic/cargo-public-api/tree/main/public-api"
+repository = "https://github.com/cargo-public-api/cargo-public-api/tree/main/public-api"
 
 [dependencies]
 hashbag = { version = "0.1.12", default-features = false }

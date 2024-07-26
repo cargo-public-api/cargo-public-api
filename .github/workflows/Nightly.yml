@@ -10,7 +10,7 @@ env:
 
 jobs:
   # The purpose of this job is to detect problems like
-  # https://github.com/Enselic/cargo-public-api/issues/61 ourselves
+  # https://github.com/cargo-public-api/cargo-public-api/issues/61 ourselves
   cargo-install:
     runs-on: ubuntu-latest
     steps:

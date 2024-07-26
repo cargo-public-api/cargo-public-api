@@ -21,7 +21,7 @@ There are many more build options. See the [docs](https://docs.rs/rustdoc-json/l
 
 ## Changelog
 
-Please refer to [CHANGELOG.md](https://github.com/Enselic/cargo-public-api/blob/main/rustdoc-json/CHANGELOG.md).
+Please refer to [CHANGELOG.md](https://github.com/cargo-public-api/cargo-public-api/blob/main/rustdoc-json/CHANGELOG.md).
 
 ## Tests
 

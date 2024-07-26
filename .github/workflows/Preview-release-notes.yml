@@ -15,7 +15,7 @@ on:
 
 jobs:
   preview-release-notes:
-    if: github.repository == 'Enselic/cargo-public-api' && (github.event_name != 'pull_request_target' || github.event.pull_request.merged == true)
+    if: github.repository == 'cargo-public-api/cargo-public-api' && (github.event_name != 'pull_request_target' || github.event.pull_request.merged == true)
     environment:
       name: preview-release-notes
       url: https://github.com/cargo-public-api/cargo-public-api.github.io/blob/main/release-notes-preview.md

@@ -3,12 +3,12 @@ edition = "2021"
 name = "rustup-toolchain"
 version = "0.1.6"
 description = "Utilities for working with rustup toolchains, primarily from cargo test:s."
-homepage = "https://github.com/Enselic/cargo-public-api/tree/main/rustup-toolchain"
+homepage = "https://github.com/cargo-public-api/cargo-public-api/tree/main/rustup-toolchain"
 documentation = "https://docs.rs/rustup-toolchain"
 readme = "README.md"
 keywords = ["toolchain", "rustup"]
 license = "MIT"
-repository = "https://github.com/Enselic/cargo-public-api/tree/main/rustup-toolchain"
+repository = "https://github.com/cargo-public-api/cargo-public-api/tree/main/rustup-toolchain"
 
 [dependencies]
 thiserror = "1.0.44"

@@ -3,7 +3,7 @@
 //! can use. Diffing is also supported.
 //!
 //! If you want a convenient CLI for this library, you should use [cargo
-//! public-api](https://github.com/Enselic/cargo-public-api).
+//! public-api](https://github.com/cargo-public-api/cargo-public-api).
 //!
 //! As input to the library, a special output format from `rustdoc +nightly` is
 //! used, which goes by the name **rustdoc JSON**. Currently, only the nightly
@@ -237,7 +237,7 @@ impl PublicApi {
     /// In some cases, a public item might be referenced from another public
     /// item (e.g. a `mod`), but is missing from the rustdoc JSON file. This
     /// occurs for example in the case of re-exports of external modules (see
-    /// <https://github.com/Enselic/cargo-public-api/issues/103>). The entries
+    /// <https://github.com/cargo-public-api/cargo-public-api/issues/103>). The entries
     /// in this Vec are what IDs that could not be found.
     ///
     /// The exact format of IDs are to be considered an implementation detail

@@ -2,12 +2,12 @@
 edition = "2021"
 name = "other-lib-name"
 version = "0.1.0"
-description = "This crate is published only to serve as a regression test for https://github.com/Enselic/cargo-public-api/issues/561"
-homepage = "https://github.com/Enselic/cargo-public-api/tree/main/test-apis/other-lib-name"
+description = "This crate is published only to serve as a regression test for https://github.com/cargo-public-api/cargo-public-api/issues/561"
+homepage = "https://github.com/cargo-public-api/cargo-public-api/tree/main/test-apis/other-lib-name"
 documentation = "https://docs.rs/other-lib-name"
 readme = "README.md"
 license = "MIT"
-repository = "https://github.com/Enselic/cargo-public-api/tree/main/test-apis/other-lib-name"
+repository = "https://github.com/cargo-public-api/cargo-public-api/tree/main/test-apis/other-lib-name"
 
 [lib]
 name = "other_name"

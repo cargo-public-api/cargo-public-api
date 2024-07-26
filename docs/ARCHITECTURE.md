@@ -17,4 +17,4 @@ To list the public API of a crate, we first build rustdoc JSON for it, and then 
 Diffing is essentially:
 1. Build rustdoc JSON for two versions of a crate.
 1. Independently parse rustdoc JSON for both versions via the `public-api` crate to get the full public API for each version.
-1. Calculate the diff between the APIs (see [diff.rs](https://github.com/Enselic/cargo-public-api/blob/main/public-api/src/diff.rs))
+1. Calculate the diff between the APIs (see [diff.rs](https://github.com/cargo-public-api/cargo-public-api/blob/main/public-api/src/diff.rs))

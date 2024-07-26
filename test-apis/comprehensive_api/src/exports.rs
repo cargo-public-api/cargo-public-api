@@ -27,7 +27,7 @@ pub mod recursion_glob_2 {
     pub use super::recursion_glob_1::*;
 }
 
-/// Regression test for <https://github.com/Enselic/cargo-public-api/issues/145>
+/// Regression test for <https://github.com/cargo-public-api/cargo-public-api/issues/145>
 pub mod issue_145 {
     pub mod external {
         pub struct External;
@@ -62,7 +62,7 @@ pub mod issue_145 {
     pub fn publicly_renamed_from_private_mod_arg_type(_transform: PubliclyRenamedFromPrivateMod) {}
 }
 
-/// Regression test for <https://github.com/Enselic/cargo-public-api/issues/410>
+/// Regression test for <https://github.com/cargo-public-api/cargo-public-api/issues/410>
 pub mod issue_410 {
     pub mod container {
         pub mod super_glob {

@@ -60,7 +60,7 @@ source "$HOME/.cargo/env"
 cargo install cargo-audit
 cargo install cargo-deny
 rustup install nightly --profile minimal
-git clone https://github.com/Enselic/cargo-public-api.git
+git clone https://github.com/cargo-public-api/cargo-public-api.git
 cd cargo-public-api/
 ./scripts/run-ci-locally.sh
 ```

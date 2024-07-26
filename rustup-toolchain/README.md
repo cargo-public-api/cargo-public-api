@@ -6,7 +6,7 @@ Please refer to the [docs](https://docs.rs/rustup-toolchain/latest) to learn mor
 
 ## Changelog
 
-Please refer to [CHANGELOG.md](https://github.com/Enselic/cargo-public-api/blob/main/rustup-toolchain/CHANGELOG.md).
+Please refer to [CHANGELOG.md](https://github.com/cargo-public-api/cargo-public-api/blob/main/rustup-toolchain/CHANGELOG.md).
 
 ## Tests
 

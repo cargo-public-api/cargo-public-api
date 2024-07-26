@@ -193,7 +193,7 @@ to install the latest version with
 
 If the issue remains, please report at
 
-    https://github.com/Enselic/cargo-public-api/issues",
+    https://github.com/cargo-public-api/cargo-public-api/issues",
             )
         })?;
 

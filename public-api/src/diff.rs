@@ -1,6 +1,6 @@
 //! Contains facilities that allows you diff public APIs between releases and
 //! commits. [`cargo
-//! public-api`](https://github.com/Enselic/cargo-public-api) contains
+//! public-api`](https://github.com/cargo-public-api/cargo-public-api) contains
 //! additional helpers for that.
 
 use crate::{
@@ -260,7 +260,7 @@ mod tests {
     }
 
     /// Regression test for
-    /// <https://github.com/Enselic/cargo-public-api/issues/50>
+    /// <https://github.com/cargo-public-api/cargo-public-api/issues/50>
     #[test]
     fn no_off_by_one_diff_skewing() {
         let old = api([

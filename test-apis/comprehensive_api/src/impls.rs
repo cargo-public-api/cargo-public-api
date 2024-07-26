@@ -117,7 +117,7 @@ impl GenericAssociatedTypes for Unit {
     type WithLifetime<'a> = GatTestStruct1<'a, bool>;
 }
 
-/// Regression test for <https://github.com/Enselic/cargo-public-api/issues/429>
+/// Regression test for <https://github.com/cargo-public-api/cargo-public-api/issues/429>
 pub mod issue_429 {
     pub struct Handle<T>(T);
 

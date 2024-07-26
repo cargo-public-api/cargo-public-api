@@ -15,7 +15,7 @@
 //! ```
 //!
 //! A compilable example can be found
-//! [here](https://github.com/Enselic/cargo-public-api/blob/main/rustdoc-json/examples/build-rustdoc-json.rs)
+//! [here](https://github.com/cargo-public-api/cargo-public-api/blob/main/rustdoc-json/examples/build-rustdoc-json.rs)
 
 // deny in CI, only warn here
 #![warn(clippy::all, missing_docs)]

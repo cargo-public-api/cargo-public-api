@@ -10,7 +10,7 @@ See [docs.rs](https://docs.rs/public-api/latest/public_api/index.html) for libra
 
 ## … as a CLI
 
-Use [`cargo public-api`](https://github.com/Enselic/cargo-public-api) for CLI use cases.
+Use [`cargo public-api`](https://github.com/cargo-public-api/cargo-public-api) for CLI use cases.
 
 ## … as a CI Check
 
@@ -64,8 +64,8 @@ This creates a `tests/public-api.txt` file in your project that you `git add` to
 
 # Changelog
 
-See [CHANGELOG.md](https://github.com/Enselic/cargo-public-api/blob/main/public-api/CHANGELOG.md).
+See [CHANGELOG.md](https://github.com/cargo-public-api/cargo-public-api/blob/main/public-api/CHANGELOG.md).
 
 # Maintainers
 
-See [here](https://github.com/Enselic/cargo-public-api#maintainers).
+See [here](https://github.com/cargo-public-api/cargo-public-api#maintainers).

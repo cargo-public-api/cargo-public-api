@@ -81,8 +81,6 @@ impl<T> core::borrow::BorrowMut<T> for rustdoc_json::Color where T: core::marker
 pub fn rustdoc_json::Color::borrow_mut(&mut self) -> &mut T
 impl<T> core::clone::CloneToUninit for rustdoc_json::Color where T: core::clone::Clone
 pub unsafe fn rustdoc_json::Color::clone_to_uninit(&self, dst: *mut T)
-impl<T> core::clone::CloneToUninit for rustdoc_json::Color where T: core::marker::Copy
-pub unsafe fn rustdoc_json::Color::clone_to_uninit(&self, dst: *mut T)
 impl<T> core::convert::From<T> for rustdoc_json::Color
 pub fn rustdoc_json::Color::from(t: T) -> T
 impl<T> tracing::instrument::Instrument for rustdoc_json::Color

@@ -571,6 +571,11 @@ fn subcommand_name(bin: OsString) -> Option<OsString> {
 
 /// Check if using a stable compiler, and use nightly if it is.
 fn resolve_toolchain(args: Args) -> ArgsAndToolchain {
+    // This option allows to use a custom version of rustup that is already set up to run nightly
+    if std::env::var_os("CARGO_PUBLIC_API_IGNORE_TOOLCHAIN").is_some() {
+        return ArgsAndToolchain { args, toolchain: None };
+    }
+
     let toolchain = if toolchain::is_probably_stable() {
         if let Some(toolchain) = toolchain::from_rustup() {
             eprintln!("Warning: using the `{toolchain}` toolchain for gathering the public api is not possible, switching to `nightly`");

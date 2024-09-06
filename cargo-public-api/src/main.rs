@@ -571,7 +571,7 @@ fn subcommand_name(bin: OsString) -> Option<OsString> {
 
 /// Check if using a stable compiler, and use nightly if it is.
 fn resolve_toolchain(args: Args) -> ArgsAndToolchain {
-    // This option allows to use a custom version of rustup that is already set up to run nightly
+    // This option allows the use of a custom version of rustup that is pre-configured to run nightly
     if std::env::var_os("CARGO_PUBLIC_API_IGNORE_TOOLCHAIN").is_some() {
         return ArgsAndToolchain { args, toolchain: None };
     }

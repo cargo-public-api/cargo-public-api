@@ -19,7 +19,7 @@ test-without-rustup-in-path = []
 [dependencies]
 nu-ansi-term = "0.50.1"
 anyhow = "1.0.75"
-cargo-manifest = "0.15.1"
+cargo-manifest = "0.15.2"
 cargo-util = "0.2.8"
 clap_complete_command = "0.5.1"
 diff = "0.1.13"

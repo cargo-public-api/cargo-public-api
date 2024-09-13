@@ -20,6 +20,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 fn show_json(path: &std::path::Path) -> std::io::Result<std::process::ExitStatus> {
     let mut cmd = std::process::Command::new("sh");
     cmd.arg("-c");
-    cmd.arg(&format!("cat {path:?} | python3 -m json.tool | less"));
+    cmd.arg(format!("cat {path:?} | python3 -m json.tool | less"));
     cmd.spawn()?.wait()
 }

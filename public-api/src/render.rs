@@ -8,10 +8,10 @@ use std::ops::Deref;
 use std::{cmp::Ordering, collections::HashMap, vec};
 
 use rustdoc_types::{
-    Abi, Constant, Crate, FnDecl, FunctionPointer, GenericArg, GenericArgs, GenericBound,
-    GenericParamDef, GenericParamDefKind, Generics, Header, Id, Impl, Item, ItemEnum, MacroKind,
-    Path, PolyTrait, StructKind, Term, Trait, Type, TypeBinding, TypeBindingKind, VariantKind,
-    WherePredicate,
+    Abi, AssocItemConstraint, AssocItemConstraintKind, Constant, Crate, FunctionHeader,
+    FunctionPointer, FunctionSignature, GenericArg, GenericArgs, GenericBound, GenericParamDef,
+    GenericParamDefKind, Generics, Id, Impl, Item, ItemEnum, MacroKind, Path, PolyTrait,
+    StructKind, Term, Trait, Type, VariantKind, WherePredicate,
 };
 
 /// A simple macro to write `Token::Whitespace` in less characters.
@@ -51,7 +51,7 @@ impl<'c> RenderingContext<'c> {
         let inner_tokens = match &item.inner {
             ItemEnum::Module(_) => self.render_simple(&["mod"], item_path),
             ItemEnum::ExternCrate { .. } => self.render_simple(&["extern", "crate"], item_path),
-            ItemEnum::Import(_) => self.render_simple(&["use"], item_path),
+            ItemEnum::Use(_) => self.render_simple(&["use"], item_path),
             ItemEnum::Union(_) => self.render_simple(&["union"], item_path),
             ItemEnum::Struct(s) => {
                 let mut output = self.render_simple(&["struct"], item_path);
@@ -94,7 +94,7 @@ impl<'c> RenderingContext<'c> {
             }
             ItemEnum::Function(inner) => self.render_function(
                 self.render_path(item_path),
-                &inner.decl,
+                &inner.sig,
                 &inner.generics,
                 &inner.header,
             ),
@@ -113,18 +113,17 @@ impl<'c> RenderingContext<'c> {
             ItemEnum::AssocType {
                 generics,
                 bounds,
-                default,
+                type_,
             } => {
                 let mut output = self.render_simple(&["type"], item_path);
                 output.extend(self.render_generics(generics));
                 output.extend(self.render_generic_bounds_with_colon(bounds));
-                if let Some(ty) = default {
+                if let Some(ty) = type_ {
                     output.extend(equals());
                     output.extend(self.render_type(ty));
                 }
                 output
             }
-            ItemEnum::OpaqueTy(_) => self.render_simple(&["opaque", "type"], item_path),
             ItemEnum::Constant { const_, type_ } => {
                 let mut output = self.render_simple(&["const"], item_path);
                 output.extend(colon());
@@ -138,7 +137,7 @@ impl<'c> RenderingContext<'c> {
                 output
             }
             ItemEnum::Static(inner) => {
-                let tags = if inner.mutable {
+                let tags = if inner.is_mutable {
                     vec!["mut", "static"]
                 } else {
                     vec!["static"]
@@ -148,7 +147,7 @@ impl<'c> RenderingContext<'c> {
                 output.extend(self.render_type(&inner.type_));
                 output
             }
-            ItemEnum::ForeignType => self.render_simple(&["type"], item_path),
+            ItemEnum::ExternType => self.render_simple(&["type"], item_path),
             ItemEnum::Macro(_definition) => {
                 // TODO: _definition contains the whole definition, it would be really neat to get out all possible ways to invoke it
                 let mut output = self.render_simple(&["macro"], item_path);
@@ -350,12 +349,12 @@ impl<'c> RenderingContext<'c> {
             Type::Array { type_, len } => self.render_array(type_, len),
             Type::ImplTrait(bounds) => self.render_impl_trait(bounds),
             Type::Infer => vec![Token::symbol("_")],
-            Type::RawPointer { mutable, type_ } => self.render_raw_pointer(*mutable, type_),
+            Type::RawPointer { is_mutable, type_ } => self.render_raw_pointer(*is_mutable, type_),
             Type::BorrowedRef {
                 lifetime,
-                mutable,
+                is_mutable,
                 type_,
-            } => self.render_borrowed_ref(lifetime.as_deref(), *mutable, type_),
+            } => self.render_borrowed_ref(lifetime.as_deref(), *is_mutable, type_),
             Type::QualifiedPath {
                 name,
                 args: _,
@@ -411,18 +410,18 @@ impl<'c> RenderingContext<'c> {
     fn render_function(
         &self,
         name: Vec<Token>,
-        decl: &FnDecl,
+        sig: &FunctionSignature,
         generics: &Generics,
-        header: &Header,
+        header: &FunctionHeader,
     ) -> Vec<Token> {
         let mut output = pub_();
-        if header.unsafe_ {
+        if header.is_unsafe {
             output.extend(vec![Token::qualifier("unsafe"), ws!()]);
         };
-        if header.const_ {
+        if header.is_const {
             output.extend(vec![Token::qualifier("const"), ws!()]);
         };
-        if header.async_ {
+        if header.is_async {
             output.extend(vec![Token::qualifier("async"), ws!()]);
         };
         if header.abi != Abi::Rust {
@@ -448,7 +447,7 @@ impl<'c> RenderingContext<'c> {
         output.extend(self.render_generic_param_defs(&generics.params));
 
         // Regular parameters and return type
-        output.extend(self.render_fn_decl(decl));
+        output.extend(self.render_fn_decl(sig));
 
         // Where predicates
         output.extend(self.render_where_predicates(&generics.where_predicates));
@@ -456,14 +455,14 @@ impl<'c> RenderingContext<'c> {
         output
     }
 
-    fn render_fn_decl(&self, decl: &FnDecl) -> Vec<Token> {
+    fn render_fn_decl(&self, sig: &FunctionSignature) -> Vec<Token> {
         let mut output = vec![];
         // Main arguments
         output.extend(self.render_sequence(
             vec![Token::symbol("(")],
             vec![Token::symbol(")")],
             comma(),
-            &decl.inputs,
+            &sig.inputs,
             |(name, ty)| {
                 self.simplified_self(name, ty).unwrap_or_else(|| {
                     let mut output = vec![];
@@ -476,7 +475,7 @@ impl<'c> RenderingContext<'c> {
             },
         ));
         // Return type
-        if let Some(ty) = &decl.output {
+        if let Some(ty) = &sig.output {
             output.extend(arrow());
             output.extend(self.render_type(ty));
         }
@@ -489,7 +488,7 @@ impl<'c> RenderingContext<'c> {
                 Type::Generic(name) if name == "Self" => Some(vec![Token::self_("self")]),
                 Type::BorrowedRef {
                     lifetime,
-                    mutable,
+                    is_mutable,
                     type_,
                 } => match type_.as_ref() {
                     Type::Generic(name) if name == "Self" => {
@@ -497,7 +496,7 @@ impl<'c> RenderingContext<'c> {
                         if let Some(lt) = lifetime {
                             output.extend(vec![Token::lifetime(lt), ws!()]);
                         }
-                        if *mutable {
+                        if *is_mutable {
                             output.extend(vec![Token::keyword("mut"), ws!()]);
                         }
                         output.push(Token::self_("self"));
@@ -565,7 +564,7 @@ impl<'c> RenderingContext<'c> {
     fn render_function_pointer(&self, ptr: &FunctionPointer) -> Vec<Token> {
         let mut output = self.render_higher_rank_trait_bounds(&ptr.generic_params);
         output.push(Token::kind("fn"));
-        output.extend(self.render_fn_decl(&ptr.decl));
+        output.extend(self.render_fn_decl(&ptr.sig));
         output
     }
 
@@ -637,7 +636,7 @@ impl<'c> RenderingContext<'c> {
         output.push(ws!());
 
         if let Some(trait_) = &impl_.trait_ {
-            if !disregard_negativity && impl_.negative {
+            if !disregard_negativity && impl_.is_negative {
                 output.push(Token::symbol("!"));
             }
             output.extend(self.render_resolved_path(trait_));
@@ -659,9 +658,9 @@ impl<'c> RenderingContext<'c> {
         output
     }
 
-    fn render_raw_pointer(&self, mutable: bool, type_: &Type) -> Vec<Token> {
+    fn render_raw_pointer(&self, is_mutable: bool, type_: &Type) -> Vec<Token> {
         let mut output = vec![Token::symbol("*")];
-        output.push(Token::keyword(if mutable { "mut" } else { "const" }));
+        output.push(Token::keyword(if is_mutable { "mut" } else { "const" }));
         output.push(ws!());
         output.extend(self.render_type(type_));
         output
@@ -670,14 +669,14 @@ impl<'c> RenderingContext<'c> {
     fn render_borrowed_ref(
         &self,
         lifetime: Option<&str>,
-        mutable: bool,
+        is_mutable: bool,
         type_: &Type,
     ) -> Vec<Token> {
         let mut output = vec![Token::symbol("&")];
         if let Some(lt) = lifetime {
             output.extend(vec![Token::lifetime(lt), ws!()]);
         }
-        if mutable {
+        if is_mutable {
             output.extend(vec![Token::keyword("mut"), ws!()]);
         }
         output.extend(self.render_type(type_));
@@ -709,8 +708,8 @@ impl<'c> RenderingContext<'c> {
 
     fn render_generic_args(&self, args: &GenericArgs) -> Vec<Token> {
         match args {
-            GenericArgs::AngleBracketed { args, bindings } => {
-                self.render_angle_bracketed(args, bindings)
+            GenericArgs::AngleBracketed { args, constraints } => {
+                self.render_angle_bracketed(args, constraints)
             }
             GenericArgs::Parenthesized { inputs, output } => {
                 self.render_parenthesized(inputs, output)
@@ -733,10 +732,14 @@ impl<'c> RenderingContext<'c> {
         output
     }
 
-    fn render_angle_bracketed(&self, args: &[GenericArg], bindings: &[TypeBinding]) -> Vec<Token> {
+    fn render_angle_bracketed(
+        &self,
+        args: &[GenericArg],
+        constraints: &[AssocItemConstraint],
+    ) -> Vec<Token> {
         enum Arg<'c> {
             GenericArg(&'c GenericArg),
-            TypeBinding(&'c TypeBinding),
+            AssocItemConstraint(&'c AssocItemConstraint),
         }
         self.render_sequence_if_not_empty(
             vec![Token::symbol("<")],
@@ -745,11 +748,13 @@ impl<'c> RenderingContext<'c> {
             &args
                 .iter()
                 .map(Arg::GenericArg)
-                .chain(bindings.iter().map(Arg::TypeBinding))
+                .chain(constraints.iter().map(Arg::AssocItemConstraint))
                 .collect::<Vec<_>>(),
             |arg| match arg {
                 Arg::GenericArg(arg) => self.render_generic_arg(arg),
-                Arg::TypeBinding(binding) => self.render_type_binding(binding),
+                Arg::AssocItemConstraint(constraints) => {
+                    self.render_assoc_item_constraint(constraints)
+                }
             },
         )
     }
@@ -776,15 +781,15 @@ impl<'c> RenderingContext<'c> {
         }
     }
 
-    fn render_type_binding(&self, binding: &TypeBinding) -> Vec<Token> {
-        let mut output = vec![Token::identifier(&binding.name)];
-        output.extend(self.render_generic_args(&binding.args));
-        match &binding.binding {
-            TypeBindingKind::Equality(term) => {
+    fn render_assoc_item_constraint(&self, constraints: &AssocItemConstraint) -> Vec<Token> {
+        let mut output = vec![Token::identifier(&constraints.name)];
+        output.extend(self.render_generic_args(&constraints.args));
+        match &constraints.binding {
+            AssocItemConstraintKind::Equality(term) => {
                 output.extend(equals());
                 output.extend(self.render_term(term));
             }
-            TypeBindingKind::Constraint(bounds) => {
+            AssocItemConstraintKind::Constraint(bounds) => {
                 output.extend(self.render_generic_bounds(bounds));
             }
         }
@@ -827,8 +832,8 @@ impl<'c> RenderingContext<'c> {
         let params_without_synthetics: Vec<_> = params
             .iter()
             .filter(|p| {
-                if let GenericParamDefKind::Type { synthetic, .. } = p.kind {
-                    !synthetic
+                if let GenericParamDefKind::Type { is_synthetic, .. } = p.kind {
+                    !is_synthetic
                 } else {
                     true
                 }
@@ -940,6 +945,7 @@ impl<'c> RenderingContext<'c> {
                 output
             }
             GenericBound::Outlives(id) => vec![Token::lifetime(id)],
+            GenericBound::Use(_) => todo!("Can this code path be triggered with just stable Rust? If you hit this todo with just stable Rust, please file an issue with a minimal reproducer. Thanks!"),
         })
     }
 
@@ -1203,7 +1209,7 @@ mod test {
         assert_render(
             |context| {
                 context.render_type(&Type::RawPointer {
-                    mutable: false,
+                    is_mutable: false,
                     type_: Box::new(Type::Infer),
                 })
             },
@@ -1222,7 +1228,7 @@ mod test {
         assert_render(
             |context| {
                 context.render_type(&Type::RawPointer {
-                    mutable: true,
+                    is_mutable: true,
                     type_: Box::new(Type::Infer),
                 })
             },
@@ -1242,7 +1248,7 @@ mod test {
             |context| {
                 context.render_type(&Type::BorrowedRef {
                     lifetime: None,
-                    mutable: false,
+                    is_mutable: false,
                     type_: Box::new(Type::Infer),
                 })
             },
@@ -1257,7 +1263,7 @@ mod test {
             |context| {
                 context.render_type(&Type::BorrowedRef {
                     lifetime: None,
-                    mutable: true,
+                    is_mutable: true,
                     type_: Box::new(Type::Infer),
                 })
             },
@@ -1277,7 +1283,7 @@ mod test {
             |context| {
                 context.render_type(&Type::BorrowedRef {
                     lifetime: Some(s!("'a")),
-                    mutable: false,
+                    is_mutable: false,
                     type_: Box::new(Type::Infer),
                 })
             },
@@ -1297,7 +1303,7 @@ mod test {
             |context| {
                 context.render_type(&Type::BorrowedRef {
                     lifetime: Some(s!("'a")),
-                    mutable: true,
+                    is_mutable: true,
                     type_: Box::new(Type::Infer),
                 })
             },
@@ -1321,7 +1327,7 @@ mod test {
                     name: s!("name"),
                     args: Box::new(GenericArgs::AngleBracketed {
                         args: vec![],
-                        bindings: vec![],
+                        constraints: vec![],
                     }),
                     self_type: Box::new(Type::Generic(s!("type"))),
                     trait_: Some(Path {

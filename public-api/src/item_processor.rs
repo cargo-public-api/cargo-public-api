@@ -5,7 +5,7 @@ use crate::{
     BuilderOptions as Options, PublicApi,
 };
 use rustdoc_types::{
-    Crate, Id, Impl, Import, Item, ItemEnum, Module, Struct, StructKind, Type, VariantKind,
+    Crate, Id, Impl, Item, ItemEnum, Module, Struct, StructKind, Type, Use, VariantKind,
 };
 use std::{
     collections::{HashMap, VecDeque},
@@ -30,8 +30,8 @@ struct UnprocessedItem<'c> {
 
 /// Processes items to find more items and to figure out the path to each item.
 /// Some non-obvious cases to take into consideration are:
-/// 1. A single item is imported several times.
-/// 2. An item is (publicly) imported from another crate
+/// 1. A single item is used several times.
+/// 2. An item is (publicly) used from another crate
 ///
 /// Note that this implementation iterates over everything, so if the rustdoc
 /// JSON is generated with `--document-private-items`, then private items will
@@ -87,14 +87,14 @@ impl<'c> ItemProcessor<'c> {
     }
 
     /// Process any item. In particular, does the right thing if the item is an
-    /// impl or an import.
+    /// impl or a use.
     fn process_any_item(&mut self, item: &'c Item, unprocessed_item: UnprocessedItem<'c>) {
         match &item.inner {
-            ItemEnum::Import(import) => {
-                if import.glob {
-                    self.process_import_glob_item(import, unprocessed_item, item);
+            ItemEnum::Use(use_) => {
+                if use_.is_glob {
+                    self.process_use_glob_item(use_, unprocessed_item, item);
                 } else {
-                    self.process_import_item(item, import, unprocessed_item);
+                    self.process_use_item(item, use_, unprocessed_item);
                 }
             }
             ItemEnum::Impl(impl_) => {
@@ -109,19 +109,19 @@ impl<'c> ItemProcessor<'c> {
     /// We need to handle `pub use foo::*` specially. In case of such wildcard
     /// imports, `glob` will be `true` and `id` will be the module we should
     /// import all items from, but we should NOT add the module itself. Before
-    /// we inline this wildcard import, make sure that the module is not
-    /// indirectly trying to import itself. If we allow that, we'll get a stack
+    /// we inline this wildcard use, make sure that the module is not
+    /// indirectly trying to use itself. If we allow that, we'll get a stack
     /// overflow.
-    fn process_import_glob_item(
+    fn process_use_glob_item(
         &mut self,
-        import: &'c Import,
+        use_: &'c Use,
         unprocessed_item: UnprocessedItem<'c>,
         item: &'c Item,
     ) {
         if let Some(Item {
             inner: ItemEnum::Module(Module { items, .. }),
             ..
-        }) = import
+        }) = use_
             .id
             .as_ref()
             .and_then(|id| self.get_item_if_not_in_path(&unprocessed_item.parent_path, id))
@@ -133,36 +133,36 @@ impl<'c> ItemProcessor<'c> {
             self.process_item(
                 unprocessed_item,
                 item,
-                Some(format!("<<{}::*>>", import.source)),
+                Some(format!("<<{}::*>>", use_.source)),
             );
         }
     }
 
     /// Since public imports are part of the public API, we inline them, i.e.
-    /// replace the item corresponding to an import with the item that is
-    /// imported. If we didn't do this, publicly imported items would show up as
+    /// replace the item corresponding to a use with the item that is
+    /// used. If we didn't do this, publicly used items would show up as
     /// just e.g. `pub use some::function`, which is not sufficient for the use
     /// cases of this tool. We want to show the actual API, and thus also show
     /// type information! There is one exception; for re-exports of primitive
     /// types, there is no item Id to inline with, so they remain as e.g. `pub
     /// use my_i32` in the output.
-    fn process_import_item(
+    fn process_use_item(
         &mut self,
         item: &'c Item,
-        import: &'c Import,
+        use_: &'c Use,
         unprocessed_item: UnprocessedItem<'c>,
     ) {
         let mut actual_item = item;
 
-        if let Some(imported_item) = import
+        if let Some(used_item) = use_
             .id
             .as_ref()
             .and_then(|id| self.get_item_if_not_in_path(&unprocessed_item.parent_path, id))
         {
-            actual_item = imported_item;
+            actual_item = used_item;
         }
 
-        self.process_item(unprocessed_item, actual_item, Some(import.name.clone()));
+        self.process_item(unprocessed_item, actual_item, Some(use_.name.clone()));
     }
 
     /// Processes impls. Impls are special because we support filtering out e.g.
@@ -259,7 +259,7 @@ impl<'c> ItemProcessor<'c> {
         id: &'c Id,
     ) -> Option<&'c Item> {
         if parent_path.iter().any(|m| m.item.item.id == *id) {
-            // The item is already in the path! Break import recursion...
+            // The item is already in the path! Break use recursion...
             return None;
         }
 
@@ -320,7 +320,7 @@ impl<'c> UnprocessedItem<'c> {
 pub(crate) fn sorting_prefix(item: &Item) -> u8 {
     match &item.inner {
         ItemEnum::ExternCrate { .. } => 1,
-        ItemEnum::Import(_) => 2,
+        ItemEnum::Use(_) => 2,
 
         ItemEnum::Primitive(_) => 3,
 
@@ -357,9 +357,7 @@ pub(crate) fn sorting_prefix(item: &Item) -> u8 {
             ImplKind::Blanket => 24,
         },
 
-        ItemEnum::ForeignType => 25,
-
-        ItemEnum::OpaqueTy(_) => 26,
+        ItemEnum::ExternType => 25,
 
         ItemEnum::TraitAlias(_) => 27,
     }
@@ -392,7 +390,7 @@ impl ImplKind {
             .any(|a| a == "#[automatically_derived]");
 
         // See https://github.com/rust-lang/rust/blob/54f20bbb8a7aeab93da17c0019c1aaa10329245a/src/librustdoc/json/conversions.rs#L589-L590
-        match (impl_.synthetic, has_blanket_impl) {
+        match (impl_.is_synthetic, has_blanket_impl) {
             (true, false) => ImplKind::AutoTrait,
             (false, true) => ImplKind::Blanket,
             _ if is_automatically_derived => ImplKind::AutoDerived,

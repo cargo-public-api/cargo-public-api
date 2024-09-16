@@ -1,5 +1,9 @@
 # `public-api` changelog
 
+## v0.38.0
+* Support `nightly-2024-09-10`, which brought in lots of field renaming due to https://github.com/rust-lang/rust/pull/128667.
+* Removed `OpaqueTy` since it was removed from rustdoc-types.
+
 ## v0.37.0
 * Move project from https://github.com/Enselic/cargo-public-api to https://github.com/cargo-public-api/cargo-public-api
 

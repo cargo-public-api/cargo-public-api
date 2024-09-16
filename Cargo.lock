@@ -972,7 +972,7 @@ checksum = "583034fd73374156e66797ed8e5b0d5690409c9226b22d87cb7f19821c05d152"
 
 [[package]]
 name = "rustdoc-json"
-version = "0.9.2"
+version = "0.9.3"
 dependencies = [
  "assert_cmd",
  "cargo-manifest",

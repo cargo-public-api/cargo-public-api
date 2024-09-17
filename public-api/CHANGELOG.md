@@ -1,8 +1,7 @@
 # `public-api` changelog
 
 ## v0.38.0
-* Support `nightly-2024-09-10`, which brought in lots of field renaming due to https://github.com/rust-lang/rust/pull/128667.
-* Removed `OpaqueTy` since it was removed from rustdoc-types.
+* Support `nightly-2024-09-10` and later.
 
 ## v0.37.0
 * Move project from https://github.com/Enselic/cargo-public-api to https://github.com/cargo-public-api/cargo-public-api
@@ -14,7 +13,7 @@
 * Don't panic when encountering constants without a type (e.g. `TakesConstGenericArg<120>`)
 
 ## v0.35.0
-* Support `nightly-2024-06-07`.
+* Support `nightly-2024-06-07` and later.
 
 ## v0.33.1
 * Fixup 'Avoid textual API diff when changing a trait impl to an auto-derived impl.'

@@ -25,6 +25,7 @@ If `MINIMUM_NIGHTLY_RUST_VERSION` must be bumped then
 ### `cargo-public-api`
 
 1. First release `rustup-toolchain`, `rustdoc-json` and `public-api` if needed, in that order. See below. Note: Because of circular dependencies you must release one helper package at a time from `main`. You can't update all crates in a single commit.
+1. Create a local branch.
 1. Run
    ```
    tag=$(git tag --sort=-creatordate | grep ^v | head -n1) ; git diff $tag
@@ -39,7 +40,11 @@ If `MINIMUM_NIGHTLY_RUST_VERSION` must be bumped then
    ```
     * If you bump 0.x.0 version, also update the [compatibility matrix](https://github.com/cargo-public-api/cargo-public-api#compatibility-matrix).
     * If `MINIMUM_NIGHTLY_RUST_VERSION` must be bumped, see [notes](./RELEASE.md#bumping-minimum_nightly_rust_version).
-1. Run https://github.com/cargo-public-api/cargo-public-api/actions/workflows/Release-cargo-public-api.yml workflow from `main` ([instructions](https://github.com/cargo-public-api/cargo-public-api/blob/main/docs/development.md#how-to-trigger-main-branch-workflow))
+1. Push branch
+
+MAINTAINER:
+
+1. Once PR merges, run https://github.com/cargo-public-api/cargo-public-api/actions/workflows/Release-cargo-public-api.yml workflow from `main` ([instructions](#how-to-trigger-main-branch-workflow))
 1. Done!
 
 ### `public-api`
@@ -49,6 +54,7 @@ If `MINIMUM_NIGHTLY_RUST_VERSION` must be bumped then
    tag=$(git tag --sort=-creatordate | grep ^public-api-v | head -n1) ; git diff $tag -- public-api/
    ```
    to see if a release is needed.
+1. If changes detected, create a local branch.
 1. Update `public-api/CHANGELOG.md`
 1. Bump version with
    ```
@@ -56,7 +62,11 @@ If `MINIMUM_NIGHTLY_RUST_VERSION` must be bumped then
    ```
     * If you bump 0.x.0 version, also update the [compatibility matrix](https://github.com/cargo-public-api/cargo-public-api#compatibility-matrix).
     * If `MINIMUM_NIGHTLY_RUST_VERSION` must be bumped, see [notes](./RELEASE.md#bumping-minimum_nightly_rust_version).
-1. Run https://github.com/cargo-public-api/cargo-public-api/actions/workflows/Release-public-api.yml workflow from `main` ([instructions](https://github.com/cargo-public-api/cargo-public-api/blob/main/docs/development.md#how-to-trigger-main-branch-workflow))
+1. Push branch
+
+MAINTAINER:
+
+1. Once PR merges, run https://github.com/cargo-public-api/cargo-public-api/actions/workflows/Release-public-api.yml workflow from `main` ([instructions](#how-to-trigger-main-branch-workflow))
 1. Done!
 
 ### `rustdoc-json`
@@ -66,12 +76,17 @@ If `MINIMUM_NIGHTLY_RUST_VERSION` must be bumped then
    tag=$(git tag --sort=-creatordate | grep ^rustdoc-json-v | head -n1) ; git diff $tag -- rustdoc-json/
    ```
    to see if a release is needed.
+1. If changes detected, create a local branch.
 1. Update `rustdoc-json/CHANGELOG.md`
 1. Bump version with
    ```
    cargo set-version -p rustdoc-json x.y.z
    ```
-1. Run https://github.com/cargo-public-api/cargo-public-api/actions/workflows/Release-rustdoc-json.yml workflow from `main` ([instructions](https://github.com/cargo-public-api/cargo-public-api/blob/main/docs/development.md#how-to-trigger-main-branch-workflow))
+1. Push branch
+
+MAINTAINER:
+
+1. Once PR merges, run https://github.com/cargo-public-api/cargo-public-api/actions/workflows/Release-rustdoc-json.yml workflow from `main` ([instructions](#how-to-trigger-main-branch-workflow))
 1. Done!
 
 ### `rustup-toolchain`
@@ -81,12 +96,17 @@ If `MINIMUM_NIGHTLY_RUST_VERSION` must be bumped then
    tag=$(git tag --sort=-creatordate | grep ^rustup-toolchain-v | head -n1) ; git diff $tag -- rustup-toolchain/
    ```
    to see if a release is needed.
+1. If changes detected, create a local branch.
 1. Update `rustup-toolchain/CHANGELOG.md`
 1. Bump version with
    ```
    cargo set-version -p rustup-toolchain x.y.z
    ```
-1. Run https://github.com/cargo-public-api/cargo-public-api/actions/workflows/Release-rustup-toolchain.yml workflow from `main` ([instructions](https://github.com/cargo-public-api/cargo-public-api/blob/main/docs/development.md#how-to-trigger-main-branch-workflow))
+1. Push branch
+
+MAINTAINER:
+
+1. Once PR merges, run https://github.com/cargo-public-api/cargo-public-api/actions/workflows/Release-rustup-toolchain.yml workflow from `main` ([instructions](#how-to-trigger-main-branch-workflow))
 1. Done!
 
 ## How to trigger main branch workflow

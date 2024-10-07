@@ -14,7 +14,7 @@ members = [
     "cargo-public-api",
 
     # Contains various repo-wide tests
-    "repo-tests",
+    "repo-tests", "scripts/release-helper",
 ]
 
 # Test APIs can't be part of the workspace because

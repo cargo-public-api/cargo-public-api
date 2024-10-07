@@ -1,0 +1,10 @@
+[package]
+name = "release-helper"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies.jiff]
+version = "0.1.13"
+default-features = false
+
+semver = "1.0.18"

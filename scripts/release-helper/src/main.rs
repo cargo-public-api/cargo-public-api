@@ -2,9 +2,11 @@ use jiff::Timestamp;
 use semver::Version;
 
 struct CargoPublicApiVersionInfo {
-    version: Version,
+    cargo_public_api_version: Version,
     min_nightly_version: Timestamp,
 }
+
+type VersionRange = std::ops::RangeInclusive<Version>;
 
 // | Version          | Understands the rustdoc JSON output of  |
 // | ---------------- | --------------------------------------- |
@@ -15,41 +17,41 @@ struct CargoPublicApiVersionInfo {
 // | 0.30.x — 0.31.x  | nightly-2023-05-24 — nightly-2023-08-24 |
 
 fn main() {
-    let versions = vec![
-        CargoPublicApiVersionInfo {
-            version: parse_version_and_check("0.38.x"),
-            min_nightly_version: "2024-09-10".parse().unwrap(),
-        },
-        CargoPublicApiVersionInfo {
-            version: parse_version_and_check("0.37.0"),
-            min_nightly_version: "2024-07-05".parse().unwrap(),
-        },
-        CargoPublicApiVersionInfo {
-            version: parse_version_and_check("0.36.0"),
-            min_nightly_version: "2024-06-07".parse().unwrap(),
-        },
-        CargoPublicApiVersionInfo {
-            version: parse_version_and_check("0.35.0"),
-            min_nightly_version: "2024-06-07".parse().unwrap(),
-        },
-        CargoPublicApiVersionInfo {
-            version: parse_version_and_check("0.34.0"),
-            min_nightly_version: "2023-08-25".parse().unwrap(),
-        },
-        CargoPublicApiVersionInfo {
-            version: parse_version_and_check("0.33.0"),
-            min_nightly_version: "2023-08-25".parse().unwrap(),
-        },
-        CargoPublicApiVersionInfo {
-            version: parse_version_and_check("0.32.0"),
-            min_nightly_version: "2023-08-25".parse().unwrap(),
-        },
-        CargoPublicApiVersionInfo {
-            version: parse_version_and_check("0.31.0"),
-            min_nightly_version: "2023-05-24".parse().unwrap(),
-        },
-    ];
-    println!("Hello, world!");
+    let version_infos = [
+        ("0.38.0", "nightly-2024-09-10"),
+        ("0.37.0", "nightly-2024-07-05"),
+        ("0.36.0", "nightly-2024-06-07"),
+        ("0.35.0", "nightly-2024-06-07"),
+        ("0.34.0", "nightly-2023-08-25"),
+        ("0.33.0", "nightly-2023-08-25"),
+        ("0.32.0", "nightly-2023-08-25"),
+        ("0.31.0", "nightly-2023-05-24"),
+        ("0.30.0", "nightly-2023-05-24"),
+    ]
+    .into_iter()
+    .map(|(version, min_nightly_version)| CargoPublicApiVersionInfo {
+        cargo_public_api_version: parse_version_and_check(version),
+        min_nightly_version: Timestamp::parse(min_nightly_version.strip_prefix("nightly-"))
+            .unwrap(),
+    });
+
+    let mut current_min_nightly_version = None;
+    let mut current_cargo_public_api_version = None;
+    for version_info in version_infos {
+        let mut version_row_entry = 
+        if version_info.cargo_public_api_version.major == 0 {
+            if let Some(min_nightly_version) = current_min_nightly_version {
+                if version_info.min_nightly_version < min_nightly_version {
+                    panic!(
+                        "Version {} requires a minimum nightly version of {}",
+                        version_info.cargo_public_api_version,
+                        min_nightly_version
+                    );
+                }
+            }
+            current_min_nightly_version = Some(version_info.min_nightly_version);
+        }
+    }
 }
 
 fn parse_version_and_check(version: &str) -> Version {

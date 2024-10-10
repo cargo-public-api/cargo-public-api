@@ -6,7 +6,11 @@ struct CargoPublicApiVersionInfo {
     min_nightly_version: Timestamp,
 }
 
-type VersionRange = std::ops::RangeInclusive<Version>;
+
+struct VersionRange {
+    start: Version,
+    end: Version,
+}
 
 // | Version          | Understands the rustdoc JSON output of  |
 // | ---------------- | --------------------------------------- |
@@ -55,11 +59,26 @@ fn main() {
 }
 
 fn parse_version_and_check(version: &str) -> Version {
-    let version = Version::parse("0.38.0").unwrap();
+    let version = Version::parse(version).unwrap();
     if version.major != 0 {
         panic!("Major version must be 0");
     }
     if version.patch != 0 {
         panic!("Patch version must be 0");
+    }
+}
+
+fn render_compatibility_matrix(version_infos: &[CargoPublicApiVersionInfo]) -> String {
+
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_render_compatibility_matrix_one_version() {
+
+        
     }
 }

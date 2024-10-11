@@ -48,23 +48,53 @@ fn parse_version_and_check(version: &str) -> Version {
 
 fn render_compatibility_matrix(version_infos: &[CargoPublicApiVersionInfo]) -> String {
 
-    struct VersionRange {
+    struct CompatibilityMatrixRow {
+        cargo_public_api_version_range: CargoPublicApiVersionRange,
+        nightly_version_range: NightlyVersionRange,
+    }
+
+    struct CargoPublicApiVersionRange {
         start: Version,
+        // This is not an Option because we never have to represent "all unknown
+        // future versions". We know exactly what versions of cargo-public-api
+        // that exists. If it changes, we update this code.
         end: Version,
+    }
+
+    struct NightlyVersionRange {
+        start: Timestamp,
+        end: Option<Timestamp>,
     }
 
     // We start from the bottom
     let version_infos_reversed = version_infos.iter().rev();
     
     
-    //let mut current_version_range: VersionRange
+    let mut rows = Vec::new();
+    let mut output_string = String::new();
+    let mut current_version_range = None;
+    let mut current_nightly_version_range = None;
     let mut current_min_nightly_version = None;
     let mut current_cargo_public_api_version = None;
     for version_info in version_infos_reversed {
+        if current_version_range.is_none() {
+            current_version_range = Some(CargoPublicApiVersionRange {
+                start: version_info.cargo_public_api_version.clone(),
+                end: version_info.cargo_public_api_version.clone(),
+            });
+        } else {
+
+        }
+        if current_nightly_version_range.is_none() {
+            current_nightly_version_range = Some(NightlyVersionRange {
+                start: version_info.min_nightly_version.clone(),
+                end: None,
+            });
+        }
         if current_cargo_public_api_version.is_none() {
             current_cargo_public_api_version = Some(version_info.cargo_public_api_version);
         }
-        
+
         let mut version_row_entry = 
         if version_info.cargo_public_api_version.major == 0 {
             if let Some(min_nightly_version) = current_min_nightly_version {

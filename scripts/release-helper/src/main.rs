@@ -7,11 +7,6 @@ struct CargoPublicApiVersionInfo {
 }
 
 
-struct VersionRange {
-    start: Version,
-    end: Version,
-}
-
 // | Version          | Understands the rustdoc JSON output of  |
 // | ---------------- | --------------------------------------- |
 // | 0.38.x -         | nightly-2024-09-10 -                    |
@@ -39,9 +34,37 @@ fn main() {
             .unwrap(),
     });
 
+}
+
+fn parse_version_and_check(version: &str) -> Version {
+    let version = Version::parse(version).unwrap();
+    if version.major != 0 {
+        panic!("Major version must be 0");
+    }
+    if version.patch != 0 {
+        panic!("Patch version must be 0");
+    }
+}
+
+fn render_compatibility_matrix(version_infos: &[CargoPublicApiVersionInfo]) -> String {
+
+    struct VersionRange {
+        start: Version,
+        end: Version,
+    }
+
+    // We start from the bottom
+    let version_infos_reversed = version_infos.iter().rev();
+    
+    
+    //let mut current_version_range: VersionRange
     let mut current_min_nightly_version = None;
     let mut current_cargo_public_api_version = None;
-    for version_info in version_infos {
+    for version_info in version_infos_reversed {
+        if current_cargo_public_api_version.is_none() {
+            current_cargo_public_api_version = Some(version_info.cargo_public_api_version);
+        }
+        
         let mut version_row_entry = 
         if version_info.cargo_public_api_version.major == 0 {
             if let Some(min_nightly_version) = current_min_nightly_version {
@@ -58,18 +81,30 @@ fn main() {
     }
 }
 
-fn parse_version_and_check(version: &str) -> Version {
-    let version = Version::parse(version).unwrap();
-    if version.major != 0 {
-        panic!("Major version must be 0");
-    }
-    if version.patch != 0 {
-        panic!("Patch version must be 0");
-    }
-}
 
-fn render_compatibility_matrix(version_infos: &[CargoPublicApiVersionInfo]) -> String {
+/*
 
+
+| Version          | Understands the rustdoc JSON output of  |
+| ---------------- | --------------------------------------- |
+| 0.38.x -         | nightly-2024-09-10 -                    |
+| 0.37.x           | nightly-2024-07-05 — nightly-2024-09-09 |
+| 0.35.x — 0.36.x  | nightly-2024-06-07 — nightly-2024-07-04 |
+| 0.32.x — 0.34.x  | nightly-2023-08-25 — nightly-2024-06-06 |
+| 0.30.x — 0.31.x  | nightly-2023-05-24 — nightly-2023-08-24 |
+
+
+
+*/
+
+
+fn render_compatibility_matrix_helper(version_infos: &[(&str, &str)]) -> Vec<CargoPublicApiVersionInfo> {
+    version_infos.iter()
+    .map(|(version, min_nightly_version)| CargoPublicApiVersionInfo {
+        cargo_public_api_version: parse_version_and_check(version),
+        min_nightly_version: Timestamp::parse(min_nightly_version.strip_prefix("nightly-"))
+            .unwrap(),
+    }).collect();
 }
 
 #[cfg(test)]

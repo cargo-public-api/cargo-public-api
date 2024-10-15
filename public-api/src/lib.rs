@@ -62,7 +62,7 @@ pub use public_item::PublicItem;
 /// The rustdoc JSON format is still changing, so every now and then we update
 /// this library to support the latest format. If you use this version of
 /// nightly or later, you should be fine.
-pub const MINIMUM_NIGHTLY_RUST_VERSION: &str = "nightly-2024-09-10";
+pub const MINIMUM_NIGHTLY_RUST_VERSION: &str = "nightly-2024-10-13";
 
 /// See [`Builder`] method docs for what each field means.
 #[derive(Copy, Clone, Debug)]
@@ -216,7 +216,7 @@ pub struct PublicApi {
     pub(crate) items: Vec<PublicItem>,
 
     /// See [`Self::missing_item_ids()`]
-    pub(crate) missing_item_ids: Vec<String>,
+    pub(crate) missing_item_ids: Vec<u32>,
 }
 
 impl PublicApi {
@@ -242,7 +242,7 @@ impl PublicApi {
     ///
     /// The exact format of IDs are to be considered an implementation detail
     /// and must not be be relied on.
-    pub fn missing_item_ids(&self) -> impl Iterator<Item = &String> {
+    pub fn missing_item_ids(&self) -> impl Iterator<Item = &u32> {
         self.missing_item_ids.iter()
     }
 }

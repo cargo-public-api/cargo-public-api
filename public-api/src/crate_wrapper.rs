@@ -30,7 +30,7 @@ impl<'c> CrateWrapper<'c> {
         })
     }
 
-    pub fn missing_item_ids(&self) -> Vec<String> {
-        self.missing_ids.iter().map(|m| m.0.clone()).collect()
+    pub fn missing_item_ids(&self) -> Vec<u32> {
+        self.missing_ids.iter().map(|m| m.0).collect()
     }
 }

@@ -1046,6 +1046,8 @@ mod test {
 
     use super::*;
 
+    const DUMMY_ID: Id = Id(1234);
+
     #[test]
     fn test_type_infer() {
         assert_render(
@@ -1080,7 +1082,7 @@ mod test {
                 context.render_type(&Type::ResolvedPath(Path {
                     name: s!("name"),
                     args: None,
-                    id: Id(s!("id")),
+                    id: DUMMY_ID,
                 }))
             },
             vec![Token::type_("name")],
@@ -1095,7 +1097,7 @@ mod test {
                 context.render_type(&Type::ResolvedPath(Path {
                     name: s!("name::with::parts"),
                     args: None,
-                    id: Id(s!("id")),
+                    id: DUMMY_ID,
                 }))
             },
             vec![
@@ -1116,7 +1118,7 @@ mod test {
                 context.render_type(&Type::ResolvedPath(Path {
                     name: s!("$crate::name"),
                     args: None,
-                    id: Id(s!("id")),
+                    id: DUMMY_ID,
                 }))
             },
             vec![
@@ -1135,7 +1137,7 @@ mod test {
                 context.render_type(&Type::ResolvedPath(Path {
                     name: s!("name::$crate"),
                     args: None,
-                    id: Id(s!("id")),
+                    id: DUMMY_ID,
                 }))
             },
             vec![
@@ -1333,7 +1335,7 @@ mod test {
                     trait_: Some(Path {
                         name: String::from("trait"),
                         args: None,
-                        id: Id(s!("id")),
+                        id: DUMMY_ID,
                     }),
                 })
             },
@@ -1358,7 +1360,7 @@ mod test {
         expected_string: &str,
     ) {
         let crate_ = Crate {
-            root: Id(String::from("1:2:3")),
+            root: DUMMY_ID,
             crate_version: None,
             includes_private: false,
             index: HashMap::new(),

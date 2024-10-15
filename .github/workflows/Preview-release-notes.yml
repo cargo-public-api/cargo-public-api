@@ -15,7 +15,7 @@ on:
 
 jobs:
   preview-release-notes:
-    if: github.repository == 'cargo-public-api/cargo-public-api' && (github.event_name != 'pull_request_target' || github.event.pull_request.merged == true)
+    # if: github.repository == 'cargo-public-api/cargo-public-api' && (github.event_name != 'pull_request_target' || github.event.pull_request.merged == true)
     environment:
       name: preview-release-notes
       url: https://github.com/cargo-public-api/cargo-public-api.github.io/blob/main/release-notes-preview.md
@@ -29,6 +29,7 @@ jobs:
           ssh-key: ${{ secrets.CARGO_PUBLIC_API_GITHUB_PAGES_DEPLOY_KEY }}
       - name: generate-notes
         run: |
+          echo repo=${{ github.repository }} event_name=${{ github.event_name }} event=${{ github.event }}
           # Auto-generate release notes
           curl --request POST \
               --url ${{ github.api_url }}/repos/${{ github.repository }}/releases/generate-notes \

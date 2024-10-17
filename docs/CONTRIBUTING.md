@@ -99,6 +99,18 @@ Another option is the `RUSTDOC_JSON_OVERRIDDEN_TOOLCHAIN_HACK` env var. Use it l
 RUSTDOC_JSON_OVERRIDDEN_TOOLCHAIN_HACK=custom ./scripts/run-ci-locally.sh
 ```
 
+## How to adapt to rustdoc JSON format changes
+
+It is usually straigtforward.
+
+1. Bump `[dependencies.rustdoc-types] version` in `./public-api/Cargo.toml`
+1. Make `cargo build` build
+1. Make `cargo test` build
+1. Possibly bless changes to output with `./scripts/bless-expected-output-for-tests.sh`
+1. Make `./scripts/run-ci-locally.sh` pass
+
+Once all of the above commands completes successfully, the upgrade is usually complete.
+
 # Automated tests
 
 All features and bugfixes needs automated tests. The only way to make sure no regressions creep in in software that is constantly changed, is to test for it. But manually testing quickly becomes unmanageable. Therefore, automated tests are needed.

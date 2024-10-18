@@ -142,9 +142,13 @@ fn bag_to_path_map<'a>(difference: impl Iterator<Item = (&'a PublicItem, usize)>
 
 #[cfg(test)]
 mod tests {
+    use rustdoc_types::Id;
+
     use crate::tokens::Token;
 
     use super::*;
+
+    static DUMMY_ID: Id = Id(1234);
 
     #[test]
     fn single_and_only_item_removed() {
@@ -345,6 +349,8 @@ mod tests {
         PublicItem {
             sortable_path: path,
             tokens,
+            parent_id: None,
+            id: DUMMY_ID,
         }
     }
 

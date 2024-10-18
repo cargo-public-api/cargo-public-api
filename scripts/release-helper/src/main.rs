@@ -17,6 +17,7 @@ struct CargoPublicApiVersionInfo {
 
 fn main() {
     let version_infos = [
+        ("0.39.0", "nightly-2024-10-13"),
         ("0.38.0", "nightly-2024-09-10"),
         ("0.37.0", "nightly-2024-07-05"),
         ("0.36.0", "nightly-2024-06-07"),
@@ -55,9 +56,9 @@ fn render_compatibility_matrix(version_infos: &[CargoPublicApiVersionInfo]) -> S
 
     struct CargoPublicApiVersionRange {
         start: Version,
-        // This is not an Option because we never have to represent "all unknown
-        // future versions". We know exactly what versions of cargo-public-api
-        // that exists. If it changes, we update this code.
+        // This is not an `Option`` because we never have to represent "all
+        // unknown future versions". We know exactly what versions of
+        // cargo-public-api that exists. If it changes, we update this code.
         end: Version,
     }
 
@@ -141,8 +142,18 @@ fn render_compatibility_matrix_helper(version_infos: &[(&str, &str)]) -> Vec<Car
 mod tests {
     use super::*;
 
+    fn do_test(version_infos: &[(&str, &str)]) {
+
+    }
+
     #[test]
-    fn test_render_compatibility_matrix_one_version() {
+    fn test_render_compatibility_matrix_one_version(
+        do_test([("0.39.0", "nightly-2024-10-13")
+        ]);
+        
+
+
+    ) {
 
         
     }

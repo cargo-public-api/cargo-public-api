@@ -60,7 +60,7 @@ pub fn create_test_git_repo(dest_dir: impl AsRef<Path>, dirs_and_tags: &[(&str, 
         run(git()
             .args(["-c", "commit.gpgsign=false", "commit", "--quiet", "-m"])
             .arg(tag_name));
-        run(git().arg("tag").arg(tag_name));
+        run(git().arg("tag").arg(tag_name).arg("--no-sign"));
     }
 }
 

@@ -10,7 +10,7 @@ Install the `cargo public-api` subcommand with a recent regular **stable** Rust 
 cargo +stable install cargo-public-api --locked
 ```
 
-Ensure **nightly-2024-10-13** or later is installed (does not need to be the active toolchain) so `cargo public-api` can build rustdoc JSON for you:
+Ensure **nightly-2024-10-18** or later is installed (does not need to be the active toolchain) so `cargo public-api` can build rustdoc JSON for you:
 
 ```sh
 rustup install nightly --profile minimal

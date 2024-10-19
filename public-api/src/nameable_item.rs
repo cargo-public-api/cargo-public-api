@@ -19,7 +19,7 @@ pub struct NameableItem<'c> {
     pub sorting_prefix: u8,
 }
 
-impl<'c> NameableItem<'c> {
+impl NameableItem<'_> {
     /// The regular name of the item. Shown to users.
     pub fn name(&self) -> Option<&str> {
         self.overridden_name

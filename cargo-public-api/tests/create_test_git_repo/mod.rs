@@ -37,10 +37,7 @@ pub fn create_test_git_repo(dest_dir: impl AsRef<Path>, dirs_and_tags: &[(&str, 
     run(git().args(["config", "user.name", "Cargo Public"]));
 
     // Now go through all directories and create git commits and tags from them
-    for dir_and_tag in dirs_and_tags {
-        let dir_name = dir_and_tag.0;
-        let tag_name = dir_and_tag.1;
-
+    for (dir_name, tag_name) in dirs_and_tags {
         let copy_to_dest = |name| {
             let mut from = PathBuf::from("../test-apis");
             from.push(dir_name);
@@ -63,7 +60,7 @@ pub fn create_test_git_repo(dest_dir: impl AsRef<Path>, dirs_and_tags: &[(&str, 
         run(git()
             .args(["-c", "commit.gpgsign=false", "commit", "--quiet", "-m"])
             .arg(tag_name));
-        run(git().arg("tag").arg(tag_name));
+        run(git().arg("tag").arg(tag_name).arg("--no-sign"));
     }
 }
 

@@ -104,6 +104,8 @@ RUSTDOC_JSON_OVERRIDDEN_TOOLCHAIN_HACK=custom ./scripts/run-ci-locally.sh
 It is usually straigtforward.
 
 1. Bump `[dependencies.rustdoc-types] version` in `./public-api/Cargo.toml`
+1. Bump `MINIMUM_NIGHTLY_RUST_VERSION` in `public-api/src/lib.rs`
+1. Bump the *value of* `MINIMUM_NIGHTLY_RUST_VERSION` in `README.md`
 1. Make `cargo build` build
 1. Make `cargo test` build
 1. Possibly bless changes to output with `./scripts/bless-expected-output-for-tests.sh`

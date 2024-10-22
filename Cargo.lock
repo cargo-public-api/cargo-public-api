@@ -954,6 +954,8 @@ name = "release-helper"
 version = "0.1.0"
 dependencies = [
  "jiff",
+ "pretty_assertions",
+ "semver",
 ]
 
 [[package]]

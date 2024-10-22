@@ -1,5 +1,6 @@
 use jiff::Timestamp;
 use semver::Version;
+use pretty_assertions;
 
 struct CargoPublicApiVersionInfo {
     cargo_public_api_version: Version,
@@ -142,18 +143,23 @@ fn render_compatibility_matrix_helper(version_infos: &[(&str, &str)]) -> Vec<Car
 mod tests {
     use super::*;
 
-    fn do_test(version_infos: &[(&str, &str)]) {
-
+    fn do_test(version_infos: &[(&str, &str)], expected_output: &str) {
+        let version_infos = render_compatibility_matrix_helper(version_infos);
+        let output = render_compatibility_matrix(&version_infos);
+        assert_eq!(output, expected_output);
     }
 
     #[test]
-    fn test_render_compatibility_matrix_one_version(
+    fn test_render_compatibility_matrix_one_version()
         do_test([("0.39.0", "nightly-2024-10-13")
-        ]);
+        ],         "| Version          | Understands the rustdoc JSON output of  |\n\
+        | ---------------- | --------------------------------------- |\n\
+        | 0.38.x -         | nightly-2024-09-10 -                    |\n"
+        );
         
 
 
-    ) {
+     {
 
         
     }

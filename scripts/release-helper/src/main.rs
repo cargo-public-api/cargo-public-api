@@ -85,6 +85,10 @@ fn render_compatibility_matrix(version_infos: &[CargoPublicApiVersionInfo]) -> S
                 end: version_info.cargo_public_api_version.clone(),
             });
         } else {
+            rows.push(CompatibilityMatrixRow {
+                cargo_public_api_version_range: current_version_range.unwrap(),
+                nightly_version_range: current_nightly_version_range.unwrap(),
+            });
 
         }
         if current_nightly_version_range.is_none() {
@@ -143,14 +147,14 @@ fn render_compatibility_matrix_helper(version_infos: &[(&str, &str)]) -> Vec<Car
 mod tests {
     use super::*;
 
-    fn do_test(version_infos: &[(&str, &str)], expected_output: &str) {
-        let version_infos = render_compatibility_matrix_helper(version_infos);
+    fn do_test(version_infos: [(&str, &str)], expected_output: &str) {
+        let version_infos = render_compatibility_matrix_helper(&version_infos);
         let output = render_compatibility_matrix(&version_infos);
         assert_eq!(output, expected_output);
     }
 
     #[test]
-    fn test_render_compatibility_matrix_one_version()
+    fn test_render_compatibility_matrix_one_version() {
         do_test([("0.39.0", "nightly-2024-10-13")
         ],         "| Version          | Understands the rustdoc JSON output of  |\n\
         | ---------------- | --------------------------------------- |\n\
@@ -159,7 +163,7 @@ mod tests {
         
 
 
-     {
+     
 
         
     }

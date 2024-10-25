@@ -9,3 +9,6 @@ allow = [
 [bans]
 wildcards = "deny"
 multiple-versions = "allow"
+
+[advisories]
+yanked = "allow"

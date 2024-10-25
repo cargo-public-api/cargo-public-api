@@ -1601,8 +1601,12 @@ fn assert_cargo_public_api_not_in_cargo_home_bin() {
 
     assert!(
         std::fs::metadata(&path).is_err(),
-        "Found {path:?} which will override `./target/debug/cargo-public-api` and thus interfere with tests. \
-         Run `mv -v ~/.cargo/bin/cargo-public-api ~/.cargo/bin/$(~/.cargo/bin/cargo-public-api --version | tr ' ' '-')` to fix.");
+        "Found {path:?} which will override `./target/debug/cargo-public-api`
+and thus interfere with tests. Run
+
+    mv -v ~/.cargo/bin/cargo-public-api ~/.cargo/bin/$(~/.cargo/bin/cargo-public-api --version | tr ' ' '-')
+
+to fix.");
 }
 
 /// See where this is used for an explanation of why we have this helper.

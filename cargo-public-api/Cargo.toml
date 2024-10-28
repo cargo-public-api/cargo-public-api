@@ -59,7 +59,7 @@ version = "1.0.104"
 default-features = false
 
 [dependencies.smol_str]
-version = "0.3.1"
+version = "0.3.2"
 features = ["serde"]
 
 [dependencies.tracing-subscriber]

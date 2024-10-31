@@ -63,6 +63,7 @@ pub use public_item::PublicItem;
 /// this library to support the latest format. If you use this version of
 /// nightly or later, you should be fine.
 pub const MINIMUM_NIGHTLY_RUST_VERSION: &str = "nightly-2024-10-18";
+// End-marker for scripts/release-helper/src/bin/update-version-info/main.rs
 
 /// See [`Builder`] method docs for what each field means.
 #[derive(Copy, Clone, Debug)]

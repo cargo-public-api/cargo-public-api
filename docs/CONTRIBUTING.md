@@ -104,14 +104,14 @@ RUSTDOC_JSON_OVERRIDDEN_TOOLCHAIN_HACK=custom ./scripts/run-ci-locally.sh
 It is usually straigtforward.
 
 1. Bump `[dependencies.rustdoc-types] version` in `./public-api/Cargo.toml`
-1. Bump `MINIMUM_NIGHTLY_RUST_VERSION` in `public-api/src/lib.rs`
-1. Bump the *value of* `MINIMUM_NIGHTLY_RUST_VERSION` in `README.md`
+1. Update `scripts/release-helper/src/version_info.rs`
+1. Run `cargo run --bin update-version-info`
 1. Make `cargo build` build
 1. Make `cargo test` build
 1. Possibly bless changes to output with `./scripts/bless-expected-output-for-tests.sh`
 1. Make `./scripts/run-ci-locally.sh` pass
 
-Once all of the above commands completes successfully, the upgrade is usually complete.
+Once all of the above commands completes successfully, the upgrade is usually complete. See [RELEASE.md](./RELEASE.md) for info about other preparations needed to make a release with the changes.
 
 # Automated tests
 

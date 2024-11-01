@@ -31,6 +31,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: cargo fmt -- --check
+      - run: cargo run --bin update-version-info
+      - run: |
+          [ -z "$(git diff)" ] || { echo "ERROR: You forgot to 'cargo run --bin update-version-info'" ; exit 1 ; }
 
   cargo-doc:
     name: RUSTDOCFLAGS='--deny warnings' cargo doc

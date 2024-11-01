@@ -12,10 +12,9 @@
 
 ### Bumping `MINIMUM_NIGHTLY_RUST_VERSION`
 
-If `MINIMUM_NIGHTLY_RUST_VERSION` must be bumped then
-* update the [compatibility matrix](https://github.com/cargo-public-api/cargo-public-api#compatibility-matrix)
-* by necessity both `cargo-public-api` and `public-api` must be bumped to the same version to make the [compatibility matrix](https://github.com/cargo-public-api/cargo-public-api#compatibility-matrix) consistent.
-* bump it in `cargo-public-api` [installation instructions](https://github.com/cargo-public-api/cargo-public-api#installation)
+If `MINIMUM_NIGHTLY_RUST_VERSION` must be bumped then by necessity both `cargo-public-api` and `public-api` must be bumped to the same version to make the [compatibility matrix](https://github.com/cargo-public-api/cargo-public-api#compatibility-matrix) consistent. With this in mind, do this:
+* Add a new version info entry at [version_info.rs](https://github.com/cargo-public-api/cargo-public-api/blob/main/scripts/release-helper/lib/version_info.rs)
+* Run `cargo run --bin update-version-info`
 * ```
   rm cargo-public-api/MINIMUM_NIGHTLY_RUST_VERSION_FOR_TESTS
   ```
@@ -38,7 +37,6 @@ If `MINIMUM_NIGHTLY_RUST_VERSION` must be bumped then
    ```
    cargo set-version -p cargo-public-api x.y.z
    ```
-    * If you bump 0.x.0 version, also update the [compatibility matrix](https://github.com/cargo-public-api/cargo-public-api#compatibility-matrix).
     * If `MINIMUM_NIGHTLY_RUST_VERSION` must be bumped, see [notes](./RELEASE.md#bumping-minimum_nightly_rust_version).
 1. Push branch
 
@@ -60,7 +58,6 @@ MAINTAINER:
    ```
    cargo set-version -p public-api x.y.z
    ```
-    * If you bump 0.x.0 version, also update the [compatibility matrix](https://github.com/cargo-public-api/cargo-public-api#compatibility-matrix).
     * If `MINIMUM_NIGHTLY_RUST_VERSION` must be bumped, see [notes](./RELEASE.md#bumping-minimum_nightly_rust_version).
 1. Push branch
 

@@ -1,0 +1,16 @@
+[package]
+name = "release-helper"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+
+[dependencies.jiff]
+version = "0.1.13"
+default-features = false
+features = ["alloc"]
+
+[dependencies]
+semver = "1.0.18"
+
+[dev-dependencies]
+pretty_assertions = "1.4.1"

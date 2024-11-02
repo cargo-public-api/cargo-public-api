@@ -45,17 +45,20 @@ jobs:
     needs: publish
     runs-on: ubuntu-latest
     permissions:
-      contents: write # softprops/action-gh-release
+      contents: write # So we can create a release.
     steps:
       - uses: actions/checkout@v4
-
       - name: calculate version
         id: version
         run: |
           version=$(cargo read-manifest --manifest-path cargo-public-api/Cargo.toml | jq --raw-output .version)
+          echo "VERSION=${version}" >> $GITHUB_OUTPUT
           echo "GIT_TAG=v${version}" >> $GITHUB_OUTPUT
-
-      - uses: softprops/action-gh-release@d4e8205d7e959a9107da6396278b2f1f07af0f9b # 2022-12-09, audited by me personally
-        with:
-          tag_name: ${{ steps.version.outputs.GIT_TAG }}
-          generate_release_notes: true
+      - run: cargo install parse-changelog@0.6.4 --locked
+      - name: create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          notes="$(parse-changelog CHANGELOG.md ${{ steps.version.outputs.VERSION }})"
+          title="${{ steps.version.outputs.GIT_TAG }}"
+          gh release create --title "$title" --notes "$notes" ${{ steps.version.outputs.GIT_TAG }}

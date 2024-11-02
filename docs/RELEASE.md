@@ -30,9 +30,7 @@ If `MINIMUM_NIGHTLY_RUST_VERSION` must be bumped then by necessity both `cargo-p
    tag=$(git tag --sort=-creatordate | grep ^v | head -n1) ; git diff $tag
    ```
    to see what is new in the release.
-1. For each PR included in the release, adjust its `[category-*]` according to [release.yml](https://github.com/cargo-public-api/cargo-public-api/blob/main/.github/release.yml) and tweak the PR title if necessary to turn it into good release note entry.
-1. Preview the [auto-generated release notes](https://github.com/cargo-public-api/cargo-public-api.github.io/blob/main/release-notes-preview.md) which our CI [continuously](https://github.com/cargo-public-api/cargo-public-api/actions/workflows/Preview-release-notes.yml) updates.
-    * The target audience for the release notes is users of the `cargo-public-api` CLI. But we also want to credit contributors to our libraries with a mention in the release notes, so we should also include such PRs in the release notes. For libs we also want to update the corresponding `CHANGELOG.md` file though.
+1. Update `CHANGELOG.md`
 1. Bump version with
    ```
    cargo set-version -p cargo-public-api x.y.z

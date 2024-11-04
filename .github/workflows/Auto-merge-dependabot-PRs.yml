@@ -16,7 +16,6 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.AUTO_MERGE_GITHUB_TOKEN }}
     steps:
-      - uses: actions/checkout@v4
       - run: |
           gh pr review ${{ github.event.pull_request.number }} --comment --body "If CI passes, this dependabot PR will be [auto-merged](https://github.com/cargo-public-api/cargo-public-api/blob/main/.github/workflows/Auto-merge-dependabot-PRs.yml) 🚀"
       - run: |

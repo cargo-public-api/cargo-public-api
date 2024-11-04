@@ -19,6 +19,10 @@ If `MINIMUM_NIGHTLY_RUST_VERSION` must be bumped then by necessity both `cargo-p
   rm cargo-public-api/MINIMUM_NIGHTLY_RUST_VERSION_FOR_TESTS
   ```
 
+### When not to release
+
+* If a package (e.g. `rustup-toolchain`, `rustdoc-json`, etc) has had no semver breaking updates to any regular `dependencies` (i.e. we disregard `dev-dependencies` changes in Cargo.toml files) since the last release, then we don't need to make a new release of that package. Because there are no technical reasons to do it. On the contrary, it creates unnecessary churn for downstream users.
+
 ## How to release
 
 ### `cargo-public-api`

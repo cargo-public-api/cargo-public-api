@@ -8,6 +8,11 @@ jobs:
   remind-of-changelog:
     if: github.repository == 'cargo-public-api/cargo-public-api' && !startsWith(github.head_ref, 'dependabot/')
     runs-on: ubuntu-latest
+    environment:
+      name: auto-merge
+      url: https://github.com/cargo-public-api/cargo-public-api/blob/main/.github/workflows/Auto-merge-dependabot-PRs.yml
+    env:
+      GITHUB_TOKEN: ${{ secrets.AUTO_MERGE_GITHUB_TOKEN }}
     steps:
       - run: |
           gh pr review ${{ github.event.pull_request.number }} --comment --body "If this change deserves mention to users, please don't forget to update [CHANGELOG.md](https://github.com/cargo-public-api/cargo-public-api/blob/main/CHANGELOG.md), [public-api/CHANGELOG.md](https://github.com/cargo-public-api/cargo-public-api/blob/main/public-api/CHANGELOG.md), [rustdoc-json/CHANGELOG.md](https://github.com/cargo-public-api/cargo-public-api/blob/main/rustdoc-json/CHANGELOG.md) and/or [rustup-toolchain/CHANGELOG.md](https://github.com/cargo-public-api/cargo-public-api/blob/main/rustup-toolchain/CHANGELOG.md). Thanks!"

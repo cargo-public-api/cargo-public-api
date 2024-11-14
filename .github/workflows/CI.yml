@@ -4,6 +4,7 @@ on:
   workflow_call: # From .github/workflows/Release-*.yml, .github/workflows/Nightly.yml
   workflow_dispatch:
   pull_request:
+  merge_group:
   push:
     branches: [main]
 

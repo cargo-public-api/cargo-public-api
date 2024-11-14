@@ -34,13 +34,13 @@ pub fn rustdoc_json::BuildError::try_from(value: U) -> core::result::Result<T, <
 impl<T, U> core::convert::TryInto<U> for rustdoc_json::BuildError where U: core::convert::TryFrom<T>
 pub type rustdoc_json::BuildError::Error = <U as core::convert::TryFrom<T>>::Error
 pub fn rustdoc_json::BuildError::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
-impl<T> alloc::string::ToString for rustdoc_json::BuildError where T: core::fmt::Display + core::marker::Sized
+impl<T> alloc::string::ToString for rustdoc_json::BuildError where T: core::fmt::Display + ?core::marker::Sized
 pub fn rustdoc_json::BuildError::to_string(&self) -> alloc::string::String
-impl<T> core::any::Any for rustdoc_json::BuildError where T: 'static + core::marker::Sized
+impl<T> core::any::Any for rustdoc_json::BuildError where T: 'static + ?core::marker::Sized
 pub fn rustdoc_json::BuildError::type_id(&self) -> core::any::TypeId
-impl<T> core::borrow::Borrow<T> for rustdoc_json::BuildError where T: core::marker::Sized
+impl<T> core::borrow::Borrow<T> for rustdoc_json::BuildError where T: ?core::marker::Sized
 pub fn rustdoc_json::BuildError::borrow(&self) -> &T
-impl<T> core::borrow::BorrowMut<T> for rustdoc_json::BuildError where T: core::marker::Sized
+impl<T> core::borrow::BorrowMut<T> for rustdoc_json::BuildError where T: ?core::marker::Sized
 pub fn rustdoc_json::BuildError::borrow_mut(&mut self) -> &mut T
 impl<T> core::convert::From<T> for rustdoc_json::BuildError
 pub fn rustdoc_json::BuildError::from(t: T) -> T
@@ -73,11 +73,11 @@ impl<T> alloc::borrow::ToOwned for rustdoc_json::Color where T: core::clone::Clo
 pub type rustdoc_json::Color::Owned = T
 pub fn rustdoc_json::Color::clone_into(&self, target: &mut T)
 pub fn rustdoc_json::Color::to_owned(&self) -> T
-impl<T> core::any::Any for rustdoc_json::Color where T: 'static + core::marker::Sized
+impl<T> core::any::Any for rustdoc_json::Color where T: 'static + ?core::marker::Sized
 pub fn rustdoc_json::Color::type_id(&self) -> core::any::TypeId
-impl<T> core::borrow::Borrow<T> for rustdoc_json::Color where T: core::marker::Sized
+impl<T> core::borrow::Borrow<T> for rustdoc_json::Color where T: ?core::marker::Sized
 pub fn rustdoc_json::Color::borrow(&self) -> &T
-impl<T> core::borrow::BorrowMut<T> for rustdoc_json::Color where T: core::marker::Sized
+impl<T> core::borrow::BorrowMut<T> for rustdoc_json::Color where T: ?core::marker::Sized
 pub fn rustdoc_json::Color::borrow_mut(&mut self) -> &mut T
 impl<T> core::clone::CloneToUninit for rustdoc_json::Color where T: core::clone::Clone
 pub unsafe fn rustdoc_json::Color::clone_to_uninit(&self, dst: *mut T)
@@ -115,11 +115,11 @@ impl<T> alloc::borrow::ToOwned for rustdoc_json::PackageTarget where T: core::cl
 pub type rustdoc_json::PackageTarget::Owned = T
 pub fn rustdoc_json::PackageTarget::clone_into(&self, target: &mut T)
 pub fn rustdoc_json::PackageTarget::to_owned(&self) -> T
-impl<T> core::any::Any for rustdoc_json::PackageTarget where T: 'static + core::marker::Sized
+impl<T> core::any::Any for rustdoc_json::PackageTarget where T: 'static + ?core::marker::Sized
 pub fn rustdoc_json::PackageTarget::type_id(&self) -> core::any::TypeId
-impl<T> core::borrow::Borrow<T> for rustdoc_json::PackageTarget where T: core::marker::Sized
+impl<T> core::borrow::Borrow<T> for rustdoc_json::PackageTarget where T: ?core::marker::Sized
 pub fn rustdoc_json::PackageTarget::borrow(&self) -> &T
-impl<T> core::borrow::BorrowMut<T> for rustdoc_json::PackageTarget where T: core::marker::Sized
+impl<T> core::borrow::BorrowMut<T> for rustdoc_json::PackageTarget where T: ?core::marker::Sized
 pub fn rustdoc_json::PackageTarget::borrow_mut(&mut self) -> &mut T
 impl<T> core::clone::CloneToUninit for rustdoc_json::PackageTarget where T: core::clone::Clone
 pub unsafe fn rustdoc_json::PackageTarget::clone_to_uninit(&self, dst: *mut T)
@@ -171,11 +171,11 @@ impl<T> alloc::borrow::ToOwned for rustdoc_json::Builder where T: core::clone::C
 pub type rustdoc_json::Builder::Owned = T
 pub fn rustdoc_json::Builder::clone_into(&self, target: &mut T)
 pub fn rustdoc_json::Builder::to_owned(&self) -> T
-impl<T> core::any::Any for rustdoc_json::Builder where T: 'static + core::marker::Sized
+impl<T> core::any::Any for rustdoc_json::Builder where T: 'static + ?core::marker::Sized
 pub fn rustdoc_json::Builder::type_id(&self) -> core::any::TypeId
-impl<T> core::borrow::Borrow<T> for rustdoc_json::Builder where T: core::marker::Sized
+impl<T> core::borrow::Borrow<T> for rustdoc_json::Builder where T: ?core::marker::Sized
 pub fn rustdoc_json::Builder::borrow(&self) -> &T
-impl<T> core::borrow::BorrowMut<T> for rustdoc_json::Builder where T: core::marker::Sized
+impl<T> core::borrow::BorrowMut<T> for rustdoc_json::Builder where T: ?core::marker::Sized
 pub fn rustdoc_json::Builder::borrow_mut(&mut self) -> &mut T
 impl<T> core::clone::CloneToUninit for rustdoc_json::Builder where T: core::clone::Clone
 pub unsafe fn rustdoc_json::Builder::clone_to_uninit(&self, dst: *mut T)

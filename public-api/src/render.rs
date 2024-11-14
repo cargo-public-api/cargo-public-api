@@ -4,7 +4,6 @@ use crate::nameable_item::NameableItem;
 use crate::path_component::PathComponent;
 use crate::tokens::Token;
 use crate::BuilderOptions as Options;
-use std::ops::Deref;
 use std::{cmp::Ordering, collections::HashMap, vec};
 
 use rustdoc_types::{
@@ -516,7 +515,7 @@ impl<'c> RenderingContext<'c> {
         if let Some(item) = self.best_item_for_id(&path.id) {
             output.extend(self.render_path(item.path()));
         } else if let Some(item) = self.crate_.paths.get(&path.id) {
-            output.extend(self.render_path_components(item.path.iter().map(Deref::deref)));
+            output.extend(self.render_path_components(item.path.iter()));
         } else if !path.name.is_empty() {
             // If we get here it means there was no item for this Path in the
             // rustdoc JSON. Examples of when this happens:

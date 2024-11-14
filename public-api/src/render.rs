@@ -11,7 +11,7 @@ use rustdoc_types::{
     Abi, AssocItemConstraint, AssocItemConstraintKind, Constant, Crate, FunctionHeader,
     FunctionPointer, FunctionSignature, GenericArg, GenericArgs, GenericBound, GenericParamDef,
     GenericParamDefKind, Generics, Id, Impl, Item, ItemEnum, MacroKind, Path, PolyTrait,
-    StructKind, Term, Trait, Type, VariantKind, WherePredicate,
+    StructKind, Term, Trait, TraitBoundModifier, Type, VariantKind, WherePredicate,
 };
 
 /// A simple macro to write `Token::Whitespace` in less characters.
@@ -937,10 +937,16 @@ impl<'c> RenderingContext<'c> {
             GenericBound::TraitBound {
                 trait_,
                 generic_params,
-                ..
+                modifier,
             } => {
                 let mut output = vec![];
                 output.extend(self.render_higher_rank_trait_bounds(generic_params));
+                match modifier {
+                    TraitBoundModifier::None | TraitBoundModifier::MaybeConst=> {}
+                    TraitBoundModifier::Maybe => {
+                        output.push(Token::symbol("?"));
+                    }
+                }
                 output.extend(self.render_resolved_path(trait_));
                 output
             }

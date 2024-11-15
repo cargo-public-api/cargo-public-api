@@ -164,3 +164,7 @@ See [CONTRIBUTING.md](./docs/CONTRIBUTING.md).
 - [Enselic](https://github.com/Enselic)
 - [douweschulte](https://github.com/douweschulte)
 - [Emilgardis](https://github.com/Emilgardis)
+
+# Trademark Notice
+
+"Rust" and "Cargo" are trademarks of the Rust Foundation. This project is not affiliated with, endorsed by, or otherwise associated with the Rust Project or Rust Foundation.

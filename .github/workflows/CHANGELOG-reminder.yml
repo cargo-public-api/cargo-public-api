@@ -15,4 +15,4 @@ jobs:
     steps:
       - uses: actions/checkout@v4 # So the gh command knows what repo to work with
       - run: |
-          gh pr review ${{ github.event.pull_request.number }} --comment --body "If this change deserves mention to users, please don't forget to update [CHANGELOG.md](https://github.com/cargo-public-api/cargo-public-api/blob/main/CHANGELOG.md), [public-api/CHANGELOG.md](https://github.com/cargo-public-api/cargo-public-api/blob/main/public-api/CHANGELOG.md), [rustdoc-json/CHANGELOG.md](https://github.com/cargo-public-api/cargo-public-api/blob/main/rustdoc-json/CHANGELOG.md) and/or [rustup-toolchain/CHANGELOG.md](https://github.com/cargo-public-api/cargo-public-api/blob/main/rustup-toolchain/CHANGELOG.md). Thanks!"
+          gh pr review ${{ github.event.pull_request.number }} --comment --body "📌 Reminder: Update \`CHANGELOG.md\` if applicable."

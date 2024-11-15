@@ -98,6 +98,8 @@ pub fn public_api::PublicApi::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> co
 pub struct public_api::PublicItem
 impl public_api::PublicItem
 pub fn public_api::PublicItem::grouping_cmp(&self, other: &Self) -> core::cmp::Ordering
+pub fn public_api::PublicItem::id(&self) -> rustdoc_types::Id
+pub fn public_api::PublicItem::parent_id(&self) -> core::option::Option<rustdoc_types::Id>
 pub fn public_api::PublicItem::tokens(&self) -> impl core::iter::traits::iterator::Iterator<Item = &public_api::tokens::Token>
 impl core::clone::Clone for public_api::PublicItem
 pub fn public_api::PublicItem::clone(&self) -> public_api::PublicItem

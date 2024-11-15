@@ -1,7 +1,7 @@
 [package]
 edition = "2021"
 name = "rustup-toolchain"
-version = "0.1.7"
+version = "0.1.8"
 description = "Utilities for working with rustup toolchains, primarily from cargo test:s."
 homepage = "https://github.com/cargo-public-api/cargo-public-api/tree/main/rustup-toolchain"
 documentation = "https://docs.rs/rustup-toolchain"

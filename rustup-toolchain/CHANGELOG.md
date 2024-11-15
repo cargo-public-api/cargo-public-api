@@ -1,5 +1,8 @@
 # rustup-toolchain
 
+## v0.1.8
+* Add trademark notice to README.
+
 ## v0.1.7
 * Move project from https://github.com/Enselic/cargo-public-api to https://github.com/cargo-public-api/cargo-public-api
 

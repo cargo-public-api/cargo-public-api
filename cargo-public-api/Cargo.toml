@@ -48,7 +48,7 @@ version = "0.9.3"
 
 [dependencies.public-api]
 path = "../public-api"
-version = "0.40.0"
+version = "0.41.0"
 
 [dependencies.serde]
 version = "1.0.179"

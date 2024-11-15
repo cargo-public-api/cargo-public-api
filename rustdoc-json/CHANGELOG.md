@@ -1,5 +1,8 @@
 # rustdoc-json
 
+## v0.9.3
+* Bump deps. Most notably `cargo-manifest` from 0.15.0 to 0.16.0.
+
 ## v0.9.2
 * Move project from https://github.com/Enselic/cargo-public-api to https://github.com/cargo-public-api/cargo-public-api
 

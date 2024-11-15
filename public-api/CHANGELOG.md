@@ -1,5 +1,8 @@
 # `public-api` changelog
 
+## v0.41.0
+* Render `?` in front of `core::marker::Sized` if applicable.
+
 ## v0.40.0
 * Support `nightly-2024-10-18` and later.
 

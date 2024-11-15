@@ -31,11 +31,11 @@ impl<T> alloc::borrow::ToOwned for public_api::diff::ChangedPublicItem where T: 
 pub type public_api::diff::ChangedPublicItem::Owned = T
 pub fn public_api::diff::ChangedPublicItem::clone_into(&self, target: &mut T)
 pub fn public_api::diff::ChangedPublicItem::to_owned(&self) -> T
-impl<T> core::any::Any for public_api::diff::ChangedPublicItem where T: 'static + core::marker::Sized
+impl<T> core::any::Any for public_api::diff::ChangedPublicItem where T: 'static + ?core::marker::Sized
 pub fn public_api::diff::ChangedPublicItem::type_id(&self) -> core::any::TypeId
-impl<T> core::borrow::Borrow<T> for public_api::diff::ChangedPublicItem where T: core::marker::Sized
+impl<T> core::borrow::Borrow<T> for public_api::diff::ChangedPublicItem where T: ?core::marker::Sized
 pub fn public_api::diff::ChangedPublicItem::borrow(&self) -> &T
-impl<T> core::borrow::BorrowMut<T> for public_api::diff::ChangedPublicItem where T: core::marker::Sized
+impl<T> core::borrow::BorrowMut<T> for public_api::diff::ChangedPublicItem where T: ?core::marker::Sized
 pub fn public_api::diff::ChangedPublicItem::borrow_mut(&mut self) -> &mut T
 impl<T> core::clone::CloneToUninit for public_api::diff::ChangedPublicItem where T: core::clone::Clone
 pub unsafe fn public_api::diff::ChangedPublicItem::clone_to_uninit(&self, dst: *mut u8)
@@ -74,11 +74,11 @@ impl<T> alloc::borrow::ToOwned for public_api::diff::PublicApiDiff where T: core
 pub type public_api::diff::PublicApiDiff::Owned = T
 pub fn public_api::diff::PublicApiDiff::clone_into(&self, target: &mut T)
 pub fn public_api::diff::PublicApiDiff::to_owned(&self) -> T
-impl<T> core::any::Any for public_api::diff::PublicApiDiff where T: 'static + core::marker::Sized
+impl<T> core::any::Any for public_api::diff::PublicApiDiff where T: 'static + ?core::marker::Sized
 pub fn public_api::diff::PublicApiDiff::type_id(&self) -> core::any::TypeId
-impl<T> core::borrow::Borrow<T> for public_api::diff::PublicApiDiff where T: core::marker::Sized
+impl<T> core::borrow::Borrow<T> for public_api::diff::PublicApiDiff where T: ?core::marker::Sized
 pub fn public_api::diff::PublicApiDiff::borrow(&self) -> &T
-impl<T> core::borrow::BorrowMut<T> for public_api::diff::PublicApiDiff where T: core::marker::Sized
+impl<T> core::borrow::BorrowMut<T> for public_api::diff::PublicApiDiff where T: ?core::marker::Sized
 pub fn public_api::diff::PublicApiDiff::borrow_mut(&mut self) -> &mut T
 impl<T> core::clone::CloneToUninit for public_api::diff::PublicApiDiff where T: core::clone::Clone
 pub unsafe fn public_api::diff::PublicApiDiff::clone_to_uninit(&self, dst: *mut u8)
@@ -134,11 +134,11 @@ impl<T> alloc::borrow::ToOwned for public_api::tokens::Token where T: core::clon
 pub type public_api::tokens::Token::Owned = T
 pub fn public_api::tokens::Token::clone_into(&self, target: &mut T)
 pub fn public_api::tokens::Token::to_owned(&self) -> T
-impl<T> core::any::Any for public_api::tokens::Token where T: 'static + core::marker::Sized
+impl<T> core::any::Any for public_api::tokens::Token where T: 'static + ?core::marker::Sized
 pub fn public_api::tokens::Token::type_id(&self) -> core::any::TypeId
-impl<T> core::borrow::Borrow<T> for public_api::tokens::Token where T: core::marker::Sized
+impl<T> core::borrow::Borrow<T> for public_api::tokens::Token where T: ?core::marker::Sized
 pub fn public_api::tokens::Token::borrow(&self) -> &T
-impl<T> core::borrow::BorrowMut<T> for public_api::tokens::Token where T: core::marker::Sized
+impl<T> core::borrow::BorrowMut<T> for public_api::tokens::Token where T: ?core::marker::Sized
 pub fn public_api::tokens::Token::borrow_mut(&mut self) -> &mut T
 impl<T> core::clone::CloneToUninit for public_api::tokens::Token where T: core::clone::Clone
 pub unsafe fn public_api::tokens::Token::clone_to_uninit(&self, dst: *mut u8)
@@ -171,13 +171,13 @@ pub fn public_api::Error::try_from(value: U) -> core::result::Result<T, <T as co
 impl<T, U> core::convert::TryInto<U> for public_api::Error where U: core::convert::TryFrom<T>
 pub type public_api::Error::Error = <U as core::convert::TryFrom<T>>::Error
 pub fn public_api::Error::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
-impl<T> alloc::string::ToString for public_api::Error where T: core::fmt::Display + core::marker::Sized
+impl<T> alloc::string::ToString for public_api::Error where T: core::fmt::Display + ?core::marker::Sized
 pub fn public_api::Error::to_string(&self) -> alloc::string::String
-impl<T> core::any::Any for public_api::Error where T: 'static + core::marker::Sized
+impl<T> core::any::Any for public_api::Error where T: 'static + ?core::marker::Sized
 pub fn public_api::Error::type_id(&self) -> core::any::TypeId
-impl<T> core::borrow::Borrow<T> for public_api::Error where T: core::marker::Sized
+impl<T> core::borrow::Borrow<T> for public_api::Error where T: ?core::marker::Sized
 pub fn public_api::Error::borrow(&self) -> &T
-impl<T> core::borrow::BorrowMut<T> for public_api::Error where T: core::marker::Sized
+impl<T> core::borrow::BorrowMut<T> for public_api::Error where T: ?core::marker::Sized
 pub fn public_api::Error::borrow_mut(&mut self) -> &mut T
 impl<T> core::convert::From<T> for public_api::Error
 pub fn public_api::Error::from(t: T) -> T
@@ -212,11 +212,11 @@ impl<T> alloc::borrow::ToOwned for public_api::Builder where T: core::clone::Clo
 pub type public_api::Builder::Owned = T
 pub fn public_api::Builder::clone_into(&self, target: &mut T)
 pub fn public_api::Builder::to_owned(&self) -> T
-impl<T> core::any::Any for public_api::Builder where T: 'static + core::marker::Sized
+impl<T> core::any::Any for public_api::Builder where T: 'static + ?core::marker::Sized
 pub fn public_api::Builder::type_id(&self) -> core::any::TypeId
-impl<T> core::borrow::Borrow<T> for public_api::Builder where T: core::marker::Sized
+impl<T> core::borrow::Borrow<T> for public_api::Builder where T: ?core::marker::Sized
 pub fn public_api::Builder::borrow(&self) -> &T
-impl<T> core::borrow::BorrowMut<T> for public_api::Builder where T: core::marker::Sized
+impl<T> core::borrow::BorrowMut<T> for public_api::Builder where T: ?core::marker::Sized
 pub fn public_api::Builder::borrow_mut(&mut self) -> &mut T
 impl<T> core::clone::CloneToUninit for public_api::Builder where T: core::clone::Clone
 pub unsafe fn public_api::Builder::clone_to_uninit(&self, dst: *mut u8)
@@ -245,13 +245,13 @@ pub fn public_api::PublicApi::try_from(value: U) -> core::result::Result<T, <T a
 impl<T, U> core::convert::TryInto<U> for public_api::PublicApi where U: core::convert::TryFrom<T>
 pub type public_api::PublicApi::Error = <U as core::convert::TryFrom<T>>::Error
 pub fn public_api::PublicApi::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
-impl<T> alloc::string::ToString for public_api::PublicApi where T: core::fmt::Display + core::marker::Sized
+impl<T> alloc::string::ToString for public_api::PublicApi where T: core::fmt::Display + ?core::marker::Sized
 pub fn public_api::PublicApi::to_string(&self) -> alloc::string::String
-impl<T> core::any::Any for public_api::PublicApi where T: 'static + core::marker::Sized
+impl<T> core::any::Any for public_api::PublicApi where T: 'static + ?core::marker::Sized
 pub fn public_api::PublicApi::type_id(&self) -> core::any::TypeId
-impl<T> core::borrow::Borrow<T> for public_api::PublicApi where T: core::marker::Sized
+impl<T> core::borrow::Borrow<T> for public_api::PublicApi where T: ?core::marker::Sized
 pub fn public_api::PublicApi::borrow(&self) -> &T
-impl<T> core::borrow::BorrowMut<T> for public_api::PublicApi where T: core::marker::Sized
+impl<T> core::borrow::BorrowMut<T> for public_api::PublicApi where T: ?core::marker::Sized
 pub fn public_api::PublicApi::borrow_mut(&mut self) -> &mut T
 impl<T> core::convert::From<T> for public_api::PublicApi
 pub fn public_api::PublicApi::from(t: T) -> T
@@ -288,13 +288,13 @@ impl<T> alloc::borrow::ToOwned for public_api::PublicItem where T: core::clone::
 pub type public_api::PublicItem::Owned = T
 pub fn public_api::PublicItem::clone_into(&self, target: &mut T)
 pub fn public_api::PublicItem::to_owned(&self) -> T
-impl<T> alloc::string::ToString for public_api::PublicItem where T: core::fmt::Display + core::marker::Sized
+impl<T> alloc::string::ToString for public_api::PublicItem where T: core::fmt::Display + ?core::marker::Sized
 pub fn public_api::PublicItem::to_string(&self) -> alloc::string::String
-impl<T> core::any::Any for public_api::PublicItem where T: 'static + core::marker::Sized
+impl<T> core::any::Any for public_api::PublicItem where T: 'static + ?core::marker::Sized
 pub fn public_api::PublicItem::type_id(&self) -> core::any::TypeId
-impl<T> core::borrow::Borrow<T> for public_api::PublicItem where T: core::marker::Sized
+impl<T> core::borrow::Borrow<T> for public_api::PublicItem where T: ?core::marker::Sized
 pub fn public_api::PublicItem::borrow(&self) -> &T
-impl<T> core::borrow::BorrowMut<T> for public_api::PublicItem where T: core::marker::Sized
+impl<T> core::borrow::BorrowMut<T> for public_api::PublicItem where T: ?core::marker::Sized
 pub fn public_api::PublicItem::borrow_mut(&mut self) -> &mut T
 impl<T> core::clone::CloneToUninit for public_api::PublicItem where T: core::clone::Clone
 pub unsafe fn public_api::PublicItem::clone_to_uninit(&self, dst: *mut u8)

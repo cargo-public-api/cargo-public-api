@@ -12,7 +12,7 @@ pub struct CrateWrapper<'c> {
     /// <https://github.com/rust-lang/rust/pull/99287#issuecomment-1186586518>)
     /// We do not report it to users by default, because they can't do anything
     /// about it. Missing IDs will be printed with `--verbose` however.
-    missing_ids: Vec<&'c Id>,
+    missing_ids: Vec<Id>,
 }
 
 impl<'c> CrateWrapper<'c> {
@@ -23,8 +23,8 @@ impl<'c> CrateWrapper<'c> {
         }
     }
 
-    pub fn get_item(&mut self, id: &'c Id) -> Option<&'c Item> {
-        self.crate_.index.get(id).or_else(|| {
+    pub fn get_item(&mut self, id: Id) -> Option<&'c Item> {
+        self.crate_.index.get(&id).or_else(|| {
             self.missing_ids.push(id);
             None
         })

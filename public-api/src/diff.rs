@@ -148,7 +148,7 @@ mod tests {
 
     use super::*;
 
-    static DUMMY_ID: Id = Id(1234);
+    const DUMMY_ID: Id = Id(1234);
 
     #[test]
     fn single_and_only_item_removed() {

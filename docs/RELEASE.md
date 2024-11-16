@@ -1,30 +1,33 @@
 ## Versioning strategy
 
-* **x.0.0**: We bump to 1.0.0 earliest when the rustdoc JSON format has [stabilized](https://rust-lang.zulipchat.com/#narrow/stream/266220-rustdoc/topic/Rustdoc.20JSON.3A.20Stabilization.20criteria).
+For `public-api` and `cargo-public-api` we bump
 
-* **0.x.0**: We bump it when
-  * There has been backwards incompatible changes.
-  * When `public-api` changes how items are rendered. This is because we want people that use the [`cargo test`](https://github.com/cargo-public-api/cargo-public-api#-as-a-ci-check) approach to not have CI break just because they upgrade **0.0.x** version.
-  * When the rustdoc JSON parsing code changes in a backwards incompatible way.
-  * `public-api` and `cargo-public-api` does not need to have the same 0.x.0 version, but see the note below on bumping `MINIMUM_NIGHTLY_RUST_VERSION`.
+* **x.0.0**
+   * no earlier than rustdoc JSON format [stabilization](https://rust-lang.zulipchat.com/#narrow/stream/266220-rustdoc/topic/Rustdoc.20JSON.3A.20Stabilization.20criteria).
+* **0.x.0**
+   * independently between `public-api` and `cargo-public-api`. [^1]
+   * when `public_api::MINIMUM_NIGHTLY_RUST_VERSION` is bumped. [^2]
+   * when `public-api` changes how items are rendered. [^3]
+   * for other regular semver breaking changes. [^4]
+* **0.0.x**
+   * whenever we want to make a release but don't have to/want to bump **0.x.0**.
 
-* **0.0.x**: We bump it whenever we want to make a release but we don't have to/want to bump 0.x.0
-
-### Bumping `MINIMUM_NIGHTLY_RUST_VERSION`
-
-If `MINIMUM_NIGHTLY_RUST_VERSION` must be bumped then by necessity both `cargo-public-api` and `public-api` must be bumped to the same version to make the [compatibility matrix](https://github.com/cargo-public-api/cargo-public-api#compatibility-matrix) consistent. With this in mind, do this:
-* Add a new version info entry at [version_info.rs](https://github.com/cargo-public-api/cargo-public-api/blob/main/scripts/release-helper/lib/version_info.rs)
-* Run `cargo run --bin update-version-info`
+[^1]: But if `public_api::MINIMUM_NIGHTLY_RUST_VERSION` has been bumped then `public-api` and `cargo-public-api` by necessity must bump to the same **0.x.0** version for the [compatibility matrix](https://github.com/cargo-public-api/cargo-public-api#compatibility-matrix).
+[^2]: Since we need to be able to add a new row to the [compatibility matrix](https://github.com/cargo-public-api/cargo-public-api#compatibility-matrix).
+[^3]: Because otherwise [`CI checks`](https://github.com/cargo-public-api/cargo-public-api#-as-a-ci-check) would fail from **0.0.x** updates.
+[^4]: E.g. changes to the `public-api` public API or the `cargo-public-api` CLI.
 
 ### When not to release
 
-* If a package (e.g. `rustup-toolchain`, `rustdoc-json`, etc) has had no semver breaking updates to any regular `dependencies` (i.e. we disregard `dev-dependencies` changes in Cargo.toml files) since the last release, then we don't need to make a new release of that package. Because there are no technical reasons to do it. On the contrary, it creates unnecessary churn for downstream users.
+* If a package had no **x.0.0** or **0.x.0** updates to regular `dependencies` (we disregard `dev-dependencies`) we don't need a new release of that package. [^5]
+
+[^5]: Because there are no technical reasons to do it. On the contrary, it creates unnecessary churn for downstream users.
 
 ## How to release
 
 ### `cargo-public-api`
 
-1. First release `rustup-toolchain`, `rustdoc-json` and `public-api` if needed, in that order. See below. Note: Because of circular dependencies you must release one helper package at a time from `main`. You can't update all crates in a single commit.
+1. First release `rustup-toolchain`, `rustdoc-json` and `public-api` if needed, in that order. See below. **Note:** Because of circular dependencies you must release one helper package at a time from `main`. You can't update all packages in a single commit.
 1. Create a local branch.
 1. Run
    ```
@@ -36,10 +39,12 @@ If `MINIMUM_NIGHTLY_RUST_VERSION` must be bumped then by necessity both `cargo-p
    ```
    cargo set-version -p cargo-public-api x.y.z
    ```
-    * If `MINIMUM_NIGHTLY_RUST_VERSION` must be bumped, see [notes](./RELEASE.md#bumping-minimum_nightly_rust_version).
+   If **0.x.0** or `public_api::MINIMUM_NIGHTLY_RUST_VERSION` was bumped:
+      * Add a new version info entry at [version_info.rs](https://github.com/cargo-public-api/cargo-public-api/blob/main/scripts/release-helper/lib/version_info.rs)
+      * Run `cargo run --bin update-version-info`
 1. Push branch
 
-MAINTAINER:
+#### MAINTAINER:
 
 1. Once PR merges, run https://github.com/cargo-public-api/cargo-public-api/actions/workflows/Release-cargo-public-api.yml workflow from `main` ([instructions](#how-to-trigger-main-branch-workflow))
 1. Done!
@@ -57,10 +62,12 @@ MAINTAINER:
    ```
    cargo set-version -p public-api x.y.z
    ```
-    * If `MINIMUM_NIGHTLY_RUST_VERSION` must be bumped, see [notes](./RELEASE.md#bumping-minimum_nightly_rust_version).
+   If **0.x.0** or `public_api::MINIMUM_NIGHTLY_RUST_VERSION` was bumped:
+      * Update [version_info.rs](https://github.com/cargo-public-api/cargo-public-api/blob/main/scripts/release-helper/lib/version_info.rs)
+      * Run `cargo run --bin update-version-info`
 1. Push branch
 
-MAINTAINER:
+#### MAINTAINER:
 
 1. Once PR merges, run https://github.com/cargo-public-api/cargo-public-api/actions/workflows/Release-public-api.yml workflow from `main` ([instructions](#how-to-trigger-main-branch-workflow))
 1. Done!
@@ -80,7 +87,7 @@ MAINTAINER:
    ```
 1. Push branch
 
-MAINTAINER:
+#### MAINTAINER:
 
 1. Once PR merges, run https://github.com/cargo-public-api/cargo-public-api/actions/workflows/Release-rustdoc-json.yml workflow from `main` ([instructions](#how-to-trigger-main-branch-workflow))
 1. Done!
@@ -100,7 +107,7 @@ MAINTAINER:
    ```
 1. Push branch
 
-MAINTAINER:
+#### MAINTAINER:
 
 1. Once PR merges, run https://github.com/cargo-public-api/cargo-public-api/actions/workflows/Release-rustup-toolchain.yml workflow from `main` ([instructions](#how-to-trigger-main-branch-workflow))
 1. Done!

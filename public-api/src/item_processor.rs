@@ -25,7 +25,7 @@ struct UnprocessedItem<'c> {
     parent_path: Vec<PathComponent<'c>>,
 
     /// The Id of the item to process.
-    id: &'c Id,
+    id: Id,
 }
 
 /// Processes items to find more items and to figure out the path to each item.
@@ -70,7 +70,7 @@ impl<'c> ItemProcessor<'c> {
     /// want to insert the struct fields BEFORE everything else, so that these
     /// items remain grouped together. And the same applies for many kinds of
     /// groupings (enums, impls, etc).
-    fn add_to_work_queue(&mut self, parent_path: Vec<PathComponent<'c>>, id: &'c Id) {
+    fn add_to_work_queue(&mut self, parent_path: Vec<PathComponent<'c>>, id: Id) {
         self.work_queue
             .push_front(UnprocessedItem { parent_path, id });
     }
@@ -123,10 +123,9 @@ impl<'c> ItemProcessor<'c> {
             ..
         }) = use_
             .id
-            .as_ref()
             .and_then(|id| self.get_item_if_not_in_path(&unprocessed_item.parent_path, id))
         {
-            for item_id in items {
+            for &item_id in items {
                 self.add_to_work_queue(unprocessed_item.parent_path.clone(), item_id);
             }
         } else {
@@ -156,7 +155,6 @@ impl<'c> ItemProcessor<'c> {
 
         if let Some(used_item) = use_
             .id
-            .as_ref()
             .and_then(|id| self.get_item_if_not_in_path(&unprocessed_item.parent_path, id))
         {
             actual_item = used_item;
@@ -230,7 +228,7 @@ impl<'c> ItemProcessor<'c> {
         let children = children_for_item(item).into_iter().flatten();
         let impls = impls_for_item(item).into_iter().flatten();
 
-        for id in children {
+        for &id in children {
             self.add_to_work_queue(finished_item.path().into(), id);
         }
 
@@ -239,7 +237,7 @@ impl<'c> ItemProcessor<'c> {
         // use the type that we implement for, so that e.g. generic arguments
         // can be shown. So hide the "sorting path" of the impl. We'll instead
         // render the path to the type the impl is for.
-        for id in impls {
+        for &id in impls {
             let mut path = finished_item.path().to_vec();
             for a in &mut path {
                 a.hide = true;
@@ -256,9 +254,9 @@ impl<'c> ItemProcessor<'c> {
     fn get_item_if_not_in_path(
         &mut self,
         parent_path: &[PathComponent<'c>],
-        id: &'c Id,
+        id: Id,
     ) -> Option<&'c Item> {
-        if parent_path.iter().any(|m| m.item.item.id == *id) {
+        if parent_path.iter().any(|m| m.item.item.id == id) {
             // The item is already in the path! Break use recursion...
             return None;
         }
@@ -445,7 +443,7 @@ pub fn impls_for_item(item: &Item) -> Option<&[Id]> {
 
 pub(crate) fn public_api_in_crate(crate_: &Crate, options: Options) -> super::PublicApi {
     let mut item_processor = ItemProcessor::new(crate_, options);
-    item_processor.add_to_work_queue(vec![], &crate_.root);
+    item_processor.add_to_work_queue(vec![], crate_.root);
     item_processor.run();
 
     let context = RenderingContext {

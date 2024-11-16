@@ -112,3 +112,5 @@ pub async fn async_fn() {}
 pub async fn async_fn_ret_bool() -> bool {
     true
 }
+
+pub fn unused_argument(_: u32) {}

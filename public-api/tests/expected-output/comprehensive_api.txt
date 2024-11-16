@@ -114,6 +114,7 @@ pub fn comprehensive_api::functions::somewhere<T, U>(t: T, u: U) where T: core::
 pub fn comprehensive_api::functions::struct_arg(s: comprehensive_api::structs::PrivateField)
 pub fn comprehensive_api::functions::synthetic_arg(t: impl comprehensive_api::traits::Simple) -> impl comprehensive_api::traits::Simple
 pub unsafe fn comprehensive_api::functions::unsafe_fn()
+pub fn comprehensive_api::functions::unused_argument(u32)
 pub mod comprehensive_api::higher_ranked_trait_bounds
 pub struct comprehensive_api::higher_ranked_trait_bounds::Bar<'a>
 pub comprehensive_api::higher_ranked_trait_bounds::Bar::bar: &'a (dyn for<'b> comprehensive_api::higher_ranked_trait_bounds::Trait<'b> + core::marker::Unpin)

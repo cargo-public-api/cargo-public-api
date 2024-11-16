@@ -15,9 +15,6 @@
 If `MINIMUM_NIGHTLY_RUST_VERSION` must be bumped then by necessity both `cargo-public-api` and `public-api` must be bumped to the same version to make the [compatibility matrix](https://github.com/cargo-public-api/cargo-public-api#compatibility-matrix) consistent. With this in mind, do this:
 * Add a new version info entry at [version_info.rs](https://github.com/cargo-public-api/cargo-public-api/blob/main/scripts/release-helper/lib/version_info.rs)
 * Run `cargo run --bin update-version-info`
-* ```
-  rm cargo-public-api/MINIMUM_NIGHTLY_RUST_VERSION_FOR_TESTS
-  ```
 
 ### When not to release
 

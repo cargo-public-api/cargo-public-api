@@ -446,7 +446,7 @@ impl<'c> RenderingContext<'c> {
         output.extend(self.render_generic_param_defs(&generics.params));
 
         // Regular parameters and return type
-        output.extend(self.render_fn_decl(sig));
+        output.extend(self.render_fn_decl(sig, true));
 
         // Where predicates
         output.extend(self.render_where_predicates(&generics.where_predicates));
@@ -454,7 +454,7 @@ impl<'c> RenderingContext<'c> {
         output
     }
 
-    fn render_fn_decl(&self, sig: &FunctionSignature) -> Vec<Token> {
+    fn render_fn_decl(&self, sig: &FunctionSignature, include_underscores: bool) -> Vec<Token> {
         let mut output = vec![];
         // Main arguments
         output.extend(self.render_sequence(
@@ -465,7 +465,7 @@ impl<'c> RenderingContext<'c> {
             |(name, ty)| {
                 self.simplified_self(name, ty).unwrap_or_else(|| {
                     let mut output = vec![];
-                    if name != "_" {
+                    if name != "_" || include_underscores {
                         output.extend(vec![Token::identifier(name), Token::symbol(":"), ws!()]);
                     }
                     output.extend(self.render_type(ty));
@@ -563,7 +563,7 @@ impl<'c> RenderingContext<'c> {
     fn render_function_pointer(&self, ptr: &FunctionPointer) -> Vec<Token> {
         let mut output = self.render_higher_rank_trait_bounds(&ptr.generic_params);
         output.push(Token::kind("fn"));
-        output.extend(self.render_fn_decl(&ptr.sig));
+        output.extend(self.render_fn_decl(&ptr.sig, false));
         output
     }
 

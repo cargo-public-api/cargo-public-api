@@ -12,7 +12,7 @@ repository = "https://github.com/cargo-public-api/cargo-public-api/tree/main/pub
 
 [dependencies]
 hashbag = { version = "0.1.12", default-features = false }
-thiserror = "1.0.65"
+thiserror = "2.0.3"
 
 [dependencies.serde]
 version = "1.0.179"

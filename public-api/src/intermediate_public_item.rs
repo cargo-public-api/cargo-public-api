@@ -1,4 +1,4 @@
-use rustdoc_types::Item;
+use rustdoc_types::{Id, Item};
 
 use crate::nameable_item::NameableItem;
 use crate::path_component::PathComponent;
@@ -13,11 +13,17 @@ use crate::tokens::Token;
 #[derive(Clone, Debug)]
 pub struct IntermediatePublicItem<'c> {
     path: Vec<PathComponent<'c>>,
+    parent_id: Option<Id>,
+    id: Id,
 }
 
 impl<'c> IntermediatePublicItem<'c> {
-    pub fn new(path: Vec<PathComponent<'c>>) -> Self {
-        Self { path }
+    pub fn new(path: Vec<PathComponent<'c>>, parent_id: Option<Id>, id: Id) -> Self {
+        Self {
+            path,
+            parent_id,
+            id,
+        }
     }
 
     #[must_use]
@@ -32,6 +38,16 @@ impl<'c> IntermediatePublicItem<'c> {
     #[must_use]
     pub fn path(&self) -> &[PathComponent<'c>] {
         &self.path
+    }
+
+    #[must_use]
+    pub fn parent_id(&self) -> Option<Id> {
+        self.parent_id
+    }
+
+    #[must_use]
+    pub fn id(&self) -> Id {
+        self.id
     }
 
     /// See [`crate::item_processor::sorting_prefix()`] docs for an explanation why we have this.

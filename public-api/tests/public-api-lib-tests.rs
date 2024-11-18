@@ -249,6 +249,45 @@ fn invalid_json() {
     assert!(matches!(result, Err(Error::SerdeJsonError(_))));
 }
 
+#[test]
+fn find_function() {
+    use rustdoc_types::{Crate, Id, ItemEnum};
+
+    fn is_function(krate: &Crate, id: Id) -> bool {
+        matches!(krate.index.get(&id).unwrap().inner, ItemEnum::Function(_))
+    }
+
+    let json = rustdoc_json_for_lib(
+        r#"
+pub mod a_mod {
+    pub fn a_function() {
+    }
+}
+    "#,
+    );
+
+    let public_api = public_api::Builder::from_rustdoc_json(&json.json_path)
+        .build()
+        .unwrap();
+
+    let file = fs::File::open(json.json_path).unwrap();
+    let krate = serde_json::from_reader::<_, Crate>(file).unwrap();
+
+    let public_item = public_api
+        .items()
+        .find(|public_item| is_function(&krate, public_item.id()))
+        .unwrap();
+
+    let id = public_item.id();
+    let item = krate.index.get(&id).unwrap();
+    assert_eq!(Some("a_function"), item.name.as_deref());
+
+    let parent_id = public_item.parent_id().unwrap();
+    let parent_item = krate.index.get(&parent_id).unwrap();
+    assert!(matches!(parent_item.inner, ItemEnum::Module(_)));
+    assert_eq!(Some("a_mod"), parent_item.name.as_deref());
+}
+
 struct LibWithJson {
     json_path: PathBuf,
 

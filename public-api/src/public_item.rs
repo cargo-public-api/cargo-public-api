@@ -1,3 +1,4 @@
+use rustdoc_types::Id;
 use std::cmp::Ordering;
 use std::fmt::Display;
 use std::hash::Hash;
@@ -24,6 +25,12 @@ pub struct PublicItem {
 
     /// The rendered item as a stream of [`Token`]s
     pub(crate) tokens: Vec<Token>,
+
+    /// The [`Id`] of this item's logical parent (if any)
+    pub(crate) parent_id: Option<Id>,
+
+    /// The [`Id`] to which this public item corresponds
+    pub(crate) id: Id,
 }
 
 impl PublicItem {
@@ -34,7 +41,21 @@ impl PublicItem {
         PublicItem {
             sortable_path: public_item.sortable_path(context),
             tokens: public_item.render_token_stream(context),
+            parent_id: public_item.parent_id(),
+            id: public_item.id(),
         }
+    }
+
+    /// The [`Id`] of this item's logical parent (if any)
+    #[must_use]
+    pub fn parent_id(&self) -> Option<Id> {
+        self.parent_id
+    }
+
+    /// The [`Id`] to which this public item corresponds
+    #[must_use]
+    pub fn id(&self) -> Id {
+        self.id
     }
 
     /// The rendered item as a stream of [`Token`]s

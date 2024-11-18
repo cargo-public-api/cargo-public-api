@@ -2,6 +2,7 @@
 
 ## v0.42.0
 * Render `_` argument names in function declarations
+* Add `PublicItem::id(&self) -> rustdoc_types::Id` and `PublicItem::parent_id(&self) -> core::option::Option<rustdoc_types::Id>`
 
 ## v0.41.0
 * Render `?` in front of `core::marker::Sized` if applicable.

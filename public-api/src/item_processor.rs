@@ -24,6 +24,9 @@ struct UnprocessedItem<'c> {
     /// The path to the item to process.
     parent_path: Vec<PathComponent<'c>>,
 
+    /// The Id of the item's logical parent (if any).
+    parent_id: Option<Id>,
+
     /// The Id of the item to process.
     id: Id,
 }
@@ -70,9 +73,17 @@ impl<'c> ItemProcessor<'c> {
     /// want to insert the struct fields BEFORE everything else, so that these
     /// items remain grouped together. And the same applies for many kinds of
     /// groupings (enums, impls, etc).
-    fn add_to_work_queue(&mut self, parent_path: Vec<PathComponent<'c>>, id: Id) {
-        self.work_queue
-            .push_front(UnprocessedItem { parent_path, id });
+    fn add_to_work_queue(
+        &mut self,
+        parent_path: Vec<PathComponent<'c>>,
+        parent_id: Option<Id>,
+        id: Id,
+    ) {
+        self.work_queue.push_front(UnprocessedItem {
+            parent_path,
+            parent_id,
+            id,
+        });
     }
 
     /// Processes the entire work queue. Adds more items based on items it
@@ -126,7 +137,11 @@ impl<'c> ItemProcessor<'c> {
             .and_then(|id| self.get_item_if_not_in_path(&unprocessed_item.parent_path, id))
         {
             for &item_id in items {
-                self.add_to_work_queue(unprocessed_item.parent_path.clone(), item_id);
+                self.add_to_work_queue(
+                    unprocessed_item.parent_path.clone(),
+                    unprocessed_item.parent_id,
+                    item_id,
+                );
             }
         } else {
             self.process_item(
@@ -229,7 +244,7 @@ impl<'c> ItemProcessor<'c> {
         let impls = impls_for_item(item).into_iter().flatten();
 
         for &id in children {
-            self.add_to_work_queue(finished_item.path().into(), id);
+            self.add_to_work_queue(finished_item.path().into(), Some(item.id), id);
         }
 
         // As usual, impls are special. We want impl items to appear grouped
@@ -242,7 +257,7 @@ impl<'c> ItemProcessor<'c> {
             for a in &mut path {
                 a.hide = true;
             }
-            self.add_to_work_queue(path, id);
+            self.add_to_work_queue(path, Some(item.id), id);
         }
 
         self.output.push(finished_item);
@@ -287,13 +302,13 @@ impl<'c> ItemProcessor<'c> {
 impl<'c> UnprocessedItem<'c> {
     /// Turns an [`UnprocessedItem`] into a finished [`IntermediatePublicItem`].
     fn finish(
-        self,
+        mut self,
         item: &'c Item,
         overridden_name: Option<String>,
         type_: Option<&'c Type>,
     ) -> IntermediatePublicItem<'c> {
         // Transfer path ownership to output item
-        let mut path = self.parent_path;
+        let mut path = self.parent_path.split_off(0);
 
         // Complete the path with the last item
         path.push(PathComponent {
@@ -307,7 +322,7 @@ impl<'c> UnprocessedItem<'c> {
         });
 
         // Done
-        IntermediatePublicItem::new(path)
+        IntermediatePublicItem::new(path, self.parent_id, item.id)
     }
 }
 
@@ -443,7 +458,7 @@ pub fn impls_for_item(item: &Item) -> Option<&[Id]> {
 
 pub(crate) fn public_api_in_crate(crate_: &Crate, options: Options) -> super::PublicApi {
     let mut item_processor = ItemProcessor::new(crate_, options);
-    item_processor.add_to_work_queue(vec![], crate_.root);
+    item_processor.add_to_work_queue(vec![], None, crate_.root);
     item_processor.run();
 
     let context = RenderingContext {

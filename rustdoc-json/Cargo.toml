@@ -14,7 +14,7 @@ repository = "https://github.com/cargo-public-api/cargo-public-api/tree/main/rus
 cargo_metadata = "0.18.1"
 cargo-manifest = "0.16.0"
 serde = { version = "1.0.179", features = ["derive"] }
-thiserror = "1.0.65"
+thiserror = "2.0.3"
 toml = "0.8.19"
 
 [dependencies.tracing]

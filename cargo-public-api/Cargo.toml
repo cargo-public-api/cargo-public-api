@@ -82,6 +82,6 @@ features = ["std"]
 [dev-dependencies]
 assert_cmd = "2.0.16"
 expect-test = "1.5.0"
-remove_dir_all = "0.8.4"
+remove_dir_all = "1.0.0"
 tempfile = "3.10.1"
 cargo_metadata = "0.18.1"

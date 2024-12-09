@@ -8,7 +8,6 @@ updates:
     schedule:
       interval: "weekly"
     labels:
-      - "category-exclude"
       - "dependencies"
     ignore:
       - dependency-name: "anyhow"

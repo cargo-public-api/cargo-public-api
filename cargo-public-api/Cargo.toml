@@ -63,7 +63,7 @@ version = "0.3.2"
 features = ["serde"]
 
 [dependencies.tracing-subscriber]
-version = "0.3.18"
+version = "0.3.19"
 features = ["env-filter"]
 
 [dev-dependencies.rustup-toolchain]

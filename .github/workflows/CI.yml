@@ -54,7 +54,7 @@ jobs:
 
   cargo-audit:
     name: cargo audit
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04 # ubuntu-24.04 does not have `cargo-audit` pre-installed
     steps:
       - uses: actions/checkout@v4
       - run: scripts/cargo-audit.sh

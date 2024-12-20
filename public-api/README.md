@@ -62,10 +62,6 @@ UPDATE_EXPECT=1 cargo test public_api
 
 This creates a `tests/public-api.txt` file in your project that you `git add` together with your other project files. Whenever you change the public API, you need to bless it again with the above command. If you forget to bless, the test will fail, together with instructions on how to bless.
 
-# Changelog
-
-See [CHANGELOG.md](https://github.com/cargo-public-api/cargo-public-api/blob/main/public-api/CHANGELOG.md).
-
 # Maintainers
 
 See [here](https://github.com/cargo-public-api/cargo-public-api#maintainers).

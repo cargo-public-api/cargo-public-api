@@ -1,5 +1,8 @@
 # rustdoc-json
 
+## v0.9.4
+* Bump deps. Most notably `cargo-manifest` from 0.16.0 to 0.17.0.
+
 ## v0.9.3
 * Bump deps. Most notably `cargo-manifest` from 0.15.0 to 0.16.0.
 

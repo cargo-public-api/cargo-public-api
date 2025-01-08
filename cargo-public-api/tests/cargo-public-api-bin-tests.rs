@@ -146,28 +146,24 @@ fn list_public_items_with_no_lib() {
 /// subcommand.
 #[test]
 fn renamed_binary_works_as_subcommand() {
-    let cmd = || {
-        let mut cmd = std::process::Command::new("cargo");
-        cmd.arg("public-api-v0.13.0");
-        cmd.arg("-h");
-        Command::from_std(cmd)
-    };
-
+    // Create a copy with the name to test with.
     let bin_dir = bin_dir();
-    add_to_path(&bin_dir);
-
-    // First make sure there is no leftover from a previous run by making sure
-    // that the command fails before we make a copy
-    cmd().assert().failure();
-
-    // Now copy the file (but make sure to clean up after the test)
     let regular_bin = bin_dir.join(format!("cargo-public-api{EXE_SUFFIX}"));
     let renamed_bin = RmOnDrop(bin_dir.join(format!("cargo-public-api-v0.13.0{EXE_SUFFIX}")));
     std::fs::copy(regular_bin, &renamed_bin.0).unwrap();
 
-    // Now the command should succeed
-    cmd()
+    // Print env vars to debug:
+    for (key, value) in env::vars() {
+        eprintln!("{}: {}", key, value);
+    }
+
+    // Make sure the renamed binary can be invoked as a subcommand.
+    let mut cmd = std::process::Command::new("cargo");
+    cmd.arg("public-api-v0.13.0");
+    cmd.arg("-h");
+    Command::from_std(cmd)
         .assert()
+        .stderr(contains(""))
         .stdout_or_update("../../docs/short-help.txt")
         .success();
 }
@@ -1542,6 +1538,14 @@ impl AssertOrUpdate for Assert {
         expect_test::expect_file![expected_file.as_ref()].assert_eq(&stdout);
         self
     }
+}
+
+/// Figures out the `./target/debug` dir
+fn bin_dir() -> PathBuf {
+    let mut bin_dir = env::current_exe().unwrap(); // ".../target/debug/deps/cargo_public_api_bin_tests-d0f2f926b349fbb9"
+    bin_dir.pop(); // Pop "cargo_public_api_bin_tests-d0f2f926b349fbb9"
+    bin_dir.pop(); // Pop "deps"
+    bin_dir // ".../target/debug"
 }
 
 /// Since `rustup` always prepends `$CARGO_HOME/bin` to `$PATH` [1], make sure

@@ -16,13 +16,11 @@ RUSTDOCFLAGS='--deny warnings' cargo doc --locked --no-deps --document-private-i
 scripts/cargo-clippy.sh
 
 (
-    # Since `std::env::set_var()` is unsafe in Rust Edition 2024 we avoid it inside
-    # of tests. Instead we make sure that it is set appropriately from the start.
-    # Since we don't pass `--release` to the below `cargo` commands we use
-    # `./target/debug` here and not `./target/release`.
+    # Since `std::env::set_var()` is unsafe in Rust Edition 2024 we avoid
+    # modifying `PATH` inside of tests. Instead we make sure that it is set
+    # appropriately from the start. Since we don't pass `--release` to the below
+    # `cargo` commands we use `./target/debug` here and not `./target/release`.
     export PATH="$(pwd)/target/debug:$PATH"
-
-    cargo build --locked # Build with default features
 
     cargo test --locked
 

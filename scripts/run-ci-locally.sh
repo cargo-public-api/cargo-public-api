@@ -8,6 +8,8 @@ export CARGO_TERM_COLOR=always
 # without errors you can be reasonably sure that CI will pass for real when you
 # push the code.
 
+export PATH="$(pwd)/target/release:$PATH"
+
 cargo fmt -- --check
 
 RUSTDOCFLAGS='--deny warnings' cargo doc --locked --no-deps --document-private-items

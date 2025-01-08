@@ -1398,7 +1398,7 @@ impl From<TestCmdType<'_>> for Command {
     fn from(cmd_type: TestCmdType) -> Self {
         match cmd_type {
             TestCmdType::Subcommand { toolchain } => {
-                add_target_debug_to_path();
+                assert_cargo_public_api_not_in_cargo_home_bin();
 
                 let mut cargo_cmd = if let Some(toolchain) = toolchain {
                     cargo_with_toolchain(toolchain)
@@ -1542,31 +1542,6 @@ impl AssertOrUpdate for Assert {
         expect_test::expect_file![expected_file.as_ref()].assert_eq(&stdout);
         self
     }
-}
-
-/// Adds `./target/debug` to `PATH` so that the subcommand `cargo public-api`
-/// starts working (since `./target/debug` contains the `cargo-public-api`
-/// binary).
-fn add_target_debug_to_path() {
-    assert_cargo_public_api_not_in_cargo_home_bin();
-
-    add_to_path(bin_dir());
-}
-
-/// Figures out the `./target/debug` dir
-fn bin_dir() -> PathBuf {
-    let mut bin_dir = env::current_exe().unwrap(); // ".../target/debug/deps/cargo_public_api_bin_tests-d0f2f926b349fbb9"
-    bin_dir.pop(); // Pop "cargo_public_api_bin_tests-d0f2f926b349fbb9"
-    bin_dir.pop(); // Pop "deps"
-    bin_dir // ".../target/debug"
-}
-
-fn add_to_path(dir: impl Into<PathBuf>) {
-    let mut path = env::var_os("PATH").unwrap();
-    let mut dirs: Vec<_> = env::split_paths(&path).collect();
-    dirs.insert(0, dir.into());
-    path = env::join_paths(dirs).unwrap();
-    env::set_var("PATH", path);
 }
 
 /// Since `rustup` always prepends `$CARGO_HOME/bin` to `$PATH` [1], make sure

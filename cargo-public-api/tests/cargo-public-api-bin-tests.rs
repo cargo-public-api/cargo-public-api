@@ -1388,30 +1388,9 @@ enum TestCmdType<'str> {
     Bin,
 }
 
-#[cfg(not(target_family = "windows"))]
 fn cargo_with_toolchain(toolchain: &str) -> std::process::Command {
     let mut cmd = std::process::Command::new("cargo");
     cmd.arg(format!("+{toolchain}"));
-    cmd
-}
-
-/// Workaround for [rustup 1.25: On Windows, nested cargo invocation with a
-/// toolchain specified fails](https://github.com/rust-lang/rustup/issues/3036).
-/// We only use it on Windows, because when possible we want this command to be
-/// as similar as possible to what real users use. And most users do
-/// ```bash
-/// cargo +toolchain public-api
-/// ```
-/// rather than
-/// ```bash
-/// rustup run toolchain cargo public-api
-/// ```
-#[cfg(target_family = "windows")]
-fn cargo_with_toolchain(toolchain: &str) -> std::process::Command {
-    let mut cmd = std::process::Command::new("rustup");
-    cmd.arg("run");
-    cmd.arg(toolchain);
-    cmd.arg("cargo");
     cmd
 }
 

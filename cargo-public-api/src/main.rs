@@ -606,7 +606,7 @@ fn resolve_simplified(args: &mut Args) {
 }
 
 fn is_json_file(file_name: impl AsRef<str>) -> bool {
-    Path::extension(Path::new(file_name.as_ref())).map_or(false, |a| a.eq_ignore_ascii_case("json"))
+    Path::extension(Path::new(file_name.as_ref())).is_some_and(|a| a.eq_ignore_ascii_case("json"))
 }
 
 /// Helper to reduce code duplication. We can't add [`Args`] to

@@ -138,7 +138,7 @@ fn color_item_token(token: &Token, bg: Option<Color>) -> AnsiString<'_> {
 fn color_item_with_diff(diff_slice: &[diff::Result<&&Token>], is_old_item: bool) -> String {
     let styled_strings = diff_slice
         .iter()
-        .filter_map(|diff_result| match diff_result {
+        .filter_map(|diff_result| match *diff_result {
             diff::Result::Left(&token) => is_old_item.then(|| {
                 Color::Fixed(9)
                     .on(Color::Fixed(52))

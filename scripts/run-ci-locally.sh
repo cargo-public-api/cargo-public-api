@@ -8,11 +8,6 @@ set -o nounset -o pipefail -o errexit -o xtrace
 # CI sets this, so we should too
 export CARGO_TERM_COLOR=always
 
-# Since `std::env::set_var()` is unsafe in Rust Edition 2024 we avoid it inside
-# of tests. Instead we make sure that it is set appropriately from the start.
-# Since we don't pass `--release` to the below `cargo` commands we use
-# `./target/debug` here and not `./target/release`.
-export PATH="$(pwd)/target/debug:$PATH"
 
 cargo fmt -- --check
 
@@ -20,11 +15,19 @@ RUSTDOCFLAGS='--deny warnings' cargo doc --locked --no-deps --document-private-i
 
 scripts/cargo-clippy.sh
 
-cargo build --locked # Build with default features
+(
+    # Since `std::env::set_var()` is unsafe in Rust Edition 2024 we avoid it inside
+    # of tests. Instead we make sure that it is set appropriately from the start.
+    # Since we don't pass `--release` to the below `cargo` commands we use
+    # `./target/debug` here and not `./target/release`.
+    export PATH="$(pwd)/target/debug:$PATH"
 
-cargo test --locked
+    cargo build --locked # Build with default features
 
-scripts/cargo-test-without-rustup.sh
+    cargo test --locked
+
+    scripts/cargo-test-without-rustup.sh
+)
 
 if command -v cargo-audit >/dev/null; then
     scripts/cargo-audit.sh

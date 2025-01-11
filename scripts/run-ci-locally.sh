@@ -14,9 +14,7 @@ RUSTDOCFLAGS='--deny warnings' cargo doc --locked --no-deps --document-private-i
 
 scripts/cargo-clippy.sh
 
-cargo build --locked
-
-cargo test --locked
+scripts/cargo-test.sh
 
 scripts/cargo-test-without-rustup.sh
 

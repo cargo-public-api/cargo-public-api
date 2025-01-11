@@ -4,16 +4,11 @@ Before you get started, you might want to read about the [architecture](./ARCHIT
 
 # Getting started
 
-Just clone the repo. Then you can make changes and run tests:
+Just clone the repo. Then you can make changes and simulate CI locally:
 
 ```
 git clone https://github.com/cargo-public-api/cargo-public-api.git ; cd cargo-public-api
 
-cargo test
-```
-
-This project makes heavy use of CI. To simulate the CI pipeline locally, run
-```
 ./scripts/run-ci-locally.sh
 ```
 
@@ -107,9 +102,7 @@ It is usually straigtforward.
 1. Update `scripts/release-helper/src/version_info.rs`
 1. Run `cargo run --bin update-version-info`
 1. Make `cargo build` build
-1. Make `cargo test` build
-1. Possibly bless changes to output with `./scripts/bless-expected-output-for-tests.sh`
-1. Make `./scripts/run-ci-locally.sh` pass
+1. Make `./scripts/run-ci-locally.sh` pass, possibly after `./scripts/bless-expected-output-for-tests.sh`
 
 Once all of the above commands completes successfully, the upgrade is usually complete. See [RELEASE.md](./RELEASE.md) for info about other preparations needed to make a release with the changes.
 

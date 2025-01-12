@@ -18,7 +18,7 @@ Note that you can run `./scripts/run-ci-locally.sh` from from within your IDE. T
 
 To make your changes become the expected output, run
 ```
-./scripts/bless-expected-output-for-tests.sh
+./scripts/cargo-test.sh --bless
 ```
 
 ## Expected Output
@@ -102,7 +102,7 @@ It is usually straigtforward.
 1. Update `scripts/release-helper/src/version_info.rs`
 1. Run `cargo run --bin update-version-info`
 1. Make `cargo build` build
-1. Make `./scripts/run-ci-locally.sh` pass, possibly after `./scripts/bless-expected-output-for-tests.sh`
+1. Make `./scripts/run-ci-locally.sh` pass, possibly after `./scripts/cargo-test.sh --bless`
 
 Once all of the above commands completes successfully, the upgrade is usually complete. See [RELEASE.md](./RELEASE.md) for info about other preparations needed to make a release with the changes.
 

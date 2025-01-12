@@ -3,7 +3,7 @@
 
 //! To update expected output it is in many cases sufficient to run
 //! ```bash
-//! ./scripts/bless-expected-output-for-tests.sh
+//! ./scripts/cargo-test.sh --bless
 //! ```
 
 use std::env;

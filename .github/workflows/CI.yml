@@ -23,6 +23,7 @@ jobs:
       - cargo-audit
       - cargo-deny
       - cargo-test
+      - shfmt
     steps:
       - run: jq --exit-status 'all(.result == "success")' <<< '${{ toJson(needs) }}'
 
@@ -88,3 +89,11 @@ jobs:
       - run: scripts/cargo-test.sh
       - run: scripts/cargo-test-without-rustup.sh
         if: runner.os == 'Linux' # Fails on macOS (strangely) and Windows (expected)
+
+  shfmt:
+    name: shfmt --diff
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt install shfmt
+      - run: scripts/shfmt.sh --diff # Fix failures locally with: scripts/shfmt.sh --write

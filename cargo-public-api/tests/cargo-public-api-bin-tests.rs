@@ -146,6 +146,8 @@ fn list_public_items_with_no_lib() {
 /// subcommand.
 #[test]
 fn renamed_binary_works_as_subcommand() {
+    assert_cargo_public_api_in_path();
+
     // Create a `cargo-public-api-v0.13.0` binary by copying `cargo-public-api`.
     let bin_dir = bin_dir();
     let regular_bin = bin_dir.join(format!("cargo-public-api{EXE_SUFFIX}"));
@@ -1410,7 +1412,7 @@ impl From<TestCmdType<'_>> for Command {
     fn from(cmd_type: TestCmdType) -> Self {
         match cmd_type {
             TestCmdType::Subcommand { toolchain } => {
-                assert_cargo_public_api_not_in_cargo_home_bin();
+                assert_cargo_public_api_in_path();
 
                 let mut cargo_cmd = if let Some(toolchain) = toolchain {
                     cargo_with_toolchain(toolchain)
@@ -1588,6 +1590,30 @@ and thus interfere with tests. Run
     mv -v ~/.cargo/bin/cargo-public-api ~/.cargo/bin/$(~/.cargo/bin/cargo-public-api --version | tr ' ' '-')
 
 to fix.");
+}
+
+fn assert_cargo_public_api_in_path() {
+    assert_cargo_public_api_not_in_cargo_home_bin();
+
+    let path = env::var_os("PATH").unwrap();
+    assert!(
+        env::split_paths(&path)
+            .map(|path| path.join("cargo-public-api"))
+            .any(|path| path.exists()),
+        "Could not find `cargo-public-api` in `PATH` which is set to:
+
+{path:?}
+
+Make sure that `./target/debug` is in `PATH`:
+
+    PATH=\"$(pwd)/target/debug:$PATH\" cargo test
+
+or run the helper script that does that for you:
+
+    ./scripts/cargo-test.sh
+
+"
+    );
 }
 
 /// See where this is used for an explanation of why we have this helper.

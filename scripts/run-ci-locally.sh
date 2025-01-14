@@ -29,3 +29,9 @@ if command -v cargo-deny >/dev/null; then
 else
     echo "INFO: Not running \`cargo deny\` because it is not installed"
 fi
+
+if command -v shfmt >/dev/null; then
+    scripts/shfmt.sh --diff
+else
+    echo "INFO: Not running \`shfmt\` because it is not installed"
+fi

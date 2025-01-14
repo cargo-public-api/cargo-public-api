@@ -12,7 +12,7 @@ cargo clippy \
     -- \
     --deny clippy::all \
     --deny warnings \
-    --deny unsafe_code \
+    --deny unsafe_code
 
 # Only --deny missing_docs for our libs because it does not matter for bins
 cargo clippy \
@@ -23,4 +23,4 @@ cargo clippy \
     --package rustup-toolchain \
     --all-features \
     -- \
-    --deny missing_docs \
+    --deny missing_docs

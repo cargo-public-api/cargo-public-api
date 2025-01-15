@@ -1,3 +1,7 @@
+---
+source: rustup-toolchain/tests/rustup-toolchain-lib-tests.rs
+expression: public_api
+---
 pub mod rustup_toolchain
 #[non_exhaustive] pub enum rustup_toolchain::Error
 pub rustup_toolchain::Error::IoError(std::io::error::Error)

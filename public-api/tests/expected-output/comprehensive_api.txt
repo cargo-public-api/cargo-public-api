@@ -232,7 +232,7 @@ impl comprehensive_api::traits::TraitReferencingOwnAssociatedType for comprehens
 pub type comprehensive_api::impls::TestItemGrouping::OwnAssociatedType = bool
 pub fn comprehensive_api::impls::TestItemGrouping::own_associated_type_output(&self) -> Self::OwnAssociatedType
 pub fn comprehensive_api::impls::TestItemGrouping::own_associated_type_output_explicit_as(&self) -> <Self as comprehensive_api::traits::TraitReferencingOwnAssociatedType>::OwnAssociatedType
-pub trait comprehensive_api::traits::TraitWithBounds: private_mod::PubTraitInPrivateMod + comprehensive_api::traits::Simple + core::marker::Send
+pub trait comprehensive_api::traits::TraitWithBounds: comprehensive_api::traits::private_mod::PubTraitInPrivateMod + comprehensive_api::traits::Simple + core::marker::Send
 pub trait comprehensive_api::traits::TraitWithBoundsAndGenerics<U>: comprehensive_api::traits::Simple
 pub trait comprehensive_api::traits::TraitWithGenerics<T, U>
 pub type comprehensive_api::traits::TraitWithGenerics::Foo

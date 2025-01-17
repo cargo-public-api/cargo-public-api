@@ -28,7 +28,7 @@ fn public_api() -> Result<(), Box<dyn std::error::Error>> {
 
     let public_api = public_api::Builder::from_rustdoc_json(rustdoc_json).build()?;
 
-    expect_test::expect_file!["public-api.txt"].assert_eq(&public_api.to_string());
+    insta::assert_snapshot!(public_api);
 
     Ok(())
 }

@@ -1,3 +1,7 @@
+---
+source: rustdoc-json/tests/rustdoc-json-lib-tests.rs
+expression: public_api
+---
 pub mod rustdoc_json
 #[non_exhaustive] pub enum rustdoc_json::BuildError
 pub rustdoc_json::BuildError::BuildRustdocJsonError

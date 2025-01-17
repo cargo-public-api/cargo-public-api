@@ -27,7 +27,7 @@ cargo add --dev \
     rustup-toolchain \
     rustdoc-json \
     public-api \
-    expect-test
+    insta
 ```
 
 Then add the following test to your project. As the author of the below test code, I hereby associate it with [CC0](https://creativecommons.org/publicdomain/zero/1.0/) and to the extent possible under law waive all copyright and related or neighboring rights to it:
@@ -50,17 +50,32 @@ fn public_api() {
         .unwrap();
 
     // Assert that the public API looks correct
-    expect_test::expect_file!["public-api.txt"].assert_eq(&public_api.to_string());
+    insta::assert_snapshot!(public_api);
 }
 ```
 
 Before you run the test the first time you need to bless the current public API:
 
 ```sh
-UPDATE_EXPECT=1 cargo test public_api
+cargo install cargo-insta
+cargo insta test
+cargo insta review
 ```
 
-This creates a `tests/public-api.txt` file in your project that you `git add` together with your other project files. Whenever you change the public API, you need to bless it again with the above command. If you forget to bless, the test will fail, together with instructions on how to bless.
+This creates a `tests/snapshots/<module>_public_api.snap` file in your project that you `git add` together with your other project files. Then a regular
+
+```sh
+cargo test
+```
+
+will fail if your public API is accidentally or deliberately changed. Run
+
+```sh
+cargo insta test
+cargo insta review
+```
+
+again to review and accept public API changes.
 
 # Maintainers
 

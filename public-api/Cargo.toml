@@ -28,7 +28,6 @@ version = "0.32.2"
 [dev-dependencies]
 anyhow = "1.0.75"
 assert_cmd = "2.0.16"
-expect-test = "1.5.1"
 insta = "1.42.0"
 pretty_assertions = "1.4.1"
 tempfile = "3.10.1"

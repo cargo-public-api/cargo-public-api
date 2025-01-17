@@ -1,5 +1,0 @@
-PublicApiDiff {
-    removed: [],
-    changed: [],
-    added: [],
-}

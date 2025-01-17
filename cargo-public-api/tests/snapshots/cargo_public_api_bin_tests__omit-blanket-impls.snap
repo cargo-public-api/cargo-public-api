@@ -1,0 +1,24 @@
+---
+source: cargo-public-api/tests/cargo-public-api-bin-tests.rs
+expression: stdout
+---
+pub mod example_api
+#[non_exhaustive] pub struct example_api::Struct
+pub example_api::Struct::v1_field: usize
+pub example_api::Struct::v2_field: usize
+impl core::fmt::Debug for example_api::Struct
+pub fn example_api::Struct::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::Freeze for example_api::Struct
+impl core::marker::Send for example_api::Struct
+impl core::marker::Sync for example_api::Struct
+impl core::marker::Unpin for example_api::Struct
+impl core::panic::unwind_safe::RefUnwindSafe for example_api::Struct
+impl core::panic::unwind_safe::UnwindSafe for example_api::Struct
+pub struct example_api::StructV2
+pub example_api::StructV2::field: usize
+impl core::marker::Freeze for example_api::StructV2
+impl core::marker::Send for example_api::StructV2
+impl core::marker::Sync for example_api::StructV2
+impl core::marker::Unpin for example_api::StructV2
+impl core::panic::unwind_safe::RefUnwindSafe for example_api::StructV2
+impl core::panic::unwind_safe::UnwindSafe for example_api::StructV2

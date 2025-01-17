@@ -1,0 +1,15 @@
+---
+source: cargo-public-api/tests/cargo-public-api-bin-tests.rs
+expression: stdout
+---
+Removed items from the public API
+=================================
+(none)
+
+Changed items in the public API
+===============================
+(none)
+
+Added items to the public API
+=============================
+(none)

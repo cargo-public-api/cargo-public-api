@@ -1,0 +1,17 @@
+---
+source: cargo-public-api/tests/cargo-public-api-bin-tests.rs
+expression: stdout
+---
+Removed items from the public API
+=================================
+-pub example_api::Struct::v1_2_field_gated: usize
+-pub fn example_api::function(v1_param: example_api::Struct, v2_param: usize)
+
+Changed items in the public API
+===============================
+-pub struct example_api::Struct
++#[non_exhaustive] pub struct example_api::Struct
+
+Added items to the public API
+=============================
+(none)

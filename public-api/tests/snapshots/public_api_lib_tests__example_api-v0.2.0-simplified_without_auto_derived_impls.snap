@@ -1,3 +1,7 @@
+---
+source: public-api/tests/public-api-lib-tests.rs
+expression: api
+---
 pub mod example_api
 #[non_exhaustive] pub struct example_api::Struct
 pub example_api::Struct::v1_field: usize

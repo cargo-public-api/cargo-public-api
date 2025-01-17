@@ -1,3 +1,7 @@
+---
+source: public-api/tests/public-api-lib-tests.rs
+expression: api
+---
 pub mod auto_traits
 pub struct auto_traits::NotSendNorSync
 impl core::marker::Freeze for auto_traits::NotSendNorSync

@@ -1,3 +1,7 @@
+---
+source: public-api/tests/public-api-lib-tests.rs
+expression: api
+---
 pub mod comprehensive_api_proc_macro
 pub proc macro comprehensive_api_proc_macro::#[derive(SimpleDeriveMacro)]
 pub proc macro comprehensive_api_proc_macro::simple_proc_macro!()

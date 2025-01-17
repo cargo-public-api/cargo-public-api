@@ -1,13 +1,8 @@
 // deny in CI, only warn here
 #![warn(clippy::all)]
 
-use std::{
-    fs,
-    io::Write,
-    path::{Path, PathBuf},
-};
+use std::{fs, io::Write, path::PathBuf};
 
-use expect_test::expect_file;
 use public_api::Error;
 
 use pretty_assertions::assert_eq;
@@ -40,7 +35,7 @@ fn not_simplified() {
 
     assert_public_api(
         builder_for_crate("../test-apis/example_api-v0.2.0", &build_dir),
-        "./expected-output/example_api-v0.2.0-not-simplified.txt",
+        "example_api-v0.2.0-not-simplified",
     );
 }
 
@@ -54,7 +49,7 @@ fn simplified_without_auto_derived_impls() {
             .omit_auto_derived_impls(true)
             .omit_blanket_impls(true)
             .omit_auto_trait_impls(true),
-        "./expected-output/example_api-v0.2.0-simplified_without_auto_derived_impls.txt",
+        "example_api-v0.2.0-simplified_without_auto_derived_impls",
     );
 }
 
@@ -65,7 +60,7 @@ fn omit_blanket_impls() {
 
     assert_public_api(
         builder_for_crate("../test-apis/example_api-v0.2.0", &build_dir).omit_blanket_impls(true),
-        "./expected-output/example_api-v0.2.0-omit_blanket_impls.txt",
+        "example_api-v0.2.0-omit_blanket_impls",
     );
 }
 
@@ -77,7 +72,7 @@ fn omit_auto_trait_impls() {
     assert_public_api(
         builder_for_crate("../test-apis/example_api-v0.2.0", &build_dir)
             .omit_auto_trait_impls(true),
-        "./expected-output/example_api-v0.2.0-omit_auto_trait_impls.txt",
+        "example_api-v0.2.0-omit_auto_trait_impls",
     );
 }
 
@@ -90,7 +85,7 @@ fn diff_with_added_items() {
     assert_public_api_diff(
         rustdoc_json_path_for_crate("../test-apis/example_api-v0.1.0", &build_dir),
         rustdoc_json_path_for_crate("../test-apis/example_api-v0.2.0", &build_dir2),
-        "./expected-output/diff_with_added_items.txt",
+        "diff_with_added_items",
     );
 }
 
@@ -104,7 +99,7 @@ fn empty_diff() {
     assert_public_api_diff(
         rustdoc_json_path_for_crate("../test-apis/comprehensive_api", &build_dir),
         rustdoc_json_path_for_crate("../test-apis/comprehensive_api", &build_dir2),
-        "./expected-output/empty_diff.txt",
+        "empty_diff",
     );
 }
 
@@ -139,7 +134,7 @@ impl Foo {
     assert_public_api_diff(
         v1.json_path,
         v2.json_path,
-        "./expected-output/diff_move_item_between_inherent_impls.txt",
+        "diff_move_item_between_inherent_impls",
     );
 }
 
@@ -188,7 +183,7 @@ fn diff_with_removed_items() {
     assert_public_api_diff(
         rustdoc_json_path_for_crate("../test-apis/example_api-v0.2.0", &build_dir2),
         rustdoc_json_path_for_crate("../test-apis/example_api-v0.1.0", &build_dir),
-        "./expected-output/diff_with_removed_items.txt",
+        "diff_with_removed_items",
     );
 }
 
@@ -199,7 +194,7 @@ fn comprehensive_api() {
 
     assert_public_api(
         simplified_builder_for_crate("../test-apis/comprehensive_api", &build_dir),
-        "./expected-output/comprehensive_api.txt",
+        "comprehensive_api",
     );
 }
 
@@ -210,7 +205,7 @@ fn comprehensive_api_proc_macro() {
 
     assert_public_api(
         simplified_builder_for_crate("../test-apis/comprehensive_api_proc_macro", &build_dir),
-        "./expected-output/comprehensive_api_proc_macro.txt",
+        "comprehensive_api_proc_macro",
     );
 }
 
@@ -221,7 +216,7 @@ fn auto_traits() {
 
     assert_public_api(
         builder_for_crate("../test-apis/auto_traits", &build_dir).omit_blanket_impls(true),
-        "./expected-output/auto_traits.txt",
+        "auto_traits",
     );
 }
 
@@ -326,7 +321,7 @@ fn rustdoc_json_for_lib(lib: &str) -> LibWithJson {
 fn assert_public_api_diff(
     old_json: impl Into<PathBuf>,
     new_json: impl Into<PathBuf>,
-    expected: impl AsRef<Path>,
+    test_name: &str,
 ) {
     let old = public_api::Builder::from_rustdoc_json(old_json)
         .build()
@@ -336,7 +331,7 @@ fn assert_public_api_diff(
         .unwrap();
 
     let diff = public_api::diff::PublicApiDiff::between(old, new);
-    expect_file![expected.as_ref()].assert_debug_eq(&diff);
+    insta::assert_debug_snapshot!(test_name, diff);
 }
 
 // PublicApiDiff::between() is smarter than a textual diff, but in some cases we
@@ -357,8 +352,8 @@ fn assert_no_textual_public_api_diff(old_json: impl Into<PathBuf>, new_json: imp
 
 /// Asserts that the public API of the crate in the given rustdoc JSON file
 /// matches the expected output.
-fn assert_public_api(builder: public_api::Builder, expected_output: impl AsRef<Path>) {
+fn assert_public_api(builder: public_api::Builder, test_name: &str) {
     let api = builder.build().unwrap().to_string();
 
-    expect_file![expected_output.as_ref()].assert_eq(&api);
+    insta::assert_snapshot!(test_name, api);
 }

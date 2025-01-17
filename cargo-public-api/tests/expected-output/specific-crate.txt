@@ -1,2 +1,0 @@
-pub mod specific_crate
-pub struct specific_crate::SpecificCrate

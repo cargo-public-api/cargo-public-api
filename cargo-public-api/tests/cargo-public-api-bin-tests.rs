@@ -46,7 +46,7 @@ fn list_public_items() {
 
     cmd.args(["--manifest-path", "../public-api/Cargo.toml"]);
     cmd.assert()
-        .stdout_or_update("./expected-output/list_public_items.txt")
+        .stdout_with_insta("list_public_items")
         .success();
 }
 
@@ -56,7 +56,7 @@ fn list_public_items_omit_blanket_impls() {
     cmd.arg("--omit");
     cmd.arg("blanket-impls");
     cmd.assert()
-        .stdout_or_update("./expected-output/omit-blanket-impls.txt")
+        .stdout_with_insta("omit-blanket-impls")
         .success();
 }
 
@@ -66,7 +66,7 @@ fn list_public_items_omit_auto_trait_impls_impls() {
     cmd.arg("--omit");
     cmd.arg("auto-trait-impls");
     cmd.assert()
-        .stdout_or_update("./expected-output/omit-auto-trait-impls.txt")
+        .stdout_with_insta("omit-auto-trait-impls")
         .success();
 }
 
@@ -76,7 +76,7 @@ fn list_public_items_omit_auto_derived_impls() {
     cmd.arg("--omit");
     cmd.arg("auto-derived-impls");
     cmd.assert()
-        .stdout_or_update("./expected-output/omit-auto-derived-impls.txt")
+        .stdout_with_insta("omit-auto-derived-impls")
         .success();
 }
 
@@ -85,7 +85,7 @@ fn list_public_items_omit_auto_derived_impls_with_double_s() {
     let mut cmd = TestCmd::as_subcommand_without_args().with_test_repo();
     cmd.arg("-ss"); // Note the double -s
     cmd.assert()
-        .stdout_or_update("./expected-output/omit-auto-derived-impls-with-double-s.txt")
+        .stdout_with_insta("omit-auto-derived-impls-with-double-s")
         .success();
 }
 
@@ -94,7 +94,7 @@ fn list_public_items_omit_auto_derived_impls_with_triple_s() {
     let mut cmd = TestCmd::as_subcommand_without_args().with_test_repo();
     cmd.arg("-sss"); // Note the triple -s
     cmd.assert()
-        .stdout_or_update("./expected-output/omit-auto-derived-impls-with-triple-s.txt")
+        .stdout_with_insta("omit-auto-derived-impls-with-triple-s")
         .success();
 }
 
@@ -102,9 +102,7 @@ fn list_public_items_omit_auto_derived_impls_with_triple_s() {
 fn list_public_items_with_lint_error() {
     let mut cmd = TestCmd::new().with_separate_target_dir();
     cmd.args(["--manifest-path", "../test-apis/lint_error/Cargo.toml"]);
-    cmd.assert()
-        .stdout_or_update("./expected-output/lint_error_list.txt")
-        .success();
+    cmd.assert().stdout_with_insta("lint_error_list").success();
 }
 
 /// Ensure we can handle when
@@ -126,9 +124,7 @@ fn list_public_items_with_lint_error() {
 fn list_public_items_with_other_lib_name() {
     let mut cmd = TestCmd::new().with_separate_target_dir();
     cmd.args(["--manifest-path", "../test-apis/other-lib-name/Cargo.toml"]);
-    cmd.assert()
-        .stdout_or_update("./expected-output/other_lib_name.txt")
-        .success();
+    cmd.assert().stdout_with_insta("other_lib_name").success();
 }
 
 #[test]
@@ -161,7 +157,7 @@ fn renamed_binary_works_as_subcommand() {
     Command::from_std(cmd)
         .assert()
         .stderr(contains(""))
-        .stdout_or_update("../../docs/short-help.txt")
+        .stdout_with_insta("short-help")
         .success();
 }
 
@@ -179,7 +175,7 @@ fn debug_logging() {
         .stderr(
             predicates::str::contains(indication_1).and(predicates::str::contains(indication_2)),
         )
-        .stdout_or_update("./expected-output/test_repo_api_latest.txt")
+        .stdout_with_insta("test_repo_api_latest")
         .success();
 }
 
@@ -280,7 +276,7 @@ fn list_public_items_explicit_manifest_path() {
     cmd.arg("--manifest-path");
     cmd.arg(&test_repo_manifest);
     cmd.assert()
-        .stdout_or_update("./expected-output/example_api-v0.3.0.txt")
+        .stdout_with_insta("example_api-v0.3.0")
         .success();
 }
 
@@ -292,9 +288,7 @@ fn list_public_items_via_package_spec() {
     cmd.current_dir("../test-apis/virtual-manifest");
     cmd.arg("--package");
     cmd.arg("specific-crate");
-    cmd.assert()
-        .stdout_or_update("./expected-output/specific-crate.txt")
-        .success();
+    cmd.assert().stdout_with_insta("specific-crate").success();
 }
 
 #[test]
@@ -319,7 +313,7 @@ fn target_arg() {
     cmd.arg("--target");
     cmd.arg(get_host_target_triple());
     cmd.assert()
-        .stdout_or_update("./expected-output/test_repo_api_latest.txt")
+        .stdout_with_insta("test_repo_api_latest")
         .success();
 }
 
@@ -344,7 +338,7 @@ fn subcommand_invocation() {
         .without_cargo_colors()
         .with_test_repo();
     cmd.assert()
-        .stdout_or_update("./expected-output/test_repo_api_latest_not_simplified.txt")
+        .stdout_with_insta("test_repo_api_latest_not_simplified")
         // Sanity check that rustdoc JSON build progress is shown to users, i.e.
         // that we do not swallow stderr from the cargo rustdoc JSON building
         // subprocess
@@ -361,7 +355,7 @@ fn subcommand_invocation_external_manifest() {
         "../test-apis/example_api-v0.3.0/Cargo.toml",
     ]);
     cmd.assert()
-        .stdout_or_update("./expected-output/example_api-v0.3.0.txt")
+        .stdout_with_insta("example_api-v0.3.0")
         .success();
 }
 
@@ -378,7 +372,7 @@ fn subcommand_invocation_public_api_arg() {
     cmd.current_dir(".."); // Enter git repo root so -p starts working
     cmd.args(["-p", "public-api"]);
     cmd.assert()
-        .stdout_or_update("./expected-output/subcommand_invocation_public_api_arg.txt")
+        .stdout_with_insta("subcommand_invocation_public_api_arg")
         .success();
 }
 
@@ -405,7 +399,7 @@ fn minimal_toolchain_works() {
     ]);
 
     cmd.assert()
-        .stdout_or_update("./expected-output/comprehensive_api.txt")
+        .stdout_with_insta("comprehensive_api")
         .success();
 }
 
@@ -425,7 +419,7 @@ fn warn_when_using_beta() {
         .stderr(contains(
             "` toolchain for gathering the public api is not possible",
         ))
-        .stdout_or_update("./expected-output/comprehensive_api.txt")
+        .stdout_with_insta("comprehensive_api")
         .success();
 }
 
@@ -437,7 +431,7 @@ fn diff_public_items() {
     cmd.arg("diff");
     cmd.arg("v0.2.0..v0.3.0");
     cmd.assert()
-        .stdout_or_update("./expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt")
+        .stdout_with_insta("example_api_diff_v0.2.0_to_v0.3.0")
         .success();
     let branch_after = git_utils::current_branch(&test_repo_path).unwrap().unwrap();
 
@@ -452,7 +446,7 @@ fn diff_public_items_with_subcommand() {
     cmd.arg("diff");
     cmd.arg("v0.2.0..v0.3.0");
     cmd.assert()
-        .stdout_or_update("./expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt")
+        .stdout_with_insta("example_api_diff_v0.2.0_to_v0.3.0")
         .success();
 }
 
@@ -591,7 +585,7 @@ fn diff_public_items_detached_head() {
     cmd.arg("diff");
     cmd.arg("v0.2.0..v0.3.0");
     cmd.assert()
-        .stdout_or_update("./expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt")
+        .stdout_with_insta("example_api_diff_v0.2.0_to_v0.3.0")
         .success();
 
     let after = git_utils::current_commit(path).unwrap();
@@ -627,7 +621,7 @@ fn diff_public_items_with_dirty_tree_succeeds_with_force_option() {
     cmd.arg("v0.2.0..v0.3.0");
     cmd.arg("--force");
     cmd.assert()
-        .stdout_or_update("./expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt")
+        .stdout_with_insta("example_api_diff_v0.2.0_to_v0.3.0")
         .success();
 }
 
@@ -648,7 +642,7 @@ fn diff_public_items_relative_refs() {
     cmd.arg("diff");
     cmd.arg("HEAD^..HEAD");
     cmd.assert()
-        .stdout_or_update("./expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt")
+        .stdout_with_insta("example_api_diff_v0.2.0_to_v0.3.0")
         .success();
 
     let after = git_utils::current_commit(path).unwrap();
@@ -729,7 +723,7 @@ fn deny_added_with_diff() {
     cmd.arg("v0.1.0..v0.2.0");
     cmd.arg("--deny=added");
     cmd.assert()
-        .stdout_or_update("./expected-output/example_api_diff_v0.1.0_to_v0.2.0.txt")
+        .stdout_with_insta("example_api_diff_v0.1.0_to_v0.2.0")
         .failure();
 }
 
@@ -776,7 +770,7 @@ fn diff_public_items_with_manifest_path() {
     cmd.arg("diff");
     cmd.arg("v0.2.0..v0.3.0");
     cmd.assert()
-        .stdout_or_update("./expected-output/example_api_diff_v0.2.0_to_v0.3.0.txt")
+        .stdout_with_insta("example_api_diff_v0.2.0_to_v0.3.0")
         .success();
 }
 
@@ -797,7 +791,7 @@ fn diff_public_items_with_color() {
     cmd.arg("diff");
     cmd.arg("v0.1.0..v0.2.0");
     cmd.assert()
-        .stdout_or_update("./expected-output/example_api_diff_v0.1.0_to_v0.2.0_colored.txt")
+        .stdout_with_insta("example_api_diff_v0.1.0_to_v0.2.0_colored")
         .success();
 }
 
@@ -808,7 +802,7 @@ fn diff_public_items_with_color_arg_after_diff_subcommand() {
     cmd.arg("v0.1.0..v0.2.0");
     cmd.arg("--color=always");
     cmd.assert()
-        .stdout_or_update("./expected-output/example_api_diff_v0.1.0_to_v0.2.0_colored.txt")
+        .stdout_with_insta("example_api_diff_v0.1.0_to_v0.2.0_colored")
         .success();
 }
 
@@ -826,7 +820,7 @@ fn list_public_items_with_color_impl(color_arg: &str) {
     let mut cmd = TestCmd::new().with_test_repo();
     cmd.arg(color_arg);
     cmd.assert()
-        .stdout_or_update("./expected-output/example_api_v0.3.0_colored.txt")
+        .stdout_with_insta("example_api_v0.3.0_colored")
         .success();
 }
 
@@ -843,7 +837,7 @@ fn diff_public_items_from_files_with_subcommand() {
     cmd.arg(old);
     cmd.arg(new);
     cmd.assert()
-        .stdout_or_update("./expected-output/example_api_diff_v0.1.0_to_v0.2.0.txt")
+        .stdout_with_insta("example_api_diff_v0.1.0_to_v0.2.0")
         .success();
 }
 
@@ -860,7 +854,7 @@ fn document_private_items() {
     cmd.arg("--rustdoc-json");
     cmd.arg(json);
     cmd.assert()
-        .stdout_or_update("./expected-output/example_api-v0.3.0_document-private-items.txt")
+        .stdout_with_insta("example_api-v0.3.0_document-private-items")
         .success();
 }
 
@@ -884,9 +878,7 @@ fn diff_against_published_version() {
     let mut cmd = TestCmd::new().with_test_repo();
     cmd.arg("diff");
     cmd.arg("0.1.0");
-    cmd.assert()
-        .stdout_or_update("./expected-output/diff_published.txt")
-        .success();
+    cmd.assert().stdout_with_insta("diff_published").success();
 }
 
 #[test]
@@ -897,7 +889,7 @@ fn diff_against_published_version_with_lib_name_different_from_package_name() {
     cmd.arg("diff");
     cmd.arg("0.1.0");
     cmd.assert()
-        .stdout_or_update("./expected-output/other-lib-name-diff.txt")
+        .stdout_with_insta("other-lib-name-diff")
         .success();
 }
 
@@ -912,7 +904,7 @@ fn diff_between_two_published_versions() {
     cmd.arg("0.1.0");
     cmd.arg("0.2.0");
     cmd.assert()
-        .stdout_or_update("./expected-output/example_api_diff_v0.1.0_to_v0.2.0.txt")
+        .stdout_with_insta("example_api_diff_v0.1.0_to_v0.2.0")
         .success();
 }
 
@@ -945,7 +937,7 @@ fn diff_against_latest_published_version_impl(arg: Option<&str>, expected_stderr
         cmd.arg(arg);
     }
     cmd.assert()
-        .stdout_or_update("./expected-output/diff-latest.txt")
+        .stdout_with_insta("diff-latest")
         .stderr(contains(expected_stderr))
         .success();
 }
@@ -957,9 +949,7 @@ fn diff_published_explicit_package() {
     cmd.arg("example_api");
     cmd.arg("diff");
     cmd.arg("0.1.0");
-    cmd.assert()
-        .stdout_or_update("./expected-output/diff_published.txt")
-        .success();
+    cmd.assert().stdout_with_insta("diff_published").success();
 }
 
 #[test]
@@ -969,9 +959,7 @@ fn diff_published_explicit_package_after_diff_subcommand() {
     cmd.arg("0.1.0");
     cmd.arg("-p");
     cmd.arg("example_api");
-    cmd.assert()
-        .stdout_or_update("./expected-output/diff_published.txt")
-        .success();
+    cmd.assert().stdout_with_insta("diff_published").success();
 }
 
 #[test]
@@ -983,7 +971,7 @@ fn diff_published_with_all_features() {
     cmd.arg("diff");
     cmd.arg("0.2.1");
     cmd.assert()
-        .stdout_or_update("./expected-output/diff_published_with_features.txt")
+        .stdout_with_insta("diff_published_with_features")
         .success();
 }
 
@@ -992,9 +980,7 @@ fn diff_with_features_separated_by_comma() {
     let mut cmd = TestCmd::new().with_test_repo_variant(TestRepoVariant::Features);
     cmd.args(["--features", "feature_a,feature_b"]);
     cmd.args(["diff", "HEAD..HEAD"]);
-    cmd.assert()
-        .stdout_or_update("./expected-output/no_diff.txt")
-        .success();
+    cmd.assert().stdout_with_insta("no_diff").success();
 }
 
 #[test]
@@ -1002,9 +988,7 @@ fn diff_with_features_separated_by_space_in_single_arg() {
     let mut cmd = TestCmd::new().with_test_repo_variant(TestRepoVariant::Features);
     cmd.args(["--features", "feature_a feature_b"]);
     cmd.args(["diff", "HEAD..HEAD"]);
-    cmd.assert()
-        .stdout_or_update("./expected-output/no_diff.txt")
-        .success();
+    cmd.assert().stdout_with_insta("no_diff").success();
 }
 
 /// Expected to fail with an error looking something like "error: none of the
@@ -1043,7 +1027,7 @@ fn list_public_items_from_json_file() {
     cmd.arg("--rustdoc-json");
     cmd.arg(json_file);
     cmd.assert()
-        .stdout_or_update("./expected-output/example_api-v0.3.0.txt")
+        .stdout_with_insta("example_api-v0.3.0")
         .success();
 }
 
@@ -1063,9 +1047,7 @@ fn verbose() {
 fn short_help() {
     let mut cmd = TestCmd::new().with_separate_target_dir();
     cmd.arg("-h");
-    cmd.assert()
-        .stdout_or_update("../../docs/short-help.txt")
-        .success();
+    cmd.assert().stdout_with_insta("short-help").success();
 }
 
 #[test]
@@ -1073,9 +1055,7 @@ fn short_diff_help() {
     let mut cmd = TestCmd::new().with_separate_target_dir();
     cmd.arg("diff");
     cmd.arg("-h");
-    cmd.assert()
-        .stdout_or_update("../../docs/short-diff-help.txt")
-        .success();
+    cmd.assert().stdout_with_insta("short-diff-help").success();
 }
 
 #[test]
@@ -1084,7 +1064,7 @@ fn short_completions_help() {
     cmd.arg("completions");
     cmd.arg("-h");
     cmd.assert()
-        .stdout_or_update("../../docs/short-completions-help.txt")
+        .stdout_with_insta("short-completions-help")
         .success();
 }
 
@@ -1092,9 +1072,7 @@ fn short_completions_help() {
 fn long_help() {
     let mut cmd = TestCmd::new();
     cmd.arg("--help");
-    cmd.assert()
-        .stdout_or_update("../../docs/long-help.txt")
-        .success();
+    cmd.assert().stdout_with_insta("long-help").success();
 }
 
 #[test]
@@ -1103,7 +1081,7 @@ fn long_completions_help() {
     cmd.arg("completions");
     cmd.arg("--help");
     cmd.assert()
-        .stdout_or_update("../../docs/long-completions-help.txt")
+        .stdout_with_insta("long-completions-help")
         .success();
 }
 
@@ -1112,9 +1090,7 @@ fn long_diff_help() {
     let mut cmd = TestCmd::new();
     cmd.arg("diff");
     cmd.arg("--help");
-    cmd.assert()
-        .stdout_or_update("../../docs/long-diff-help.txt")
-        .success();
+    cmd.assert().stdout_with_insta("long-diff-help").success();
 }
 
 #[test]
@@ -1274,7 +1250,7 @@ fn test_features(features: &F) {
     }
 
     cmd.assert()
-        .stdout_or_update(format!("./expected-output/features-feat{features}.txt"))
+        .stdout_with_insta(&format!("features-feat{features}.txt"))
         .success();
 }
 
@@ -1547,13 +1523,13 @@ impl Drop for RmOnDrop {
 }
 
 pub trait AssertOrUpdate {
-    fn stdout_or_update(self, expected_file: impl AsRef<Path>) -> Assert;
+    fn stdout_with_insta(self, test_name: &str) -> Assert;
 }
 
 impl AssertOrUpdate for Assert {
-    fn stdout_or_update(self, expected_file: impl AsRef<Path>) -> Assert {
+    fn stdout_with_insta(self, test_name: &str) -> Assert {
         let stdout = String::from_utf8_lossy(&self.get_output().stdout);
-        expect_test::expect_file![expected_file.as_ref()].assert_eq(&stdout);
+        insta::assert_snapshot!(test_name, stdout);
         self
     }
 }

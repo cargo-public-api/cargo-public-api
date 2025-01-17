@@ -86,6 +86,7 @@ jobs:
         if: runner.os != 'Windows'
       - run: rustup install nightly --profile minimal
       - uses: Swatinem/rust-cache@v2
+      - run: cargo version --verbose # Make it easier to debug version-specific issues
       - run: scripts/cargo-test.sh
       - run: scripts/cargo-test-without-rustup.sh
         if: runner.os == 'Linux' # Fails on macOS (strangely) and Windows (expected)

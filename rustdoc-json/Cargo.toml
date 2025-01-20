@@ -24,7 +24,7 @@ features = ["attributes"]
 [dev-dependencies]
 assert_cmd = "2.0.16"
 insta = "1.42.0"
-tempfile = "3.10.1"
+tempfile = "3.14.0"
 
 [dev-dependencies.predicates]
 version = "3.1.3"

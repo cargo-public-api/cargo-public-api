@@ -3,7 +3,7 @@ use jiff::{civil::Date, ToSpan};
 use crate::version_info::CargoPublicApiVersionInfo;
 
 pub fn render(version_infos: &[CargoPublicApiVersionInfo]) -> String {
-    /// Same as ['CargoPublicApiVersionInfo'] but easier to maniuplate
+    /// Same as ['CargoPublicApiVersionInfo'] but easier to manipulate
     /// programatically.
     struct InternalCargoPublicApiVersionInfo {
         cargo_public_api_minor_version: u32,

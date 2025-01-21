@@ -46,7 +46,7 @@ pub enum BuildError {
     #[error("Failed to build rustdoc JSON (see stderr)")]
     BuildRustdocJsonError,
 
-    /// Occcurs when stdout or stderr could not be captured when using
+    /// Occurs when stdout or stderr could not be captured when using
     /// [`Builder::build_with_captured_output()`]).
     #[error("Failed to capture output: {0}")]
     CapturedOutputError(String),

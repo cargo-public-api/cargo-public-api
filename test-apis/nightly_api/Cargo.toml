@@ -1,5 +1,5 @@
 [package]
-description = "For rustdoc JSON formating changes experiements."
+description = "For rustdoc JSON formatting changes experiments."
 name = "nightly_api"
 version = "0.1.0"
 edition = "2021"

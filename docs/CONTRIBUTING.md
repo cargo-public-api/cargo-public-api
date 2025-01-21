@@ -96,7 +96,7 @@ RUSTDOC_JSON_OVERRIDDEN_TOOLCHAIN_HACK=custom ./scripts/run-ci-locally.sh
 
 ## How to adapt to rustdoc JSON format changes
 
-It is usually straigtforward.
+It is usually straightforward.
 
 1. Bump `[dependencies.rustdoc-types] version` in `./public-api/Cargo.toml`
 1. Update `scripts/release-helper/src/version_info.rs`

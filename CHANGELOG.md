@@ -78,7 +78,7 @@
 
 ## v0.29.0
 * Interpret `cargo public-api diff` as `cargo public-api diff latest`
-* Remove the `public-api` bincargo-public-api/pull/386
+* Remove the `public-api` bin
 
 ## v0.28.0
 * Enable `,` as `--omit` value delimiter
@@ -108,12 +108,12 @@
 * README: Fix typo in compatibility matrix
 
 ## v0.26.0
-* If `--simplifed` is passed twice, omit auto derived `impl`shttps://github.com/Enselic/cargo-public-api/pull/262
+* If `--simplified` is passed twice, omit auto derived `impl`s
 * Support `cargo public-api diff latest` to diff against the latest published version
-* Fix rendering of bounds for Generic Associated Typescargo-public-api/pull/265
+* Fix rendering of bounds for Generic Associated Types
 * Remove deprecated `--diff` CLI
 * Remove `diff crate-name@0.1.0` support, use `-p crate-name diff 0.1.0` instead
-* Put auto derived `impl`scom/Enselic/cargo-public-api/pull/261
+* Put auto derived `impl`s
 * Bump minimum nightly version to `nightly-2023-01-04`
 
 ## v0.25.0

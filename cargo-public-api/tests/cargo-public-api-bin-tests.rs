@@ -1599,18 +1599,23 @@ fn get_toolchain_one_day_before_minimal_toolchain() -> String {
 
 /// Convert e.g. `nightly-2023-01-23` to `nightly-2023-01-22`, i.e. minus a day.
 fn nightly_version_minus_one_day(nightly_version: impl AsRef<str>) -> String {
+    nightly_version_from_date(
+        date_from_nightly_version(nightly_version)
+            .checked_sub_days(Days::new(1))
+            .unwrap(),
+    )
+}
+
+fn date_from_nightly_version(nightly_version: impl AsRef<str>) -> NaiveDate {
     let date = nightly_version
         .as_ref()
         .strip_prefix("nightly-")
-        .expect("nightly version should start with 'nightly-'");
-    let date = NaiveDate::parse_from_str(date, "%Y-%m-%d")
-        .expect("nightly version should be in 'YYYY-MM-DD' format");
-    format!(
-        "nightly-{}",
-        date.checked_sub_days(Days::new(1))
-            .unwrap()
-            .format("%Y-%m-%d")
-    )
+        .expect("nightly version starts with 'nightly-'");
+    NaiveDate::parse_from_str(date, "%Y-%m-%d").expect("nightly version is in 'YYYY-MM-DD' format")
+}
+
+fn nightly_version_from_date(date: NaiveDate) -> String {
+    format!("nightly-{}", date.format("%Y-%m-%d"))
 }
 
 #[cfg(test)]

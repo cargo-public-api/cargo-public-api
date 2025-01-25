@@ -516,7 +516,7 @@ impl<'c> RenderingContext<'c> {
             output.extend(self.render_path(item.path()));
         } else if let Some(item) = self.crate_.paths.get(&path.id) {
             output.extend(self.render_path_components(item.path.iter()));
-        } else if !path.name.is_empty() {
+        } else if !path.path.is_empty() {
             // If we get here it means there was no item for this Path in the
             // rustdoc JSON. Examples of when this happens:
             //
@@ -527,7 +527,7 @@ impl<'c> RenderingContext<'c> {
             // is equal to how it appears in the source text. It might not be
             // ideal and end up identical to the corresponding rustdoc HTML, but
             // it is good enough given the edge-case nature of this code path.
-            output.extend(self.render_path_name(&path.name));
+            output.extend(self.render_path_name(&path.path));
         }
         if let Some(args) = &path.args {
             output.extend(self.render_generic_args(args));
@@ -685,7 +685,7 @@ impl<'c> RenderingContext<'c> {
     fn render_qualified_path(&self, type_: &Type, trait_: Option<&Path>, name: &str) -> Vec<Token> {
         let mut output = vec![];
         match (type_, trait_) {
-            (Type::Generic(name), Some(trait_)) if name == "Self" && trait_.name.is_empty() => {
+            (Type::Generic(name), Some(trait_)) if name == "Self" && trait_.path.is_empty() => {
                 output.push(Token::keyword("Self"));
             }
             (_, trait_) => {

@@ -1,4 +1,6 @@
 # rustup-toolchain
+## v0.1.9
+* Bump deps. Most notably `thiserror` from `1.0.65` to `2.0.3`.
 
 ## v0.1.8
 * Add trademark notice to README.

@@ -1,5 +1,8 @@
 # `cargo-public-api` changelog
 
+## v0.43.0
+* Support `nightly-2025-01-25` and later.
+
 ## v0.42.0
 * Render `_` argument names in function declarations
 

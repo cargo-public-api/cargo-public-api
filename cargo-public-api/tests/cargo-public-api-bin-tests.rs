@@ -381,7 +381,13 @@ fn subcommand_invocation_public_api_arg() {
 /// use a different toolchain if needed
 fn get_minimum_toolchain() -> String {
     std::fs::read_to_string("../cargo-public-api/MINIMUM_NIGHTLY_RUST_VERSION_FOR_TESTS")
-        .map(|s| s.trim().to_owned())
+        .map(|s| {
+            let min_for_tests = s.trim();
+            if date_from_nightly_version(min_for_tests) < date_from_nightly_version(MINIMUM_NIGHTLY_RUST_VERSION) {
+                core::panic!("You forgot to run\n\n    rm cargo-public-api/MINIMUM_NIGHTLY_RUST_VERSION_FOR_TESTS\n\nso please do it now.");
+            }
+            min_for_tests.to_owned()
+        })
         .ok()
         .unwrap_or_else(|| MINIMUM_NIGHTLY_RUST_VERSION.to_owned())
 }

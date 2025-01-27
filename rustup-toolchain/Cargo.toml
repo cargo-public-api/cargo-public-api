@@ -14,7 +14,7 @@ repository = "https://github.com/cargo-public-api/cargo-public-api/tree/main/rus
 thiserror = "2.0.3"
 
 [dev-dependencies]
-insta = "1.42.0"
+insta = "1.42.1"
 
 [dev-dependencies.rustdoc-json]
 path = "../rustdoc-json"

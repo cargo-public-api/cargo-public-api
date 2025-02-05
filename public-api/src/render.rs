@@ -465,7 +465,8 @@ impl<'c> RenderingContext<'c> {
             |(name, ty)| {
                 self.simplified_self(name, ty).unwrap_or_else(|| {
                     let mut output = vec![];
-                    if name != "_" || include_underscores {
+                    let ignore_name = name.is_empty() || (name == "_" && !include_underscores);
+                    if !ignore_name {
                         output.extend(vec![Token::identifier(name), Token::symbol(":"), ws!()]);
                     }
                     output.extend(self.render_type(ty));

@@ -1,5 +1,8 @@
 # `cargo-public-api` changelog
 
+## v0.44.0
+* Do not render function arg names `""` (`nightly-2025-02-05` and later)
+
 ## v0.43.0
 * Support `nightly-2025-01-25` and later.
 

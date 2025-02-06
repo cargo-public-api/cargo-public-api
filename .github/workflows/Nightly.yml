@@ -23,6 +23,24 @@ jobs:
   ci:
     uses: ./.github/workflows/CI.yml
 
+  # Create an issue if Nightly CI fails unless there already is such an issue.
+  create-issue-on-failure:
+    needs: ci
+    runs-on: ubuntu-latest
+    if: ${{ needs.ci.result == 'failure' }}
+    permissions:
+      issues: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - run: |
+          gh issue list \
+            --repo cargo-public-api/cargo-public-api | grep "CI failed with " || \
+          gh issue create \
+            --repo cargo-public-api/cargo-public-api \
+            --title "CI failed with \`$(date +nightly-%Y-%m-%d)\`" \
+            --body "Nightly CI failure that requries investigation: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
   # If Rust nightly changes output, auto-create a PR with the new blessed
   # output, which maintainers can conveniently merge after manual review. Note
   # that we must also bump MINIMUM_NIGHTLY_RUST_VERSION_FOR_TESTS to this

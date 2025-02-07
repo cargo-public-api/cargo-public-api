@@ -12,7 +12,7 @@ cargo clippy \
     -- \
     --deny clippy::all \
     --deny warnings \
-    --deny unsafe_code
+    --forbid unsafe_code
 
 # Only --deny missing_docs for our libs because it does not matter for bins
 cargo clippy \

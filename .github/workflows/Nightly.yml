@@ -9,13 +9,6 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  # The purpose of this job is to detect problems like
-  # https://github.com/cargo-public-api/cargo-public-api/issues/61 ourselves
-  cargo-install:
-    runs-on: ubuntu-latest
-    steps:
-      - run: cargo install cargo-public-api
-
   # The purpose of running every night is to detect when a change to
   # https://github.com/rust-lang/rust/tree/master/src/rustdoc-json-types
   # requires that we release a new version of public-api to be compatible with

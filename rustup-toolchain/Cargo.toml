@@ -17,9 +17,7 @@ thiserror = "2.0.3"
 insta = "1.42.1"
 
 [dev-dependencies.rustdoc-json]
-path = "../rustdoc-json"
 version = "0.9.4"
 
 [dev-dependencies.public-api]
-path = "../public-api"
 version = "0.44.0"

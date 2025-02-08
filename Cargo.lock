@@ -1042,14 +1042,9 @@ checksum = "c7fb8039b3032c191086b10f11f319a6e99e1e82889c5cc6046f515c9db1d497"
 name = "rustdoc-json"
 version = "0.9.4"
 dependencies = [
- "assert_cmd",
  "cargo-manifest",
  "cargo_metadata",
- "insta",
- "predicates",
- "public-api",
  "serde",
- "tempfile",
  "thiserror 2.0.3",
  "toml",
  "tracing",
@@ -1081,9 +1076,6 @@ dependencies = [
 name = "rustup-toolchain"
 version = "0.1.9"
 dependencies = [
- "insta",
- "public-api",
- "rustdoc-json",
  "thiserror 2.0.3",
 ]
 

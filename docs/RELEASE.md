@@ -27,7 +27,7 @@ For `public-api` and `cargo-public-api` we bump
 
 ### `cargo-public-api`
 
-1. First release `rustup-toolchain`, `rustdoc-json` and `public-api` if needed, in that order. See below. **Note:** Because of circular dependencies you must release one helper package at a time from `main`. You can't update all packages in a single commit.
+1. First release `rustup-toolchain`, `rustdoc-json` and `public-api` if needed, in that order. See below.
 1. Create a local branch.
 1. Run
    ```
@@ -41,7 +41,10 @@ For `public-api` and `cargo-public-api` we bump
    ```
    If **0.x.0** or `public_api::MINIMUM_NIGHTLY_RUST_VERSION` was bumped:
       * Add a new version info entry at [version_info.rs](https://github.com/cargo-public-api/cargo-public-api/blob/main/scripts/release-helper/lib/version_info.rs)
-      * Run `cargo run --bin update-version-info`
+      * Run
+        ```
+        cargo run --bin update-version-info
+        ````
 1. Push branch
 
 #### MAINTAINER:
@@ -64,7 +67,10 @@ For `public-api` and `cargo-public-api` we bump
    ```
    If **0.x.0** or `public_api::MINIMUM_NIGHTLY_RUST_VERSION` was bumped:
       * Update [version_info.rs](https://github.com/cargo-public-api/cargo-public-api/blob/main/scripts/release-helper/lib/version_info.rs)
-      * Run `cargo run --bin update-version-info`
+      * Run
+        ```
+        cargo run --bin update-version-info
+        ````
 1. Push branch
 
 #### MAINTAINER:
@@ -83,7 +89,7 @@ For `public-api` and `cargo-public-api` we bump
 1. Update `rustdoc-json/CHANGELOG.md`
 1. Bump version with
    ```
-   cargo set-version -p rustdoc-json x.y.z
+   ( cd rustdoc-json ; cargo set-version -p rustdoc-json x.y.z )
    ```
 1. Push branch
 
@@ -103,7 +109,7 @@ For `public-api` and `cargo-public-api` we bump
 1. Update `rustup-toolchain/CHANGELOG.md`
 1. Bump version with
    ```
-   cargo set-version -p rustup-toolchain x.y.z
+   ( version=0.x.y ; cargo set-version -p rustup-toolchain $version && cd rustup-toolchain && cargo set-version -p rustup-toolchain $version )
    ```
 1. Push branch
 

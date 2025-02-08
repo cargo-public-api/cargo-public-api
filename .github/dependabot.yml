@@ -4,7 +4,10 @@
 version: 2
 updates:
   - package-ecosystem: "cargo"
-    directory: "/"
+    directories:
+      - "/"
+      - "/rustdoc-json"
+      - "/rustup-toolchain"
     schedule:
       interval: "weekly"
     labels:

@@ -1,20 +1,15 @@
 [workspace]
 resolver = "2"
 members = [
-    # Helper crate to build rustdoc JSON
-    "rustdoc-json",
-
-    # Helper crate for managing rustup toolchains
-    "rustup-toolchain",
-
     # Takes rustdoc JSON as input and outputs the corresponding public API
     "public-api",
 
     # High-level CLI for "rustdoc-json" and "public-api"
     "cargo-public-api",
 
-    # Contains various repo-wide tests and utilities
-    "repo-tests", "scripts/release-helper",
+    # Various repo-wide tests and utilities
+    "repo-tests",
+    "scripts/release-helper",
 ]
 
 # Test APIs can't be part of the workspace because
@@ -30,6 +25,12 @@ members = [
 #    parallel
 #
 exclude = [
+    # Helper crate to build rustdoc JSON.
+    "rustdoc-json",
+
+    # Helper crate for managing rustup toolchains
+    "rustup-toolchain",
+
     # Contains a public API that aim so to contain all public API item and
     # variants (with and without generics etc etc)
     "test-apis/comprehensive_api",

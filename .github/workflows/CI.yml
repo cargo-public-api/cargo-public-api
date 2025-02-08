@@ -13,88 +13,72 @@ env:
 
 jobs:
   all-jobs:
-    if: always() # Otherwise this job is skipped if the matrix job fails
+    if: always() # Otherwise this job is skipped if any matrix job fails
     name: all-jobs
     runs-on: ubuntu-latest
     needs:
-      - cargo-fmt
-      - cargo-doc
-      - cargo-clippy
-      - cargo-audit
-      - cargo-deny
-      - cargo-test
-      - shfmt
+      - lint
+      - test
+      - check-version-info
     steps:
       - run: jq --exit-status 'all(.result == "success")' <<< '${{ toJson(needs) }}'
 
-  cargo-fmt:
-    name: cargo fmt -- --check
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - run: cargo fmt -- --check
-      - run: cargo run --bin update-version-info
-      - run: |
-          [ -z "$(git diff)" ] || { echo "ERROR: You forgot to 'cargo run --bin update-version-info'" ; exit 1 ; }
-
-  cargo-doc:
-    name: RUSTDOCFLAGS='--deny warnings' cargo doc
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: Swatinem/rust-cache@v2
-      - run: RUSTDOCFLAGS='--deny warnings' cargo doc --locked --no-deps --document-private-items
-
-  cargo-clippy:
-    name: cargo clippy -- --deny clippy::all ...
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: Swatinem/rust-cache@v2
-      - run: scripts/cargo-clippy.sh
-
-  cargo-audit:
-    name: cargo audit
-    runs-on: ubuntu-22.04 # ubuntu-24.04 does not have `cargo-audit` pre-installed
-    steps:
-      - uses: actions/checkout@v4
-      - run: scripts/cargo-audit.sh
-
-  cargo-deny:
-    name: cargo deny
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: EmbarkStudios/cargo-deny-action@v1
-
-  cargo-test:
+  lint:
     strategy:
       fail-fast: false
       matrix:
         variant:
-          - { name: Ubuntu,  os: ubuntu-latest,  protocol: git    }
-          - { name: Ubuntu,  os: ubuntu-latest,  protocol: sparse }
-          - { name: macOS,   os: macos-latest,   protocol: sparse }
-          - { name: Windows, os: windows-latest, protocol: sparse }
-    name: cargo test (${{ matrix.variant.name }} ${{ matrix.variant.protocol }})
+          - { workspace: cargo-public-api, name: Ubuntu, os: ubuntu-latest }
+          - { workspace: rustdoc-json,     name: Ubuntu, os: ubuntu-latest }
+          - { workspace: rustup-toolchain, name: Ubuntu, os: ubuntu-latest }
+
+    name: lint ${{ matrix.variant.workspace }} (${{ matrix.variant.name }} ${{ matrix.variant.protocol }})
+    runs-on: ${{ matrix.variant.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: rustup install nightly --profile minimal
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-deny,cargo-audit,shfmt
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo version --verbose # Make it easier to debug version-specific issues
+      - run: ./scripts/lint-workspace.sh ${{ matrix.variant.workspace }}
+
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        variant:
+          - { workspace: cargo-public-api, name: Ubuntu,  os: ubuntu-latest,  protocol: git    }
+          - { workspace: cargo-public-api, name: Ubuntu,  os: ubuntu-latest,  protocol: sparse }
+          - { workspace: cargo-public-api, name: macOS,   os: macos-latest,   protocol: sparse }
+          - { workspace: cargo-public-api, name: Windows, os: windows-latest, protocol: sparse }
+          - { workspace: rustdoc-json,     name: Ubuntu,  os: ubuntu-latest,  protocol: sparse }
+          - { workspace: rustdoc-json,     name: macOS,   os: macos-latest,   protocol: sparse }
+          - { workspace: rustdoc-json,     name: Windows, os: windows-latest, protocol: sparse }
+          - { workspace: rustup-toolchain, name: Ubuntu,  os: ubuntu-latest,  protocol: sparse }
+          - { workspace: rustup-toolchain, name: macOS,   os: macos-latest,   protocol: sparse }
+          - { workspace: rustup-toolchain, name: Windows, os: windows-latest, protocol: sparse }
+
+    name: test ${{ matrix.variant.workspace }} (${{ matrix.variant.name }} ${{ matrix.variant.protocol }})
     runs-on: ${{ matrix.variant.os }}
     env:
       CARGO_REGISTRIES_CRATES_IO_PROTOCOL: ${{ matrix.variant.protocol }}
     steps:
       - uses: actions/checkout@v4
-      - run: zsh --version || (sudo apt-get install -y zsh && zsh --version)
-        if: runner.os != 'Windows'
       - run: rustup install nightly --profile minimal
+      - run: zsh --version || (sudo apt-get install -y zsh && zsh --version)
+        if: runner.os != 'Windows' && matrix.variant.workspace == 'cargo-public-api'
       - uses: Swatinem/rust-cache@v2
-      - run: cargo version --verbose # Make it easier to debug version-specific issues
-      - run: scripts/cargo-test.sh
-      - run: scripts/cargo-test-without-rustup.sh
-        if: runner.os == 'Linux' # Fails on macOS (strangely) and Windows (expected)
+      - run: ./scripts/test-workspace.sh ${{ matrix.variant.workspace }}
+      - run: ./scripts/cargo-test-without-rustup.sh
+        if: matrix.variant.workspace == 'cargo-public-api' && runner.os == 'Linux' # Fails on macOS (strangely) and Windows (expected)
 
-  shfmt:
-    name: shfmt --diff
+  check-version-info:
+    name: check version info
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: sudo apt install shfmt
-      - run: scripts/shfmt.sh --diff # Fix failures locally with: scripts/shfmt.sh --write
+      - run: cargo run --bin update-version-info
+      - run: |
+          [ -z "$(git diff)" ] || { echo "ERROR: You forgot to 'cargo run --bin update-version-info'" ; exit 1 ; }

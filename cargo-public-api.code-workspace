@@ -4,6 +4,12 @@
 			"path": "."
 		},
 		{
+			"path": "rustdoc-json"
+		},
+		{
+			"path": "rustup-toolchain"
+		}
+		{
 			"path": "test-apis/comprehensive_api"
 		}
 	],

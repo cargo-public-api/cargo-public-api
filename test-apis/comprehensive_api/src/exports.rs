@@ -20,10 +20,12 @@ pub mod recursion_2 {
 }
 
 pub mod recursion_glob_1 {
+    #[allow(unused_imports)]
     pub use super::recursion_glob_2::*;
 }
 
 pub mod recursion_glob_2 {
+    #[allow(unused_imports)]
     pub use super::recursion_glob_1::*;
 }
 

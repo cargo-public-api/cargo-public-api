@@ -14,6 +14,8 @@ git clone https://github.com/cargo-public-api/cargo-public-api.git ; cd cargo-pu
 
 Note that you can run `./scripts/run-ci-locally.sh` from from within your IDE. Then you can simply click on errors to navigate to the proper file, line number, and column. See `.vscode/tasks.json` for an example configuration.
 
+Also note that for convenience there is a VS Code workspace you can use for out-of-the box code navigation etc, namely `cargo-public-api.code-workspace`.
+
 ## Blessing new expected output
 
 To make your changes become the expected output, run

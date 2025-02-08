@@ -37,7 +37,17 @@ fn newline_at_end_of_all_files() {
     // Setup the list of file extensions to check. Produced by:
     //
     //   git ls-files | grep -v -e \.rs -e \.toml -e \.md -e \.sh -e \.txt -e \.yml -e \.json
-    let checked_extensions = ["json", "md", "rs", "sh", "toml", "txt", "yml"].map(OsStr::new);
+    let checked_extensions = [
+        "code-workspace",
+        "json",
+        "md",
+        "rs",
+        "sh",
+        "toml",
+        "txt",
+        "yml",
+    ]
+    .map(OsStr::new);
 
     // Check each file
     let mut missing_newline = vec![];

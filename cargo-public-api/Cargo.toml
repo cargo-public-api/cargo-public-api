@@ -29,7 +29,7 @@ rustc-hash = "2.1.0"
 semver = "1.0.18"
 thiserror = "2.0.3"
 cargo_metadata = "0.18.1"
-toml = "0.8.19"
+toml = "0.8.20"
 
 [dependencies.clap]
 version = "4.5.0"

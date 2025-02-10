@@ -1,5 +1,5 @@
 ---
-source: rustdoc-json/tests/rustdoc-json-lib-tests.rs
+source: public-api/tests/public-api-lib-tests.rs
 expression: public_api
 ---
 pub mod rustdoc_json

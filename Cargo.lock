@@ -1047,7 +1047,6 @@ dependencies = [
  "cargo_metadata",
  "insta",
  "predicates",
- "public-api",
  "serde",
  "tempfile",
  "thiserror 2.0.3",
@@ -1082,8 +1081,6 @@ name = "rustup-toolchain"
 version = "0.1.9"
 dependencies = [
  "insta",
- "public-api",
- "rustdoc-json",
  "thiserror 2.0.3",
 ]
 

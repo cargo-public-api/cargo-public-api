@@ -1,5 +1,5 @@
 ---
-source: rustup-toolchain/tests/rustup-toolchain-lib-tests.rs
+source: public-api/tests/public-api-lib-tests.rs
 expression: public_api
 ---
 pub mod rustup_toolchain

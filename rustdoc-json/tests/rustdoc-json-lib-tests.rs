@@ -1,18 +1,5 @@
 use rustdoc_json::PackageTarget;
 
-#[test]
-fn public_api() -> Result<(), Box<dyn std::error::Error>> {
-    let rustdoc_json = rustdoc_json::Builder::default()
-        .toolchain("nightly")
-        .build()?;
-
-    let public_api = public_api::Builder::from_rustdoc_json(rustdoc_json).build()?;
-
-    insta::assert_snapshot!(public_api);
-
-    Ok(())
-}
-
 /// Test that there is no error when building rustdoc JSON for a package that
 /// uses workspace inheritance
 #[test]

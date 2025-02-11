@@ -17,55 +17,33 @@ jobs:
     name: all-jobs
     runs-on: ubuntu-latest
     needs:
-      - cargo-fmt
-      - cargo-doc
-      - cargo-clippy
-      - cargo-audit
-      - cargo-deny
+      - check-version-info
+      - lint
       - cargo-test
-      - shfmt
     steps:
       - run: jq --exit-status 'all(.result == "success")' <<< '${{ toJson(needs) }}'
 
-  cargo-fmt:
-    name: cargo fmt -- --check
+  check-version-info:
+    name: check version info
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: cargo fmt -- --check
       - run: cargo run --bin update-version-info
       - run: |
           [ -z "$(git diff)" ] || { echo "ERROR: You forgot to 'cargo run --bin update-version-info'" ; exit 1 ; }
 
-  cargo-doc:
-    name: RUSTDOCFLAGS='--deny warnings' cargo doc
+  lint:
+    name: lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - run: rustup install nightly --profile minimal
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-deny,cargo-audit,shfmt
       - uses: Swatinem/rust-cache@v2
-      - run: RUSTDOCFLAGS='--deny warnings' cargo doc --locked --no-deps --document-private-items
-
-  cargo-clippy:
-    name: cargo clippy -- --deny clippy::all ...
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: Swatinem/rust-cache@v2
-      - run: scripts/cargo-clippy.sh
-
-  cargo-audit:
-    name: cargo audit
-    runs-on: ubuntu-22.04 # ubuntu-24.04 does not have `cargo-audit` pre-installed
-    steps:
-      - uses: actions/checkout@v4
-      - run: scripts/cargo-audit.sh
-
-  cargo-deny:
-    name: cargo deny
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: EmbarkStudios/cargo-deny-action@v1
+      - run: cargo version --verbose # Make it easier to debug version-specific issues
+      - run: ./scripts/lint.sh
 
   cargo-test:
     strategy:
@@ -90,11 +68,3 @@ jobs:
       - run: scripts/cargo-test.sh
       - run: scripts/cargo-test-without-rustup.sh
         if: runner.os == 'Linux' # Fails on macOS (strangely) and Windows (expected)
-
-  shfmt:
-    name: shfmt --diff
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - run: sudo apt install shfmt
-      - run: scripts/shfmt.sh --diff # Fix failures locally with: scripts/shfmt.sh --write

@@ -83,5 +83,5 @@ features = ["std"]
 assert_cmd = "2.0.16"
 insta = "1.42.1"
 remove_dir_all = "1.0.0"
-tempfile = "3.16.0"
+tempfile = "3.17.0"
 cargo_metadata = "0.18.1"

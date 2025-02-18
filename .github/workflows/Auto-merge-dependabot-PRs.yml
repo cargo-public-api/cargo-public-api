@@ -3,12 +3,21 @@
 name: Auto-merge dependabot PRs
 
 on:
+  # This is a risky trigger. Read
+  # https://securitylab.github.com/resources/github-actions-untrusted-input/ and
+  # https://blog.yossarian.net/2024/12/06/zizmor-ultralytics-injection for
+  # example. To mitigate risk we:
+  # * Use a GitHub user without full crates.io ownership
+  # * Avoid user-controlled inputs like github.head_ref. See TODO for full list.
+  # * Avoid evaluating any dynamic input in shell context. Instead we do that in env context which is not prone to script injection TODO: source
   pull_request_target:
     types: [opened]
 
 jobs:
   auto-merge:
-    if: github.repository == 'cargo-public-api/cargo-public-api' && startsWith(github.head_ref, 'dependabot/')
+    # Warning! github.head_ref is user-controlled input. I don't think its
+    # contents are evauluated in any way in the current context, however.
+    if: github.repository == 'cargo-public-api/cargo-public-api' && github.event.pull_request.actor.login == 'app/dependabot'
     runs-on: ubuntu-latest
     environment:
       name: auto-merge
@@ -16,8 +25,13 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.AUTO_MERGE_GITHUB_TOKEN }}
     steps:
-      - uses: actions/checkout@v4 # So the gh command knows what repo to work with
       - run: |
-          gh pr review ${{ github.event.pull_request.number }} --comment --body "If CI passes, this dependabot PR will be [auto-merged](https://github.com/cargo-public-api/cargo-public-api/blob/main/.github/workflows/Auto-merge-dependabot-PRs.yml) 🚀"
+          gh pr review ${{ github.event.pull_request.number }} \
+            --repo cargo-public-api/cargo-public-api \
+            --comment \
+            --body "If CI passes, this dependabot PR will be [auto-merged](https://github.com/cargo-public-api/cargo-public-api/blob/main/.github/workflows/Auto-merge-dependabot-PRs.yml) 🚀"
       - run: |
-          gh pr merge --auto --squash ${{ github.event.pull_request.number }}
+          gh pr merge \
+            --repo cargo-public-api/cargo-public-api \
+            --auto \
+            --squash ${{ github.event.pull_request.number }}

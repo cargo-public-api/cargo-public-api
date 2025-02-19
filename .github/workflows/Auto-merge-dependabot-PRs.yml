@@ -8,7 +8,8 @@ on:
 
 jobs:
   auto-merge:
-    if: github.repository == 'cargo-public-api/cargo-public-api' && github.event.pull_request.actor.login == 'app/dependabot'
+    if: github.repository == 'cargo-public-api/cargo-public-api' && \
+        github.event.pull_request.actor.login == 'app/dependabot'
     runs-on: ubuntu-latest
     environment:
       name: auto-merge

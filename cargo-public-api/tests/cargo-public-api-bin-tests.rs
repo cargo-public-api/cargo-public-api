@@ -3,6 +3,7 @@
 
 //! To update expected output it is in many cases sufficient to run
 //! ```bash
+//! cargo install cargo-insta
 //! ./scripts/cargo-test.sh --bless
 //! ```
 

@@ -20,6 +20,7 @@ Also note that for convenience there is a VS Code workspace you can use for out-
 
 To make your changes become the expected output, run
 ```
+cargo install cargo-insta
 ./scripts/cargo-test.sh --bless
 ```
 

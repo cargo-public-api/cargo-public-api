@@ -46,7 +46,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: rustup install nightly --profile minimal
-      - uses: Swatinem/rust-cache@v2
       - run: sudo apt-get install -y zsh && zsh --version
       - run: ./scripts/cargo-test.sh --bless
       - id: latest-nightly

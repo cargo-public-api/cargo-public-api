@@ -3,13 +3,17 @@
 name: Auto-merge dependabot PRs
 
 on:
-  # This is a risky trigger. Read
-  # https://securitylab.github.com/resources/github-actions-untrusted-input/ and
-  # https://blog.yossarian.net/2024/12/06/zizmor-ultralytics-injection for
-  # example. To mitigate risk we:
+  # This is a risky trigger. Read the 4 posts that starts with
+  # https://securitylab.github.com/resources/github-actions-preventing-pwn-requests/.
+  # Also read https://blog.yossarian.net/2024/12/06/zizmor-ultralytics-injection
+  # for an real-world example.
+  #
+  # To mitigate risk we:
   # * Use a GitHub user without full crates.io ownership
   # * Avoid user-controlled inputs like github.head_ref. See TODO for full list.
-  # * Avoid evaluating any dynamic input in shell context. Instead we do that in env context which is not prone to script injection TODO: source
+  # * Avoid evaluating any dynamic input in shell context. Instead we do that in
+  #   env context which is not prone to script injection TODO: source
+  # * don't use the checkout action which by default includes a token TODO: ref
   pull_request_target:
     types: [opened]
 

@@ -8,8 +8,7 @@ on:
 
 jobs:
   auto-merge:
-    if: github.repository == 'cargo-public-api/cargo-public-api' && \
-        github.event.pull_request.actor.login == 'app/dependabot'
+    if: github.repository == 'cargo-public-api/cargo-public-api' && startsWith(github.head_ref, 'dependabot/')
     runs-on: ubuntu-latest
     environment:
       name: auto-merge
@@ -17,6 +16,8 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.AUTO_MERGE_GITHUB_TOKEN }}
     steps:
+      - run: |
+          echo Temporary step just to see name of dependabot: ${{ toJson(github.event.pull_request.actor) }}
       - run: |
           gh pr review ${{ github.event.pull_request.number }} \
             --repo cargo-public-api/cargo-public-api \

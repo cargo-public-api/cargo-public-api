@@ -26,3 +26,5 @@ jobs:
             --repo cargo-public-api/cargo-public-api \
             --auto \
             --squash ${{ github.event.pull_request.number }}
+      - run: |
+          echo Temporary step just to see name of dependabot: ${{ toJson(github.event.pull_request.actor) }}

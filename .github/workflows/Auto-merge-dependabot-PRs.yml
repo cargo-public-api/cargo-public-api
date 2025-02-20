@@ -15,16 +15,19 @@ jobs:
       url: https://github.com/cargo-public-api/cargo-public-api/blob/main/.github/workflows/Auto-merge-dependabot-PRs.yml
     env:
       GITHUB_TOKEN: ${{ secrets.AUTO_MERGE_GITHUB_TOKEN }}
+      PR: ${{ github.event.pull_request.number }}
     steps:
       - run: |
-          gh pr review ${{ github.event.pull_request.number }} \
+          gh pr review \
             --repo cargo-public-api/cargo-public-api \
             --comment \
-            --body "If CI passes, this dependabot PR will be [auto-merged](https://github.com/cargo-public-api/cargo-public-api/blob/main/.github/workflows/Auto-merge-dependabot-PRs.yml) 🚀"
+            --body "If CI passes, this dependabot PR will be [auto-merged](https://github.com/cargo-public-api/cargo-public-api/blob/main/.github/workflows/Auto-merge-dependabot-PRs.yml) 🚀" \
+            "$PR"
       - run: |
           gh pr merge \
             --repo cargo-public-api/cargo-public-api \
             --auto \
-            --squash ${{ github.event.pull_request.number }}
+            --squash \
+            "$PR"
       - run: |
           echo Temporary step just to see name of dependabot: ${{ toJson(github.event.pull_request.actor) }}

@@ -48,6 +48,9 @@ jobs:
       - run: rustup install nightly --profile minimal
       - uses: Swatinem/rust-cache@v2
       - run: sudo apt-get install -y zsh && zsh --version
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-insta
       - run: ./scripts/cargo-test.sh --bless
       - id: latest-nightly
         run: echo "version=nightly-$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT

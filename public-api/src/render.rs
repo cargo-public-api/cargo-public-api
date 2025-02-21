@@ -941,7 +941,7 @@ impl<'c> RenderingContext<'c> {
                 let mut output = vec![];
                 output.extend(self.render_higher_rank_trait_bounds(generic_params));
                 match modifier {
-                    TraitBoundModifier::None | TraitBoundModifier::MaybeConst=> {}
+                    TraitBoundModifier::None | TraitBoundModifier::MaybeConst => {}
                     TraitBoundModifier::Maybe => {
                         output.push(Token::symbol("?"));
                     }

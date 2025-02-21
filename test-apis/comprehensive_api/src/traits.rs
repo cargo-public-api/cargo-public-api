@@ -48,8 +48,12 @@ mod private_mod {
 }
 
 pub trait GenericAssociatedTypes {
-    type WhereSelfSized where Self: Sized;
-    type WhereSimple<T> where T: Simple;
+    type WhereSelfSized
+    where
+        Self: Sized;
+    type WhereSimple<T>
+    where
+        T: Simple;
     type SimpleBound: Simple;
     type WithLifetime<'a>;
 }

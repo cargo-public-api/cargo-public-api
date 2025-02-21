@@ -81,6 +81,14 @@ pub fn impl_multiple<T>(t: impl Simple + AsRef<T>) -> impl Simple {
     Unit
 }
 
+pub fn synthetic_use_capture<'a, 'b, T>(x: &'a (), y: T) -> impl Sized + use<'a, T> {
+    (x, y)
+}
+
+pub fn synthetic_use_no_capture<'a>(x: &'a usize) -> impl Sized + use<> {
+    *x
+}
+
 pub fn somewhere<T, U>(t: T, u: U)
 where
     T: Display,

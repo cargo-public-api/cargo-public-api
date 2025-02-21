@@ -950,7 +950,30 @@ impl<'c> RenderingContext<'c> {
                 output
             }
             GenericBound::Outlives(id) => vec![Token::lifetime(id)],
-            GenericBound::Use(_) => todo!("Can this code path be triggered with just stable Rust? If you hit this todo with just stable Rust, please file an issue with a minimal reproducer. Thanks!"),
+            GenericBound::Use(params) => {
+                let mut output = vec![Token::keyword("use"), Token::symbol("<")];
+
+                for i in 0..params.len() {
+                    let param = &params[i];
+
+                    // Rustdoc doesn't tell us if the parameter is a lifetime or a generic, so we
+                    // check if the string starts with `'` to see if it is a lifetime.
+                    if param.starts_with('\'') {
+                        output.push(Token::lifetime(param));
+                    } else {
+                        output.push(Token::generic(param));
+                    }
+
+                    // Insert a ", " in between parameters, but not after the final one.
+                    if i < params.len() - 1 {
+                        output.extend_from_slice(&[Token::symbol(","), Token::Whitespace]);
+                    }
+                }
+
+                output.push(Token::symbol(">"));
+
+                output
+            }
         })
     }
 

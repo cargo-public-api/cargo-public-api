@@ -1,4 +1,6 @@
 name: Release rustup-toolchain
+permissions:
+  contents: none # Minimal default permissions
 
 on:
   workflow_dispatch:

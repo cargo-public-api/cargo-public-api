@@ -1,4 +1,6 @@
 name: Release cargo-public-api
+permissions:
+  contents: none # Minimal default permissions
 
 on:
   workflow_dispatch:

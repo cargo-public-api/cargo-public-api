@@ -1,4 +1,6 @@
 name: Nightly
+permissions:
+  contents: none # Minimal default permissions
 
 on:
   workflow_dispatch:
@@ -13,6 +15,8 @@ jobs:
   # https://github.com/rust-lang/rust/tree/master/src/rustdoc-json-types
   # requires that we release a new version of public-api to be compatible with
   # the latest nightly toolchain
+  permissions:
+    contents: read # For actions/checkout@v4 in CI.yml
   ci:
     uses: ./.github/workflows/CI.yml
 
@@ -22,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ needs.ci.result == 'failure' }}
     permissions:
-      issues: write
+      issues: write # For `gh issue create`
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
@@ -43,6 +47,8 @@ jobs:
       name: CICD-fork
       url: https://github.com/EnselicCICD/cargo-public-api
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # Give access to secrets.ENSELICCICD_GITHUB_TOKEN
     steps:
       - uses: actions/checkout@v4
       - run: rustup install nightly --profile minimal

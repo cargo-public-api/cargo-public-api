@@ -1,6 +1,8 @@
 # This workflow triggers auto-merge of any PR that dependabot creates so that
 # PRs will be merged automatically without maintainer intervention if CI passes
 name: Auto-merge dependabot PRs
+permissions:
+  contents: none # Minimal default permissions
 
 on:
   pull_request_target:
@@ -10,6 +12,8 @@ jobs:
   auto-merge:
     if: github.repository == 'cargo-public-api/cargo-public-api' && startsWith(github.head_ref, 'dependabot/')
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # Give access to secrets.AUTO_MERGE_GITHUB_TOKEN
     environment:
       name: auto-merge
       url: https://github.com/cargo-public-api/cargo-public-api/blob/main/.github/workflows/Auto-merge-dependabot-PRs.yml

@@ -1,40 +1,23 @@
 #!/usr/bin/env bash
 set -o nounset -o errexit -o pipefail
 
-cargo fmt -- --check
+nightly_version=nightly-$(date +'%Y-%m-%d')
 
-RUSTDOCFLAGS='--deny warnings' cargo doc --locked --no-deps --document-private-items
+echo $nightly_version > cargo-public-api/MINIMUM_NIGHTLY_RUST_VERSION_FOR_TESTS
 
-cargo clippy \
-    --locked \
-    --all-targets \
-    --all-features \
-    -- \
-    --deny clippy::all \
-    --deny warnings \
-    --forbid unsafe_code
+git add .
 
-# Only --deny missing_docs for our libs because it does not matter for bins
-cargo clippy \
-    --locked \
-    --lib \
-    --package public-api \
-    --package rustdoc-json \
-    --package rustup-toolchain \
-    --all-features \
-    -- \
-    --deny missing_docs
+git commit \
+  --author "EnselicCICD <junta-pixlar0l@icloud.com>" \
+  --message "Bless \`nightly_version\` output
 
-source ./scripts/utils.sh
+Automatically created by $CURRENT_JOB_URL
+"
 
-if if_command_exists_or_in_ci cargo-audit; then
-    cargo audit --deny warnings
-fi
+git branch auto-bless/$nightly_version
 
-if if_command_exists_or_in_ci cargo-deny; then
-    cargo deny check
-fi
 
-if if_command_exists_or_in_ci shfmt; then
-    ./scripts/shfmt.sh --diff
-fi
+
+git push 
+          push-to-fork: EnselicCICD/cargo-public-api
+          branch: create-pull-request/${{ steps.latest-nightly.outputs.version }}

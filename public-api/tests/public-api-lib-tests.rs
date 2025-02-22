@@ -17,13 +17,35 @@ use common::{
 
 #[test]
 fn public_api() -> Result<(), Box<dyn std::error::Error>> {
+    public_api_for_manifest("public-api", "Cargo.toml")
+}
+
+// To avoid circular workspace dependencies we test the API surface of this
+// crate as well.
+#[test]
+fn public_api_for_rustup_toolchain() -> Result<(), Box<dyn std::error::Error>> {
+    public_api_for_manifest("rustup-toolchain", "../rustup-toolchain/Cargo.toml")
+}
+
+// To avoid circular workspace dependencies we test the API surface of this
+// crate as well.
+#[test]
+fn public_api_for_rustdoc_json() -> Result<(), Box<dyn std::error::Error>> {
+    public_api_for_manifest("rustdoc-json", "../rustdoc-json/Cargo.toml")
+}
+
+fn public_api_for_manifest(
+    snapshot_name: &str,
+    manifest_path: impl AsRef<std::path::Path>,
+) -> Result<(), Box<dyn std::error::Error>> {
     let rustdoc_json = rustdoc_json::Builder::default()
         .toolchain("nightly")
+        .manifest_path(&manifest_path)
         .build()?;
 
     let public_api = public_api::Builder::from_rustdoc_json(rustdoc_json).build()?;
 
-    insta::assert_snapshot!(public_api);
+    insta::assert_snapshot!(snapshot_name, public_api);
 
     Ok(())
 }

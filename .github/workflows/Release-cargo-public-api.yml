@@ -11,6 +11,8 @@ env:
 
 jobs:
   ci:
+    permissions:
+      contents: read # For actions/checkout@v4 in CI.yml
     uses: ./.github/workflows/CI.yml
 
   publish:

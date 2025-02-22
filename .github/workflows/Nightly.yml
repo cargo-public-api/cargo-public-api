@@ -57,19 +57,13 @@ jobs:
         with:
           tool: cargo-insta
       - run: ./scripts/cargo-test.sh --bless
-      - id: latest-nightly
+      - name: Check for changes
+        id: check-for-changes
         run: |
-          echo "version=nightly-$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
-      - run: |
           echo "changes-detected=$([ -n "$(git status --porcelain)" ] && echo yes || echo no)" >> $GITHUB_OUTPUT
-          
-          "${{ steps.latest-nightly.outputs.version }}" > cargo-public-api/MINIMUM_NIGHTLY_RUST_VERSION_FOR_TESTS
-      - uses: peter-evans/create-pull-request@v4
-        with:
-          title: Bless `${{ steps.latest-nightly.outputs.version }}` output
-          commit-message: Bless `${{ steps.latest-nightly.outputs.version }}` output
-          author: EnselicCICD <junta-pixlar0l@icloud.com>
-          body: Automatically created by ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs/${{ github.job }}
-          token: ${{ secrets.ENSELICCICD_GITHUB_TOKEN }}
-          push-to-fork: EnselicCICD/cargo-public-api
-          branch: create-pull-request/${{ steps.latest-nightly.outputs.version }}
+      - name: Create PR
+        if: steps.check-for-changes.outputs.changes-detected == 'yes'
+        env:
+          GH_TOKEN: ${{ secrets.ENSELICCICD_GITHUB_TOKEN }}
+        run: |
+          ./scripts/create-auto-bless-pr.sh

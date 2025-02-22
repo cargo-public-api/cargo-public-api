@@ -25,27 +25,27 @@ on:
 
 jobs:
   release-rustup-toolchain:
-    if: inputs.release_rustup_toolchain
+    if: always() && inputs.release_rustup_toolchain
     permissions:
       contents: write # git push + access to secrets.CARGO_REGISTRY_TOKEN
     uses: ./.github/workflows/Release-rustup-toolchain.yml
 
   release-rustdoc-json:
-    if: inputs.release_rustdoc_json
+    if: always() && inputs.release_rustdoc_json
     needs: [release-rustup-toolchain]
     permissions:
       contents: write # git push + access to secrets.CARGO_REGISTRY_TOKEN
     uses: ./.github/workflows/Release-rustdoc-json.yml
 
   release-public-api:
-    if: inputs.release_public_api
+    if: always() && inputs.release_public_api
     needs: [release-rustdoc-json]
     permissions:
       contents: write # git push + access to secrets.CARGO_REGISTRY_TOKEN
     uses: ./.github/workflows/Release-public-api.yml
 
   release-cargo-public-api:
-    if: inputs.release_cargo_public_api
+    if: always() && inputs.release_cargo_public_api
     needs: [release-public-api]
     permissions:
       contents: write # git push + access to secrets.CARGO_REGISTRY_TOKEN

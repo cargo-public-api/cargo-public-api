@@ -117,6 +117,8 @@ pub fn comprehensive_api::functions::return_tuple() -> (bool, comprehensive_api:
 pub fn comprehensive_api::functions::somewhere<T, U>(t: T, u: U) where T: core::fmt::Display, U: core::fmt::Debug
 pub fn comprehensive_api::functions::struct_arg(s: comprehensive_api::structs::PrivateField)
 pub fn comprehensive_api::functions::synthetic_arg(t: impl comprehensive_api::traits::Simple) -> impl comprehensive_api::traits::Simple
+pub fn comprehensive_api::functions::synthetic_use_capture<'a, 'b, T>(x: &'a (), y: T) -> impl core::marker::Sized + use<'a, T>
+pub fn comprehensive_api::functions::synthetic_use_no_capture<'a>(x: &'a usize) -> impl core::marker::Sized + use<>
 pub unsafe fn comprehensive_api::functions::unsafe_fn()
 pub fn comprehensive_api::functions::unused_argument(_: u32)
 pub mod comprehensive_api::higher_ranked_trait_bounds

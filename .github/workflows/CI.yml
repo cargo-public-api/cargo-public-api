@@ -1,4 +1,6 @@
 name: CI
+permissions:
+  contents: none # Minimal default permissions
 
 on:
   workflow_call: # From .github/workflows/Release-*.yml, .github/workflows/Nightly.yml
@@ -26,6 +28,8 @@ jobs:
   check-version-info:
     name: check version info
     runs-on: ubuntu-latest
+    permissions:
+      contents: read # For actions/checkout@v4
     steps:
       - uses: actions/checkout@v4
       - run: cargo run --bin update-version-info
@@ -35,6 +39,8 @@ jobs:
   lint:
     name: lint
     runs-on: ubuntu-latest
+    permissions:
+      contents: read # For actions/checkout@v4
     steps:
       - uses: actions/checkout@v4
       - run: rustup install nightly --profile minimal
@@ -54,6 +60,8 @@ jobs:
           - { name: Windows, os: windows-latest }
     name: cargo test (${{ matrix.variant.name }})
     runs-on: ${{ matrix.variant.os }}
+    permissions:
+      contents: read # For actions/checkout@v4
     steps:
       - uses: actions/checkout@v4
       - run: zsh --version || (sudo apt-get install -y zsh && zsh --version)

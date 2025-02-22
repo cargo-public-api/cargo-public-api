@@ -1,4 +1,6 @@
 name: Release rustdoc-json
+permissions:
+  contents: none # Minimal default permissions
 
 on:
   workflow_dispatch:

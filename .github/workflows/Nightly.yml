@@ -15,9 +15,9 @@ jobs:
   # https://github.com/rust-lang/rust/tree/master/src/rustdoc-json-types
   # requires that we release a new version of public-api to be compatible with
   # the latest nightly toolchain
-  permissions:
-    contents: read # For actions/checkout@v4 in CI.yml
   ci:
+    permissions:
+      contents: read # For actions/checkout@v4 in CI.yml
     uses: ./.github/workflows/CI.yml
 
   # Create an issue if Nightly CI fails unless there already is such an issue.

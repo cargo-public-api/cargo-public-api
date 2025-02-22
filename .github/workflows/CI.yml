@@ -49,14 +49,11 @@ jobs:
       fail-fast: false
       matrix:
         variant:
-          - { name: Ubuntu,  os: ubuntu-latest,  protocol: git    }
-          - { name: Ubuntu,  os: ubuntu-latest,  protocol: sparse }
-          - { name: macOS,   os: macos-latest,   protocol: sparse }
-          - { name: Windows, os: windows-latest, protocol: sparse }
-    name: cargo test (${{ matrix.variant.name }} ${{ matrix.variant.protocol }})
+          - { name: Ubuntu,  os: ubuntu-latest  }
+          - { name: macOS,   os: macos-latest   }
+          - { name: Windows, os: windows-latest }
+    name: cargo test (${{ matrix.variant.name }})
     runs-on: ${{ matrix.variant.os }}
-    env:
-      CARGO_REGISTRIES_CRATES_IO_PROTOCOL: ${{ matrix.variant.protocol }}
     steps:
       - uses: actions/checkout@v4
       - run: zsh --version || (sudo apt-get install -y zsh && zsh --version)

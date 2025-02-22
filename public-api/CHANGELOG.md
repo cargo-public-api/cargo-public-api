@@ -1,5 +1,8 @@
 # `public-api` changelog
 
+## v0.44.1
+* Support precise capturing syntax in function return types: `-> impl Sized + use<'a, T>`
+
 ## v0.44.0
 * Do not render function arg names `""` (`nightly-2025-02-05` and later)
 

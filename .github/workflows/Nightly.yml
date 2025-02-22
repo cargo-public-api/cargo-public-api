@@ -58,9 +58,12 @@ jobs:
           tool: cargo-insta
       - run: ./scripts/cargo-test.sh --bless
       - id: latest-nightly
-        run: echo "version=nightly-$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+        run: |
+          echo "version=nightly-$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
       - run: |
-          [ -z "$(git status --porcelain)" ] || echo "${{ steps.latest-nightly.outputs.version }}" > cargo-public-api/MINIMUM_NIGHTLY_RUST_VERSION_FOR_TESTS
+          echo "changes-detected=$([ -n "$(git status --porcelain)" ] && echo yes || echo no)" >> $GITHUB_OUTPUT
+          
+          "${{ steps.latest-nightly.outputs.version }}" > cargo-public-api/MINIMUM_NIGHTLY_RUST_VERSION_FOR_TESTS
       - uses: peter-evans/create-pull-request@v4
         with:
           title: Bless `${{ steps.latest-nightly.outputs.version }}` output

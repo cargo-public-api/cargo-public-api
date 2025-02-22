@@ -1,0 +1,52 @@
+# .github/workflows/Release-all.yml
+name: Release All
+permissions:
+  contents: none # Minimal default permissions
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_rustup_toolchain:
+        type: boolean
+        description: "Release rustup-toolchain"
+        default: false
+      release_rustdoc_json:
+        type: boolean
+        description: "Release rustdoc-json"
+        default: false
+      release_public_api:
+        type: boolean
+        description: "Release public-api"
+        default: false
+      release_cargo_public_api:
+        type: boolean
+        description: "Release cargo-public-api"
+        default: false
+
+jobs:
+  release-rustup-toolchain:
+    if: inputs.release_rustup_toolchain
+    permissions:
+      contents: write # git push + access to secrets.CARGO_REGISTRY_TOKEN
+    uses: ./.github/workflows/Release-rustup-toolchain.yml
+
+  release-rustdoc-json:
+    if: inputs.release_rustdoc_json
+    needs: [release-rustup-toolchain]
+    permissions:
+      contents: write # git push + access to secrets.CARGO_REGISTRY_TOKEN
+    uses: ./.github/workflows/Release-rustdoc-json.yml
+
+  release-public-api:
+    if: inputs.release_public_api
+    needs: [release-rustdoc-json]
+    permissions:
+      contents: write # git push + access to secrets.CARGO_REGISTRY_TOKEN
+    uses: ./.github/workflows/Release-public-api.yml
+
+  release-cargo-public-api:
+    if: inputs.release_cargo_public_api
+    needs: [release-public-api]
+    permissions:
+      contents: write # git push + access to secrets.CARGO_REGISTRY_TOKEN
+    uses: ./.github/workflows/Release-cargo-public-api.yml

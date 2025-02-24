@@ -34,4 +34,4 @@ jobs:
             --squash \
             "$PR"
       - run: |
-          echo Temporary step just to see name of dependabot: ${{ toJson(github.event.pull_request.actor) }}
+          echo Temporary step just to see name of dependabot: ${{ toJson(github.event.pull_request.user) }}

@@ -13,7 +13,7 @@ echo $nightly_version >cargo-public-api/MINIMUM_NIGHTLY_RUST_VERSION_FOR_TESTS
 git add .
 git commit \
     --author "EnselicCICD <junta-pixlar0l@icloud.com>" \
-    --message "Bless \`$nightly_version\` output
+    --message "TEMP TEST, sorry to spam: Bless \`$nightly_version\` output
 
 Automatically created by $CURRENT_JOB_URL
 "
@@ -23,6 +23,6 @@ git push https://EnselicCICD@github.com/EnselicCICD/cargo-public-api "$branch_na
 gh config set prompt disabled
 gh pr create \
     --repo cargo-public-api/cargo-public-api \
-    --base main \
+    --base auto-bless-v2 \
     --head EnselicCICD:"$branch_name" \
     --fill

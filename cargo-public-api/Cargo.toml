@@ -24,7 +24,6 @@ cargo-util = "0.2.8"
 clap_complete_command = "0.5.1"
 diff = "0.1.13"
 dirs = "5.0.0"
-home = "0.5.11"
 rustc-hash = "2.1.1"
 semver = "1.0.18"
 thiserror = "2.0.3"
@@ -81,6 +80,7 @@ features = ["std"]
 
 [dev-dependencies]
 assert_cmd = "2.0.16"
+home = "0.5.11"
 insta = "1.42.1"
 remove_dir_all = "1.0.0"
 tempfile = "3.17.1"

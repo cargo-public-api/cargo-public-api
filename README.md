@@ -106,9 +106,7 @@ fn public_api() {
 Before you run the test the first time you need to bless the current public API:
 
 ```sh
-cargo install cargo-insta
-cargo insta test
-cargo insta review
+INSTA_UPDATE=always cargo test
 ```
 
 This creates a `tests/snapshots/<module>_public_api.snap` file in your project that you `git add` together with your other project files. Then a regular
@@ -120,8 +118,7 @@ cargo test
 will fail if your public API is accidentally or deliberately changed. Run
 
 ```sh
-cargo insta test
-cargo insta review
+INSTA_UPDATE=always cargo test
 ```
 
 again to review and accept public API changes.

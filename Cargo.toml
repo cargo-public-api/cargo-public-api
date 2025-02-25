@@ -69,3 +69,7 @@ exclude = [
     # impact of rustdoc JSON format changes.
     "test-apis/nightly_api",
 ]
+
+[patch.crates-io.dirs-sys]
+# Test with https://codeberg.org/dirs/dirs-sys-rs/pulls/31
+path = "/home/martin/src/dirs-sys-rs"

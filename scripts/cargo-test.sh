@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
 set -o nounset -o pipefail -o errexit
 
+# See https://docs.rs/insta/latest/insta/#updating-snapshots
+INSTA_UPDATE=no
+if [ "${1:-}" = "--bless" ]; then
+    INSTA_UPDATE=always
+fi
+export INSTA_UPDATE
+
 # Put `cargo-public-api` in $PATH so `cargo` finds it and `cargo public-api`
 # works, which some tests depend on.
 #
@@ -8,15 +15,4 @@ set -o nounset -o pipefail -o errexit
 # try to modify `PATH` inside of tests. Instead we make sure that it is set
 # appropriately from the start. Since we don't pass `--release` to the below
 # `cargo` commands we use `./target/debug` here and not `./target/release`.
-export PATH="$(pwd)/target/debug:$PATH"
-
-if [ "${1:-}" = "--bless" ]; then
-    if ! command -v cargo-insta >/dev/null; then
-        echo "ERROR: \`cargo-insta\` not found. Run \`cargo install cargo-insta\` first."
-        exit 1
-    fi
-    cargo insta test || true # avoid errexit if output changed
-    cargo insta review
-else
-    cargo test --locked
-fi
+PATH="$(pwd)/target/debug:$PATH" cargo test --locked

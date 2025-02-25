@@ -51,19 +51,19 @@ jobs:
       contents: write # Give access to secrets.ENSELICCICD_GITHUB_TOKEN
     steps:
       - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.ENSELICCICD_GITHUB_TOKEN }} # for git push
       - run: rustup install nightly --profile minimal
       - run: sudo apt-get install -y zsh && zsh --version
       - run: ./scripts/cargo-test.sh --bless
-      - id: latest-nightly
-        run: echo "version=nightly-$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
-      - run: |
-          [ -z "$(git status --porcelain)" ] || echo "${{ steps.latest-nightly.outputs.version }}" > cargo-public-api/MINIMUM_NIGHTLY_RUST_VERSION_FOR_TESTS
-      - uses: peter-evans/create-pull-request@v4
-        with:
-          title: Bless `${{ steps.latest-nightly.outputs.version }}` output
-          commit-message: Bless `${{ steps.latest-nightly.outputs.version }}` output
-          author: EnselicCICD <junta-pixlar0l@icloud.com>
-          body: Automatically created by ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs/${{ github.job }}
-          token: ${{ secrets.ENSELICCICD_GITHUB_TOKEN }}
-          push-to-fork: EnselicCICD/cargo-public-api
-          branch: create-pull-request/${{ steps.latest-nightly.outputs.version }}
+      - name: Check for changes
+        id: check-for-changes
+        run: |
+          echo "changes-detected=$([ -n "$(git status --porcelain)" ] && echo yes || echo no)" >> $GITHUB_OUTPUT
+      - name: Create PR
+        if: steps.check-for-changes.outputs.changes-detected == 'yes'
+        env:
+          GH_TOKEN: ${{ secrets.ENSELICCICD_GITHUB_TOKEN }} # for gh pr create
+          CURRENT_JOB_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs/${{ github.job }}
+        run: |
+          ./scripts/create-auto-bless-pr.sh

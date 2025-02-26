@@ -12,6 +12,11 @@ pub struct C {
     pub b: bool,
 }
 
+#[repr(Rust)]
+pub struct ReprRust {
+    pub b: bool,
+}
+
 #[doc(hidden)]
 pub fn doc_hidden() {}
 

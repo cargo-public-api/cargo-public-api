@@ -5,6 +5,11 @@ pub enum SingleVariant {
     Variant,
 }
 
+#[repr(u8)]
+pub enum SingleVariantReprC {
+    Variant,
+}
+
 pub enum EnumWithExplicitDiscriminants {
     First = 1,
     Second = 2,

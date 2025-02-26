@@ -41,8 +41,18 @@ impl<'c> RenderingContext<'c> {
         let mut tokens = vec![];
 
         for attr in &item.attrs {
+            let attr = attr.trim();
             if attr_relevant_for_public_apis(attr) {
-                tokens.push(Token::Annotation(attr.clone()));
+                // TODO: Transform e.g.
+                //
+                //     #[attr="Repr([ReprInt(UnsignedInt(U8))])")]
+                //
+                // into
+                //
+                //     #[repr(u8)]
+                //
+                // See https://github.com/rust-lang/rust/pull/135726/files#diff-ede26372490522288745c5b3df2b6b2a1cc913dcd09b29af3a49935afe00c7e6
+                tokens.push(Token::Annotation(attr.to_string()));
                 tokens.push(ws!());
             }
         }
@@ -1022,17 +1032,17 @@ impl<'c> RenderingContext<'c> {
 
 /// Our list of allowed attributes comes from
 /// <https://github.com/rust-lang/rust/blob/68d0b29098/src/librustdoc/html/render/mod.rs#L941-L942>
-fn attr_relevant_for_public_apis<S: AsRef<str>>(attr: S) -> bool {
-    let prefixes = [
-        "#[export_name",
-        "#[link_section",
-        "#[no_mangle",
-        "#[non_exhaustive",
-        "#[repr",
+fn attr_relevant_for_public_apis(attr: &str) -> bool {
+    let keywords = [
+        "export_name",
+        "link_section",
+        "no_mangle",
+        "non_exhaustive",
+        "repr",
     ];
 
-    for prefix in prefixes {
-        if attr.as_ref().starts_with(prefix) {
+    for keyword in keywords {
+        if attr.to_lowercase().contains(keyword) {
             return true;
         }
     }

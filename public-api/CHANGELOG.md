@@ -1,5 +1,8 @@
 # `public-api` changelog
 
+## v0.44.2
+* Support `nightly-2025-02-26` and later but use a quick-hack where `#[repr(...)]` is rendered as e.g. `#[attr="Repr([ReprInt(UnsignedInt(U8))])")]`.
+
 ## v0.44.1
 * Support precise capturing syntax in function return types: `-> impl Sized + use<'a, T>`
 

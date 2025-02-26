@@ -13,12 +13,7 @@ pub struct C {
 }
 
 #[repr(Rust)]
-pub struct C {
-    pub b: bool,
-}
-
-#[repr(u8)]
-pub struct C {
+pub struct ReprRust {
     pub b: bool,
 }
 

@@ -41,8 +41,9 @@ impl<'c> RenderingContext<'c> {
         let mut tokens = vec![];
 
         for attr in &item.attrs {
+            let attr = attr.trim();
             if attr_relevant_for_public_apis(attr) {
-                tokens.push(Token::Annotation(attr.clone()));
+                tokens.push(Token::Annotation(attr.to_string()));
                 tokens.push(ws!());
             }
         }
@@ -1029,17 +1030,19 @@ fn transform_new_attr_format_to_old_format(attr: impl AsRef<str>) -> String {
     }.to_owned()
 }
 
-fn attr_relevant_for_public_apis(attr: impl AsRef<str>) -> bool {
-    let prefixes = [
-        "#[export_name",
-        "#[link_section",
-        "#[no_mangle",
-        "#[non_exhaustive",
-        "#[repr",
+fn attr_relevant_for_public_apis(attr: &str) -> bool {
+    let attr = transform_new_attr_format_to_old_format(attr.as_ref().trim());
+
+    let keywords = [
+        "export_name",
+        "link_section",
+        "no_mangle",
+        "non_exhaustive",
+        "repr",
     ];
 
-    for prefix in prefixes {
-        if attr.as_ref().starts_with(prefix) {
+    for keyword in keywords {
+        if attr.to_lowercase().contains(keyword) {
             return true;
         }
     }

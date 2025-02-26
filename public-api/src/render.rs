@@ -1021,18 +1021,7 @@ impl<'c> RenderingContext<'c> {
     }
 }
 
-/// Transform to the format before
-/// https://github.com/rust-lang/rust/pull/135726/files#diff-ede26372490522288745c5b3df2b6b2a1cc913dcd09b29af3a49935afe00c7e6
-fn transform_new_attr_format_to_old_format(attr: impl AsRef<str>) -> String {
-    match attr.as_ref().trim() {
-        "#[attr=\"Repr([ReprC])\")]" => "#[repr(C)]",
-        attr => attr,
-    }.to_owned()
-}
-
 fn attr_relevant_for_public_apis(attr: &str) -> bool {
-    let attr = transform_new_attr_format_to_old_format(attr.as_ref().trim());
-
     let keywords = [
         "export_name",
         "link_section",

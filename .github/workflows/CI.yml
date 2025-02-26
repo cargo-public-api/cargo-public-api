@@ -44,9 +44,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: rustup install nightly --profile minimal
-      - uses: taiki-e/install-action@v2
+      - uses: taiki-e/install-action@ae97ff9daf1cd2e216671a047d80ff48461e30bb # v2.49.1
         with:
-          tool: cargo-deny,cargo-audit,shfmt
+          tool: cargo-deny@0.17.0, cargo-audit@0.21.1, shfmt@3.10.0
+          checksum: true
+          fallback: none
       - run: cargo version --verbose # Make it easier to debug version-specific issues
       - run: ./scripts/lint.sh
 

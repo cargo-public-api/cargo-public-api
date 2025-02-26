@@ -11,7 +11,7 @@ pub use comprehensive_api::u32
 pub mod comprehensive_api::attributes
 #[non_exhaustive] pub enum comprehensive_api::attributes::NonExhaustive
 pub comprehensive_api::attributes::NonExhaustive::MoreToCome
-#[repr(C)] pub struct comprehensive_api::attributes::C
+pub struct comprehensive_api::attributes::C
 pub comprehensive_api::attributes::C::b: bool
 #[no_mangle] #[link_section = ".custom"] pub static comprehensive_api::attributes::NO_MANGLE_WITH_CUSTOM_LINK_SECTION: usize
 #[export_name = "something_arbitrary"] pub fn comprehensive_api::attributes::export_name()

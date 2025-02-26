@@ -1020,9 +1020,16 @@ impl<'c> RenderingContext<'c> {
     }
 }
 
-/// Our list of allowed attributes comes from
-/// <https://github.com/rust-lang/rust/blob/68d0b29098/src/librustdoc/html/render/mod.rs#L941-L942>
-fn attr_relevant_for_public_apis<S: AsRef<str>>(attr: S) -> bool {
+/// Transform to the format before
+/// https://github.com/rust-lang/rust/pull/135726/files#diff-ede26372490522288745c5b3df2b6b2a1cc913dcd09b29af3a49935afe00c7e6
+fn transform_new_attr_format_to_old_format(attr: impl AsRef<str>) -> String {
+    match attr.as_ref().trim() {
+        "#[attr=\"Repr([ReprC])\")]" => "#[repr(C)]",
+        attr => attr,
+    }.to_owned()
+}
+
+fn attr_relevant_for_public_apis(attr: impl AsRef<str>) -> bool {
     let prefixes = [
         "#[export_name",
         "#[link_section",
@@ -1030,9 +1037,6 @@ fn attr_relevant_for_public_apis<S: AsRef<str>>(attr: S) -> bool {
         "#[non_exhaustive",
         "#[repr",
     ];
-
-    // Transform from `#[attr="Inline(Hint)"]` to `"#[inline]"`
-    
 
     for prefix in prefixes {
         if attr.as_ref().starts_with(prefix) {

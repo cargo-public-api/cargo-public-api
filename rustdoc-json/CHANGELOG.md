@@ -1,5 +1,8 @@
 # rustdoc-json
 
+## v0.9.5
+* Insignificant maintenance release (fix a typo and remove a couple of `dev-dependencies` due to a moved test).
+
 ## v0.9.4
 * Bump deps. Most notably `cargo-manifest` from 0.16.0 to 0.17.0.
 

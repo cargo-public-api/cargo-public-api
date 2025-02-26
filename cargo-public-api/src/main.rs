@@ -21,7 +21,6 @@ mod git_utils;
 mod plain;
 mod published_crate;
 mod toolchain;
-mod vendor;
 
 #[derive(Parser, Debug)]
 #[command(

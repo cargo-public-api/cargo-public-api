@@ -1,4 +1,8 @@
 # rustup-toolchain
+
+## v0.1.10
+* Remove `dev-dependencies` (since tests moved to another crate).
+
 ## v0.1.9
 * Bump deps. Most notably `thiserror` from `1.0.65` to `2.0.3`.
 

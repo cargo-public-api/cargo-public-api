@@ -1031,6 +1031,9 @@ fn attr_relevant_for_public_apis<S: AsRef<str>>(attr: S) -> bool {
         "#[repr",
     ];
 
+    // Transform from `#[attr="Inline(Hint)"]` to `"#[inline]"`
+    
+
     for prefix in prefixes {
         if attr.as_ref().starts_with(prefix) {
             return true;

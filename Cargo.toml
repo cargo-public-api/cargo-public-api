@@ -69,3 +69,6 @@ exclude = [
     # impact of rustdoc JSON format changes.
     "test-apis/nightly_api",
 ]
+
+[patch.crates-io.rustdoc-types]
+path = "/home/martin/src/rustdoc-types"

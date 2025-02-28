@@ -10,7 +10,7 @@ on:
 
 jobs:
   auto-merge:
-    if: github.repository == 'cargo-public-api/cargo-public-api' && startsWith(github.head_ref, 'dependabot/')
+    if: github.repository == 'cargo-public-api/cargo-public-api' && github.event.pull_request.user.login == 'dependabot[bot]'
     runs-on: ubuntu-latest
     permissions:
       contents: write # Give access to secrets.AUTO_MERGE_GITHUB_TOKEN
@@ -33,5 +33,3 @@ jobs:
             --auto \
             --squash \
             "$PR"
-      - run: |
-          echo Temporary step just to see name of dependabot: ${{ toJson(github.event.pull_request.user) }}

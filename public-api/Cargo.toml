@@ -28,7 +28,7 @@ version = "0.36.0"
 [dev-dependencies]
 anyhow = "1.0.75"
 assert_cmd = "2.0.16"
-insta = "1.42.1"
+insta = "1.42.2"
 pretty_assertions = "1.4.1"
 tempfile = "3.17.1"
 

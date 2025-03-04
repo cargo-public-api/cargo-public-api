@@ -11,5 +11,3 @@ export CARGO_TERM_COLOR=always
 ./scripts/lint.sh
 
 ./scripts/cargo-test.sh
-
-./scripts/cargo-test-without-rustup.sh

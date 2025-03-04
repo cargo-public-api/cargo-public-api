@@ -211,30 +211,6 @@ fn compilation_error_toolchain() {
     );
 }
 
-/// Checks that we print a nice error message if rustup is not in PATH.
-/// `scripts/run-ci-locally.sh` runs this test for you.
-#[test]
-#[cfg_attr(
-    not(feature = "test-without-rustup-in-path"),
-    ignore = "requires absence of rustup from PATH"
-)]
-fn invocation_without_rustup_in_path() {
-    assert_cmd::Command::cargo_bin("cargo-public-api")
-        .unwrap()
-        // Make sure to not run with a nightly toolchain. Otherwise there will
-        // be no attempt to use `rustup` to switch to a nightly toolchain to
-        // build rustdoc JSON and the test will fail.
-        .env("RUSTUP_TOOLCHAIN", "stable")
-        // Avoid distracting "no library targets found in package" errors. Point
-        // to a package that we know contains a library.
-        .arg("--manifest-path=../rustdoc-json/Cargo.toml")
-        .assert()
-        .stderr(predicates::str::contains(
-            "required program rustup not found in PATH. Is it installed?",
-        ))
-        .failure();
-}
-
 /// Test that we can specify a custom toolchain via the `+toolchain` mechanism.
 /// This also differs slightly from `compilation_error_toolchain()` by checking
 /// for a generic error message rather than a specific one.

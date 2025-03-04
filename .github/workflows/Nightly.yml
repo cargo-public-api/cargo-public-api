@@ -35,8 +35,9 @@ jobs:
             --repo cargo-public-api/cargo-public-api | grep "CI failed with " || \
           gh issue create \
             --repo cargo-public-api/cargo-public-api \
+            --label automatically-created \
             --title "CI failed with \`$(date +nightly-%Y-%m-%d)\`" \
-            --body "Nightly CI failure that requries investigation: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            --body "Nightly CI failure that requries investigation: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\n\n(This issue was created by [this](https://github.com/cargo-public-api/cargo-public-api/blob/ced14726d2f91ba8c86dc916f68a8e2fff74bfa5/.github/workflows/Nightly.yml#L24) job.)"
 
   # If Rust nightly changes output, auto-create a PR with the new blessed
   # output, which maintainers can conveniently merge after manual review. Note

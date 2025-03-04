@@ -7,4 +7,14 @@ restore_rustup() {
 }
 trap restore_rustup EXIT
 mv "${RUSTUP}" "${RUSTUP}-disabled"
+
+echo $PATH
+
+IFS=':'
+for path in $PATH; do
+    echo "$path"
+    ls -l $path
+done
+unset IFS
+
 cargo test --locked --features test-without-rustup-in-path without_rustup_in_path

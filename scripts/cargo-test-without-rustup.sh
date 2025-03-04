@@ -13,7 +13,7 @@ echo $PATH
 IFS=':'
 for path in $PATH; do
     echo "$path"
-    ls -l $path
+    ls -l $path || echo "No such directory"
 done
 unset IFS
 

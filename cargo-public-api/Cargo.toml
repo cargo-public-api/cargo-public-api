@@ -12,10 +12,6 @@ categories = ["command-line-utilities", "development-tools::cargo-plugins"]
 license = "MIT"
 repository = "https://github.com/cargo-public-api/cargo-public-api"
 
-[features]
-# Internal feature used by ./scripts/cargo-test-without-rustup.sh.
-test-without-rustup-in-path = []
-
 [dependencies]
 nu-ansi-term = "0.50.1"
 anyhow = "1.0.75"

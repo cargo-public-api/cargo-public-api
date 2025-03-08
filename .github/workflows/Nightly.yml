@@ -37,7 +37,7 @@ jobs:
             --repo cargo-public-api/cargo-public-api \
             --label automatically-created \
             --title "CI failed with \`$(date +nightly-%Y-%m-%d)\`" \
-            --body $'Nightly CI failure that requries investigation: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\n\n(This issue was created by [this](https://github.com/cargo-public-api/cargo-public-api/blob/ced14726d2f91ba8c86dc916f68a8e2fff74bfa5/.github/workflows/Nightly.yml#L24) job.)'
+            --body $'This issue was [automatically created](https://github.com/cargo-public-api/cargo-public-api/blob/ced14726d2f91ba8c86dc916f68a8e2fff74bfa5/.github/workflows/Nightly.yml#L24) because the [Nightly](https://github.com/cargo-public-api/cargo-public-api/blob/main/.github/workflows/Nightly.yml) CI job [failed](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}).\n\n### Common reasons\n\n* If the **rustdoc JSON** format changed it is usually [easy to adapt](https://github.com/cargo-public-api/cargo-public-api/blob/main/docs/CONTRIBUTING.md#how-to-adapt-to-rustdoc-json-format-changes).'
 
   # If Rust nightly changes output, auto-create a PR with the new blessed
   # output, which maintainers can conveniently merge after manual review. Note

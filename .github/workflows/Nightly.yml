@@ -65,6 +65,6 @@ jobs:
         if: steps.check-for-changes.outputs.changes-detected == 'yes'
         env:
           GH_TOKEN: ${{ secrets.ENSELICCICD_GITHUB_TOKEN }} # for gh pr create
-          CURRENT_JOB_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs/${{ github.job }}
+          CURRENT_JOB_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           ./scripts/create-auto-bless-pr.sh

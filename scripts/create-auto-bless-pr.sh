@@ -9,11 +9,11 @@ git checkout \
     -b "$branch_name"
 
 # Update MINIMUM_NIGHTLY_RUST_VERSION_FOR_TESTS and then commit all changes.
+git config user.name "Martin Nordholts CI/CD"
+git config user.email "104096785+EnselicCICD@users.noreply.github.com"
 echo $nightly_version >cargo-public-api/MINIMUM_NIGHTLY_RUST_VERSION_FOR_TESTS
 git add .
-git commit \
-    --author "Martin Nordholts CI/CD <104096785+EnselicCICD@users.noreply.github.com>" \
-    --message "Bless \`$nightly_version\` output
+git commit --message "Bless \`$nightly_version\` output
 
 Automatically created by $CURRENT_JOB_URL
 "

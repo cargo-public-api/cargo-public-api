@@ -22,9 +22,9 @@ jobs:
 
   # Create an issue if Nightly CI fails unless there already is such an issue.
   create-issue-on-failure:
-    needs: ci
+    needs: [ci, auto-bless]
     runs-on: ubuntu-latest
-    if: ${{ !cancelled() && needs.ci.result == 'failure' }}
+    if: ${{ !cancelled() && needs.ci.result == 'failure' && needs.auto-bless.outputs.changes-detected == 'false' }}
     permissions:
       issues: write # For `gh issue create`
     env:

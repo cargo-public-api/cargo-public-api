@@ -24,7 +24,7 @@ jobs:
   create-issue-on-failure:
     needs: [ci, auto-bless]
     runs-on: ubuntu-latest
-    if: ${{ !cancelled() && needs.ci.result == 'failure' && needs.auto-bless.outputs.changes-detected == 'false' }}
+    if: ${{ !cancelled() && needs.ci.result == 'failure' && needs.auto-bless.outputs.changes-detected != 'yes' }}
     permissions:
       issues: write # For `gh issue create`
     env:

@@ -37,7 +37,7 @@ jobs:
             --repo cargo-public-api/cargo-public-api \
             --label automatically-created \
             --title "CI failed with \`$(date +nightly-%Y-%m-%d)\`" \
-            --body $'This issue was [automatically created](https://github.com/cargo-public-api/cargo-public-api/blob/ced14726d2f91ba8c86dc916f68a8e2fff74bfa5/.github/workflows/Nightly.yml#L24) because the [Nightly](https://github.com/cargo-public-api/cargo-public-api/blob/main/.github/workflows/Nightly.yml) CI job [failed](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}).\n\n### Common reasons\n\n* If the **rustdoc JSON** format changed it is usually [easy to adapt](https://github.com/cargo-public-api/cargo-public-api/blob/main/docs/CONTRIBUTING.md#how-to-adapt-to-rustdoc-json-format-changes).'
+            --body $'This issue was [automatically](https://github.com/cargo-public-api/cargo-public-api/blob/ced14726d2f91ba8c86dc916f68a8e2fff74bfa5/.github/workflows/Nightly.yml#L24) created because the [Nightly](https://github.com/cargo-public-api/cargo-public-api/blob/main/.github/workflows/Nightly.yml) CI job [failed](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}).\n\n### Common Reasons\n\n#### Changed Rustdoc JSON Format\n\nIf [rustdoc-types](https://crates.io/crates/rustdoc-types/versions) has been updated, the rustdoc JSON format has likely changed. It is usually easy to adapt. See [here](https://github.com/cargo-public-api/cargo-public-api/blob/main/docs/CONTRIBUTING.md#how-to-adapt-to-rustdoc-json-format-changes) for step-by-step instructions.'
 
   # If Rust nightly changes output, auto-create a PR with the new blessed
   # output, which maintainers can conveniently merge after manual review. Note

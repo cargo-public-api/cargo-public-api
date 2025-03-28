@@ -7,6 +7,10 @@ pub struct CargoPublicApiVersionInfo {
 
 pub static TABLE: &[CargoPublicApiVersionInfo] = &[
     CargoPublicApiVersionInfo {
+        cargo_public_api_version: "0.45.x",
+        min_nightly_rust_version: "nightly-2025-03-14",
+    },
+    CargoPublicApiVersionInfo {
         cargo_public_api_version: "0.44.x",
         min_nightly_rust_version: "nightly-2025-01-25",
     },

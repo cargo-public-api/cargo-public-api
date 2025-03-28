@@ -960,22 +960,19 @@ impl<'c> RenderingContext<'c> {
                 output
             }
             GenericBound::Outlives(id) => vec![Token::lifetime(id)],
-            GenericBound::Use(params) => {
+            GenericBound::Use(args) => {
                 let mut output = vec![Token::keyword("use"), Token::symbol("<")];
 
-                for i in 0..params.len() {
-                    let param = &params[i];
-
-                    // Rustdoc doesn't tell us if the parameter is a lifetime or a generic, so we
-                    // check if the string starts with `'` to see if it is a lifetime.
-                    if param.starts_with('\'') {
-                        output.push(Token::lifetime(param));
-                    } else {
-                        output.push(Token::generic(param));
-                    }
+                for i in 0..args.len() {
+                    output.push(match &args[i] {
+                        rustdoc_types::PreciseCapturingArg::Lifetime(lifetime) => {
+                            Token::lifetime(lifetime)
+                        }
+                        rustdoc_types::PreciseCapturingArg::Param(param) => Token::generic(param),
+                    });
 
                     // Insert a ", " in between parameters, but not after the final one.
-                    if i < params.len() - 1 {
+                    if i < args.len() - 1 {
                         output.extend_from_slice(&[Token::symbol(","), Token::Whitespace]);
                     }
                 }

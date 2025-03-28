@@ -84,7 +84,7 @@ pub fn rustdoc_json::Color::borrow(&self) -> &T
 impl<T> core::borrow::BorrowMut<T> for rustdoc_json::Color where T: ?core::marker::Sized
 pub fn rustdoc_json::Color::borrow_mut(&mut self) -> &mut T
 impl<T> core::clone::CloneToUninit for rustdoc_json::Color where T: core::clone::Clone
-pub unsafe fn rustdoc_json::Color::clone_to_uninit(&self, dst: *mut u8)
+pub unsafe fn rustdoc_json::Color::clone_to_uninit(&self, dest: *mut u8)
 impl<T> core::convert::From<T> for rustdoc_json::Color
 pub fn rustdoc_json::Color::from(t: T) -> T
 impl<T> tracing::instrument::Instrument for rustdoc_json::Color
@@ -126,7 +126,7 @@ pub fn rustdoc_json::PackageTarget::borrow(&self) -> &T
 impl<T> core::borrow::BorrowMut<T> for rustdoc_json::PackageTarget where T: ?core::marker::Sized
 pub fn rustdoc_json::PackageTarget::borrow_mut(&mut self) -> &mut T
 impl<T> core::clone::CloneToUninit for rustdoc_json::PackageTarget where T: core::clone::Clone
-pub unsafe fn rustdoc_json::PackageTarget::clone_to_uninit(&self, dst: *mut u8)
+pub unsafe fn rustdoc_json::PackageTarget::clone_to_uninit(&self, dest: *mut u8)
 impl<T> core::convert::From<T> for rustdoc_json::PackageTarget
 pub fn rustdoc_json::PackageTarget::from(t: T) -> T
 impl<T> tracing::instrument::Instrument for rustdoc_json::PackageTarget
@@ -182,7 +182,7 @@ pub fn rustdoc_json::Builder::borrow(&self) -> &T
 impl<T> core::borrow::BorrowMut<T> for rustdoc_json::Builder where T: ?core::marker::Sized
 pub fn rustdoc_json::Builder::borrow_mut(&mut self) -> &mut T
 impl<T> core::clone::CloneToUninit for rustdoc_json::Builder where T: core::clone::Clone
-pub unsafe fn rustdoc_json::Builder::clone_to_uninit(&self, dst: *mut u8)
+pub unsafe fn rustdoc_json::Builder::clone_to_uninit(&self, dest: *mut u8)
 impl<T> core::convert::From<T> for rustdoc_json::Builder
 pub fn rustdoc_json::Builder::from(t: T) -> T
 impl<T> tracing::instrument::Instrument for rustdoc_json::Builder

@@ -43,15 +43,6 @@ impl<'c> RenderingContext<'c> {
         for attr in &item.attrs {
             let attr = attr.trim();
             if attr_relevant_for_public_apis(attr) {
-                // TODO: Transform e.g.
-                //
-                //     #[attr="Repr([ReprInt(UnsignedInt(U8))])")]
-                //
-                // into
-                //
-                //     #[repr(u8)]
-                //
-                // See https://github.com/rust-lang/rust/pull/135726/files#diff-ede26372490522288745c5b3df2b6b2a1cc913dcd09b29af3a49935afe00c7e6
                 tokens.push(Token::Annotation(attr.to_string()));
                 tokens.push(ws!());
             }
@@ -719,11 +710,12 @@ impl<'c> RenderingContext<'c> {
     fn render_generic_args(&self, args: &GenericArgs) -> Vec<Token> {
         match args {
             GenericArgs::AngleBracketed { args, constraints } => {
-                self.render_angle_bracketed(args, constraints)
-            }
+                        self.render_angle_bracketed(args, constraints)
+                    }
             GenericArgs::Parenthesized { inputs, output } => {
-                self.render_parenthesized(inputs, output)
-            }
+                        self.render_parenthesized(inputs, output)
+                    }
+            GenericArgs::ReturnTypeNotation => todo!("can this be triggred in stable rust? if so please report to https://github.com/cargo-public-api/cargo-public-api/issues and include a minimal reproducer"),
         }
     }
 
@@ -960,22 +952,19 @@ impl<'c> RenderingContext<'c> {
                 output
             }
             GenericBound::Outlives(id) => vec![Token::lifetime(id)],
-            GenericBound::Use(params) => {
+            GenericBound::Use(args) => {
                 let mut output = vec![Token::keyword("use"), Token::symbol("<")];
 
-                for i in 0..params.len() {
-                    let param = &params[i];
-
-                    // Rustdoc doesn't tell us if the parameter is a lifetime or a generic, so we
-                    // check if the string starts with `'` to see if it is a lifetime.
-                    if param.starts_with('\'') {
-                        output.push(Token::lifetime(param));
-                    } else {
-                        output.push(Token::generic(param));
-                    }
+                for i in 0..args.len() {
+                    output.push(match &args[i] {
+                        rustdoc_types::PreciseCapturingArg::Lifetime(lifetime) => {
+                            Token::lifetime(lifetime)
+                        }
+                        rustdoc_types::PreciseCapturingArg::Param(param) => Token::generic(param),
+                    });
 
                     // Insert a ", " in between parameters, but not after the final one.
-                    if i < params.len() - 1 {
+                    if i < args.len() - 1 {
                         output.extend_from_slice(&[Token::symbol(","), Token::Whitespace]);
                     }
                 }

@@ -23,7 +23,7 @@ version = "1.0.104"
 features = ["unbounded_depth"]
 
 [dependencies.rustdoc-types]
-version = "0.38.0"
+version = "0.39.0"
 
 [dev-dependencies]
 anyhow = "1.0.75"

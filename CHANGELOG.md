@@ -1,5 +1,15 @@
 # `cargo-public-api` changelog
 
+## v0.47.0
+* Support `nightly-2025-03-24` and later.
+* Restore old and correct `#[repr(...)]` rendering
+
+## v0.46.0
+* Placeholder (not released at the moment).
+
+## v0.45.0
+* Placeholder (not released at the moment).
+
 ## v0.44.2
 * Support `nightly-2025-02-26` and later but use a quick-hack where `#[repr(...)]` is rendered as e.g. `#[attr="Repr([ReprInt(UnsignedInt(U8))])")]`.
 

@@ -43,15 +43,6 @@ impl<'c> RenderingContext<'c> {
         for attr in &item.attrs {
             let attr = attr.trim();
             if attr_relevant_for_public_apis(attr) {
-                // TODO: Transform e.g.
-                //
-                //     #[attr="Repr([ReprInt(UnsignedInt(U8))])")]
-                //
-                // into
-                //
-                //     #[repr(u8)]
-                //
-                // See https://github.com/rust-lang/rust/pull/135726/files#diff-ede26372490522288745c5b3df2b6b2a1cc913dcd09b29af3a49935afe00c7e6
                 tokens.push(Token::Annotation(attr.to_string()));
                 tokens.push(ws!());
             }

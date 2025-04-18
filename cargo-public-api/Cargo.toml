@@ -76,7 +76,7 @@ default-features = false
 features = ["std"]
 
 [dev-dependencies]
-assert_cmd = "2.0.16"
+assert_cmd = "2.0.17"
 home = "0.5.11"
 insta = "1.42.2"
 remove_dir_all = "1.0.0"

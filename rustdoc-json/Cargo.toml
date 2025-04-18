@@ -22,7 +22,7 @@ version = "0.1.41"
 features = ["attributes"]
 
 [dev-dependencies]
-assert_cmd = "2.0.16"
+assert_cmd = "2.0.17"
 tempfile = "3.19.1"
 
 [dev-dependencies.predicates]

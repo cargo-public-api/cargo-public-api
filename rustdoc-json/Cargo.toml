@@ -15,7 +15,7 @@ cargo_metadata = "0.18.1"
 cargo-manifest = "0.17.0"
 serde = { version = "1.0.179", features = ["derive"] }
 thiserror = "2.0.3"
-toml = "0.8.21"
+toml = "0.8.22"
 
 [dependencies.tracing]
 version = "0.1.41"

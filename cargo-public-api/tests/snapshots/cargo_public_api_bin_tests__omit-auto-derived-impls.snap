@@ -6,6 +6,8 @@ pub mod example_api
 #[non_exhaustive] pub struct example_api::Struct
 pub example_api::Struct::v1_field: usize
 pub example_api::Struct::v2_field: usize
+impl core::fmt::Debug for example_api::Struct
+pub fn example_api::Struct::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::marker::Freeze for example_api::Struct
 impl core::marker::Send for example_api::Struct
 impl core::marker::Sync for example_api::Struct

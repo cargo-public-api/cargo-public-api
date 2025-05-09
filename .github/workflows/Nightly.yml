@@ -50,6 +50,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write # Give access to secrets.ENSELICCICD_GITHUB_TOKEN
+    outputs:
+      changes-detected: ${{ steps.check-for-changes.outputs.changes-detected }}
     steps:
       - uses: actions/checkout@v4
         with:

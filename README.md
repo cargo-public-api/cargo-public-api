@@ -34,7 +34,7 @@ cargo public-api
 
 which will print the public API of `regex` with one line per public item in the API:
 
-<img src="docs/img/list-truncated.webp" alt="colored output of listing a public api">
+<img src="https://github.com/cargo-public-api/cargo-public-api/raw/main/docs/img/list-truncated.webp" alt="colored output of listing a public api">
 
 ## Diff the Public API
 
@@ -46,7 +46,7 @@ To diff the public API of the `regex` crate in the **current directory** against
 cargo public-api diff 1.6.0
 ```
 
-<img src="docs/img/diff-specific-published-version.webp" alt="colored output of diffing a public api">
+<img src="https://github.com/cargo-public-api/cargo-public-api/raw/main/docs/img/diff-specific-published-version.webp" alt="colored output of diffing a public api">
 
 
 ### … Against the Latest Published Version

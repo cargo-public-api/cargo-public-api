@@ -22,7 +22,7 @@ jobs:
       url: https://crates.io/crates/rustdoc-json
     runs-on: ubuntu-latest
     permissions:
-      contents: write # git push + access to secrets.CARGO_REGISTRY_TOKEN
+      contents: write # git push + access to secrets.CARGO_REGISTRY_PUBLISH_UPDATE_TOKEN_ENSELIC
     steps:
       - uses: actions/checkout@v4
 
@@ -38,7 +38,7 @@ jobs:
       # version exists at crates.io but not as a git tag.
       - run: cargo publish -p rustdoc-json
         env:
-          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_PUBLISH_UPDATE_TOKEN_ENSELIC }}
 
       # Push the tag to git.
       - name: push tag

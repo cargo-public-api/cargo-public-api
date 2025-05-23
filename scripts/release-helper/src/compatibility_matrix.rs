@@ -2,7 +2,14 @@ use jiff::{civil::Date, ToSpan};
 
 use crate::version_info::CargoPublicApiVersionInfo;
 
-pub fn render(version_infos: &[CargoPublicApiVersionInfo]) -> String {
+/// Renders the compatibility matrix for the given version information. More
+/// rows than `min_rows` will never be culled. Rows with a nightly version older
+/// than `max_months_back` will be removed (if `min_rows` can be respected).
+pub fn render(
+    version_infos: &[CargoPublicApiVersionInfo],
+    min_rows: Option<usize>,
+    max_months_back: Option<i64>,
+) -> String {
     /// Same as ['CargoPublicApiVersionInfo'] but easier to manipulate
     /// programatically.
     struct InternalCargoPublicApiVersionInfo {
@@ -84,9 +91,20 @@ pub fn render(version_infos: &[CargoPublicApiVersionInfo]) -> String {
         }
     }
     rows.push(current_row.unwrap());
+    rows.reverse(); // Put newest versions at the top
+
+    if let (Some(min_rows), Some(max_months_back)) = (min_rows, max_months_back) {
+        let min_date =
+            rows.first().unwrap().nightly_rust_version_range.start - max_months_back.months();
+        while rows.len() > min_rows
+            && rows.last().unwrap().nightly_rust_version_range.start < min_date
+        {
+            rows.pop();
+        }
+    }
 
     let mut output = String::new();
-    for row in rows.iter().rev() {
+    for row in rows {
         let cargo_public_api_version_str = if row.cargo_public_api_version_range.start
             == row.cargo_public_api_version_range.end
         {
@@ -271,8 +289,78 @@ mod tests {
         );
     }
 
+    #[test]
+    fn test_render_compatibility_matrix_four_versions_middle_same_nightly_max_months_back_limited()
+    {
+        assert_render_with_options(
+            &[
+                CargoPublicApiVersionInfo {
+                    cargo_public_api_version: "0.39.x",
+                    min_nightly_rust_version: "nightly-2024-10-13",
+                },
+                CargoPublicApiVersionInfo {
+                    cargo_public_api_version: "0.38.x",
+                    min_nightly_rust_version: "nightly-2024-09-10",
+                },
+                CargoPublicApiVersionInfo {
+                    cargo_public_api_version: "0.37.x",
+                    min_nightly_rust_version: "nightly-2024-09-10",
+                },
+                CargoPublicApiVersionInfo {
+                    cargo_public_api_version: "0.36.x",
+                    min_nightly_rust_version: "nightly-2024-06-07",
+                },
+            ],
+            "\
+             | 0.39.x           | nightly-2024-10-13 —                    |\n\
+             | 0.37.x — 0.38.x  | nightly-2024-09-10 — nightly-2024-10-12 |\n\
+            ",
+            Some(1), /* min_rows */
+            Some(3), /* max_months_back */
+        );
+    }
+
+    #[test]
+    fn test_render_compatibility_matrix_four_versions_middle_same_nightly_min_rows_applied() {
+        assert_render_with_options(
+            &[
+                CargoPublicApiVersionInfo {
+                    cargo_public_api_version: "0.39.x",
+                    min_nightly_rust_version: "nightly-2024-10-13",
+                },
+                CargoPublicApiVersionInfo {
+                    cargo_public_api_version: "0.38.x",
+                    min_nightly_rust_version: "nightly-2023-09-10",
+                },
+                CargoPublicApiVersionInfo {
+                    cargo_public_api_version: "0.37.x",
+                    min_nightly_rust_version: "nightly-2023-09-10",
+                },
+                CargoPublicApiVersionInfo {
+                    cargo_public_api_version: "0.36.x",
+                    min_nightly_rust_version: "nightly-2022-06-07",
+                },
+            ],
+            "\
+             | 0.39.x           | nightly-2024-10-13 —                    |\n\
+             | 0.37.x — 0.38.x  | nightly-2023-09-10 — nightly-2024-10-12 |\n\
+            ",
+            Some(2), /* min_rows */
+            Some(1), /* max_months_back */
+        );
+    }
+
     fn assert_render(version_infos: &[CargoPublicApiVersionInfo], expected_output: &str) {
-        let output = render(version_infos);
+        assert_render_with_options(version_infos, expected_output, None, None);
+    }
+
+    fn assert_render_with_options(
+        version_infos: &[CargoPublicApiVersionInfo],
+        expected_output: &str,
+        min_rows: Option<usize>,
+        max_months_back: Option<i64>,
+    ) {
+        let output = render(version_infos, min_rows, max_months_back);
         assert_eq!(output, expected_output);
     }
 }

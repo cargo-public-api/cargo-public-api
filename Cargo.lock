@@ -1029,6 +1029,7 @@ checksum = "dbb5fb1acd8a1a18b3dd5be62d25485eb770e05afb408a9627d14d451bae12da"
 name = "release-helper"
 version = "0.1.0"
 dependencies = [
+ "clap",
  "jiff",
  "pretty_assertions",
  "semver",

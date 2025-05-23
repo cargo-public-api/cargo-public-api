@@ -1,6 +1,18 @@
 //! See `docs/RELEASE.md` for information on how to use this.
 
+#[derive(clap::Parser, Debug)]
+#[command(author, version, about)]
+struct Args {
+    #[arg(long, default_value_t = 6)]
+    min_compatibility_matrix_rows: usize,
+
+    #[arg(long, default_value_t = 6)]
+    max_compatibility_matrix_months_back: i64,
+}
+
 fn main() {
+    let args = <Args as clap::Parser>::parse();
+
     let current_min_nightly_rust_version =
         release_helper::version_info::TABLE[0].min_nightly_rust_version;
 
@@ -12,7 +24,11 @@ fn main() {
 | Version          | Understands the rustdoc JSON output of  |
 | ---------------- | --------------------------------------- |
 ",
-        &release_helper::compatibility_matrix::render(release_helper::version_info::TABLE),
+        &release_helper::compatibility_matrix::render(
+            release_helper::version_info::TABLE,
+            Some(args.min_compatibility_matrix_rows),
+            Some(args.max_compatibility_matrix_months_back),
+        ),
         "| earlier versions | see [here]",
     );
     insert_file_contents_in_between(

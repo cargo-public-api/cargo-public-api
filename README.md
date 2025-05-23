@@ -159,12 +159,7 @@ cargo public-api -sss
 | 0.43.x — 0.44.x  | nightly-2025-01-25 — nightly-2025-03-13 |
 | 0.40.x — 0.42.x  | nightly-2024-10-18 — nightly-2025-01-24 |
 | 0.39.x           | nightly-2024-10-13 — nightly-2024-10-17 |
-| 0.38.x           | nightly-2024-09-10 — nightly-2024-10-12 |
-| 0.37.x           | nightly-2024-07-05 — nightly-2024-09-09 |
-| 0.35.x — 0.36.x  | nightly-2024-06-07 — nightly-2024-07-04 |
-| 0.32.x — 0.34.x  | nightly-2023-08-25 — nightly-2024-06-06 |
-| 0.30.x — 0.31.x  | nightly-2023-05-24 — nightly-2023-08-24 |
-| earlier versions | see [here](https://github.com/cargo-public-api/cargo-public-api/blob/7056d59cd279610fc61cc9669be3840b0dd8273c/README.md#compatibility-matrix) |
+| earlier versions | see [here](https://github.com/cargo-public-api/cargo-public-api/blob/main/scripts/release-helper/src/version_info.rs) |
 
 # Contributing
 

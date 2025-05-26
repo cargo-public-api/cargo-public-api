@@ -164,12 +164,12 @@ dependencies = [
 
 [[package]]
 name = "cargo-manifest"
-version = "0.17.0"
+version = "0.19.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8b2ce2075c35e4b492b93e3d5dd1dd3670de553f15045595daef8164ed9a3751"
+checksum = "a1d8af896b707212cd0e99c112a78c9497dd32994192a463ed2f7419d29bd8c6"
 dependencies = [
  "serde",
- "thiserror 1.0.69",
+ "thiserror 2.0.12",
  "toml",
 ]
 
@@ -213,7 +213,7 @@ dependencies = [
  "serde_json",
  "smol_str",
  "tempfile",
- "thiserror 2.0.3",
+ "thiserror 2.0.12",
  "toml",
  "tracing-subscriber",
 ]
@@ -423,7 +423,7 @@ dependencies = [
  "serde_derive",
  "serde_json",
  "smol_str",
- "thiserror 2.0.3",
+ "thiserror 2.0.12",
  "toml",
 ]
 
@@ -940,7 +940,7 @@ dependencies = [
  "serde",
  "serde_json",
  "tempfile",
- "thiserror 2.0.3",
+ "thiserror 2.0.12",
 ]
 
 [[package]]
@@ -1078,7 +1078,7 @@ dependencies = [
  "predicates",
  "serde",
  "tempfile",
- "thiserror 2.0.3",
+ "thiserror 2.0.12",
  "toml",
  "tracing",
 ]
@@ -1122,7 +1122,7 @@ dependencies = [
 name = "rustup-toolchain"
 version = "0.1.10"
 dependencies = [
- "thiserror 2.0.3",
+ "thiserror 2.0.12",
 ]
 
 [[package]]
@@ -1319,11 +1319,11 @@ dependencies = [
 
 [[package]]
 name = "thiserror"
-version = "2.0.3"
+version = "2.0.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c006c85c7651b3cf2ada4584faa36773bd07bac24acfb39f3c431b36d7e667aa"
+checksum = "567b8a2dae586314f7be2a752ec7474332959c6460e02bde30d702a66d488708"
 dependencies = [
- "thiserror-impl 2.0.3",
+ "thiserror-impl 2.0.12",
 ]
 
 [[package]]
@@ -1339,9 +1339,9 @@ dependencies = [
 
 [[package]]
 name = "thiserror-impl"
-version = "2.0.3"
+version = "2.0.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f077553d607adc1caf65430528a576c757a71ed73944b66ebb58ef2bbd243568"
+checksum = "7f7cf42b4507d8ea322120659672cf1b9dbb93f8f2d4ecfd6e51350ff5b17a1d"
 dependencies = [
  "proc-macro2",
  "quote",

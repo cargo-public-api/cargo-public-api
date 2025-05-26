@@ -1,4 +1,5 @@
 use super::BuildError;
+use cargo_metadata::TargetKind;
 use tracing::*;
 
 use std::io::Write;
@@ -241,7 +242,7 @@ fn library_name(
         .ok_or_else(|| BuildError::VirtualManifest(manifest_path.as_ref().to_owned()))?;
 
     for target in &package.targets {
-        if target.kind.iter().map(|s| s.as_str()).any(|s| s == "lib") {
+        if target.kind.contains(&TargetKind::Lib) {
             return Ok(target.name.to_owned());
         }
     }

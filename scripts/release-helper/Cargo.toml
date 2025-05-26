@@ -4,6 +4,10 @@ version = "0.1.0"
 edition = "2021"
 license = "MIT"
 
+[dependencies.clap]
+version = "4.5.0"
+features = ["derive", "wrap_help"]
+
 [dependencies.jiff]
 version = "0.1.15"
 default-features = false

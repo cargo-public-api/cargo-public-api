@@ -1,0 +1,5 @@
+[package]
+name = "resolver-3"
+edition = "2024"
+version = "0.1.0"
+resolver = "3"

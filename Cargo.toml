@@ -58,6 +58,9 @@ exclude = [
     # name are different.
     "test-apis/other-lib-name",
 
+    # Has `resolver = 3`.
+    "test-apis/resolver-3",
+
     # Contains no lib, only a bin.
     "test-apis/no-lib",
 

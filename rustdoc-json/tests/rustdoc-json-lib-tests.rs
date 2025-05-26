@@ -22,6 +22,16 @@ fn ensure_workspace_inheritance_works() {
 }
 
 #[test]
+fn resolver_3() {
+    rustdoc_json::Builder::default()
+        .toolchain("nightly")
+        .manifest_path("../test-apis/resolver-3/Cargo.toml")
+        .quiet(true) // Make it less noisy to run tests
+        .build()
+        .unwrap();
+}
+
+#[test]
 fn package_target_bin() {
     test_alternative_package_target(PackageTarget::Bin("test_crate".into()));
 }

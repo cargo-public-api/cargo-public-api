@@ -1,5 +1,8 @@
 # rustdoc-json
 
+## v0.9.6
+* Don't panic on `resolver = 3` in `Cargo.toml`.
+
 ## v0.9.5
 * Insignificant maintenance release (fix a typo and remove a couple of `dev-dependencies` due to a moved test).
 

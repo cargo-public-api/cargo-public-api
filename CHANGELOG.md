@@ -1,5 +1,8 @@
 # `cargo-public-api` changelog
 
+## v0.47.1
+* Don't panic on `resolver = 3` in `Cargo.toml`.
+
 ## v0.47.0
 * Support `nightly-2025-03-24` and later.
 * Restore old and correct `#[repr(...)]` rendering

@@ -1,5 +1,8 @@
 # `public-api` changelog
 
+## v0.47.1
+* Bump deps.
+
 ## v0.47.0
 * Support `nightly-2025-03-24` and later.
 * Restore old and correct `#[repr(...)]` rendering

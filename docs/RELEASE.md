@@ -27,7 +27,8 @@ For `public-api` and `cargo-public-api` we bump
 
 ### `cargo-public-api`
 
-1. First release `rustup-toolchain`, `rustdoc-json` and `public-api` if needed, in that order. See below. **Note:** Because of circular dependencies you must release one helper package at a time from `main`. You can't update all packages in a single commit.
+1. Make sure you have done `cargo install cargo-edit` to make `cargo set-version` available.
+1. First release `rustup-toolchain`, `rustdoc-json` and `public-api` if needed, in that order. See below.
 1. Create a local branch.
 1. Run
    ```

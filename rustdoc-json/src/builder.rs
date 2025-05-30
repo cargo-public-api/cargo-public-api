@@ -238,7 +238,7 @@ fn library_name(
     let package = metadata
         .packages
         .iter()
-        .find(|p| p.name == package_name)
+        .find(|p| p.name.as_str() == package_name)
         .ok_or_else(|| BuildError::VirtualManifest(manifest_path.as_ref().to_owned()))?;
 
     for target in &package.targets {
@@ -247,7 +247,7 @@ fn library_name(
         }
     }
 
-    Ok(package.name.clone())
+    Ok(package.name.as_str().to_string())
 }
 
 /// Color configuration for the output of `cargo rustdoc`.

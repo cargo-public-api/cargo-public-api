@@ -13,6 +13,9 @@ members = [
     # High-level CLI for "rustdoc-json" and "public-api"
     "cargo-public-api",
 
+    # JSON types of https://github.com/oli-obk/cargo_metadata without any extra dependencies
+    "cargo-metadata-types",
+
     # Contains various repo-wide tests and utilities
     "repo-tests", "scripts/release-helper",
 ]

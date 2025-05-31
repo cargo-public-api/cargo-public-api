@@ -1,0 +1,796 @@
+cargo-public-api v0.47.1 (/home/martin/src/cargo-public-api/cargo-public-api)
+├── serde_json v1.0.140
+│   ├── memchr v2.5.0
+│   ├── serde v1.0.219
+│   │   └── serde_derive feature "default"
+│   │       └── serde_derive v1.0.219 (proc-macro)
+│   │           ├── proc-macro2 feature "proc-macro"
+│   │           │   └── proc-macro2 v1.0.89
+│   │           │       └── unicode-ident feature "default"
+│   │           │           └── unicode-ident v1.0.16
+│   │           ├── quote feature "proc-macro"
+│   │           │   ├── quote v1.0.35
+│   │           │   │   └── proc-macro2 v1.0.89 (*)
+│   │           │   └── proc-macro2 feature "proc-macro" (*)
+│   │           ├── syn feature "clone-impls"
+│   │           │   └── syn v2.0.87
+│   │           │       ├── proc-macro2 v1.0.89 (*)
+│   │           │       ├── quote v1.0.35 (*)
+│   │           │       └── unicode-ident feature "default" (*)
+│   │           ├── syn feature "derive"
+│   │           │   └── syn v2.0.87 (*)
+│   │           ├── syn feature "parsing"
+│   │           │   └── syn v2.0.87 (*)
+│   │           ├── syn feature "printing"
+│   │           │   └── syn v2.0.87 (*)
+│   │           └── syn feature "proc-macro"
+│   │               ├── syn v2.0.87 (*)
+│   │               ├── proc-macro2 feature "proc-macro" (*)
+│   │               └── quote feature "proc-macro" (*)
+│   ├── itoa feature "default"
+│   │   └── itoa v1.0.6
+│   └── ryu feature "default"
+│       └── ryu v1.0.13
+├── anyhow feature "default"
+│   ├── anyhow v1.0.75
+│   └── anyhow feature "std"
+│       └── anyhow v1.0.75
+├── cargo-manifest feature "default"
+│   └── cargo-manifest v0.19.1
+│       ├── serde feature "default"
+│       │   ├── serde v1.0.219 (*)
+│       │   └── serde feature "std"
+│       │       └── serde v1.0.219 (*)
+│       ├── serde feature "derive"
+│       │   ├── serde v1.0.219 (*)
+│       │   └── serde feature "serde_derive"
+│       │       └── serde v1.0.219 (*)
+│       ├── thiserror feature "default"
+│       │   ├── thiserror v2.0.12
+│       │   │   └── thiserror-impl feature "default"
+│       │   │       └── thiserror-impl v2.0.12 (proc-macro)
+│       │   │           ├── proc-macro2 feature "default"
+│       │   │           │   ├── proc-macro2 v1.0.89 (*)
+│       │   │           │   └── proc-macro2 feature "proc-macro" (*)
+│       │   │           ├── quote feature "default"
+│       │   │           │   ├── quote v1.0.35 (*)
+│       │   │           │   └── quote feature "proc-macro" (*)
+│       │   │           └── syn feature "default"
+│       │   │               ├── syn v2.0.87 (*)
+│       │   │               ├── syn feature "clone-impls" (*)
+│       │   │               ├── syn feature "derive" (*)
+│       │   │               ├── syn feature "parsing" (*)
+│       │   │               ├── syn feature "printing" (*)
+│       │   │               └── syn feature "proc-macro" (*)
+│       │   └── thiserror feature "std"
+│       │       └── thiserror v2.0.12 (*)
+│       ├── toml feature "parse"
+│       │   ├── toml v0.8.22
+│       │   │   ├── serde feature "default" (*)
+│       │   │   ├── indexmap feature "default"
+│       │   │   │   ├── indexmap v2.7.1
+│       │   │   │   │   ├── equivalent v1.0.0
+│       │   │   │   │   └── hashbrown v0.15.2
+│       │   │   │   └── indexmap feature "std"
+│       │   │   │       └── indexmap v2.7.1 (*)
+│       │   │   ├── serde_spanned feature "default"
+│       │   │   │   └── serde_spanned v0.6.8
+│       │   │   │       └── serde feature "default" (*)
+│       │   │   ├── serde_spanned feature "serde"
+│       │   │   │   └── serde_spanned v0.6.8 (*)
+│       │   │   ├── toml_datetime feature "default"
+│       │   │   │   └── toml_datetime v0.6.9
+│       │   │   │       └── serde feature "default" (*)
+│       │   │   ├── toml_datetime feature "serde"
+│       │   │   │   └── toml_datetime v0.6.9 (*)
+│       │   │   └── toml_edit feature "serde"
+│       │   │       ├── toml_edit v0.22.26
+│       │   │       │   ├── serde feature "default" (*)
+│       │   │       │   ├── indexmap feature "default" (*)
+│       │   │       │   ├── indexmap feature "std" (*)
+│       │   │       │   ├── serde_spanned feature "default" (*)
+│       │   │       │   ├── serde_spanned feature "serde" (*)
+│       │   │       │   ├── toml_datetime feature "default" (*)
+│       │   │       │   ├── toml_write feature "default"
+│       │   │       │   │   ├── toml_write v0.1.1
+│       │   │       │   │   └── toml_write feature "std"
+│       │   │       │   │       ├── toml_write v0.1.1
+│       │   │       │   │       └── toml_write feature "alloc"
+│       │   │       │   │           └── toml_write v0.1.1
+│       │   │       │   └── winnow feature "default"
+│       │   │       │       ├── winnow v0.7.7
+│       │   │       │       └── winnow feature "std"
+│       │   │       │           ├── winnow v0.7.7
+│       │   │       │           └── winnow feature "alloc"
+│       │   │       │               └── winnow v0.7.7
+│       │   │       └── toml_datetime feature "serde" (*)
+│       │   └── toml_edit feature "parse"
+│       │       └── toml_edit v0.22.26 (*)
+│       └── toml feature "preserve_order"
+│           ├── toml v0.8.22 (*)
+│           └── toml feature "indexmap"
+│               └── toml v0.8.22 (*)
+├── serde feature "default" (*)
+├── serde feature "rc"
+│   └── serde v1.0.219 (*)
+├── thiserror feature "default" (*)
+├── toml feature "default"
+│   ├── toml v0.8.22 (*)
+│   ├── toml feature "display"
+│   │   ├── toml v0.8.22 (*)
+│   │   └── toml_edit feature "display"
+│   │       └── toml_edit v0.22.26 (*)
+│   └── toml feature "parse" (*)
+├── cargo-util feature "default"
+│   └── cargo-util v0.2.8
+│       ├── anyhow feature "default" (*)
+│       ├── libc feature "default"
+│       │   ├── libc v0.2.169
+│       │   └── libc feature "std"
+│       │       └── libc v0.2.169
+│       ├── filetime feature "default"
+│       │   └── filetime v0.2.22
+│       │       ├── libc feature "default" (*)
+│       │       └── cfg-if feature "default"
+│       │           └── cfg-if v1.0.0
+│       ├── hex feature "default"
+│       │   ├── hex v0.4.3
+│       │   │   └── serde v1.0.219 (*)
+│       │   └── hex feature "std"
+│       │       ├── hex v0.4.3 (*)
+│       │       └── hex feature "alloc"
+│       │           └── hex v0.4.3 (*)
+│       ├── jobserver feature "default"
+│       │   └── jobserver v0.1.27
+│       │       └── libc feature "default" (*)
+│       ├── same-file feature "default"
+│       │   └── same-file v1.0.6
+│       ├── sha2 feature "default"
+│       │   ├── sha2 v0.10.8
+│       │   │   ├── cfg-if feature "default" (*)
+│       │   │   ├── cpufeatures feature "default"
+│       │   │   │   └── cpufeatures v0.2.7
+│       │   │   └── digest feature "default"
+│       │   │       ├── digest v0.10.7
+│       │   │       │   ├── block-buffer feature "default"
+│       │   │       │   │   └── block-buffer v0.10.4
+│       │   │       │   │       └── generic-array feature "default"
+│       │   │       │   │           └── generic-array v0.14.7
+│       │   │       │   │               └── typenum feature "default"
+│       │   │       │   │                   └── typenum v1.16.0
+│       │   │       │   │               [build-dependencies]
+│       │   │       │   │               └── version_check feature "default"
+│       │   │       │   │                   └── version_check v0.9.4
+│       │   │       │   └── crypto-common feature "default"
+│       │   │       │       └── crypto-common v0.1.6
+│       │   │       │           ├── generic-array feature "default" (*)
+│       │   │       │           ├── generic-array feature "more_lengths"
+│       │   │       │           │   └── generic-array v0.14.7 (*)
+│       │   │       │           └── typenum feature "default" (*)
+│       │   │       └── digest feature "core-api"
+│       │   │           ├── digest v0.10.7 (*)
+│       │   │           └── digest feature "block-buffer"
+│       │   │               └── digest v0.10.7 (*)
+│       │   └── sha2 feature "std"
+│       │       ├── sha2 v0.10.8 (*)
+│       │       └── digest feature "std"
+│       │           ├── digest v0.10.7 (*)
+│       │           ├── digest feature "alloc"
+│       │           │   └── digest v0.10.7 (*)
+│       │           └── crypto-common feature "std"
+│       │               └── crypto-common v0.1.6 (*)
+│       ├── shell-escape feature "default"
+│       │   └── shell-escape v0.1.5
+│       ├── tempfile feature "default"
+│       │   ├── tempfile v3.19.1
+│       │   │   ├── getrandom v0.3.1
+│       │   │   │   ├── libc v0.2.169
+│       │   │   │   └── cfg-if feature "default" (*)
+│       │   │   ├── once_cell feature "std"
+│       │   │   │   ├── once_cell v1.20.2
+│       │   │   │   └── once_cell feature "alloc"
+│       │   │   │       ├── once_cell v1.20.2
+│       │   │   │       └── once_cell feature "race"
+│       │   │   │           └── once_cell v1.20.2
+│       │   │   ├── fastrand feature "default"
+│       │   │   │   ├── fastrand v2.3.0
+│       │   │   │   └── fastrand feature "std"
+│       │   │   │       ├── fastrand v2.3.0
+│       │   │   │       └── fastrand feature "alloc"
+│       │   │   │           └── fastrand v2.3.0
+│       │   │   ├── rustix feature "default"
+│       │   │   │   ├── rustix v1.0.0
+│       │   │   │   │   ├── bitflags v2.4.1
+│       │   │   │   │   ├── linux-raw-sys feature "elf"
+│       │   │   │   │   │   └── linux-raw-sys v0.9.2
+│       │   │   │   │   ├── linux-raw-sys feature "errno"
+│       │   │   │   │   │   └── linux-raw-sys v0.9.2
+│       │   │   │   │   ├── linux-raw-sys feature "general"
+│       │   │   │   │   │   └── linux-raw-sys v0.9.2
+│       │   │   │   │   ├── linux-raw-sys feature "ioctl"
+│       │   │   │   │   │   └── linux-raw-sys v0.9.2
+│       │   │   │   │   └── linux-raw-sys feature "no_std"
+│       │   │   │   │       └── linux-raw-sys v0.9.2
+│       │   │   │   └── rustix feature "std"
+│       │   │   │       ├── rustix v1.0.0 (*)
+│       │   │   │       ├── rustix feature "alloc"
+│       │   │   │       │   └── rustix v1.0.0 (*)
+│       │   │   │       └── bitflags feature "std"
+│       │   │   │           └── bitflags v2.4.1
+│       │   │   └── rustix feature "fs"
+│       │   │       └── rustix v1.0.0 (*)
+│       │   └── tempfile feature "getrandom"
+│       │       └── tempfile v3.19.1 (*)
+│       ├── tracing feature "default"
+│       │   ├── tracing v0.1.41
+│       │   │   ├── tracing-core v0.1.33
+│       │   │   │   └── once_cell feature "default"
+│       │   │   │       ├── once_cell v1.20.2
+│       │   │   │       └── once_cell feature "std" (*)
+│       │   │   ├── pin-project-lite feature "default"
+│       │   │   │   └── pin-project-lite v0.2.13
+│       │   │   └── tracing-attributes feature "default"
+│       │   │       └── tracing-attributes v0.1.28 (proc-macro)
+│       │   │           ├── proc-macro2 feature "default" (*)
+│       │   │           ├── quote feature "default" (*)
+│       │   │           ├── syn feature "clone-impls" (*)
+│       │   │           ├── syn feature "extra-traits"
+│       │   │           │   └── syn v2.0.87 (*)
+│       │   │           ├── syn feature "full"
+│       │   │           │   └── syn v2.0.87 (*)
+│       │   │           ├── syn feature "parsing" (*)
+│       │   │           ├── syn feature "printing" (*)
+│       │   │           ├── syn feature "proc-macro" (*)
+│       │   │           └── syn feature "visit-mut"
+│       │   │               └── syn v2.0.87 (*)
+│       │   ├── tracing feature "attributes"
+│       │   │   ├── tracing v0.1.41 (*)
+│       │   │   └── tracing feature "tracing-attributes"
+│       │   │       └── tracing v0.1.41 (*)
+│       │   └── tracing feature "std"
+│       │       ├── tracing v0.1.41 (*)
+│       │       └── tracing-core feature "std"
+│       │           ├── tracing-core v0.1.33 (*)
+│       │           └── tracing-core feature "once_cell"
+│       │               └── tracing-core v0.1.33 (*)
+│       └── walkdir feature "default"
+│           └── walkdir v2.4.0
+│               └── same-file feature "default" (*)
+├── hex feature "default" (*)
+├── hex feature "serde"
+│   └── hex v0.4.3 (*)
+├── cargo_metadata feature "default"
+│   └── cargo_metadata v0.19.2
+│       ├── serde feature "default" (*)
+│       ├── serde feature "derive" (*)
+│       ├── thiserror feature "default" (*)
+│       ├── camino feature "default"
+│       │   └── camino v1.1.4
+│       │       ├── serde feature "default" (*)
+│       │       └── serde feature "derive" (*)
+│       ├── camino feature "serde1"
+│       │   ├── camino v1.1.4 (*)
+│       │   └── camino feature "serde"
+│       │       └── camino v1.1.4 (*)
+│       ├── cargo-platform feature "default"
+│       │   └── cargo-platform v0.1.2
+│       │       ├── serde feature "default" (*)
+│       │       └── serde feature "derive" (*)
+│       ├── semver feature "default"
+│       │   ├── semver v1.0.18
+│       │   │   └── serde v1.0.219 (*)
+│       │   └── semver feature "std"
+│       │       └── semver v1.0.18 (*)
+│       ├── semver feature "serde"
+│       │   └── semver v1.0.18 (*)
+│       ├── serde_json feature "default"
+│       │   ├── serde_json v1.0.140 (*)
+│       │   └── serde_json feature "std"
+│       │       ├── serde_json v1.0.140 (*)
+│       │       ├── memchr feature "std"
+│       │       │   └── memchr v2.5.0
+│       │       └── serde feature "std" (*)
+│       └── serde_json feature "unbounded_depth"
+│           └── serde_json v1.0.140 (*)
+├── semver feature "default" (*)
+├── clap feature "default"
+│   ├── clap v4.5.0
+│   │   ├── clap_builder v4.5.0
+│   │   │   ├── anstyle feature "default"
+│   │   │   │   ├── anstyle v1.0.0
+│   │   │   │   └── anstyle feature "std"
+│   │   │   │       └── anstyle v1.0.0
+│   │   │   ├── anstream feature "default"
+│   │   │   │   ├── anstream v0.6.11
+│   │   │   │   │   ├── anstyle feature "default" (*)
+│   │   │   │   │   ├── anstyle-parse feature "default"
+│   │   │   │   │   │   ├── anstyle-parse v0.2.0
+│   │   │   │   │   │   │   └── utf8parse feature "default"
+│   │   │   │   │   │   │       └── utf8parse v0.2.1
+│   │   │   │   │   │   └── anstyle-parse feature "utf8"
+│   │   │   │   │   │       └── anstyle-parse v0.2.0 (*)
+│   │   │   │   │   ├── utf8parse feature "default" (*)
+│   │   │   │   │   ├── anstyle-query feature "default"
+│   │   │   │   │   │   └── anstyle-query v1.0.0
+│   │   │   │   │   └── colorchoice feature "default"
+│   │   │   │   │       └── colorchoice v1.0.0
+│   │   │   │   ├── anstream feature "auto"
+│   │   │   │   │   └── anstream v0.6.11 (*)
+│   │   │   │   └── anstream feature "wincon"
+│   │   │   │       └── anstream v0.6.11 (*)
+│   │   │   ├── clap_lex feature "default"
+│   │   │   │   └── clap_lex v0.7.0
+│   │   │   ├── strsim feature "default"
+│   │   │   │   └── strsim v0.11.0
+│   │   │   └── terminal_size feature "default"
+│   │   │       └── terminal_size v0.3.0
+│   │   │           ├── rustix feature "default"
+│   │   │           │   ├── rustix v0.38.43
+│   │   │           │   │   ├── bitflags v2.4.1
+│   │   │           │   │   ├── linux-raw-sys feature "elf"
+│   │   │           │   │   │   └── linux-raw-sys v0.4.15
+│   │   │           │   │   ├── linux-raw-sys feature "errno"
+│   │   │           │   │   │   └── linux-raw-sys v0.4.15
+│   │   │           │   │   ├── linux-raw-sys feature "general"
+│   │   │           │   │   │   └── linux-raw-sys v0.4.15
+│   │   │           │   │   ├── linux-raw-sys feature "ioctl"
+│   │   │           │   │   │   └── linux-raw-sys v0.4.15
+│   │   │           │   │   └── linux-raw-sys feature "no_std"
+│   │   │           │   │       └── linux-raw-sys v0.4.15
+│   │   │           │   ├── rustix feature "std"
+│   │   │           │   │   ├── rustix v0.38.43 (*)
+│   │   │           │   │   ├── bitflags feature "std" (*)
+│   │   │           │   │   ├── rustix feature "alloc"
+│   │   │           │   │   │   └── rustix v0.38.43 (*)
+│   │   │           │   │   └── rustix feature "libc-extra-traits"
+│   │   │           │   │       └── rustix v0.38.43 (*)
+│   │   │           │   └── rustix feature "use-libc-auxv"
+│   │   │           │       └── rustix v0.38.43 (*)
+│   │   │           └── rustix feature "termios"
+│   │   │               └── rustix v0.38.43 (*)
+│   │   └── clap_derive feature "default"
+│   │       └── clap_derive v4.5.0 (proc-macro)
+│   │           ├── proc-macro2 feature "default" (*)
+│   │           ├── quote feature "default" (*)
+│   │           ├── syn feature "default" (*)
+│   │           ├── syn feature "full" (*)
+│   │           └── heck feature "default"
+│   │               └── heck v0.4.1
+│   ├── clap feature "color"
+│   │   ├── clap v4.5.0 (*)
+│   │   └── clap_builder feature "color"
+│   │       └── clap_builder v4.5.0 (*)
+│   ├── clap feature "error-context"
+│   │   ├── clap v4.5.0 (*)
+│   │   └── clap_builder feature "error-context"
+│   │       └── clap_builder v4.5.0 (*)
+│   ├── clap feature "help"
+│   │   ├── clap v4.5.0 (*)
+│   │   └── clap_builder feature "help"
+│   │       └── clap_builder v4.5.0 (*)
+│   ├── clap feature "std"
+│   │   ├── clap v4.5.0 (*)
+│   │   └── clap_builder feature "std"
+│   │       ├── clap_builder v4.5.0 (*)
+│   │       └── anstyle feature "std" (*)
+│   ├── clap feature "suggestions"
+│   │   ├── clap v4.5.0 (*)
+│   │   └── clap_builder feature "suggestions"
+│   │       ├── clap_builder v4.5.0 (*)
+│   │       └── clap_builder feature "error-context" (*)
+│   └── clap feature "usage"
+│       ├── clap v4.5.0 (*)
+│       └── clap_builder feature "usage"
+│           └── clap_builder v4.5.0 (*)
+├── clap feature "derive"
+│   └── clap v4.5.0 (*)
+├── clap feature "wrap_help"
+│   ├── clap v4.5.0 (*)
+│   └── clap_builder feature "wrap_help"
+│       ├── clap_builder v4.5.0 (*)
+│       └── clap_builder feature "help" (*)
+├── clap_complete_command feature "default"
+│   ├── clap_complete_command v0.5.1
+│   │   ├── clap feature "default" (*)
+│   │   ├── clap_complete feature "default"
+│   │   │   └── clap_complete v4.2.0
+│   │   │       └── clap feature "std" (*)
+│   │   ├── clap_complete_fig feature "default"
+│   │   │   └── clap_complete_fig v4.2.0
+│   │   │       ├── clap feature "std" (*)
+│   │   │       └── clap_complete feature "default" (*)
+│   │   └── clap_complete_nushell feature "default"
+│   │       └── clap_complete_nushell v0.1.10
+│   │           ├── clap v4.5.0 (*)
+│   │           └── clap_complete feature "default" (*)
+│   ├── clap_complete_command feature "fig"
+│   │   └── clap_complete_command v0.5.1 (*)
+│   └── clap_complete_command feature "nushell"
+│       └── clap_complete_command v0.5.1 (*)
+├── crates-index feature "default"
+│   ├── crates-index v3.10.0
+│   │   ├── memchr feature "default"
+│   │   │   ├── memchr v2.5.0
+│   │   │   └── memchr feature "std" (*)
+│   │   ├── serde feature "default" (*)
+│   │   ├── serde feature "rc" (*)
+│   │   ├── serde_derive feature "default" (*)
+│   │   ├── thiserror feature "default" (*)
+│   │   ├── toml feature "default" (*)
+│   │   ├── hex feature "default" (*)
+│   │   ├── hex feature "serde" (*)
+│   │   ├── semver feature "default" (*)
+│   │   ├── serde_json feature "default" (*)
+│   │   ├── home feature "default"
+│   │   │   └── home v0.5.11
+│   │   ├── http feature "default"
+│   │   │   ├── http v1.2.0
+│   │   │   │   ├── itoa feature "default" (*)
+│   │   │   │   ├── bytes feature "default"
+│   │   │   │   │   ├── bytes v1.10.0
+│   │   │   │   │   └── bytes feature "std"
+│   │   │   │   │       └── bytes v1.10.0
+│   │   │   │   └── fnv feature "default"
+│   │   │   │       ├── fnv v1.0.7
+│   │   │   │       └── fnv feature "std"
+│   │   │   │           └── fnv v1.0.7
+│   │   │   └── http feature "std"
+│   │   │       └── http v1.2.0 (*)
+│   │   ├── rustc-hash feature "default"
+│   │   │   ├── rustc-hash v2.1.1
+│   │   │   └── rustc-hash feature "std"
+│   │   │       └── rustc-hash v2.1.1
+│   │   ├── rustc-stable-hash feature "default"
+│   │   │   └── rustc-stable-hash v0.1.1
+│   │   ├── smol_str feature "default"
+│   │   │   ├── smol_str v0.3.2
+│   │   │   │   └── serde v1.0.219 (*)
+│   │   │   └── smol_str feature "std"
+│   │   │       ├── smol_str v0.3.2 (*)
+│   │   │       └── serde feature "std" (*)
+│   │   └── smol_str feature "serde"
+│   │       └── smol_str v0.3.2 (*)
+│   └── crates-index feature "sparse"
+│       └── crates-index v3.10.0 (*)
+├── rustc-hash feature "default" (*)
+├── smol_str feature "default" (*)
+├── smol_str feature "serde" (*)
+├── curl feature "default"
+│   ├── curl v0.4.47
+│   │   ├── curl-sys v0.4.77+curl-8.10.1
+│   │   │   ├── libc feature "default" (*)
+│   │   │   ├── libz-sys feature "libc"
+│   │   │   │   └── libz-sys v1.1.9
+│   │   │   │       └── libc feature "default" (*)
+│   │   │   │       [build-dependencies]
+│   │   │   │       ├── cc feature "default"
+│   │   │   │       │   └── cc v1.0.79
+│   │   │   │       └── pkg-config feature "default"
+│   │   │   │           └── pkg-config v0.3.27
+│   │   │   └── openssl-sys feature "default"
+│   │   │       └── openssl-sys v0.9.88
+│   │   │           └── libc feature "default" (*)
+│   │   │           [build-dependencies]
+│   │   │           ├── cc feature "default" (*)
+│   │   │           └── pkg-config feature "default" (*)
+│   │   │   [build-dependencies]
+│   │   │   ├── cc feature "default" (*)
+│   │   │   └── pkg-config feature "default" (*)
+│   │   ├── libc feature "default" (*)
+│   │   ├── openssl-sys feature "default" (*)
+│   │   ├── openssl-probe feature "default"
+│   │   │   └── openssl-probe v0.1.5
+│   │   └── socket2 feature "default"
+│   │       └── socket2 v0.5.5
+│   │           └── libc feature "default" (*)
+│   └── curl feature "ssl"
+│       ├── curl v0.4.47 (*)
+│       ├── curl feature "openssl-probe"
+│       │   └── curl v0.4.47 (*)
+│       ├── curl feature "openssl-sys"
+│       │   └── curl v0.4.47 (*)
+│       └── curl-sys feature "ssl"
+│           ├── curl-sys v0.4.77+curl-8.10.1 (*)
+│           └── curl-sys feature "openssl-sys"
+│               └── curl-sys v0.4.77+curl-8.10.1 (*)
+├── diff feature "default"
+│   └── diff v0.1.13
+├── dirs feature "default"
+│   └── dirs v5.0.0
+│       └── dirs-sys feature "default"
+│           └── dirs-sys v0.4.0
+│               └── libc feature "default" (*)
+├── nu-ansi-term feature "default"
+│   └── nu-ansi-term v0.50.1
+├── public-api feature "default" (command-line)
+│   └── public-api v0.47.1 (/home/martin/src/cargo-public-api/public-api)
+│       ├── hashbag v0.1.12
+│       ├── serde feature "default" (*)
+│       ├── serde feature "derive" (*)
+│       ├── thiserror feature "default" (*)
+│       ├── serde_json feature "default" (*)
+│       ├── serde_json feature "unbounded_depth" (*)
+│       └── rustdoc-types feature "default"
+│           └── rustdoc-types v0.39.0
+│               ├── serde feature "default" (*)
+│               └── serde feature "derive" (*)
+│       [dev-dependencies]
+│       ├── itertools v0.14.0
+│       │   └── either v1.8.1
+│       ├── predicates v3.1.3
+│       │   ├── anstyle feature "default" (*)
+│       │   ├── difflib feature "default"
+│       │   │   └── difflib v0.4.0
+│       │   └── predicates-core feature "default"
+│       │       └── predicates-core v1.0.6
+│       ├── anyhow feature "default" (*)
+│       ├── assert_cmd feature "default"
+│       │   └── assert_cmd v2.0.17
+│       │       ├── anstyle feature "default" (*)
+│       │       ├── bstr feature "default"
+│       │       │   ├── bstr v1.4.0
+│       │       │   │   ├── memchr v2.5.0
+│       │       │   │   ├── regex-automata v0.1.10
+│       │       │   │   │   └── regex-syntax feature "default"
+│       │       │   │   │       ├── regex-syntax v0.6.29
+│       │       │   │   │       └── regex-syntax feature "unicode"
+│       │       │   │   │           ├── regex-syntax v0.6.29
+│       │       │   │   │           ├── regex-syntax feature "unicode-age"
+│       │       │   │   │           │   └── regex-syntax v0.6.29
+│       │       │   │   │           ├── regex-syntax feature "unicode-bool"
+│       │       │   │   │           │   └── regex-syntax v0.6.29
+│       │       │   │   │           ├── regex-syntax feature "unicode-case"
+│       │       │   │   │           │   └── regex-syntax v0.6.29
+│       │       │   │   │           ├── regex-syntax feature "unicode-gencat"
+│       │       │   │   │           │   └── regex-syntax v0.6.29
+│       │       │   │   │           ├── regex-syntax feature "unicode-perl"
+│       │       │   │   │           │   └── regex-syntax v0.6.29
+│       │       │   │   │           ├── regex-syntax feature "unicode-script"
+│       │       │   │   │           │   └── regex-syntax v0.6.29
+│       │       │   │   │           └── regex-syntax feature "unicode-segment"
+│       │       │   │   │               └── regex-syntax v0.6.29
+│       │       │   │   └── once_cell feature "default" (*)
+│       │       │   ├── bstr feature "std"
+│       │       │   │   ├── bstr v1.4.0 (*)
+│       │       │   │   ├── bstr feature "alloc"
+│       │       │   │   │   └── bstr v1.4.0 (*)
+│       │       │   │   └── memchr feature "std" (*)
+│       │       │   └── bstr feature "unicode"
+│       │       │       └── bstr v1.4.0 (*)
+│       │       ├── doc-comment feature "default"
+│       │       │   └── doc-comment v0.3.3
+│       │       ├── predicates feature "diff"
+│       │       │   └── predicates v3.1.3 (*)
+│       │       ├── predicates-core feature "default" (*)
+│       │       ├── predicates-tree feature "default"
+│       │       │   └── predicates-tree v1.0.9
+│       │       │       ├── predicates-core feature "default" (*)
+│       │       │       └── termtree feature "default"
+│       │       │           └── termtree v0.4.1
+│       │       └── wait-timeout feature "default"
+│       │           └── wait-timeout v0.2.0
+│       │               └── libc feature "default" (*)
+│       ├── tempfile feature "default" (*)
+│       ├── insta feature "default"
+│       │   ├── insta v1.43.1
+│       │   │   ├── console v0.15.10
+│       │   │   │   ├── once_cell feature "default" (*)
+│       │   │   │   └── libc feature "default" (*)
+│       │   │   ├── once_cell feature "default" (*)
+│       │   │   ├── similar feature "default"
+│       │   │   │   ├── similar v2.6.0
+│       │   │   │   └── similar feature "text"
+│       │   │   │       └── similar v2.6.0
+│       │   │   └── similar feature "inline"
+│       │   │       ├── similar v2.6.0
+│       │   │       └── similar feature "text" (*)
+│       │   └── insta feature "colors"
+│       │       ├── insta v1.43.1 (*)
+│       │       └── insta feature "console"
+│       │           └── insta v1.43.1 (*)
+│       ├── pretty_assertions feature "default"
+│       │   ├── pretty_assertions v1.4.1
+│       │   │   ├── diff feature "default" (*)
+│       │   │   └── yansi feature "default"
+│       │   │       ├── yansi v1.0.1
+│       │   │       └── yansi feature "std"
+│       │   │           ├── yansi v1.0.1
+│       │   │           └── yansi feature "alloc"
+│       │   │               └── yansi v1.0.1
+│       │   └── pretty_assertions feature "std"
+│       │       └── pretty_assertions v1.4.1 (*)
+│       └── rustdoc-json feature "default" (command-line)
+│           └── rustdoc-json v0.9.6 (/home/martin/src/cargo-public-api/rustdoc-json)
+│               ├── cargo-manifest feature "default" (*)
+│               ├── serde feature "default" (*)
+│               ├── serde feature "derive" (*)
+│               ├── thiserror feature "default" (*)
+│               ├── toml feature "default" (*)
+│               ├── tracing feature "attributes" (*)
+│               ├── tracing feature "default" (*)
+│               └── cargo_metadata feature "default" (*)
+│               [dev-dependencies]
+│               ├── predicates v3.1.3 (*)
+│               ├── assert_cmd feature "default" (*)
+│               └── tempfile feature "default" (*)
+├── rustdoc-json feature "default" (command-line) (*)
+├── tracing-subscriber feature "default"
+│   ├── tracing-subscriber v0.3.19
+│   │   ├── tracing v0.1.41 (*)
+│   │   ├── tracing-core v0.1.33 (*)
+│   │   ├── once_cell feature "default" (*)
+│   │   ├── matchers feature "default"
+│   │   │   └── matchers v0.1.0
+│   │   │       └── regex-automata feature "default"
+│   │   │           ├── regex-automata v0.1.10 (*)
+│   │   │           └── regex-automata feature "std"
+│   │   │               ├── regex-automata v0.1.10 (*)
+│   │   │               └── regex-automata feature "regex-syntax"
+│   │   │                   └── regex-automata v0.1.10 (*)
+│   │   ├── nu-ansi-term feature "default"
+│   │   │   └── nu-ansi-term v0.46.0
+│   │   │       └── overload feature "default"
+│   │   │           └── overload v0.1.1
+│   │   ├── regex feature "std"
+│   │   │   ├── regex v1.9.4
+│   │   │   │   ├── regex-syntax v0.7.5
+│   │   │   │   ├── regex-automata feature "alloc"
+│   │   │   │   │   └── regex-automata v0.3.7
+│   │   │   │   │       └── regex-syntax v0.7.5
+│   │   │   │   ├── regex-automata feature "meta"
+│   │   │   │   │   ├── regex-automata v0.3.7 (*)
+│   │   │   │   │   ├── regex-automata feature "nfa-pikevm"
+│   │   │   │   │   │   ├── regex-automata v0.3.7 (*)
+│   │   │   │   │   │   └── regex-automata feature "nfa-thompson"
+│   │   │   │   │   │       ├── regex-automata v0.3.7 (*)
+│   │   │   │   │   │       └── regex-automata feature "alloc" (*)
+│   │   │   │   │   └── regex-automata feature "syntax"
+│   │   │   │   │       ├── regex-automata v0.3.7 (*)
+│   │   │   │   │       └── regex-automata feature "alloc" (*)
+│   │   │   │   ├── regex-automata feature "nfa-pikevm" (*)
+│   │   │   │   └── regex-automata feature "syntax" (*)
+│   │   │   ├── regex-automata feature "std"
+│   │   │   │   ├── regex-automata v0.3.7 (*)
+│   │   │   │   ├── regex-automata feature "alloc" (*)
+│   │   │   │   └── regex-syntax feature "std"
+│   │   │   │       └── regex-syntax v0.7.5
+│   │   │   └── regex-syntax feature "std" (*)
+│   │   ├── regex feature "unicode-case"
+│   │   │   ├── regex v1.9.4 (*)
+│   │   │   ├── regex-automata feature "unicode-case"
+│   │   │   │   ├── regex-automata v0.3.7 (*)
+│   │   │   │   └── regex-syntax feature "unicode-case"
+│   │   │   │       └── regex-syntax v0.7.5
+│   │   │   └── regex-syntax feature "unicode-case" (*)
+│   │   ├── regex feature "unicode-perl"
+│   │   │   ├── regex v1.9.4 (*)
+│   │   │   ├── regex-automata feature "unicode-perl"
+│   │   │   │   ├── regex-automata v0.3.7 (*)
+│   │   │   │   └── regex-syntax feature "unicode-perl"
+│   │   │   │       └── regex-syntax v0.7.5
+│   │   │   ├── regex-automata feature "unicode-word-boundary"
+│   │   │   │   └── regex-automata v0.3.7 (*)
+│   │   │   └── regex-syntax feature "unicode-perl" (*)
+│   │   ├── sharded-slab feature "default"
+│   │   │   └── sharded-slab v0.1.7
+│   │   │       └── lazy_static feature "default"
+│   │   │           └── lazy_static v1.4.0
+│   │   ├── smallvec feature "default"
+│   │   │   └── smallvec v1.13.2
+│   │   ├── thread_local feature "default"
+│   │   │   └── thread_local v1.1.8
+│   │   │       ├── once_cell feature "default" (*)
+│   │   │       └── cfg-if feature "default" (*)
+│   │   ├── tracing-log feature "log-tracer"
+│   │   │   └── tracing-log v0.2.0
+│   │   │       ├── once_cell feature "default" (*)
+│   │   │       ├── tracing-core feature "default"
+│   │   │       │   ├── tracing-core v0.1.33 (*)
+│   │   │       │   └── tracing-core feature "std" (*)
+│   │   │       └── log feature "default"
+│   │   │           └── log v0.4.21
+│   │   └── tracing-log feature "std"
+│   │       ├── tracing-log v0.2.0 (*)
+│   │       └── log feature "std"
+│   │           └── log v0.4.21
+│   ├── tracing-subscriber feature "ansi"
+│   │   ├── tracing-subscriber v0.3.19 (*)
+│   │   ├── tracing-subscriber feature "fmt"
+│   │   │   ├── tracing-subscriber v0.3.19 (*)
+│   │   │   ├── tracing-subscriber feature "registry"
+│   │   │   │   ├── tracing-subscriber v0.3.19 (*)
+│   │   │   │   ├── tracing-subscriber feature "sharded-slab"
+│   │   │   │   │   └── tracing-subscriber v0.3.19 (*)
+│   │   │   │   ├── tracing-subscriber feature "std"
+│   │   │   │   │   ├── tracing-subscriber v0.3.19 (*)
+│   │   │   │   │   ├── tracing-core feature "std" (*)
+│   │   │   │   │   └── tracing-subscriber feature "alloc"
+│   │   │   │   │       └── tracing-subscriber v0.3.19 (*)
+│   │   │   │   └── tracing-subscriber feature "thread_local"
+│   │   │   │       └── tracing-subscriber v0.3.19 (*)
+│   │   │   └── tracing-subscriber feature "std" (*)
+│   │   └── tracing-subscriber feature "nu-ansi-term"
+│   │       └── tracing-subscriber v0.3.19 (*)
+│   ├── tracing-subscriber feature "fmt" (*)
+│   ├── tracing-subscriber feature "smallvec"
+│   │   └── tracing-subscriber v0.3.19 (*)
+│   ├── tracing-subscriber feature "std" (*)
+│   └── tracing-subscriber feature "tracing-log"
+│       └── tracing-subscriber v0.3.19 (*)
+└── tracing-subscriber feature "env-filter"
+    ├── tracing-subscriber v0.3.19 (*)
+    ├── tracing-subscriber feature "matchers"
+    │   └── tracing-subscriber v0.3.19 (*)
+    ├── tracing-subscriber feature "once_cell"
+    │   └── tracing-subscriber v0.3.19 (*)
+    ├── tracing-subscriber feature "regex"
+    │   └── tracing-subscriber v0.3.19 (*)
+    ├── tracing-subscriber feature "std" (*)
+    ├── tracing-subscriber feature "thread_local" (*)
+    └── tracing-subscriber feature "tracing"
+        └── tracing-subscriber v0.3.19 (*)
+[dev-dependencies]
+├── predicates v3.1.3 (*)
+├── assert_cmd feature "default" (*)
+├── tempfile feature "default" (*)
+├── cargo_metadata feature "default" (*)
+├── chrono feature "std"
+│   ├── chrono v0.4.41
+│   │   └── num-traits v0.2.15
+│   │       [build-dependencies]
+│   │       └── autocfg feature "default"
+│   │           └── autocfg v1.1.0
+│   └── chrono feature "alloc"
+│       └── chrono v0.4.41 (*)
+├── home feature "default" (*)
+├── insta feature "default" (*)
+├── remove_dir_all feature "default"
+│   └── remove_dir_all v1.0.0
+│       ├── libc feature "default" (*)
+│       ├── cfg-if feature "default" (*)
+│       ├── cvt feature "default"
+│       │   └── cvt v0.1.2
+│       │       └── cfg-if feature "default" (*)
+│       ├── fs_at feature "default"
+│       │   └── fs_at v0.2.1
+│       │       ├── libc feature "default" (*)
+│       │       ├── cfg-if feature "default" (*)
+│       │       ├── cvt feature "default" (*)
+│       │       └── nix feature "dir"
+│       │           ├── nix v0.29.0
+│       │           │   ├── libc feature "default" (*)
+│       │           │   ├── libc feature "extra_traits"
+│       │           │   │   └── libc v0.2.169
+│       │           │   ├── cfg-if feature "default" (*)
+│       │           │   └── bitflags feature "default"
+│       │           │       └── bitflags v2.4.1
+│       │           │   [build-dependencies]
+│       │           │   └── cfg_aliases feature "default"
+│       │           │       └── cfg_aliases v0.2.1
+│       │           └── nix feature "fs"
+│       │               └── nix v0.29.0 (*)
+│       └── normpath feature "default"
+│           └── normpath v1.1.1
+└── rustup-toolchain feature "default" (command-line)
+    └── rustup-toolchain v0.1.10 (/home/martin/src/cargo-public-api/rustup-toolchain)
+        └── thiserror feature "default" (*)
+
+public-api v0.47.1 (/home/martin/src/cargo-public-api/public-api) (*)
+
+release-helper v0.1.0 (/home/martin/src/cargo-public-api/scripts/release-helper)
+├── semver feature "default" (*)
+├── clap feature "default" (*)
+├── clap feature "derive" (*)
+├── clap feature "wrap_help" (*)
+└── jiff feature "alloc"
+    └── jiff v0.2.1
+[dev-dependencies]
+└── pretty_assertions feature "default" (*)
+
+repo-tests v0.1.0 (/home/martin/src/cargo-public-api/repo-tests)
+[dev-dependencies]
+└── public-api feature "default" (command-line) (*)
+
+rustdoc-json v0.9.6 (/home/martin/src/cargo-public-api/rustdoc-json) (*)
+
+rustup-toolchain v0.1.10 (/home/martin/src/cargo-public-api/rustup-toolchain) (*)

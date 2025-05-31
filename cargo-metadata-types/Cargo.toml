@@ -1,0 +1,14 @@
+[package]
+edition = "2024"
+name = "cargo-metadata-types"
+version = "0.0.1"
+description = "Utilities for working with rustup toolchains, primarily from cargo test:s."
+homepage = "https://github.com/cargo-public-api/cargo-public-api/tree/main/rustup-toolchain"
+documentation = "https://docs.rs/rustup-toolchain"
+readme = "README.md"
+keywords = ["toolchain", "rustup"]
+license = "MIT"
+repository = "https://github.com/cargo-public-api/cargo-public-api/tree/main/rustup-toolchain"
+
+[dependencies]
+thiserror = "2.0.3"

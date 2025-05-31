@@ -11,4 +11,6 @@ license = "MIT"
 repository = "https://github.com/cargo-public-api/cargo-public-api/tree/main/rustup-toolchain"
 
 [dependencies]
-thiserror = "2.0.3"
+serde_derive = "1.0.179"
+serde = "1.0.179"
+toml = "0.8.22"

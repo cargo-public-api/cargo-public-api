@@ -13,10 +13,10 @@ pub type TargetDepsSet = BTreeMap<String, Target>;
 pub type FeatureSet = BTreeMap<String, Vec<String>>;
 pub type PatchSet = BTreeMap<String, DepsSet>;
 
-mod afs;
+//mod afs;
 mod error;
-pub use crate::afs::*;
-pub use crate::error::Error;
+//pub use crate::afs::*;
+//pub use crate::error::Error;
 use serde::de::{Error as _, Unexpected};
 use std::str::FromStr;
 

@@ -24,6 +24,7 @@ dirs = "5.0.0"
 rustc-hash = "2.1.1"
 semver = "1.0.18"
 thiserror = "2.0.3"
+cargo-metadata-types = { version = "0.0.1", path = "../cargo-metadata-types" }
 toml = "0.8.22"
 
 [dependencies.clap]

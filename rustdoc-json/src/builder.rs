@@ -207,7 +207,7 @@ pub fn rustup_installed() -> bool {
 /// Typically returns the absolute path to the regular cargo `./target`
 /// directory. But also handles packages part of workspaces.
 fn target_directory(manifest_path: impl AsRef<Path>) -> Result<PathBuf, BuildError> {
-    let mut metadata_cmd = cargo_metadata::MetadataCommand::new();
+    let mut metadata_cmd = cargo_metadata_types::MetadataCommand::new();
     metadata_cmd.manifest_path(manifest_path.as_ref());
     let metadata = metadata_cmd.exec()?;
     Ok(metadata.target_directory.as_std_path().to_owned())

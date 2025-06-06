@@ -17,7 +17,9 @@ pub enum Error {
     IoError(#[from] std::io::Error),
 
     /// The lock used to work around <https://github.com/rust-lang/rustup/issues/988> has been poisoned
-    #[error("The lock used to work around https://github.com/rust-lang/rustup/issues/988 has been poisoned")]
+    #[error(
+        "The lock used to work around https://github.com/rust-lang/rustup/issues/988 has been poisoned"
+    )]
     StdSyncPoisonError,
 
     /// `rustup toolchain install ...` failed for some reason

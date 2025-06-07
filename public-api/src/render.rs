@@ -1,9 +1,9 @@
 #![allow(clippy::unused_self)]
+use crate::BuilderOptions as Options;
 use crate::intermediate_public_item::IntermediatePublicItem;
 use crate::nameable_item::NameableItem;
 use crate::path_component::PathComponent;
 use crate::tokens::Token;
-use crate::BuilderOptions as Options;
 use std::{cmp::Ordering, collections::HashMap, vec};
 
 use rustdoc_types::{
@@ -710,12 +710,14 @@ impl<'c> RenderingContext<'c> {
     fn render_generic_args(&self, args: &GenericArgs) -> Vec<Token> {
         match args {
             GenericArgs::AngleBracketed { args, constraints } => {
-                        self.render_angle_bracketed(args, constraints)
-                    }
+                self.render_angle_bracketed(args, constraints)
+            }
             GenericArgs::Parenthesized { inputs, output } => {
-                        self.render_parenthesized(inputs, output)
-                    }
-            GenericArgs::ReturnTypeNotation => todo!("can this be triggred in stable rust? if so please report to https://github.com/cargo-public-api/cargo-public-api/issues and include a minimal reproducer"),
+                self.render_parenthesized(inputs, output)
+            }
+            GenericArgs::ReturnTypeNotation => todo!(
+                "can this be triggred in stable rust? if so please report to https://github.com/cargo-public-api/cargo-public-api/issues and include a minimal reproducer"
+            ),
         }
     }
 

@@ -1,4 +1,4 @@
-use jiff::{civil::Date, ToSpan};
+use jiff::{ToSpan, civil::Date};
 
 use crate::version_info::CargoPublicApiVersionInfo;
 

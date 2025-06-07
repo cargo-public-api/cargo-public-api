@@ -56,7 +56,9 @@ Ensure **",
     if let Ok(min_for_tests) =
         std::fs::read_to_string(min_for_tests_path).map(|s| s.trim().to_string())
     {
-        println!("The file `{min_for_tests_path}` contains {min_for_tests} and `public_apiMINIMUM_NIGHTLY_RUST_VERSION` is {current_min_nightly_rust_version}:");
+        println!(
+            "The file `{min_for_tests_path}` contains {min_for_tests} and `public_apiMINIMUM_NIGHTLY_RUST_VERSION` is {current_min_nightly_rust_version}:"
+        );
         if min_for_tests.as_str() < current_min_nightly_rust_version {
             println!("Removing the file");
             std::fs::remove_file(min_for_tests_path).unwrap();

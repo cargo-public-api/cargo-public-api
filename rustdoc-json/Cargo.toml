@@ -1,5 +1,5 @@
 [package]
-edition = "2021"
+edition = "2024"
 name = "rustdoc-json"
 version = "0.9.6"
 description = "Utilities for working with rustdoc JSON."

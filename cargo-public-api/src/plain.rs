@@ -1,7 +1,7 @@
 use std::io::{Result, Write};
 
 use nu_ansi_term::{AnsiString, AnsiStrings, Color, Style};
-use public_api::{diff::PublicApiDiff, tokens::Token, PublicItem};
+use public_api::{PublicItem, diff::PublicApiDiff, tokens::Token};
 
 use crate::Args;
 

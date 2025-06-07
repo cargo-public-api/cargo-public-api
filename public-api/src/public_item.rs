@@ -5,8 +5,8 @@ use std::hash::Hash;
 
 use crate::intermediate_public_item::IntermediatePublicItem;
 use crate::render::RenderingContext;
-use crate::tokens::tokens_to_string;
 use crate::tokens::Token;
+use crate::tokens::tokens_to_string;
 
 /// Each public item (except `impl`s) have a path that is displayed like
 /// `first::second::third`. Internally we represent that with a `vec!["first",

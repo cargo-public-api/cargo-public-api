@@ -1,8 +1,8 @@
 use super::nameable_item::NameableItem;
 use crate::{
-    crate_wrapper::CrateWrapper, intermediate_public_item::IntermediatePublicItem,
-    path_component::PathComponent, public_item::PublicItem, render::RenderingContext,
-    BuilderOptions as Options, PublicApi,
+    BuilderOptions as Options, PublicApi, crate_wrapper::CrateWrapper,
+    intermediate_public_item::IntermediatePublicItem, path_component::PathComponent,
+    public_item::PublicItem, render::RenderingContext,
 };
 use rustdoc_types::{
     Crate, Id, Impl, Item, ItemEnum, Module, Struct, StructKind, Type, Use, VariantKind,

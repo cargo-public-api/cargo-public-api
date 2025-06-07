@@ -1,5 +1,5 @@
 [package]
-edition = "2021"
+edition = "2024"
 name = "public-api"
 version = "0.47.1"
 description = "List and diff the public API of Rust library crates. Relies on rustdoc JSON output from the nightly toolchain."

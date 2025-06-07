@@ -4,8 +4,8 @@
 //! additional helpers for that.
 
 use crate::{
-    public_item::{PublicItem, PublicItemPath},
     PublicApi,
+    public_item::{PublicItem, PublicItemPath},
 };
 use hashbag::HashBag;
 use std::collections::HashMap;

@@ -7,7 +7,7 @@ use public_api::Error;
 
 use pretty_assertions::assert_eq;
 
-use tempfile::{tempdir, NamedTempFile, TempDir};
+use tempfile::{NamedTempFile, TempDir, tempdir};
 
 mod common;
 use common::{

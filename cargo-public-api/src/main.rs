@@ -5,7 +5,7 @@ use std::ffi::OsString;
 use std::io::{stderr, stdout};
 use std::path::{Path, PathBuf};
 
-use anyhow::{anyhow, bail, Result};
+use anyhow::{Result, anyhow, bail};
 use api_source::{ApiSource, Commit, CurrentDir, PublishedCrate, RustdocJson};
 use arg_types::{Color, DenyMethod, Omit};
 use git_utils::current_branch_or_commit;
@@ -572,7 +572,9 @@ fn subcommand_name(bin: OsString) -> Option<OsString> {
 fn resolve_toolchain(args: Args) -> ArgsAndToolchain {
     let toolchain = if toolchain::is_probably_stable() {
         if let Some(toolchain) = toolchain::from_rustup() {
-            eprintln!("Warning: using the `{toolchain}` toolchain for gathering the public api is not possible, switching to `nightly`");
+            eprintln!(
+                "Warning: using the `{toolchain}` toolchain for gathering the public api is not possible, switching to `nightly`"
+            );
         }
         Some("nightly".to_owned())
     } else {

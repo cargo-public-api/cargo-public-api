@@ -1,4 +1,4 @@
-use public_api::{diff::ChangedPublicItem, PublicItem};
+use public_api::{PublicItem, diff::ChangedPublicItem};
 
 #[derive(Debug, thiserror::Error)]
 pub enum Error {

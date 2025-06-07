@@ -15,8 +15,8 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use assert_cmd::assert::Assert;
 use assert_cmd::Command;
+use assert_cmd::assert::Assert;
 use chrono::{Days, NaiveDate};
 use predicates::prelude::PredicateBooleanExt;
 use predicates::str::contains;
@@ -1300,7 +1300,10 @@ impl TestRepo {
 impl Drop for TestRepo {
     fn drop(&mut self) {
         if env::var_os("CARGO_PUBLIC_API_PRESERVE_TEST_REPO").is_some() {
-            println!("DEBUG: NOT removing test repo at {:?}. If the test fails, you can `cd` into it and debug the failure", self.path());
+            println!(
+                "DEBUG: NOT removing test repo at {:?}. If the test fails, you can `cd` into it and debug the failure",
+                self.path()
+            );
         } else {
             remove_dir_all::remove_dir_all(self.path()).unwrap();
         }

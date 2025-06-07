@@ -3,7 +3,7 @@
 //! project.
 
 use crate::{Args, ArgsAndToolchain, LATEST_VERSION_ARG};
-use anyhow::{anyhow, Context, Result};
+use anyhow::{Context, Result, anyhow};
 use crates_index::{Crate, Version};
 use std::path::PathBuf;
 

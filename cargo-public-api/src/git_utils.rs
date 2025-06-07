@@ -5,7 +5,7 @@ use std::{
     process::Command,
 };
 
-use anyhow::{anyhow, Context, Result};
+use anyhow::{Context, Result, anyhow};
 
 /// Synchronously do a `git checkout` of `commit`.
 pub fn git_checkout(git_root: &Path, commit: &str, quiet: bool, force: bool) -> Result<()> {

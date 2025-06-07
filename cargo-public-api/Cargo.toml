@@ -1,5 +1,5 @@
 [package]
-edition = "2021"
+edition = "2024"
 name = "cargo-public-api"
 version = "0.47.1"
 default-run = "cargo-public-api"

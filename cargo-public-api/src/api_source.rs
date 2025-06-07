@@ -1,12 +1,12 @@
 //! Contains various ways of obtaining the public API for crates.
 
-use anyhow::{anyhow, Context, Result};
+use anyhow::{Context, Result, anyhow};
 use rustdoc_json::BuildError;
 use std::path::{Path, PathBuf};
 
-use public_api::{PublicApi, MINIMUM_NIGHTLY_RUST_VERSION};
+use public_api::{MINIMUM_NIGHTLY_RUST_VERSION, PublicApi};
 
-use crate::{git_utils, Args, ArgsAndToolchain, Subcommand};
+use crate::{Args, ArgsAndToolchain, Subcommand, git_utils};
 
 /// Represents some place from which a public API can be obtained.
 /// Examples: a published crate, a git commit, an existing file.

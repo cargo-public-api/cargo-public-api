@@ -1,5 +1,8 @@
 # `cargo-public-api` changelog
 
+## v0.48.0
+* Support `nightly-2025-06-22` and later.
+
 ## v0.47.1
 * Don't panic on `resolver = 3` in `Cargo.toml`.
 

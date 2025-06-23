@@ -7,5 +7,5 @@ license = "MIT"
 
 [dev-dependencies.public-api]
 path = "../public-api"
-version = "0.47.1"
+version = "0.48.0"
 

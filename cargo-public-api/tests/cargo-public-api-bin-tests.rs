@@ -183,6 +183,10 @@ fn debug_logging() {
 /// * [`MINIMUM_NIGHTLY_RUST_VERSION`] is not set too high
 /// * `cargo pubic-api` suggests the nightly toolchain might be too old when a
 ///   too old nightly toolchain is used
+///
+/// Note: If there is no rustdoc JSON incompatibilities in the previous version,
+/// this test will fail. In that case, feel to add an `#[ignore]` in the
+/// meantime.
 #[test]
 #[ignore = "this test assumes rustdoc JSON incomaptibilities in the previous version but that is not the case right now"]
 fn one_day_before_minimum_nightly_rust_version() {

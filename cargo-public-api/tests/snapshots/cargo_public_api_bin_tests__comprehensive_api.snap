@@ -15,7 +15,7 @@ pub comprehensive_api::attributes::NonExhaustive::MoreToCome
 pub comprehensive_api::attributes::C::b: bool
 pub struct comprehensive_api::attributes::ReprRust
 pub comprehensive_api::attributes::ReprRust::b: bool
-#[no_mangle] #[link_section = ".custom"] pub static comprehensive_api::attributes::NO_MANGLE_WITH_CUSTOM_LINK_SECTION: usize
+#[link_section = ".custom"] #[no_mangle] pub static comprehensive_api::attributes::NO_MANGLE_WITH_CUSTOM_LINK_SECTION: usize
 #[export_name = "something_arbitrary"] pub fn comprehensive_api::attributes::export_name()
 pub fn comprehensive_api::attributes::must_use() -> usize
 pub mod comprehensive_api::constants

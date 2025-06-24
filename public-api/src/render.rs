@@ -787,7 +787,9 @@ impl<'c> RenderingContext<'c> {
 
     fn render_assoc_item_constraint(&self, constraints: &AssocItemConstraint) -> Vec<Token> {
         let mut output = vec![Token::identifier(&constraints.name)];
-        output.extend(self.render_generic_args(&constraints.args));
+        if let Some(generic_args) = &constraints.args {
+            output.extend(self.render_generic_args(generic_args));
+        }
         match &constraints.binding {
             AssocItemConstraintKind::Equality(term) => {
                 output.extend(equals());

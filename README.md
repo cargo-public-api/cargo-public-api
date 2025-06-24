@@ -67,7 +67,9 @@ cargo public-api diff ref1..ref2
 
 With a regular `cargo test` that you run in CI you will be able to
 * prevent accidental changes to your public API
-* review the public API diff of deliberate changes
+* review the public API diff of deliberate changes [^1]
+
+[^1]: As a workaround for https://github.com/mitsuhiko/insta/issues/780 you might want to put `*.snap linguist-language=txt` in your `.gitattributes`.
 
 First add the latest versions of the recommended libraries to your `[dev-dependencies]`:
 

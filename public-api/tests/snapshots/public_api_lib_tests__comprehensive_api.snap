@@ -102,7 +102,7 @@ pub fn comprehensive_api::functions::dyn_arg_one_trait(d: &dyn std::io::Write)
 pub fn comprehensive_api::functions::dyn_arg_one_trait_one_lifetime(d: &(dyn std::io::Write + 'static))
 pub fn comprehensive_api::functions::dyn_arg_two_traits(d: &(dyn std::io::Write + core::marker::Send))
 pub fn comprehensive_api::functions::dyn_arg_two_traits_one_lifetime(d: &(dyn std::io::Write + core::marker::Send + 'static))
-pub fn comprehensive_api::functions::fn_arg(f: impl core::ops::function::Fn(bool, comprehensive_api::structs::Plain) -> bool, f_mut: impl core::ops::function::FnMut)
+pub fn comprehensive_api::functions::fn_arg(f: impl core::ops::function::Fn(bool, comprehensive_api::structs::Plain) -> bool, f_mut: impl core::ops::function::FnMut())
 pub fn comprehensive_api::functions::generic_arg<T>(t: T) -> T
 pub fn comprehensive_api::functions::generic_bound<T: core::marker::Sized>(t: T) -> T
 pub fn comprehensive_api::functions::impl_multiple<T>(t: impl comprehensive_api::traits::Simple + core::convert::AsRef<T>) -> impl comprehensive_api::traits::Simple

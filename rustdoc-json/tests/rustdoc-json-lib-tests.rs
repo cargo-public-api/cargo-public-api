@@ -124,7 +124,6 @@ fn capture_output() {
 
     assert!(
         stderr.contains("error: this file contains an unclosed delimiter"),
-        "Got stderr: {}",
-        stderr,
+        "Got stderr: {stderr}",
     );
 }

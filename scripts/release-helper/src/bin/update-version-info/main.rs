@@ -77,10 +77,7 @@ fn insert_file_contents_in_between(
     new_text_in_middle: &str,
     existing_end_text: &str,
 ) {
-    println!(
-        "Updating {} by inserting:\n{}\n",
-        source_file_path, new_text_in_middle
-    );
+    println!("Updating {source_file_path} by inserting:\n{new_text_in_middle}\n");
     let contents = std::fs::read_to_string(source_file_path).unwrap();
 
     let start_index = contents.find(existing_start_text).unwrap();
@@ -89,6 +86,6 @@ fn insert_file_contents_in_between(
     let start = contents[..start_index + existing_start_text.len()].to_string();
     let end = contents[end_index..].to_string();
 
-    let new_contents = format!("{}{}{}", start, new_text_in_middle, end);
+    let new_contents = format!("{start}{new_text_in_middle}{end}");
     std::fs::write(source_file_path, new_contents.clone()).unwrap();
 }

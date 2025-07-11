@@ -24,7 +24,7 @@ dirs = "5.0.0"
 rustc-hash = "2.1.1"
 semver = "1.0.18"
 thiserror = "2.0.3"
-cargo_metadata = "0.19.2"
+cargo_metadata = "0.21.0"
 toml = "0.8.23"
 
 [dependencies.clap]

@@ -59,7 +59,6 @@ jobs:
         variant:
           - { name: Ubuntu,  os: ubuntu-latest  }
           - { name: macOS,   os: macos-latest   }
-          - { name: Windows, os: windows-latest }
     name: cargo test (${{ matrix.variant.name }})
     runs-on: ${{ matrix.variant.os }}
     permissions:

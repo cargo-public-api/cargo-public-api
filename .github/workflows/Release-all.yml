@@ -27,30 +27,30 @@ jobs:
   release-rustup-toolchain:
     if: ${{ !cancelled() && inputs.release_rustup_toolchain }}
     permissions:
-      contents: write # git push + access to secrets.CARGO_REGISTRY_PUBLISH_UPDATE_TOKEN_ENSELIC
+      contents: write # git push
+      id-token: write # https://crates.io/docs/trusted-publishing
     uses: ./.github/workflows/Release-rustup-toolchain.yml
-    secrets: inherit
 
   release-rustdoc-json:
     if: ${{ !cancelled() && inputs.release_rustdoc_json }}
     needs: [release-rustup-toolchain]
     permissions:
-      contents: write # git push + access to secrets.CARGO_REGISTRY_PUBLISH_UPDATE_TOKEN_ENSELIC
+      contents: write # git push
+      id-token: write # https://crates.io/docs/trusted-publishing
     uses: ./.github/workflows/Release-rustdoc-json.yml
-    secrets: inherit
 
   release-public-api:
     if: ${{ !cancelled() && inputs.release_public_api }}
     needs: [release-rustdoc-json]
     permissions:
-      contents: write # git push + access to secrets.CARGO_REGISTRY_PUBLISH_UPDATE_TOKEN_ENSELIC
+      contents: write # git push
+      id-token: write # https://crates.io/docs/trusted-publishing
     uses: ./.github/workflows/Release-public-api.yml
-    secrets: inherit
 
   release-cargo-public-api:
     if: ${{ !cancelled() && inputs.release_cargo_public_api }}
     needs: [release-public-api]
     permissions:
-      contents: write # git push + access to secrets.CARGO_REGISTRY_PUBLISH_UPDATE_TOKEN_ENSELIC
+      contents: write # git push
+      id-token: write # https://crates.io/docs/trusted-publishing
     uses: ./.github/workflows/Release-cargo-public-api.yml
-    secrets: inherit

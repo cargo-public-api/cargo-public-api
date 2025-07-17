@@ -4,13 +4,14 @@ use crate::intermediate_public_item::IntermediatePublicItem;
 use crate::nameable_item::NameableItem;
 use crate::path_component::PathComponent;
 use crate::tokens::Token;
-use std::{cmp::Ordering, collections::HashMap, vec};
+use std::{borrow::Cow, cmp::Ordering, collections::HashMap};
 
 use rustdoc_types::{
-    Abi, AssocItemConstraint, AssocItemConstraintKind, Constant, Crate, FunctionHeader,
-    FunctionPointer, FunctionSignature, GenericArg, GenericArgs, GenericBound, GenericParamDef,
-    GenericParamDefKind, Generics, Id, Impl, Item, ItemEnum, MacroKind, Path, PolyTrait,
-    StructKind, Term, Trait, TraitBoundModifier, Type, VariantKind, WherePredicate,
+    Abi, AssocItemConstraint, AssocItemConstraintKind, Attribute, AttributeRepr, Constant, Crate,
+    FunctionHeader, FunctionPointer, FunctionSignature, GenericArg, GenericArgs, GenericBound,
+    GenericParamDef, GenericParamDefKind, Generics, Id, Impl, Item, ItemEnum, MacroKind, Path,
+    PolyTrait, ReprKind, StructKind, Term, Trait, TraitBoundModifier, Type, VariantKind,
+    WherePredicate,
 };
 
 /// A simple macro to write `Token::Whitespace` in less characters.
@@ -41,9 +42,46 @@ impl<'c> RenderingContext<'c> {
         let mut tokens = vec![];
 
         for attr in &item.attrs {
-            let attr = attr.trim();
-            if attr_relevant_for_public_apis(attr) {
-                tokens.push(Token::Annotation(attr.to_string()));
+            if let Some(annotation) = match attr {
+                Attribute::ExportName(name) => Some(format!("#[export_name = \"{name}\"]")),
+                Attribute::LinkSection(section) => Some(format!("#[link_section = \"{section}\"]")),
+                Attribute::NoMangle => Some("#[no_mangle]".to_string()),
+                Attribute::NonExhaustive => Some("#[non_exhaustive]".to_string()),
+                Attribute::Repr(AttributeRepr {
+                    kind,
+                    align,
+                    packed,
+                    int,
+                }) => {
+                    let mut items: Vec<Cow<'static, str>> = vec![];
+                    if let Some(kind) = match kind {
+                        ReprKind::Rust => None,
+                        ReprKind::C => Some("C"),
+                        ReprKind::Transparent => Some("transparent"),
+                        ReprKind::Simd => Some("simd"),
+                    } {
+                        items.push(Cow::Borrowed(kind));
+                    }
+                    if let Some(align) = align {
+                        items.push(Cow::Owned(format!("align({align})")))
+                    }
+                    if let Some(packed) = packed {
+                        items.push(Cow::Owned(format!("packed({packed})")))
+                    }
+                    if let Some(int) = int {
+                        items.push(Cow::Owned(int.to_string()))
+                    }
+                    (!items.is_empty()).then(|| {
+                        let mut s = String::new();
+                        s.push_str("#[repr(");
+                        s.push_str(&items.join(", "));
+                        s.push_str(")]");
+                        s
+                    })
+                }
+                _ => None,
+            } {
+                tokens.push(Token::Annotation(annotation));
                 tokens.push(ws!());
             }
         }
@@ -1021,26 +1059,6 @@ impl<'c> RenderingContext<'c> {
             }
         }
     }
-}
-
-/// Our list of allowed attributes comes from
-/// <https://github.com/rust-lang/rust/blob/68d0b29098/src/librustdoc/html/render/mod.rs#L941-L942>
-fn attr_relevant_for_public_apis(attr: &str) -> bool {
-    let keywords = [
-        "export_name",
-        "link_section",
-        "no_mangle",
-        "non_exhaustive",
-        "repr",
-    ];
-
-    for keyword in keywords {
-        if attr.to_lowercase().contains(keyword) {
-            return true;
-        }
-    }
-
-    false
 }
 
 fn pub_() -> Vec<Token> {

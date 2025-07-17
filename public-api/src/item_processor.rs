@@ -5,7 +5,7 @@ use crate::{
     public_item::PublicItem, render::RenderingContext,
 };
 use rustdoc_types::{
-    Crate, Id, Impl, Item, ItemEnum, Module, Struct, StructKind, Type, Use, VariantKind,
+    Attribute, Crate, Id, Impl, Item, ItemEnum, Module, Struct, StructKind, Type, Use, VariantKind,
 };
 use std::{
     collections::{HashMap, VecDeque},
@@ -397,10 +397,7 @@ pub(crate) enum ImplKind {
 impl ImplKind {
     fn from(impl_item: &Item, impl_: &Impl) -> Self {
         let has_blanket_impl = impl_.blanket_impl.is_some();
-        let is_automatically_derived = impl_item
-            .attrs
-            .iter()
-            .any(|a| a == "#[automatically_derived]");
+        let is_automatically_derived = impl_item.attrs.contains(&Attribute::AutomaticallyDerived);
 
         // See https://github.com/rust-lang/rust/blob/54f20bbb8a7aeab93da17c0019c1aaa10329245a/src/librustdoc/json/conversions.rs#L589-L590
         match (impl_.is_synthetic, has_blanket_impl) {

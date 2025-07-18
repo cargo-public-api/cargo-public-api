@@ -71,3 +71,4 @@ jobs:
       - run: rustup install nightly --profile minimal
       - run: cargo version --verbose # Make it easier to debug version-specific issues
       - run: scripts/cargo-test.sh
+        shell: bash

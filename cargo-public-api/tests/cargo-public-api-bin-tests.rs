@@ -1546,7 +1546,7 @@ fn assert_cargo_public_api_not_in_cargo_home_bin() {
     };
 
     path.push("bin");
-    path.push("cargo-public-api");
+    path.push(format!("cargo-public-api{EXE_SUFFIX}"));
 
     assert!(
         std::fs::metadata(&path).is_err(),
@@ -1564,7 +1564,7 @@ fn assert_cargo_public_api_in_path() {
     let path = env::var_os("PATH").unwrap();
     assert!(
         env::split_paths(&path)
-            .map(|path| path.join("cargo-public-api"))
+            .map(|path| path.join(format!("cargo-public-api{EXE_SUFFIX}")))
             .any(|path| path.exists()),
         "Could not find `cargo-public-api` in `PATH` which is set to:
 

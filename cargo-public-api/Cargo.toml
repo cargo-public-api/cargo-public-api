@@ -1,7 +1,7 @@
 [package]
 edition = "2024"
 name = "cargo-public-api"
-version = "0.49.0"
+version = "0.50.1"
 default-run = "cargo-public-api"
 description = "List and diff the public API of Rust library crates between releases and commits. Detect breaking API changes and semver violations via CI or a CLI."
 homepage = "https://github.com/cargo-public-api/cargo-public-api"
@@ -40,11 +40,11 @@ features = ["serde"]
 
 [dependencies.rustdoc-json]
 path = "../rustdoc-json"
-version = "0.9.6"
+version = "0.9.7"
 
 [dependencies.public-api]
 path = "../public-api"
-version = "0.49.0"
+version = "0.50.0"
 
 [dependencies.serde]
 version = "1.0.179"

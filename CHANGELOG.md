@@ -1,6 +1,6 @@
 # `cargo-public-api` changelog
 
-## v0.50.0
+## v0.50.1
 * Support `nightly-2025-08-02` and later.
 
 ## v0.49.0

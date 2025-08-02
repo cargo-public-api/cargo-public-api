@@ -1,5 +1,8 @@
 # `public-api` changelog
 
+## v0.50.0
+* Support `nightly-2025-08-02` and later.
+
 ## v0.49.0
 * Support `nightly-2025-07-17` and later.
 

@@ -1,5 +1,8 @@
 # rustdoc-json
 
+## v0.9.7
+* Bump `cargo_metadata` from `0.19.2` to `0.21.0`.
+
 ## v0.9.6
 * Don't panic on `resolver = 3` in `Cargo.toml`.
 

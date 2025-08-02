@@ -1518,6 +1518,15 @@ pub trait AssertOrUpdate {
 
 impl AssertOrUpdate for Assert {
     fn stdout_with_insta(self, test_name: &str) -> Assert {
+        // Before assert stdout, make sure we didn't fail to parse rustdoc JSON,
+        // which is common if rustdoc-types crate is updated, and if that is the
+        // case we want to see stderr to get a clue why parsing failed.
+        let stderr = String::from_utf8_lossy(&self.get_output().stderr);
+        assert!(
+            !stderr.contains("Failed to parse rustdoc JSON"),
+            "Failed to parse rustdoc JSON. Stderr:\n{stderr}"
+        );
+
         let stdout = String::from_utf8_lossy(&self.get_output().stdout);
         insta::assert_snapshot!(test_name, stdout);
         self

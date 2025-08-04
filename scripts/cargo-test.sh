@@ -4,6 +4,7 @@ set -o nounset -o pipefail -o errexit
 # See https://docs.rs/insta/latest/insta/#updating-snapshots
 INSTA_UPDATE=no
 if [ "${1:-}" = "--bless" ]; then
+    shift
     INSTA_UPDATE=always
 fi
 export INSTA_UPDATE

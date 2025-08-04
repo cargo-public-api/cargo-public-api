@@ -25,14 +25,14 @@ on:
 
 jobs:
   release-rustup-toolchain:
-    if: ${{ !cancelled() && inputs.release_rustup_toolchain }}
+    if: inputs.release_rustup_toolchain
     permissions:
       contents: write # git push
       id-token: write # https://crates.io/docs/trusted-publishing
     uses: ./.github/workflows/Release-rustup-toolchain.yml
 
   release-rustdoc-json:
-    if: ${{ !cancelled() && inputs.release_rustdoc_json }}
+    if: inputs.release_rustdoc_json && (success() || !inputs.release_rustup_toolchain)
     needs: [release-rustup-toolchain]
     permissions:
       contents: write # git push
@@ -40,7 +40,7 @@ jobs:
     uses: ./.github/workflows/Release-rustdoc-json.yml
 
   release-public-api:
-    if: ${{ !cancelled() && inputs.release_public_api }}
+    if: inputs.release_public_api && (success() || !inputs.release_rustdoc_json)
     needs: [release-rustdoc-json]
     permissions:
       contents: write # git push
@@ -48,7 +48,7 @@ jobs:
     uses: ./.github/workflows/Release-public-api.yml
 
   release-cargo-public-api:
-    if: ${{ !cancelled() && inputs.release_cargo_public_api }}
+    if: inputs.release_cargo_public_api && (success() || !inputs.release_public_api)
     needs: [release-public-api]
     permissions:
       contents: write # git push

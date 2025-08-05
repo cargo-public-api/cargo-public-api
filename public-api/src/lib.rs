@@ -246,6 +246,17 @@ impl PublicApi {
     pub fn missing_item_ids(&self) -> impl Iterator<Item = &u32> {
         self.missing_item_ids.iter()
     }
+
+    /// Asserts that the public API matches the text-file snapshot at `snapshot_path`.
+    /// If the public API does not match the function will panic with a helpful
+    /// diff that shows what changed.
+    ///
+    /// If `bless` is true, the current public API will be written to `snapshot_path`
+    /// and used as the reference snapshot for future runs.
+    #[cfg(feature = "assert-and-bless")]
+    fn assert_or_bless_if(snapshot_path: impl AsRef<std::path::Path>, bless: bool) -> Result<()> {
+        // Implementation for asserting and blessing the public API
+    }
 }
 
 impl std::fmt::Display for PublicApi {

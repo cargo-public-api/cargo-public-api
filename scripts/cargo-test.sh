@@ -1,13 +1,12 @@
 #!/usr/bin/env bash
 set -o nounset -o pipefail -o errexit
 
-# See https://docs.rs/insta/latest/insta/#updating-snapshots
-INSTA_UPDATE=no
+PUBLIC_API_BLESS=no
 if [ "${1:-}" = "--bless" ]; then
     shift
-    INSTA_UPDATE=always
+    PUBLIC_API_BLESS=yes
 fi
-export INSTA_UPDATE
+export PUBLIC_API_BLESS
 
 # Put `cargo-public-api` in $PATH so `cargo` finds it and `cargo public-api`
 # works, which some tests depend on.

@@ -67,9 +67,7 @@ cargo public-api diff ref1..ref2
 
 With a regular `cargo test` that you run in CI you will be able to
 * prevent accidental changes to your public API
-* review the public API diff of deliberate changes [^1]
-
-[^1]: As a workaround for https://github.com/mitsuhiko/insta/issues/780 you might want to put `*.snap linguist-language=txt` in your `.gitattributes`.
+* review the public API diff of deliberate changes
 
 First add the latest versions of the recommended libraries to your `[dev-dependencies]`:
 
@@ -77,8 +75,7 @@ First add the latest versions of the recommended libraries to your `[dev-depende
 cargo add --dev \
     rustup-toolchain \
     rustdoc-json \
-    public-api \
-    insta
+    public-api
 ```
 
 Then add the following test to your project. As the author of the below test code, I hereby associate it with [CC0](https://creativecommons.org/publicdomain/zero/1.0/) and to the extent possible under law waive all copyright and related or neighboring rights to it:

@@ -254,8 +254,12 @@ impl PublicApi {
     /// If `bless` is true, the current public API will be written to `snapshot_path`
     /// and used as the reference snapshot for future runs.
     #[cfg(feature = "assert-and-bless")]
-    fn assert_or_bless_if(snapshot_path: impl AsRef<std::path::Path>, bless: bool) -> Result<()> {
-        // Implementation for asserting and blessing the public API
+    fn assert_or_bless_if(snapshot_path: impl AsRef<std::path::Path>, bless: bool) {
+        if bless {
+            // Write the current public API to the snapshot path
+        } else {
+            // Assert that the current public API matches the snapshot
+        }
     }
 }
 

@@ -20,7 +20,7 @@ Also note that for convenience there is a VS Code workspace you can use for out-
 
 To make your changes become the expected output, run
 ```
-./scripts/cargo-test.sh --bless
+./scripts/cargo-test.sh --update-snapshots
 ```
 
 ## Expected Output
@@ -104,7 +104,7 @@ It is usually straightforward.
 1. Update `scripts/release-helper/src/version_info.rs`
 1. Run `cargo run --bin update-version-info`
 1. Make `cargo build` build
-1. Make `./scripts/run-ci-locally.sh` pass, possibly after `./scripts/cargo-test.sh --bless`
+1. Make `./scripts/run-ci-locally.sh` pass, possibly after `./scripts/cargo-test.sh --update-snapshots`
 
 Once all of the above commands completes successfully, the upgrade is usually complete. See [RELEASE.md](./RELEASE.md) for info about other preparations needed to make a release with the changes.
 

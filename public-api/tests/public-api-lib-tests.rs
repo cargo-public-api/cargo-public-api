@@ -353,7 +353,7 @@ fn assert_public_api_diff(
         .unwrap();
 
     let diff = public_api::diff::PublicApiDiff::between(old, new);
-    insta::assert_debug_snapshot!(test_name, diff);
+    snapshot_testing::assert_eq_or_update(format!("{:?}", diff), format!("{test_name}-snapshot.txt"));
 }
 
 // PublicApiDiff::between() is smarter than a textual diff, but in some cases we
@@ -377,5 +377,5 @@ fn assert_no_textual_public_api_diff(old_json: impl Into<PathBuf>, new_json: imp
 fn assert_public_api(builder: public_api::Builder, test_name: &str) {
     let api = builder.build().unwrap().to_string();
 
-    insta::assert_snapshot!(test_name, api);
+    snapshot_testing::assert_eq_or_update(api, format!("{test_name}-snapshot.txt"));
 }

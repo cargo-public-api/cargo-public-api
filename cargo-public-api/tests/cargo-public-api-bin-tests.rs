@@ -3,7 +3,7 @@
 
 //! To update expected output it is in many cases sufficient to run
 //! ```bash
-//! ./scripts/cargo-test.sh --bless
+//! ./scripts/cargo-test.sh --update-snapshots
 //! ```
 
 use std::env;

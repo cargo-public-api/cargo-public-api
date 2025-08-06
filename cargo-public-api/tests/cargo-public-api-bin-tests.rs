@@ -1528,7 +1528,7 @@ impl AssertOrUpdate for Assert {
         );
 
         let stdout = String::from_utf8_lossy(&self.get_output().stdout);
-        insta::assert_snapshot!(test_name, stdout);
+        snapshot_testing::assert_eq_or_update(stdout, format!("{test_name}.txt"));
         self
     }
 }

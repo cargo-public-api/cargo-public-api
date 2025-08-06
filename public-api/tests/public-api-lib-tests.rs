@@ -45,7 +45,7 @@ fn public_api_for_manifest(
 
     let public_api = public_api::Builder::from_rustdoc_json(rustdoc_json).build()?;
 
-    insta::assert_snapshot!(snapshot_name, public_api);
+    snapshot_testing::assert_eq_or_update(public_api, snapshot_name);
 
     Ok(())
 }

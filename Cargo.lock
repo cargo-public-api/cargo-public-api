@@ -200,7 +200,6 @@ dependencies = [
  "dirs",
  "hex",
  "home",
- "insta",
  "nu-ansi-term 0.50.1",
  "predicates",
  "public-api",
@@ -212,6 +211,7 @@ dependencies = [
  "serde",
  "serde_json",
  "smol_str",
+ "snapshot-testing",
  "tempfile",
  "thiserror 2.0.12",
  "toml 0.8.23",
@@ -835,17 +835,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "insta"
-version = "1.43.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "154934ea70c58054b556dd430b99a98c2a7ff5309ac9891597e339b5c28f4371"
-dependencies = [
- "console",
- "once_cell",
- "similar",
-]
-
-[[package]]
 name = "itertools"
 version = "0.14.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1135,7 +1124,6 @@ dependencies = [
  "anyhow",
  "assert_cmd",
  "hashbag",
- "insta",
  "itertools",
  "predicates",
  "pretty_assertions",
@@ -1143,7 +1131,7 @@ dependencies = [
  "rustdoc-types",
  "serde",
  "serde_json",
- "similar-asserts",
+ "snapshot-testing",
  "tempfile",
  "thiserror 2.0.12",
 ]
@@ -1491,6 +1479,15 @@ checksum = "9676b89cd56310a87b93dec47b11af744f34d5fc9f367b829474eec0a891350d"
 dependencies = [
  "borsh",
  "serde",
+]
+
+[[package]]
+name = "snapshot-testing"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b6483c233305184c46a7aa65b97720ad90d121601877e73ce47eaca6abc8330a"
+dependencies = [
+ "similar-asserts",
 ]
 
 [[package]]

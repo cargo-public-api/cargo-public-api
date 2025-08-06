@@ -99,17 +99,17 @@ fn public_api() {
 
     // Assert that the public API matches the latest snapshot.
     // Run with env var `UPDATE_SNAPSHOTS=yes` to update.
-    public_api.assert_eq_or_update("public-api-snapshot.txt");
+    public_api.assert_eq_or_update("public-api.txt");
 }
 ```
 
-Before you run the test the first time you need to bless the current public API:
+Before you run the test the first time you need create a snapshot of the current public API:
 
 ```sh
 UPDATE_SNAPSHOTS=yes cargo test
 ```
 
-This creates a `tests/snapshots/<module>_public_api.snap` file in your project that you `git add` together with your other project files. Then a regular
+This creates a `tests/public-api.txt` file in your project that you `git add` together with your other project files. Then a regular
 
 ```sh
 cargo test
@@ -121,7 +121,7 @@ will fail if your public API is accidentally or deliberately changed. Run
 UPDATE_SNAPSHOTS=yes cargo test
 ```
 
-again to review and accept public API changes.
+again to update the public API snapshot and review the git diff.
 
 ## Less Noisy Output
 

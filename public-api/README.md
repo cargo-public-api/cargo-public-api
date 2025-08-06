@@ -34,32 +34,33 @@ Then add the following test to your project. As the author of the below test cod
 ```rust
 #[test]
 fn public_api() {
-    // Install a compatible nightly toolchain if it is missing
+    // Install a compatible nightly toolchain if it is missing.
     rustup_toolchain::install(public_api::MINIMUM_NIGHTLY_RUST_VERSION).unwrap();
 
-    // Build rustdoc JSON
+    // Build rustdoc JSON.
     let rustdoc_json = rustdoc_json::Builder::default()
         .toolchain(public_api::MINIMUM_NIGHTLY_RUST_VERSION)
         .build()
         .unwrap();
 
-    // Derive the public API from the rustdoc JSON
+    // Derive the public API from rustdoc JSON.
     let public_api = public_api::Builder::from_rustdoc_json(rustdoc_json)
         .build()
         .unwrap();
 
-    // Assert that the public API looks correct
-    public_api.assert_eq_or_update("public-api-snapshot.txt");
+    // Assert that the public API matches the latest snapshot.
+    // Run with env var `UPDATE_SNAPSHOTS=yes` to update.
+    public_api.assert_eq_or_update("public-api.txt");
 }
 ```
 
-Before you run the test the first time you need to bless the current public API:
+Before you run the test the first time you need create a snapshot of the current public API:
 
 ```sh
 UPDATE_SNAPSHOTS=yes cargo test
 ```
 
-This creates a `tests/snapshots/<module>_public_api.snap` file in your project that you `git add` together with your other project files. Then a regular
+This creates a `tests/public-api.txt` file in your project that you `git add` together with your other project files. Then a regular
 
 ```sh
 cargo test
@@ -71,7 +72,7 @@ will fail if your public API is accidentally or deliberately changed. Run
 UPDATE_SNAPSHOTS=yes cargo test
 ```
 
-again to review and accept public API changes.
+again to update the public API snapshot and review the git diff.
 
 # Maintainers
 

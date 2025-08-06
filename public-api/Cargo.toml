@@ -10,9 +10,18 @@ keywords = ["semver", "rustdoc-json", "diff", "cargo"]
 license = "MIT"
 repository = "https://github.com/cargo-public-api/cargo-public-api/tree/main/public-api"
 
+[features]
+default = ["snapshot-testing"]
+snapshot-testing = ["dep:similar-asserts"]
+
 [dependencies]
 hashbag = { version = "0.1.12", default-features = false }
 thiserror = "2.0.3"
+
+[dependencies.similar-asserts]
+version = "1.7.0"
+default-features = false
+optional = true
 
 [dependencies.serde]
 version = "1.0.179"

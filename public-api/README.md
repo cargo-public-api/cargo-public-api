@@ -18,9 +18,7 @@ Use [`cargo public-api`](https://github.com/cargo-public-api/cargo-public-api) f
 
 With a regular `cargo test` that you run in CI you will be able to
 * prevent accidental changes to your public API
-* review the public API diff of deliberate changes [^1]
-
-[^1]: As a workaround for https://github.com/mitsuhiko/insta/issues/780 you might want to put `*.snap linguist-language=txt` in your `.gitattributes`.
+* review the public API diff of deliberate changes
 
 First add the latest versions of the recommended libraries to your `[dev-dependencies]`:
 
@@ -28,8 +26,7 @@ First add the latest versions of the recommended libraries to your `[dev-depende
 cargo add --dev \
     rustup-toolchain \
     rustdoc-json \
-    public-api \
-    insta
+    public-api
 ```
 
 Then add the following test to your project. As the author of the below test code, I hereby associate it with [CC0](https://creativecommons.org/publicdomain/zero/1.0/) and to the extent possible under law waive all copyright and related or neighboring rights to it:
@@ -52,14 +49,14 @@ fn public_api() {
         .unwrap();
 
     // Assert that the public API looks correct
-    insta::assert_snapshot!(public_api);
+    public_api.assert_eq_or_update("public-api-snapshot.txt");
 }
 ```
 
 Before you run the test the first time you need to bless the current public API:
 
 ```sh
-INSTA_UPDATE=always cargo test
+UPDATE_SNAPSHOTS=yes cargo test
 ```
 
 This creates a `tests/snapshots/<module>_public_api.snap` file in your project that you `git add` together with your other project files. Then a regular
@@ -71,7 +68,7 @@ cargo test
 will fail if your public API is accidentally or deliberately changed. Run
 
 ```sh
-INSTA_UPDATE=always cargo test
+UPDATE_SNAPSHOTS=yes cargo test
 ```
 
 again to review and accept public API changes.

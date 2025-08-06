@@ -356,7 +356,7 @@ fn assert_public_api_diff(
         .unwrap();
 
     let diff = public_api::diff::PublicApiDiff::between(old, new);
-    snapshot_testing::assert_eq_or_update(format!("{diff:?}"), format!("{test_name}.txt"));
+    snapshot_testing::assert_eq_or_update(format!("{diff:#?}"), format!("{test_name}.txt"));
 }
 
 // PublicApiDiff::between() is smarter than a textual diff, but in some cases we

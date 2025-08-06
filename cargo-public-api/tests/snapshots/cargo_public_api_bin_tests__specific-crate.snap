@@ -1,0 +1,6 @@
+---
+source: cargo-public-api/tests/cargo-public-api-bin-tests.rs
+expression: stdout
+---
+pub mod specific_crate
+pub struct specific_crate::SpecificCrate

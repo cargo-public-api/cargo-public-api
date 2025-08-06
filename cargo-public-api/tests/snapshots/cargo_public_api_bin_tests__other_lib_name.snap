@@ -1,0 +1,6 @@
+---
+source: cargo-public-api/tests/cargo-public-api-bin-tests.rs
+expression: stdout
+---
+pub mod other_name
+pub fn other_name::lib_name_differs_from_package_name() -> usize

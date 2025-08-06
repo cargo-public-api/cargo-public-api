@@ -1,2 +1,0 @@
-pub mod other_name
-pub fn other_name::lib_name_differs_from_package_name() -> usize

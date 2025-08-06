@@ -1,0 +1,9 @@
+---
+source: cargo-public-api/tests/cargo-public-api-bin-tests.rs
+expression: stdout
+---
+pub mod features
+#[non_exhaustive] pub struct features::AStruct
+pub features::AStruct::feature_a: ()
+pub features::AStruct::feature_b: ()
+pub features::AStruct::feature_c: ()

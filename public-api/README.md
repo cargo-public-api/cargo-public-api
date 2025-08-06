@@ -49,7 +49,7 @@ fn public_api() {
         .unwrap();
 
     // Assert that the public API looks correct
-    insta::assert_snapshot!(public_api);
+    public_api.assert_eq_or_bless("public-api-snapshot.txt");
 }
 ```
 

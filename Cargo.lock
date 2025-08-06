@@ -84,6 +84,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "assert-or-bless"
+version = "0.1.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "536b37472df3fa1590cac5abe7a409ecd062a98e350cc02fc47ed638b13c7ed4"
+dependencies = [
+ "similar-asserts",
+]
+
+[[package]]
 name = "assert_cmd"
 version = "2.0.17"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -187,6 +196,7 @@ name = "cargo-public-api"
 version = "0.50.1"
 dependencies = [
  "anyhow",
+ "assert-or-bless",
  "assert_cmd",
  "cargo-manifest",
  "cargo-util",
@@ -1121,6 +1131,7 @@ name = "public-api"
 version = "0.50.0"
 dependencies = [
  "anyhow",
+ "assert-or-bless",
  "assert_cmd",
  "hashbag",
  "itertools",
@@ -1130,7 +1141,6 @@ dependencies = [
  "rustdoc-types",
  "serde",
  "serde_json",
- "similar-asserts",
  "tempfile",
  "thiserror 2.0.12",
 ]

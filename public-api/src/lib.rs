@@ -252,27 +252,16 @@ impl PublicApi {
     /// panic with a helpful diff that shows what changed.
     ///
     /// If the env var `PUBLIC_API_BLESS` is set to `1`, `yes`, or `true`, then
-    /// the public API will be written to the snapshot file instead of asserting
-    /// that it matches.
-    #[cfg(feature = "assert-and-bless")]
+    /// the public API will be written to the snapshot file instead of being
+    /// asserted to match.
+    #[cfg(feature = "assert-or-bless")]
     pub fn assert_or_bless(&self, snapshot_path: impl AsRef<std::path::Path>) {
-        let snapshot_path = snapshot_path.as_ref();
-        let actual = self.to_string();
-        let bless = std::env::var("PUBLIC_API_BLESS")
-            .map(|s| s == "1" || s == "yes" || s == "true")
-            .unwrap_or(false);
-        if bless {
-            // Write the current public API to the snapshot path
-            std::fs::write(snapshot_path, actual).unwrap_or_else(|err| {
-                panic!("Failed to write snapshot to `{:?}`: {err}", snapshot_path,)
-            });
-        } else {
-            // Assert that the current public API matches the snapshot
-            let expected = std::fs::read_to_string(snapshot_path).unwrap_or_else(|err| {
-                panic!("Failed to read snapshot from `{:?}`: {err}", snapshot_path,)
-            });
-            similar_asserts::assert_eq!(actual, expected);
-        }
+        assert_or_bless::assert_eq_or_bless_if(
+            self.to_string(),
+            snapshot_path,
+            std::env::var("PUBLIC_API_BLESS")
+                .map_or(false, |s| s == "1" || s == "yes" || s == "true"),
+        );
     }
 }
 

@@ -11,8 +11,8 @@ license = "MIT"
 repository = "https://github.com/cargo-public-api/cargo-public-api/tree/main/public-api"
 
 [features]
-default = ["assert-and-bless"]
-assert-and-bless = ["dep:similar-asserts"]
+default = ["assert-or-bless"]
+assert-or-bless = ["dep:assert-or-bless"]
 
 [dependencies]
 hashbag = { version = "0.1.12", default-features = false }
@@ -22,10 +22,9 @@ thiserror = "2.0.3"
 version = "1.0.179"
 features = ["derive"]
 
-[dependencies.similar-asserts]
-version = "1.7.0"
+[dependencies.assert-or-bless]
+version = "0.1.2"
 optional = true
-default-features = false
 
 [dependencies.serde_json]
 version = "1.0.104"

@@ -11,8 +11,8 @@ license = "MIT"
 repository = "https://github.com/cargo-public-api/cargo-public-api/tree/main/public-api"
 
 [features]
-default = ["assert-or-bless"]
-assert-or-bless = ["dep:assert-or-bless"]
+default = ["snapshot-testing"]
+snapshot-testing = ["dep:similar-asserts"]
 
 [dependencies]
 hashbag = { version = "0.1.12", default-features = false }

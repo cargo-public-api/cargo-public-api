@@ -45,7 +45,12 @@ fn public_api_for_manifest(
 
     let public_api = public_api::Builder::from_rustdoc_json(rustdoc_json).build()?;
 
-    insta::assert_snapshot!(snapshot_name, public_api);
+    assert_or_bless::assert_eq_or_bless_if(
+        public_api.to_string(),
+        format!("{snapshot_name}.txt"),
+        std::env::var("PUBLIC_API_BLESS")
+            .map_or(false, |s| s == "1" || s == "yes" || s == "true"),
+    );
 
     Ok(())
 }

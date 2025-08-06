@@ -1530,13 +1530,11 @@ impl AssertOrUpdate for Assert {
         let stdout = String::from_utf8_lossy(&self.get_output().stdout);
         let snapshot_path = format!("{}.txt", test_name);
         assert_or_bless::assert_eq_or_bless_if(
-            self.to_string(),
+            stdout,
             snapshot_path,
             std::env::var("PUBLIC_API_BLESS")
                 .map_or(false, |s| s == "1" || s == "yes" || s == "true"),
         );
-        assert_or_bless::assert_eq()
-        insta::assert_snapshot!(test_name, stdout);
         self
     }
 }

@@ -248,18 +248,19 @@ impl PublicApi {
     }
 
     /// Asserts that the public API matches the text-file snapshot at
-    /// `snapshot_path`. If the public API does not match the function will
-    /// panic with a helpful diff that shows what changed.
+    /// `snapshot_path`. The function will panic after printing a helpful diff
+    /// if the public API does not match.
     ///
-    /// If the env var `PUBLIC_API_BLESS` is set to `1`, `yes`, or `true`, then
+    /// If the env var `UPDATE_SNAPSHOTS` is set to `1`, `yes`, or `true`, then
     /// the public API will be written to the snapshot file instead of being
     /// asserted to match.
-    #[cfg(feature = "assert-or-bless")]
-    pub fn assert_or_bless(&self, snapshot_path: impl AsRef<std::path::Path>) {
+    #[cfg(feature = "snapshot-testing")]
+    pub fn assert_eq_or_update(&self, snapshot_path: impl AsRef<std::path::Path>) {
+        df
         assert_or_bless::assert_eq_or_bless_if(
             self.to_string(),
             snapshot_path,
-            std::env::var("PUBLIC_API_BLESS")
+            std::env::var("UPDATE_SNAPSHOTS")
                 .map_or(false, |s| s == "1" || s == "yes" || s == "true"),
         );
     }

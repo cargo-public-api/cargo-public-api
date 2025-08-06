@@ -24,7 +24,10 @@ fn public_api() -> Result<(), Box<dyn std::error::Error>> {
 // crate as well.
 #[test]
 fn public_api_for_rustup_toolchain() -> Result<(), Box<dyn std::error::Error>> {
-    public_api_for_manifest("rustup-toolchain-public-api.txt", "../rustup-toolchain/Cargo.toml")
+    public_api_for_manifest(
+        "rustup-toolchain-public-api.txt",
+        "../rustup-toolchain/Cargo.toml",
+    )
 }
 
 // To avoid circular workspace dependencies we test the API surface of this
@@ -353,7 +356,10 @@ fn assert_public_api_diff(
         .unwrap();
 
     let diff = public_api::diff::PublicApiDiff::between(old, new);
-    snapshot_testing::assert_eq_or_update(format!("{:?}", diff), format!("{test_name}-snapshot.txt"));
+    snapshot_testing::assert_eq_or_update(
+        format!("{:?}", diff),
+        format!("{test_name}-snapshot.txt"),
+    );
 }
 
 // PublicApiDiff::between() is smarter than a textual diff, but in some cases we

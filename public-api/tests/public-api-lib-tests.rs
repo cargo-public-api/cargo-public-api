@@ -357,7 +357,7 @@ fn assert_public_api_diff(
 
     let diff = public_api::diff::PublicApiDiff::between(old, new);
     snapshot_testing::assert_eq_or_update(
-        format!("{:?}", diff),
+        format!("{diff:?}"),
         format!("{test_name}-snapshot.txt"),
     );
 }

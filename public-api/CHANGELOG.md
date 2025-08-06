@@ -1,5 +1,8 @@
 # `public-api` changelog
 
+## v0.50.1
+* Add a new method `PublicApi::todoooooooooooooooooooooooSupport `nightly-2025-08-02` and later.
+
 ## v0.50.0
 * Support `nightly-2025-08-02` and later.
 

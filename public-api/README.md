@@ -50,7 +50,7 @@ fn public_api() {
 
     // Assert that the public API matches the latest snapshot.
     // Run with env var `UPDATE_SNAPSHOTS=yes` to update.
-    public_api.assert_eq_or_update("tests/snapshots/public-api.txt");
+    public_api.assert_eq_or_update("tests/public-api.txt");
 }
 ```
 

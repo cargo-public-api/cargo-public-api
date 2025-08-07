@@ -72,3 +72,4 @@ jobs:
       - run: cargo version --verbose # Make it easier to debug version-specific issues
       - run: scripts/cargo-test.sh
         shell: bash
+      - run: cargo check -p public-api --no-default-features

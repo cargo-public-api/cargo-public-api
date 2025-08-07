@@ -17,24 +17,21 @@ use common::{
 
 #[test]
 fn public_api() -> Result<(), Box<dyn std::error::Error>> {
-    public_api_for_manifest("public-api-public-api.txt", "Cargo.toml")
+    public_api_for_manifest("public-api", "Cargo.toml")
 }
 
 // To avoid circular workspace dependencies we test the API surface of this
 // crate as well.
 #[test]
 fn public_api_for_rustup_toolchain() -> Result<(), Box<dyn std::error::Error>> {
-    public_api_for_manifest(
-        "rustup-toolchain-public-api.txt",
-        "../rustup-toolchain/Cargo.toml",
-    )
+    public_api_for_manifest("rustup-toolchain", "../rustup-toolchain/Cargo.toml")
 }
 
 // To avoid circular workspace dependencies we test the API surface of this
 // crate as well.
 #[test]
 fn public_api_for_rustdoc_json() -> Result<(), Box<dyn std::error::Error>> {
-    public_api_for_manifest("rustdoc-json-public-api.txt", "../rustdoc-json/Cargo.toml")
+    public_api_for_manifest("rustdoc-json", "../rustdoc-json/Cargo.toml")
 }
 
 fn public_api_for_manifest(
@@ -48,7 +45,7 @@ fn public_api_for_manifest(
 
     let public_api = public_api::Builder::from_rustdoc_json(rustdoc_json).build()?;
 
-    public_api.assert_eq_or_update(snapshot_name);
+    public_api.assert_eq_or_update(format!("{snapshot_name}_public-api.txt"));
 
     Ok(())
 }

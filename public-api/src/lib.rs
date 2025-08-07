@@ -248,8 +248,8 @@ impl PublicApi {
     }
 
     /// Assert that the public API matches the snapshot at `snapshot_path`. The
-    /// function will panic with a helpful and colorful diff if the public API
-    /// does not match.
+    /// function will panic with a helpful diff if the public API does not
+    /// match.
     ///
     /// If the env var `UPDATE_SNAPSHOTS` is set to `1`, `yes` or `true` then
     /// the public API will be written to `snapshot_file` instead of being

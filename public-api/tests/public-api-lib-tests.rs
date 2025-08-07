@@ -45,7 +45,7 @@ fn public_api_for_manifest(
 
     let public_api = public_api::Builder::from_rustdoc_json(rustdoc_json).build()?;
 
-    public_api.assert_eq_or_update(format!("{snapshot_name}_public-api.txt"));
+    public_api.assert_eq_or_update(format!("tests/snapshots/{snapshot_name}_public-api.txt"));
 
     Ok(())
 }
@@ -353,7 +353,7 @@ fn assert_public_api_diff(
         .unwrap();
 
     let diff = public_api::diff::PublicApiDiff::between(old, new);
-    snapshot_testing::assert_eq_or_update(format!("{diff:#?}"), format!("{test_name}.txt"));
+    snapshot_testing::assert_eq_or_update(format!("{diff:#?}"), format!("tests/snapshots/{test_name}.txt"));
 }
 
 // PublicApiDiff::between() is smarter than a textual diff, but in some cases we
@@ -377,5 +377,5 @@ fn assert_no_textual_public_api_diff(old_json: impl Into<PathBuf>, new_json: imp
 fn assert_public_api(builder: public_api::Builder, test_name: &str) {
     let api = builder.build().unwrap().to_string();
 
-    snapshot_testing::assert_eq_or_update(api, format!("{test_name}.txt"));
+    snapshot_testing::assert_eq_or_update(api, format!("tests/snapshots/{test_name}.txt"));
 }

@@ -246,6 +246,19 @@ impl PublicApi {
     pub fn missing_item_ids(&self) -> impl Iterator<Item = &u32> {
         self.missing_item_ids.iter()
     }
+
+    /// Assert that the public API matches the snapshot at `snapshot_path`. The
+    /// function will panic with a helpful diff if the public API does not
+    /// match.
+    ///
+    /// If the env var `UPDATE_SNAPSHOTS` is set to `1`, `yes` or `true` then
+    /// the public API will be written to `snapshot_file` instead of being
+    /// asserted to match.
+    #[cfg(feature = "snapshot-testing")]
+    #[track_caller]
+    pub fn assert_eq_or_update(&self, snapshot_path: impl AsRef<std::path::Path>) {
+        snapshot_testing::assert_eq_or_update(self.to_string(), snapshot_path);
+    }
 }
 
 impl std::fmt::Display for PublicApi {

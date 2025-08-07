@@ -1,0 +1,3 @@
+pub mod features
+#[non_exhaustive] pub struct features::AStruct
+pub features::AStruct::feature_c: ()

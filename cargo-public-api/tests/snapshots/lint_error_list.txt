@@ -1,0 +1,3 @@
+pub mod lint_error
+pub use lint_error::example_api
+pub struct lint_error::MissingDocs

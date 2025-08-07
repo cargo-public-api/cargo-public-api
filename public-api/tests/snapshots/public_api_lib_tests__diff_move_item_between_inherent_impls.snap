@@ -1,9 +1,0 @@
----
-source: public-api/tests/public-api-lib-tests.rs
-expression: diff
----
-PublicApiDiff {
-    removed: [],
-    changed: [],
-    added: [],
-}

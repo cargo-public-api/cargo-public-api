@@ -1,0 +1,156 @@
+Diff the public API against a published version of the crate, or between commits.
+
+If the diffing
+
+* arg looks like a specific version string (`x.y.z`) then the diff will be between that published
+  version of the crate and the working directory.
+
+* arg has `..` like in `tag1..tag2` then the public API of each individual git commit will be
+  diffed. See below for how that works.
+
+* args end with `.json` like in `file1.json file2.json` then rustdoc JSON file diffing will be
+  performed.
+
+
+EXAMPLES:
+=========
+
+Diff a published version of a crate against the current working tree:
+
+    cargo public-api diff 1.2.3
+
+Diff the latest version of a crate against the current working tree:
+
+    cargo public-api diff latest
+
+Diff between two published versions of any crate:
+
+    cargo public-api -p example_api diff 0.1.0 0.2.0
+
+Diff current working tree version of `specific-crate` against published version 1.2.3:
+
+    cargo public-api -p specific-crate diff 1.2.3
+
+Diff between commits:
+
+    cargo public-api diff v0.2.0..v0.3.0
+
+Diff between rustdoc JSON files:
+
+    cargo public-api diff first.json second.json
+
+
+HOW COMMIT DIFFING WORKS:
+=========================
+
+When diffing commits, the following steps are performed:
+
+1. Remember the current branch/commit
+2. Do a literal in-tree, in-place `git checkout` of the first commit
+3. Collect public API
+4. Do a literal in-tree, in-place `git checkout` of the second commit
+5. Collect public API
+6. Print the diff between public API in step 2 and step 4
+7. Restore the original branch/commit
+
+If you have local changes, git will refuse to do `git checkout`, so your work will not be discarded.
+To force `git checkout`, use `--force`.
+
+Using the current git repo has the benefit of making it likely for the build to succeed. If we e.g.
+were to git clone a temporary copy of a commit ourselves, the risk is high that additional steps are
+needed before a build can succeed. Such as the need to set up git submodules.
+
+Usage: cargo public-api diff [OPTIONS] [ARGS]...
+
+Arguments:
+  [ARGS]...
+          What to diff.
+          
+          EXAMPLES
+          ========
+          
+          Diff current working tree version of `specific-crate` against published version 1.2.3:
+          
+              cargo public-api -p specific-crate diff 1.2.3
+          
+          Diff between commits:
+          
+              cargo public-api diff v0.2.0..v0.3.0
+          
+          See
+          
+              cargo public-api diff --help
+          
+          for more examples and more info.
+
+Options:
+      --deny <DENY>
+          Exit with failure if the specified API diff is detected.
+          
+          Can be combined. For example, to only allow additions to the API, use `--deny=added
+          --deny=changed`.
+
+          Possible values:
+          - all:     All forms of API diffs are denied: additions, changes, deletions
+          - added:   Deny added things in API diffs
+          - changed: Deny changed things in API diffs
+          - removed: Deny removed things in API diffs
+
+      --manifest-path <PATH>
+          Path to `Cargo.toml`
+          
+          [default: Cargo.toml]
+
+      --force
+          Force the diff. For example, when diffing commits, enabling this option will discard
+          working tree changes during git checkouts of other commits
+
+  -p, --package <PACKAGE>
+          Name of package in workspace to list or diff the public API for
+
+  -s, --simplified...
+          Omit noisy items. Can be used more than once.
+          
+          | Usage | Corresponds to                                           |
+          |-------|----------------------------------------------------------|
+          | -s    | --omit blanket-impls                                     |
+          | -ss   | --omit blanket-impls,auto-trait-impls                    |
+          | -sss  | --omit blanket-impls,auto-trait-impls,auto-derived-impls |
+
+      --omit <OMIT>
+          Omit specified items
+
+          Possible values:
+          - blanket-impls:      Omit items that belong to Blanket Implementations such as `impl<T>
+            Any for T`, `impl<T> Borrow<T> for T`, and `impl<T, U> Into<U> for T where U: From<T>`
+          - auto-trait-impls:   Omit items that belong to Auto Trait Implementations such as `impl
+            Send for ...`, `impl Sync for ...`, and `impl Unpin for ...`
+          - auto-derived-impls: Omit items that belong to Auto Derived Implementations such as
+            `Clone`, `Debug`, and `Eq`
+
+  -F, --features <FEATURES>
+          Space or comma separated list of features to activate
+
+      --all-features
+          Activate all available features
+
+      --no-default-features
+          Do not activate the `default` feature
+
+      --target <TARGET>
+          Build for the target triple
+
+      --color [<COLOR>]
+          When to color the output.
+          
+          By default, `--color=auto` is active. Using just `--color` without an arg is equivalent to
+          `--color=always`.
+
+          Possible values:
+          - auto:   Colors will be used if stdout is a terminal. Colors will not be used if stdout
+            is a regular file
+          - never:  Colors will never be used
+          - always: Colors will always be used
+
+  -h, --help
+          Print help (see a summary with '-h')

@@ -1,0 +1,5 @@
+PublicApiDiff {
+    removed: [],
+    changed: [],
+    added: [],
+}

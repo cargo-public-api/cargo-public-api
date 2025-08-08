@@ -1,0 +1,120 @@
+List and diff the public API of Rust library crates between releases and commits. Website:
+https://github.com/cargo-public-api/cargo-public-api
+
+Usage: cargo public-api [OPTIONS]
+       cargo public-api diff [OPTIONS] [ARGS]...
+       cargo public-api completions [OPTIONS] <SHELL>
+       cargo public-api help [COMMAND]...
+
+Options:
+      --manifest-path <PATH>
+          Path to `Cargo.toml`
+          
+          [default: Cargo.toml]
+
+  -p, --package <PACKAGE>
+          Name of package in workspace to list or diff the public API for
+
+  -s, --simplified...
+          Omit noisy items. Can be used more than once.
+          
+          | Usage | Corresponds to                                           |
+          |-------|----------------------------------------------------------|
+          | -s    | --omit blanket-impls                                     |
+          | -ss   | --omit blanket-impls,auto-trait-impls                    |
+          | -sss  | --omit blanket-impls,auto-trait-impls,auto-derived-impls |
+
+      --omit <OMIT>
+          Omit specified items
+
+          Possible values:
+          - blanket-impls:      Omit items that belong to Blanket Implementations such as `impl<T>
+            Any for T`, `impl<T> Borrow<T> for T`, and `impl<T, U> Into<U> for T where U: From<T>`
+          - auto-trait-impls:   Omit items that belong to Auto Trait Implementations such as `impl
+            Send for ...`, `impl Sync for ...`, and `impl Unpin for ...`
+          - auto-derived-impls: Omit items that belong to Auto Derived Implementations such as
+            `Clone`, `Debug`, and `Eq`
+
+  -F, --features <FEATURES>
+          Space or comma separated list of features to activate
+
+      --all-features
+          Activate all available features
+
+      --no-default-features
+          Do not activate the `default` feature
+
+      --target <TARGET>
+          Build for the target triple
+
+      --color [<COLOR>]
+          When to color the output.
+          
+          By default, `--color=auto` is active. Using just `--color` without an arg is equivalent to
+          `--color=always`.
+
+          Possible values:
+          - auto:   Colors will be used if stdout is a terminal. Colors will not be used if stdout
+            is a regular file
+          - never:  Colors will never be used
+          - always: Colors will always be used
+
+  -h, --help
+          Print help (see a summary with '-h')
+
+  -V, --version
+          Print version
+
+cargo public-api diff:
+Diff the public API against a published version of the crate, or between commits.
+      --deny <DENY>
+          Exit with failure if the specified API diff is detected.
+          
+          Can be combined. For example, to only allow additions to the API, use `--deny=added
+          --deny=changed`.
+
+          Possible values:
+          - all:     All forms of API diffs are denied: additions, changes, deletions
+          - added:   Deny added things in API diffs
+          - changed: Deny changed things in API diffs
+          - removed: Deny removed things in API diffs
+
+      --force
+          Force the diff. For example, when diffing commits, enabling this option will discard
+          working tree changes during git checkouts of other commits
+
+  -h, --help
+          Print help (see a summary with '-h')
+
+  [ARGS]...
+          What to diff.
+          
+          EXAMPLES
+          ========
+          
+          Diff current working tree version of `specific-crate` against published version 1.2.3:
+          
+              cargo public-api -p specific-crate diff 1.2.3
+          
+          Diff between commits:
+          
+              cargo public-api diff v0.2.0..v0.3.0
+          
+          See
+          
+              cargo public-api diff --help
+          
+          for more examples and more info.
+
+cargo public-api completions:
+Generate completion scripts for many different shells.
+  -h, --help
+          Print help (see a summary with '-h')
+
+  <SHELL>
+          [possible values: bash, elvish, fig, fish, nushell, powershell, zsh]
+
+cargo public-api help:
+Print this message or the help of the given subcommand(s)
+  [COMMAND]...
+          Print help for the subcommand(s)

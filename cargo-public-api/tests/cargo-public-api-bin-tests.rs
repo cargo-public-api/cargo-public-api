@@ -3,7 +3,7 @@
 
 //! To update expected output it is in many cases sufficient to run
 //! ```bash
-//! ./scripts/cargo-test.sh --bless
+//! ./scripts/cargo-test.sh --update-snapshots
 //! ```
 
 use std::env;
@@ -1528,7 +1528,7 @@ impl AssertOrUpdate for Assert {
         );
 
         let stdout = String::from_utf8_lossy(&self.get_output().stdout);
-        insta::assert_snapshot!(test_name, stdout);
+        snapshot_testing::assert_eq_or_update(stdout, format!("tests/snapshots/{test_name}.txt"));
         self
     }
 }

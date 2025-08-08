@@ -11,3 +11,5 @@ export CARGO_TERM_COLOR=always
 ./scripts/lint.sh
 
 ./scripts/cargo-test.sh
+
+cargo check -p public-api --no-default-features

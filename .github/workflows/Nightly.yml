@@ -58,7 +58,7 @@ jobs:
           token: ${{ secrets.ENSELICCICD_GITHUB_TOKEN }} # for git push
       - run: rustup install nightly --profile minimal
       - run: sudo apt-get install -y zsh && zsh --version
-      - run: ./scripts/cargo-test.sh --bless
+      - run: ./scripts/cargo-test.sh --update-snapshots
       - name: Check for changes
         id: check-for-changes
         run: |

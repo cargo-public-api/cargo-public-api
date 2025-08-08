@@ -12,6 +12,7 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
+  CLICOLOR_FORCE: 1 # https://github.com/Enselic/snapshot-testing#force-colors-in-ci
 
 jobs:
   all-jobs:

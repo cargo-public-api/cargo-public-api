@@ -9,6 +9,7 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
+  CLICOLOR_FORCE: 1 # https://github.com/Enselic/snapshot-testing#force-colors-in-ci
 
 jobs:
   # The purpose of running every night is to detect when a change to

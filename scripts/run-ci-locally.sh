@@ -7,6 +7,7 @@ set -o nounset -o pipefail -o errexit -o xtrace
 
 # We set this in GitHub workflow files so we should also set it here.
 export CARGO_TERM_COLOR=always
+export CLICOLOR_FORCE=1 # https://github.com/Enselic/snapshot-testing#force-colors-in-ci
 
 ./scripts/lint.sh
 

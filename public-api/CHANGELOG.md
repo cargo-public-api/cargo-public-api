@@ -1,7 +1,7 @@
 # `public-api` changelog
 
 ## v0.50.1
-* Add a new method `PublicApi::assert_eq_or_update(&self, snapshot_path: impl AsRef<Path>)` to enable convenient snapshot testing of the public API. Uses the same excellent diffing engine that `insta` is using. You can-opt out from the new `[dependencies]` by disabling the `"snapshot-testing"` feature that is enabled by default. TODO: Reference PR with more info.
+* Add a new method `PublicApi::assert_eq_or_update(&self, snapshot_path: impl AsRef<Path>)` to enable convenient snapshot testing of the public API. Uses the same excellent diffing engine that `insta` is using. You can-opt out from the new `[dependencies]` by disabling the `"snapshot-testing"` feature that is enabled by default. See https://github.com/cargo-public-api/cargo-public-api/pull/818 for more info.
 
 ## v0.50.0
 * Support `nightly-2025-08-02` and later.

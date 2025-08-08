@@ -254,7 +254,11 @@ impl PublicApi {
     /// If the env var `UPDATE_SNAPSHOTS` is set to `1`, `yes` or `true` then
     /// the public API will be written to `snapshot_file` instead of being
     /// asserted to match.
+    ///
+    /// Set the env var `CLICOLOR_FORCE` to `1` to force colors in diffs in e.g. CI
+    /// logs.
     #[cfg(feature = "snapshot-testing")]
+    #[track_caller]
     pub fn assert_eq_or_update(&self, snapshot_path: impl AsRef<std::path::Path>) {
         snapshot_testing::assert_eq_or_update(self.to_string(), snapshot_path);
     }

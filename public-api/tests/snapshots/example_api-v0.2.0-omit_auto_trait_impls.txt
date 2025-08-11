@@ -1,0 +1,41 @@
+pub mod example_api
+#[non_exhaustive] pub struct example_api::Struct
+pub example_api::Struct::v1_field: usize
+pub example_api::Struct::v2_field: usize
+impl core::fmt::Debug for example_api::Struct
+pub fn example_api::Struct::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl<T, U> core::convert::Into<U> for example_api::Struct where U: core::convert::From<T>
+pub fn example_api::Struct::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for example_api::Struct where U: core::convert::Into<T>
+pub type example_api::Struct::Error = core::convert::Infallible
+pub fn example_api::Struct::try_from(value: U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for example_api::Struct where U: core::convert::TryFrom<T>
+pub type example_api::Struct::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn example_api::Struct::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> core::any::Any for example_api::Struct where T: 'static + ?core::marker::Sized
+pub fn example_api::Struct::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for example_api::Struct where T: ?core::marker::Sized
+pub fn example_api::Struct::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for example_api::Struct where T: ?core::marker::Sized
+pub fn example_api::Struct::borrow_mut(&mut self) -> &mut T
+impl<T> core::convert::From<T> for example_api::Struct
+pub fn example_api::Struct::from(t: T) -> T
+pub struct example_api::StructV2
+pub example_api::StructV2::field: usize
+impl<T, U> core::convert::Into<U> for example_api::StructV2 where U: core::convert::From<T>
+pub fn example_api::StructV2::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for example_api::StructV2 where U: core::convert::Into<T>
+pub type example_api::StructV2::Error = core::convert::Infallible
+pub fn example_api::StructV2::try_from(value: U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for example_api::StructV2 where U: core::convert::TryFrom<T>
+pub type example_api::StructV2::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn example_api::StructV2::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> core::any::Any for example_api::StructV2 where T: 'static + ?core::marker::Sized
+pub fn example_api::StructV2::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for example_api::StructV2 where T: ?core::marker::Sized
+pub fn example_api::StructV2::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for example_api::StructV2 where T: ?core::marker::Sized
+pub fn example_api::StructV2::borrow_mut(&mut self) -> &mut T
+impl<T> core::convert::From<T> for example_api::StructV2
+pub fn example_api::StructV2::from(t: T) -> T
+pub fn example_api::function(v1_param: example_api::Struct, v2_param: usize)

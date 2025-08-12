@@ -27,7 +27,7 @@ version = "1.0.104"
 features = ["unbounded_depth"]
 
 [dependencies.snapshot-testing]
-version = "0.1.4"
+version = "0.1.6"
 optional = true
 
 [dependencies.rustdoc-types]
@@ -37,7 +37,7 @@ version = "0.55.0"
 anyhow = "1.0.75"
 assert_cmd = "2.0.17"
 pretty_assertions = "1.4.1"
-snapshot-testing = "0.1.4"
+snapshot-testing = "0.1.6"
 tempfile = "3.19.1"
 
 [dev-dependencies.itertools]

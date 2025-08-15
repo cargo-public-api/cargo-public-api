@@ -49,6 +49,8 @@ jobs:
           tool: cargo-deny@0.17.0, cargo-audit@0.21.1, shfmt@3.10.0
           checksum: true
           fallback: none
+      # Use a fixed version for lints to avoid CI failure with new versions. Bump as needed.
+      - run: rustup install 1.88 --profile default && rustup default 1.88
       - run: cargo version --verbose # Make it easier to debug version-specific issues
       - run: ./scripts/lint.sh
 

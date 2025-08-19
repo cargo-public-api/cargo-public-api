@@ -11,7 +11,7 @@ license = "MIT"
 repository = "https://github.com/cargo-public-api/cargo-public-api/tree/main/rustdoc-json"
 
 [dependencies]
-cargo_metadata = "0.21.0"
+cargo_metadata = "0.22.0"
 cargo-manifest = "0.19.1"
 serde = { version = "1.0.179", features = ["derive"] }
 thiserror = "2.0.3"

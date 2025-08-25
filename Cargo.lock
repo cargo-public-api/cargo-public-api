@@ -1483,9 +1483,9 @@ dependencies = [
 
 [[package]]
 name = "snapshot-testing"
-version = "0.1.7"
+version = "0.1.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f7511465f944bcda5c591327c9205d20791a722734fa8e9213d7d77b592c570e"
+checksum = "bebf2194b9611339d00b28260cf6bd640073c60179ce7dd1e47badef1eb606e7"
 dependencies = [
  "console",
  "similar-asserts",

@@ -1,6 +1,3 @@
-// deny in CI, only warn here
-#![warn(clippy::all)]
-
 use std::ffi::OsString;
 use std::io::{stderr, stdout};
 use std::path::{Path, PathBuf};

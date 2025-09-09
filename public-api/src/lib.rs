@@ -32,7 +32,7 @@
 //! ```
 
 // deny in CI, only warn here
-#![warn(clippy::all, missing_docs)]
+#![warn(missing_docs)]
 
 mod crate_wrapper;
 mod error;

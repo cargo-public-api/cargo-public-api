@@ -287,8 +287,8 @@ impl<'c> ItemProcessor<'c> {
     //
     // You might think this is rare, but it is actually a common thing in
     // real-world code.
-    fn id_to_items(&self) -> HashMap<&Id, Vec<&IntermediatePublicItem>> {
-        let mut id_to_items: HashMap<&Id, Vec<&IntermediatePublicItem>> = HashMap::new();
+    fn id_to_items(&self) -> HashMap<&Id, Vec<&IntermediatePublicItem<'_>>> {
+        let mut id_to_items: HashMap<&Id, Vec<&IntermediatePublicItem<'_>>> = HashMap::new();
         for finished_item in &self.output {
             id_to_items
                 .entry(&finished_item.item().id)

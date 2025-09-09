@@ -17,7 +17,8 @@ use std::{
 
 use assert_cmd::Command;
 use assert_cmd::assert::Assert;
-use chrono::{Days, NaiveDate};
+use jiff::ToSpan;
+use jiff::civil::Date;
 use predicates::prelude::PredicateBooleanExt;
 use predicates::str::contains;
 
@@ -1600,21 +1601,22 @@ fn get_toolchain_one_day_before_minimal_toolchain() -> String {
 fn nightly_version_minus_one_day(nightly_version: impl AsRef<str>) -> String {
     nightly_version_from_date(
         date_from_nightly_version(nightly_version)
-            .checked_sub_days(Days::new(1))
+            .checked_sub(1.day())
             .unwrap(),
     )
 }
 
-fn date_from_nightly_version(nightly_version: impl AsRef<str>) -> NaiveDate {
+fn date_from_nightly_version(nightly_version: impl AsRef<str>) -> Date {
     let date = nightly_version
         .as_ref()
         .strip_prefix("nightly-")
         .expect("nightly version starts with 'nightly-'");
-    NaiveDate::parse_from_str(date, "%Y-%m-%d").expect("nightly version is in 'YYYY-MM-DD' format")
+    date.parse()
+        .expect("nightly version is in 'YYYY-MM-DD' format")
 }
 
-fn nightly_version_from_date(date: NaiveDate) -> String {
-    format!("nightly-{}", date.format("%Y-%m-%d"))
+fn nightly_version_from_date(date: Date) -> String {
+    format!("nightly-{date}")
 }
 
 #[cfg(test)]

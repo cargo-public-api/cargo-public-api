@@ -1,6 +1,3 @@
-// deny in CI, only warn here
-#![warn(clippy::all)]
-
 use std::{fs, io::Write, path::PathBuf};
 
 use public_api::Error;

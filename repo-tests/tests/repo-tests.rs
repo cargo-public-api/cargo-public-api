@@ -1,6 +1,3 @@
-// deny in CI, only warn here
-#![warn(clippy::all)]
-
 use std::{ffi::OsStr, fs::read_to_string, path::PathBuf};
 
 use public_api::MINIMUM_NIGHTLY_RUST_VERSION;

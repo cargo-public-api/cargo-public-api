@@ -10,7 +10,6 @@ cargo clippy \
     --all-targets \
     --all-features \
     -- \
-    --deny clippy::all \
     --deny warnings \
     --forbid unsafe_code
 

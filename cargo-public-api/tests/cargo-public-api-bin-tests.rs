@@ -1,6 +1,3 @@
-// deny in CI, only warn here
-#![warn(clippy::all)]
-
 //! To update expected output it is in many cases sufficient to run
 //! ```bash
 //! ./scripts/cargo-test.sh --update-snapshots

@@ -127,3 +127,38 @@ fn capture_output() {
         "Got stderr: {stderr}",
     );
 }
+
+#[test]
+fn pass_environment_variable() {
+    let target_dir = tempfile::tempdir().unwrap();
+    let mut stdout = vec![];
+    let mut stderr = vec![];
+
+    let non_existent_rustdoc_executable = "/non/existent/rustdoc/executable";
+
+    let result = rustdoc_json::Builder::default()
+        .toolchain("nightly")
+        .manifest_path("tests/test_crates/test_crate_error/Cargo.toml")
+        .quiet(true)
+        .color(rustdoc_json::Color::Never)
+        // Pass an invalid rustdoc executable path via the environment variable.
+        // This should cause a fail with the expected error message.
+        .env("RUSTDOC", &non_existent_rustdoc_executable)
+        .target_dir(&target_dir)
+        .build_with_captured_output(&mut stdout, &mut stderr);
+
+    assert!(matches!(
+        result,
+        Err(rustdoc_json::BuildError::BuildRustdocJsonError)
+    ));
+    assert!(stdout.is_empty());
+
+    let stderr = String::from_utf8(stderr).unwrap();
+
+    assert!(
+        stderr.contains(&format!(
+            "could not execute process `{non_existent_rustdoc_executable}"
+        )),
+        "Got stderr: {stderr}",
+    );
+}

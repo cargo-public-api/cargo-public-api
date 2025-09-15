@@ -134,7 +134,13 @@ fn pass_environment_variable() {
     let mut stdout = vec![];
     let mut stderr = vec![];
 
-    let non_existent_rustdoc_executable = "/non/existent/rustdoc/executable";
+    let non_existent_rustdoc_executable = if std::env::consts::OS.eq("windows") {
+        // Windows needs a disk drive in the path.
+        // Otherwise it will add it implicitly and test will fail.
+        "D:/non/existent/rustdoc/executable"
+    } else {
+        "/non/existent/rustdoc/executable"
+    };
 
     let result = rustdoc_json::Builder::default()
         .toolchain("nightly")

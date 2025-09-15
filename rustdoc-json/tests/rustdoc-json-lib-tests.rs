@@ -143,7 +143,7 @@ fn pass_environment_variable() {
         .color(rustdoc_json::Color::Never)
         // Pass an invalid rustdoc executable path via the environment variable.
         // This should cause a fail with the expected error message.
-        .env("RUSTDOC", &non_existent_rustdoc_executable)
+        .env("RUSTDOC", non_existent_rustdoc_executable)
         .target_dir(&target_dir)
         .build_with_captured_output(&mut stdout, &mut stderr);
 

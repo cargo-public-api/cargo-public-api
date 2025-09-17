@@ -113,6 +113,8 @@ pub fn dyn_arg_two_traits(d: &(dyn std::io::Write + Send)) {}
 
 pub fn dyn_arg_two_traits_one_lifetime(d: &(dyn std::io::Write + Send + 'static)) {}
 
+pub fn box_dyn_arg_two_traits(d: Box<dyn std::io::Write + Send>) {}
+
 pub unsafe fn unsafe_fn() {}
 
 pub async fn async_fn() {}

@@ -93,6 +93,7 @@ pub fn comprehensive_api::exports::v1::foo2()
 pub mod comprehensive_api::functions
 pub async fn comprehensive_api::functions::async_fn()
 pub async fn comprehensive_api::functions::async_fn_ret_bool() -> bool
+pub fn comprehensive_api::functions::box_dyn_arg_two_traits(d: alloc::boxed::Box<(dyn std::io::Write + core::marker::Send)>)
 pub const fn comprehensive_api::functions::const_fn()
 pub fn comprehensive_api::functions::dyn_arg_one_trait(d: &dyn std::io::Write)
 pub fn comprehensive_api::functions::dyn_arg_one_trait_one_lifetime(d: &(dyn std::io::Write + 'static))

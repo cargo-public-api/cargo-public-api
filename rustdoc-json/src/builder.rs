@@ -2,6 +2,8 @@ use super::BuildError;
 use cargo_metadata::TargetKind;
 use tracing::*;
 
+use std::collections::HashMap;
+use std::ffi::{OsStr, OsString};
 use std::io::Write;
 use std::{
     path::{Path, PathBuf},
@@ -89,6 +91,7 @@ fn cargo_rustdoc_command(options: &Builder) -> Result<Command, BuildError> {
         package_target,
         document_private_items,
         cap_lints,
+        envs,
     } = options;
 
     let mut command = match OVERRIDDEN_TOOLCHAIN.or(requested_toolchain.as_deref()) {
@@ -156,6 +159,7 @@ fn cargo_rustdoc_command(options: &Builder) -> Result<Command, BuildError> {
     if let Some(cap_lints) = cap_lints {
         command.args(["--cap-lints", cap_lints]);
     }
+    command.envs(envs);
     Ok(command)
 }
 
@@ -279,6 +283,7 @@ pub struct Builder {
     package_target: PackageTarget,
     document_private_items: bool,
     cap_lints: Option<String>,
+    envs: HashMap<OsString, OsString>,
 }
 
 impl Default for Builder {
@@ -298,6 +303,7 @@ impl Default for Builder {
             package_target: PackageTarget::default(),
             document_private_items: false,
             cap_lints: Some(String::from("warn")),
+            envs: HashMap::new(),
         }
     }
 }
@@ -428,6 +434,24 @@ impl Builder {
     #[must_use]
     pub fn cap_lints(mut self, cap_lints: Option<impl AsRef<str>>) -> Self {
         self.cap_lints = cap_lints.map(|c| c.as_ref().to_owned());
+        self
+    }
+
+    /// Environment variable mapping to pass to the spawned `cargo rustdoc` process.
+    ///
+    /// # Notes
+    ///
+    /// - Environment variable names are case-insensitive (but case-preserving) on Windows and case-sensitive on all other platforms.
+    /// - Spawned `cargo rustdoc` processes will inherit environment variables from their parent process by default.
+    ///   Environment variables explicitly set using this take precedence over inherited variables.
+    #[must_use]
+    pub fn env<K, V>(mut self, key: K, val: V) -> Self
+    where
+        K: AsRef<OsStr>,
+        V: AsRef<OsStr>,
+    {
+        self.envs
+            .insert(key.as_ref().to_owned(), val.as_ref().to_owned());
         self
     }
 

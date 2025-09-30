@@ -1,13 +1,6 @@
 #!/usr/bin/env bash
 set -o nounset -o pipefail -o errexit
 
-UPDATE_SNAPSHOTS=no
-if [ "${1:-}" = "--update-snapshots" ]; then
-    shift
-    UPDATE_SNAPSHOTS=yes
-fi
-export UPDATE_SNAPSHOTS
-
 # Put `cargo-public-api` in $PATH so `cargo` finds it and `cargo public-api`
 # works, which some tests depend on.
 #

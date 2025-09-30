@@ -46,7 +46,6 @@ impl<T> core::convert::From<T> for rustdoc_json::BuildError
 pub fn rustdoc_json::BuildError::from(t: T) -> T
 impl<T> tracing::instrument::Instrument for rustdoc_json::BuildError
 impl<T> tracing::instrument::WithSubscriber for rustdoc_json::BuildError
-impl<T> yoke::erased::ErasedDestructor for rustdoc_json::BuildError where T: 'static
 pub enum rustdoc_json::Color
 pub rustdoc_json::Color::Always
 pub rustdoc_json::Color::Auto
@@ -86,7 +85,6 @@ impl<T> core::convert::From<T> for rustdoc_json::Color
 pub fn rustdoc_json::Color::from(t: T) -> T
 impl<T> tracing::instrument::Instrument for rustdoc_json::Color
 impl<T> tracing::instrument::WithSubscriber for rustdoc_json::Color
-impl<T> yoke::erased::ErasedDestructor for rustdoc_json::Color where T: 'static
 #[non_exhaustive] pub enum rustdoc_json::PackageTarget
 pub rustdoc_json::PackageTarget::Bench(alloc::string::String)
 pub rustdoc_json::PackageTarget::Bin(alloc::string::String)
@@ -129,7 +127,6 @@ impl<T> core::convert::From<T> for rustdoc_json::PackageTarget
 pub fn rustdoc_json::PackageTarget::from(t: T) -> T
 impl<T> tracing::instrument::Instrument for rustdoc_json::PackageTarget
 impl<T> tracing::instrument::WithSubscriber for rustdoc_json::PackageTarget
-impl<T> yoke::erased::ErasedDestructor for rustdoc_json::PackageTarget where T: 'static
 pub struct rustdoc_json::Builder
 impl rustdoc_json::Builder
 pub const fn rustdoc_json::Builder::all_features(self, all_features: bool) -> Self
@@ -186,4 +183,3 @@ impl<T> core::convert::From<T> for rustdoc_json::Builder
 pub fn rustdoc_json::Builder::from(t: T) -> T
 impl<T> tracing::instrument::Instrument for rustdoc_json::Builder
 impl<T> tracing::instrument::WithSubscriber for rustdoc_json::Builder
-impl<T> yoke::erased::ErasedDestructor for rustdoc_json::Builder where T: 'static

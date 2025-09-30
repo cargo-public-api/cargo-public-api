@@ -1,6 +1,6 @@
 //! To update expected output it is in many cases sufficient to run
 //! ```bash
-//! ./scripts/cargo-test.sh --update-snapshots
+//! UPDATE_SNAPSHOTS=yes ./scripts/cargo-test.sh
 //! ```
 
 use std::env;

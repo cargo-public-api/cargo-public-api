@@ -445,11 +445,7 @@ impl Builder {
     /// - Spawned `cargo rustdoc` processes will inherit environment variables from their parent process by default.
     ///   Environment variables explicitly set using this take precedence over inherited variables.
     #[must_use]
-    pub fn env<K, V>(mut self, key: K, val: V) -> Self
-    where
-        K: AsRef<OsStr>,
-        V: AsRef<OsStr>,
-    {
+    pub fn env(mut self, key: impl AsRef<OsStr>, val: impl AsRef<OsStr>) -> Self {
         self.envs
             .insert(key.as_ref().to_owned(), val.as_ref().to_owned());
         self

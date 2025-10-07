@@ -137,6 +137,7 @@ pub fn rustdoc_json::Builder::clear_target_dir(self) -> Self
 pub fn rustdoc_json::Builder::clear_toolchain(self) -> Self
 pub const fn rustdoc_json::Builder::color(self, color: rustdoc_json::Color) -> Self
 pub fn rustdoc_json::Builder::document_private_items(self, document_private_items: bool) -> Self
+pub fn rustdoc_json::Builder::env(self, key: impl core::convert::AsRef<std::ffi::os_str::OsStr>, val: impl core::convert::AsRef<std::ffi::os_str::OsStr>) -> Self
 pub fn rustdoc_json::Builder::features<I: core::iter::traits::collect::IntoIterator<Item = S>, S: core::convert::AsRef<str>>(self, features: I) -> Self
 pub fn rustdoc_json::Builder::manifest_path(self, manifest_path: impl core::convert::AsRef<std::path::Path>) -> Self
 pub const fn rustdoc_json::Builder::no_default_features(self, no_default_features: bool) -> Self

@@ -76,7 +76,7 @@ default-features = false
 features = ["alloc"]
 
 [dev-dependencies]
-assert_cmd = "2.0.17"
+assert_cmd = "2.1.0"
 home = "0.5.12"
 remove_dir_all = "1.0.0"
 tempfile = "3.19.1"

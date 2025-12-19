@@ -6,7 +6,7 @@ pub struct CrateWrapper<'c> {
     crate_: &'c Crate,
 
     /// Normally, an item referenced by [`Id`] is present in the rustdoc JSON.
-    /// If [`Self::crate_.index`] is missing an [`Id`], then we add it here, to
+    /// If `Self::crate_.index` is missing an [`Id`], then we add it here, to
     /// aid with debugging. It will typically be missing because of bugs (or
     /// borderline bug such as re-exports of foreign items like discussed in
     /// <https://github.com/rust-lang/rust/pull/99287#issuecomment-1186586518>)

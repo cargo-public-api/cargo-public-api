@@ -35,7 +35,7 @@ version = "0.56.0"
 
 [dev-dependencies]
 anyhow = "1.0.75"
-assert_cmd = "2.0.17"
+assert_cmd = "2.1.1"
 pretty_assertions = "1.4.1"
 snapshot-testing = "0.1.8"
 tempfile = "3.19.1"

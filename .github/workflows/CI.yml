@@ -50,7 +50,7 @@ jobs:
           checksum: true
           fallback: none
       # Use a fixed version for lints to avoid CI failure with new versions. Bump as needed.
-      - run: rustup install 1.88 --profile default && rustup default 1.88
+      - run: lint_toolchain=1.92 ; rustup install $lint_toolchain --profile default && rustup default $lint_toolchain
       - run: cargo version --verbose # Make it easier to debug version-specific issues
       - run: ./scripts/lint.sh
 

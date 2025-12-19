@@ -1,5 +1,8 @@
 # `public-api` changelog
 
+## v0.50.2
+* Bump deps (to stop using deprecated `assert_cmd::Command::cargo_bin()` in tests).
+
 ## v0.50.1
 * Add a new method `PublicApi::assert_eq_or_update(&self, snapshot_path: impl AsRef<Path>)` to enable convenient snapshot testing of the public API. Uses the same excellent diffing engine that `insta` is using. You can-opt out from the new `[dependencies]` by disabling the `"snapshot-testing"` feature that is enabled by default. See https://github.com/cargo-public-api/cargo-public-api/pull/818 for more info.
 

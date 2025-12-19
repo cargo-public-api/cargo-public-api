@@ -14,6 +14,7 @@ use std::{
 
 use assert_cmd::Command;
 use assert_cmd::assert::Assert;
+use assert_cmd::cargo::cargo_bin_cmd;
 use jiff::ToSpan;
 use jiff::civil::Date;
 use predicates::prelude::PredicateBooleanExt;
@@ -37,7 +38,7 @@ const COMPILATION_ERROR_TOOLCHAIN: &str = "nightly-2022-06-01";
 
 #[test]
 fn list_public_items() {
-    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    let mut cmd = cargo_bin_cmd!("cargo-public-api");
 
     // Other tests use --simplified. Here we use -s to make sure that also works
     cmd.arg("-s");
@@ -1082,7 +1083,7 @@ fn long_diff_help() {
 fn long_help_wraps() {
     let max_allowed_line_length = 125; // 120 with some margin
 
-    let mut cmd = Command::cargo_bin("cargo-public-api").unwrap();
+    let mut cmd = cargo_bin_cmd!("cargo-public-api");
     cmd.arg("--help");
 
     let output = cmd.output().unwrap();
@@ -1387,7 +1388,7 @@ impl From<TestCmdType<'_>> for Command {
 
                 Command::from_std(cargo_cmd)
             }
-            TestCmdType::Bin => Command::cargo_bin("cargo-public-api").unwrap(),
+            TestCmdType::Bin => cargo_bin_cmd!("cargo-public-api"),
         }
     }
 }
@@ -1533,10 +1534,8 @@ impl AssertOrUpdate for Assert {
 
 /// Figures out the `./target/debug` dir
 fn bin_dir() -> PathBuf {
-    let mut bin_dir = env::current_exe().unwrap(); // ".../target/debug/deps/cargo_public_api_bin_tests-d0f2f926b349fbb9"
-    bin_dir.pop(); // Pop "cargo_public_api_bin_tests-d0f2f926b349fbb9"
-    bin_dir.pop(); // Pop "deps"
-    bin_dir // ".../target/debug"
+    let bin_dir = assert_cmd::cargo::cargo_bin!(); // ".../target/debug/cargo-public-api"
+    bin_dir.parent().unwrap().to_path_buf() // ".../target/debug"
 }
 
 /// Since `rustup` always prepends `$CARGO_HOME/bin` to `$PATH` [1], make sure

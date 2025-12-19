@@ -1,5 +1,8 @@
 # rustdoc-json
 
+## v0.9.8
+* Add `rustdoc_json::Builder::env()` which simply forwards to underlying `Command::env()`.
+
 ## v0.9.7
 * Bump `cargo_metadata` from `0.19.2` to `0.21.0`.
 

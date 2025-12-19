@@ -80,18 +80,16 @@ fn test_alternative_package_target(package_target: PackageTarget) {
 /// simple program and capture its stderr to test if `silent(true)` works.
 #[test]
 fn silent_build() {
-    use assert_cmd::Command;
+    use assert_cmd::cargo::cargo_bin_cmd;
     use predicates::str::contains;
 
     let stderr_substring_if_not_silent = "invalid/because/we/want/it/to/fail/Cargo.toml";
-    Command::cargo_bin("test-silent-build")
-        .unwrap()
+    cargo_bin_cmd!("test-silent-build")
         .assert()
         .stderr(contains(stderr_substring_if_not_silent))
         .failure();
 
-    Command::cargo_bin("test-silent-build")
-        .unwrap()
+    cargo_bin_cmd!("test-silent-build")
         .arg("--silent")
         .assert()
         .try_stderr(contains(stderr_substring_if_not_silent))

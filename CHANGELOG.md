@@ -1,5 +1,8 @@
 # `cargo-public-api` changelog
 
+## v0.50.2
+* Bump deps (to stop using deprecated `assert_cmd::Command::cargo_bin()` in tests).
+
 ## v0.50.1
 * Support `nightly-2025-08-02` and later.
 

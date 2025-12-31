@@ -15,7 +15,7 @@ repository = "https://github.com/cargo-public-api/cargo-public-api"
 [dependencies]
 nu-ansi-term = "0.50.3"
 anyhow = "1.0.75"
-cargo-manifest = "0.19.1"
+cargo-manifest = "0.20.0"
 cargo-util = "0.2.21"
 clap_complete_command = "0.5.1"
 crates-index = "3.11.0"

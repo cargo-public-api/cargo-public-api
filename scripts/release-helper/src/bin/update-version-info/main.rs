@@ -34,7 +34,7 @@ fn main() {
     insert_file_contents_in_between(
         "README.md",
         "```sh
-cargo +stable install cargo-public-api --locked
+cargo +stable install cargo-public-api
 ```
 
 Ensure **",

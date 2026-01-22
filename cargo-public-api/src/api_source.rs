@@ -189,7 +189,7 @@ Ensure your nightly toolchain is up to date with:
 If that does not help, it might be `cargo public-api` that is out of date. Try
 to install the latest version with
 
-    cargo install cargo-public-api --locked
+    cargo install cargo-public-api
 
 If the issue remains, please report at
 

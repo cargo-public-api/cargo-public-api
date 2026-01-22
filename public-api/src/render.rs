@@ -41,8 +41,12 @@ impl<'c> RenderingContext<'c> {
 
         let mut tokens = vec![];
 
-        for attr in &item.attrs {
-            if let Some(annotation) = match attr {
+        // rustdoc JSON doesn't guarantee a stable attribute order; sort the rendered annotations so
+        // the public API output is deterministic.
+        let mut annotations: Vec<String> = item
+            .attrs
+            .iter()
+            .filter_map(|attr| match attr {
                 Attribute::ExportName(name) => Some(format!("#[export_name = \"{name}\"]")),
                 Attribute::LinkSection(section) => Some(format!("#[link_section = \"{section}\"]")),
                 Attribute::NoMangle => Some("#[no_mangle]".to_string()),
@@ -80,10 +84,13 @@ impl<'c> RenderingContext<'c> {
                     })
                 }
                 _ => None,
-            } {
-                tokens.push(Token::Annotation(annotation));
-                tokens.push(ws!());
-            }
+            })
+            .collect();
+
+        annotations.sort_unstable();
+        for annotation in annotations {
+            tokens.push(Token::Annotation(annotation));
+            tokens.push(ws!());
         }
 
         let inner_tokens = match &item.inner {

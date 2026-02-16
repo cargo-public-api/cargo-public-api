@@ -17,6 +17,7 @@ impl core::marker::Freeze for public_api::diff::ChangedPublicItem
 impl core::marker::Send for public_api::diff::ChangedPublicItem
 impl core::marker::Sync for public_api::diff::ChangedPublicItem
 impl core::marker::Unpin for public_api::diff::ChangedPublicItem
+impl core::marker::UnsafeUnpin for public_api::diff::ChangedPublicItem
 impl core::panic::unwind_safe::RefUnwindSafe for public_api::diff::ChangedPublicItem
 impl core::panic::unwind_safe::UnwindSafe for public_api::diff::ChangedPublicItem
 pub struct public_api::diff::PublicApiDiff
@@ -38,6 +39,7 @@ impl core::marker::Freeze for public_api::diff::PublicApiDiff
 impl core::marker::Send for public_api::diff::PublicApiDiff
 impl core::marker::Sync for public_api::diff::PublicApiDiff
 impl core::marker::Unpin for public_api::diff::PublicApiDiff
+impl core::marker::UnsafeUnpin for public_api::diff::PublicApiDiff
 impl core::panic::unwind_safe::RefUnwindSafe for public_api::diff::PublicApiDiff
 impl core::panic::unwind_safe::UnwindSafe for public_api::diff::PublicApiDiff
 pub mod public_api::tokens
@@ -76,6 +78,7 @@ impl core::marker::Freeze for public_api::tokens::Token
 impl core::marker::Send for public_api::tokens::Token
 impl core::marker::Sync for public_api::tokens::Token
 impl core::marker::Unpin for public_api::tokens::Token
+impl core::marker::UnsafeUnpin for public_api::tokens::Token
 impl core::panic::unwind_safe::RefUnwindSafe for public_api::tokens::Token
 impl core::panic::unwind_safe::UnwindSafe for public_api::tokens::Token
 #[non_exhaustive] pub enum public_api::Error
@@ -95,6 +98,7 @@ impl core::marker::Freeze for public_api::Error
 impl core::marker::Send for public_api::Error
 impl core::marker::Sync for public_api::Error
 impl core::marker::Unpin for public_api::Error
+impl core::marker::UnsafeUnpin for public_api::Error
 impl !core::panic::unwind_safe::RefUnwindSafe for public_api::Error
 impl !core::panic::unwind_safe::UnwindSafe for public_api::Error
 pub struct public_api::Builder
@@ -114,6 +118,7 @@ impl core::marker::Freeze for public_api::Builder
 impl core::marker::Send for public_api::Builder
 impl core::marker::Sync for public_api::Builder
 impl core::marker::Unpin for public_api::Builder
+impl core::marker::UnsafeUnpin for public_api::Builder
 impl core::panic::unwind_safe::RefUnwindSafe for public_api::Builder
 impl core::panic::unwind_safe::UnwindSafe for public_api::Builder
 #[non_exhaustive] pub struct public_api::PublicApi
@@ -130,6 +135,7 @@ impl core::marker::Freeze for public_api::PublicApi
 impl core::marker::Send for public_api::PublicApi
 impl core::marker::Sync for public_api::PublicApi
 impl core::marker::Unpin for public_api::PublicApi
+impl core::marker::UnsafeUnpin for public_api::PublicApi
 impl core::panic::unwind_safe::RefUnwindSafe for public_api::PublicApi
 impl core::panic::unwind_safe::UnwindSafe for public_api::PublicApi
 pub struct public_api::PublicItem
@@ -153,6 +159,7 @@ impl core::marker::Freeze for public_api::PublicItem
 impl core::marker::Send for public_api::PublicItem
 impl core::marker::Sync for public_api::PublicItem
 impl core::marker::Unpin for public_api::PublicItem
+impl core::marker::UnsafeUnpin for public_api::PublicItem
 impl core::panic::unwind_safe::RefUnwindSafe for public_api::PublicItem
 impl core::panic::unwind_safe::UnwindSafe for public_api::PublicItem
 pub const public_api::MINIMUM_NIGHTLY_RUST_VERSION: &str

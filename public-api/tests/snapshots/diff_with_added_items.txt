@@ -18,6 +18,7 @@ PublicApiDiff {
         impl core::marker::Send for example_api::StructV2,
         impl core::marker::Sync for example_api::StructV2,
         impl core::marker::Unpin for example_api::StructV2,
+        impl core::marker::UnsafeUnpin for example_api::StructV2,
         impl core::panic::unwind_safe::RefUnwindSafe for example_api::StructV2,
         impl core::panic::unwind_safe::UnwindSafe for example_api::StructV2,
         impl<T, U> core::convert::Into<U> for example_api::StructV2 where U: core::convert::From<T>,

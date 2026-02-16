@@ -24,6 +24,7 @@ impl core::marker::Freeze for rustdoc_json::BuildError
 impl core::marker::Send for rustdoc_json::BuildError
 impl core::marker::Sync for rustdoc_json::BuildError
 impl core::marker::Unpin for rustdoc_json::BuildError
+impl core::marker::UnsafeUnpin for rustdoc_json::BuildError
 impl !core::panic::unwind_safe::RefUnwindSafe for rustdoc_json::BuildError
 impl !core::panic::unwind_safe::UnwindSafe for rustdoc_json::BuildError
 impl<T, U> core::convert::Into<U> for rustdoc_json::BuildError where U: core::convert::From<T>
@@ -59,6 +60,7 @@ impl core::marker::Freeze for rustdoc_json::Color
 impl core::marker::Send for rustdoc_json::Color
 impl core::marker::Sync for rustdoc_json::Color
 impl core::marker::Unpin for rustdoc_json::Color
+impl core::marker::UnsafeUnpin for rustdoc_json::Color
 impl core::panic::unwind_safe::RefUnwindSafe for rustdoc_json::Color
 impl core::panic::unwind_safe::UnwindSafe for rustdoc_json::Color
 impl<T, U> core::convert::Into<U> for rustdoc_json::Color where U: core::convert::From<T>
@@ -101,6 +103,7 @@ impl core::marker::Freeze for rustdoc_json::PackageTarget
 impl core::marker::Send for rustdoc_json::PackageTarget
 impl core::marker::Sync for rustdoc_json::PackageTarget
 impl core::marker::Unpin for rustdoc_json::PackageTarget
+impl core::marker::UnsafeUnpin for rustdoc_json::PackageTarget
 impl core::panic::unwind_safe::RefUnwindSafe for rustdoc_json::PackageTarget
 impl core::panic::unwind_safe::UnwindSafe for rustdoc_json::PackageTarget
 impl<T, U> core::convert::Into<U> for rustdoc_json::PackageTarget where U: core::convert::From<T>
@@ -158,6 +161,7 @@ impl core::marker::Freeze for rustdoc_json::Builder
 impl core::marker::Send for rustdoc_json::Builder
 impl core::marker::Sync for rustdoc_json::Builder
 impl core::marker::Unpin for rustdoc_json::Builder
+impl core::marker::UnsafeUnpin for rustdoc_json::Builder
 impl core::panic::unwind_safe::RefUnwindSafe for rustdoc_json::Builder
 impl core::panic::unwind_safe::UnwindSafe for rustdoc_json::Builder
 impl<T, U> core::convert::Into<U> for rustdoc_json::Builder where U: core::convert::From<T>

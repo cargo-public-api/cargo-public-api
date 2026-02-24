@@ -1,7 +1,8 @@
 use crate::{
     structs::{Plain, Unit, WithLifetimeAndGenericParam},
     traits::{
-        GenericAssociatedTypes, Simple, TraitReferencingOwnAssociatedType, TraitWithGenerics,
+        GenericAssociatedTypes, Simple, TraitReferencingOwnAssociatedType, TraitWithDefaultMethod,
+        TraitWithGenerics,
     },
 };
 
@@ -115,6 +116,45 @@ impl GenericAssociatedTypes for Unit {
     type SimpleBound = GatTestStruct1<'static, usize>;
 
     type WithLifetime<'a> = GatTestStruct1<'a, bool>;
+}
+
+/// Only overrides `required`, leaving both defaults.
+pub struct UsesAllDefaults;
+
+impl TraitWithDefaultMethod for UsesAllDefaults {
+    fn required(&self) -> bool {
+        true
+    }
+}
+
+/// Overrides `required` and `defaulted`, but leaves `another_default`.
+pub struct OverridesSomeDefaults;
+
+impl TraitWithDefaultMethod for OverridesSomeDefaults {
+    fn required(&self) -> bool {
+        false
+    }
+
+    fn defaulted(&self) -> u32 {
+        99
+    }
+}
+
+/// Overrides all methods, no defaults used.
+pub struct OverridesAllDefaults;
+
+impl TraitWithDefaultMethod for OverridesAllDefaults {
+    fn required(&self) -> bool {
+        true
+    }
+
+    fn defaulted(&self) -> u32 {
+        0
+    }
+
+    fn another_default(&self) -> &str {
+        "world"
+    }
 }
 
 /// Regression test for <https://github.com/cargo-public-api/cargo-public-api/issues/429>

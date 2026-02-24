@@ -147,6 +147,15 @@ pub struct comprehensive_api::impls::GatTestStruct1<'a, T>(_)
 impl<'a, T> comprehensive_api::traits::Simple for comprehensive_api::impls::GatTestStruct1<'a, T>
 pub fn comprehensive_api::impls::GatTestStruct1<'a, T>::act()
 pub struct comprehensive_api::impls::GatTestStruct2<T>(_)
+pub struct comprehensive_api::impls::OverridesAllDefaults
+impl comprehensive_api::traits::TraitWithDefaultMethod for comprehensive_api::impls::OverridesAllDefaults
+pub fn comprehensive_api::impls::OverridesAllDefaults::another_default(&self) -> &str
+pub fn comprehensive_api::impls::OverridesAllDefaults::defaulted(&self) -> u32
+pub fn comprehensive_api::impls::OverridesAllDefaults::required(&self) -> bool
+pub struct comprehensive_api::impls::OverridesSomeDefaults
+impl comprehensive_api::traits::TraitWithDefaultMethod for comprehensive_api::impls::OverridesSomeDefaults
+pub fn comprehensive_api::impls::OverridesSomeDefaults::defaulted(&self) -> u32
+pub fn comprehensive_api::impls::OverridesSomeDefaults::required(&self) -> bool
 pub struct comprehensive_api::impls::TestItemGrouping
 impl comprehensive_api::traits::TraitReferencingOwnAssociatedType for comprehensive_api::impls::TestItemGrouping
 pub type comprehensive_api::impls::TestItemGrouping::OwnAssociatedType = bool
@@ -155,6 +164,9 @@ pub fn comprehensive_api::impls::TestItemGrouping::own_associated_type_output_ex
 impl<T, U> comprehensive_api::traits::TraitWithGenerics<T, U> for comprehensive_api::impls::TestItemGrouping
 pub type comprehensive_api::impls::TestItemGrouping::Foo = u8
 pub fn comprehensive_api::impls::TestItemGrouping::bar() -> <Self as comprehensive_api::traits::TraitWithGenerics<T, U>>::Foo
+pub struct comprehensive_api::impls::UsesAllDefaults
+impl comprehensive_api::traits::TraitWithDefaultMethod for comprehensive_api::impls::UsesAllDefaults
+pub fn comprehensive_api::impls::UsesAllDefaults::required(&self) -> bool
 pub trait comprehensive_api::impls::ForUnit
 pub fn comprehensive_api::impls::ForUnit::for_unit()
 impl comprehensive_api::impls::ForUnit for ()
@@ -241,6 +253,19 @@ pub fn comprehensive_api::impls::TestItemGrouping::own_associated_type_output(&s
 pub fn comprehensive_api::impls::TestItemGrouping::own_associated_type_output_explicit_as(&self) -> <Self as comprehensive_api::traits::TraitReferencingOwnAssociatedType>::OwnAssociatedType
 pub trait comprehensive_api::traits::TraitWithBounds: comprehensive_api::traits::private_mod::PubTraitInPrivateMod + comprehensive_api::traits::Simple + core::marker::Send
 pub trait comprehensive_api::traits::TraitWithBoundsAndGenerics<U>: comprehensive_api::traits::Simple
+pub trait comprehensive_api::traits::TraitWithDefaultMethod
+pub fn comprehensive_api::traits::TraitWithDefaultMethod::another_default(&self) -> &str
+pub fn comprehensive_api::traits::TraitWithDefaultMethod::defaulted(&self) -> u32
+pub fn comprehensive_api::traits::TraitWithDefaultMethod::required(&self) -> bool
+impl comprehensive_api::traits::TraitWithDefaultMethod for comprehensive_api::impls::OverridesAllDefaults
+pub fn comprehensive_api::impls::OverridesAllDefaults::another_default(&self) -> &str
+pub fn comprehensive_api::impls::OverridesAllDefaults::defaulted(&self) -> u32
+pub fn comprehensive_api::impls::OverridesAllDefaults::required(&self) -> bool
+impl comprehensive_api::traits::TraitWithDefaultMethod for comprehensive_api::impls::OverridesSomeDefaults
+pub fn comprehensive_api::impls::OverridesSomeDefaults::defaulted(&self) -> u32
+pub fn comprehensive_api::impls::OverridesSomeDefaults::required(&self) -> bool
+impl comprehensive_api::traits::TraitWithDefaultMethod for comprehensive_api::impls::UsesAllDefaults
+pub fn comprehensive_api::impls::UsesAllDefaults::required(&self) -> bool
 pub trait comprehensive_api::traits::TraitWithGenerics<T, U>
 pub type comprehensive_api::traits::TraitWithGenerics::Foo
 pub fn comprehensive_api::traits::TraitWithGenerics::bar() -> <Self as comprehensive_api::traits::TraitWithGenerics<T, U>>::Foo

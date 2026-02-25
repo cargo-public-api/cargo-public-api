@@ -1,7 +1,8 @@
 use crate::{
     structs::{Plain, Unit, WithLifetimeAndGenericParam},
     traits::{
-        GenericAssociatedTypes, Simple, TraitReferencingOwnAssociatedType, TraitWithGenerics,
+        GenericAssociatedTypes, Simple, TraitReferencingOwnAssociatedType, TraitWithOneRequiredAndTwoDefaultMethods,
+        TraitWithGenerics,
     },
 };
 
@@ -115,6 +116,45 @@ impl GenericAssociatedTypes for Unit {
     type SimpleBound = GatTestStruct1<'static, usize>;
 
     type WithLifetime<'a> = GatTestStruct1<'a, bool>;
+}
+
+/// Only overrides `required`, leaving both defaults.
+pub struct OverridesOnlyRequired;
+
+impl TraitWithOneRequiredAndTwoDefaultMethods for OverridesOnlyRequired {
+    fn required(&self) -> bool {
+        true
+    }
+}
+
+/// Overrides `required` and `defaulted`, but leaves `another_default`.
+pub struct OverridesRequiredAndOneOfTwoDefaults;
+
+impl TraitWithOneRequiredAndTwoDefaultMethods for OverridesRequiredAndOneOfTwoDefaults {
+    fn required(&self) -> bool {
+        false
+    }
+
+    fn defaulted(&self) -> u32 {
+        99
+    }
+}
+
+/// Overrides all methods, no defaults used.
+pub struct OverridesRequiredAndBothDefaults;
+
+impl TraitWithOneRequiredAndTwoDefaultMethods for OverridesRequiredAndBothDefaults {
+    fn required(&self) -> bool {
+        true
+    }
+
+    fn defaulted(&self) -> u32 {
+        0
+    }
+
+    fn another_default(&self) -> &str {
+        "world"
+    }
 }
 
 /// Regression test for <https://github.com/cargo-public-api/cargo-public-api/issues/429>

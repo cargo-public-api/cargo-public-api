@@ -57,3 +57,15 @@ pub trait GenericAssociatedTypes {
     type SimpleBound: Simple;
     type WithLifetime<'a>;
 }
+
+pub trait TraitWithOneRequiredAndTwoDefaultMethods {
+    fn required(&self) -> bool;
+
+    fn defaulted(&self) -> u32 {
+        42
+    }
+
+    fn another_default(&self) -> &str {
+        "hello"
+    }
+}

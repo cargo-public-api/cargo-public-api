@@ -147,6 +147,18 @@ pub struct comprehensive_api::impls::GatTestStruct1<'a, T>(_)
 impl<'a, T> comprehensive_api::traits::Simple for comprehensive_api::impls::GatTestStruct1<'a, T>
 pub fn comprehensive_api::impls::GatTestStruct1<'a, T>::act()
 pub struct comprehensive_api::impls::GatTestStruct2<T>(_)
+pub struct comprehensive_api::impls::OverridesOnlyRequired
+impl comprehensive_api::traits::TraitWithOneRequiredAndTwoDefaultMethods for comprehensive_api::impls::OverridesOnlyRequired
+pub fn comprehensive_api::impls::OverridesOnlyRequired::required(&self) -> bool
+pub struct comprehensive_api::impls::OverridesRequiredAndBothDefaults
+impl comprehensive_api::traits::TraitWithOneRequiredAndTwoDefaultMethods for comprehensive_api::impls::OverridesRequiredAndBothDefaults
+pub fn comprehensive_api::impls::OverridesRequiredAndBothDefaults::another_default(&self) -> &str
+pub fn comprehensive_api::impls::OverridesRequiredAndBothDefaults::defaulted(&self) -> u32
+pub fn comprehensive_api::impls::OverridesRequiredAndBothDefaults::required(&self) -> bool
+pub struct comprehensive_api::impls::OverridesRequiredAndOneOfTwoDefaults
+impl comprehensive_api::traits::TraitWithOneRequiredAndTwoDefaultMethods for comprehensive_api::impls::OverridesRequiredAndOneOfTwoDefaults
+pub fn comprehensive_api::impls::OverridesRequiredAndOneOfTwoDefaults::defaulted(&self) -> u32
+pub fn comprehensive_api::impls::OverridesRequiredAndOneOfTwoDefaults::required(&self) -> bool
 pub struct comprehensive_api::impls::TestItemGrouping
 impl comprehensive_api::traits::TraitReferencingOwnAssociatedType for comprehensive_api::impls::TestItemGrouping
 pub type comprehensive_api::impls::TestItemGrouping::OwnAssociatedType = bool
@@ -247,6 +259,19 @@ pub fn comprehensive_api::traits::TraitWithGenerics::bar() -> <Self as comprehen
 impl<T, U> comprehensive_api::traits::TraitWithGenerics<T, U> for comprehensive_api::impls::TestItemGrouping
 pub type comprehensive_api::impls::TestItemGrouping::Foo = u8
 pub fn comprehensive_api::impls::TestItemGrouping::bar() -> <Self as comprehensive_api::traits::TraitWithGenerics<T, U>>::Foo
+pub trait comprehensive_api::traits::TraitWithOneRequiredAndTwoDefaultMethods
+pub fn comprehensive_api::traits::TraitWithOneRequiredAndTwoDefaultMethods::another_default(&self) -> &str
+pub fn comprehensive_api::traits::TraitWithOneRequiredAndTwoDefaultMethods::defaulted(&self) -> u32
+pub fn comprehensive_api::traits::TraitWithOneRequiredAndTwoDefaultMethods::required(&self) -> bool
+impl comprehensive_api::traits::TraitWithOneRequiredAndTwoDefaultMethods for comprehensive_api::impls::OverridesOnlyRequired
+pub fn comprehensive_api::impls::OverridesOnlyRequired::required(&self) -> bool
+impl comprehensive_api::traits::TraitWithOneRequiredAndTwoDefaultMethods for comprehensive_api::impls::OverridesRequiredAndBothDefaults
+pub fn comprehensive_api::impls::OverridesRequiredAndBothDefaults::another_default(&self) -> &str
+pub fn comprehensive_api::impls::OverridesRequiredAndBothDefaults::defaulted(&self) -> u32
+pub fn comprehensive_api::impls::OverridesRequiredAndBothDefaults::required(&self) -> bool
+impl comprehensive_api::traits::TraitWithOneRequiredAndTwoDefaultMethods for comprehensive_api::impls::OverridesRequiredAndOneOfTwoDefaults
+pub fn comprehensive_api::impls::OverridesRequiredAndOneOfTwoDefaults::defaulted(&self) -> u32
+pub fn comprehensive_api::impls::OverridesRequiredAndOneOfTwoDefaults::required(&self) -> bool
 pub unsafe trait comprehensive_api::traits::UnsafeTrait
 pub mod comprehensive_api::typedefs
 pub type comprehensive_api::typedefs::ConstArg120 = comprehensive_api::structs::OnlyConstArg<120>

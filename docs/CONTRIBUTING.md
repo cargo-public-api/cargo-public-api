@@ -16,6 +16,16 @@ Note that you can run `./scripts/run-ci-locally.sh` from from within your IDE. T
 
 Also note that for convenience there is a VS Code workspace you can use for out-of-the box code navigation etc, namely `cargo-public-api.code-workspace`.
 
+## Creating Git Commits
+
+These guidelines help keeping `git log`, `git bisect`, `git blame`, `git revert`, etc useful.
+
+* Make commits that are atomic and self-contained. Each commit should pass CI. Check locally with `./scripts/run-ci-locally.sh`.
+* Write good commit titles.
+* Make commits (and/or PRs) as small as possible (within reason).
+* Don't add "fix review comments" or "update Cargo.lock" commits to PRs. Amend the original commit(s) and force-push instead.
+* Never push merge commits to PRs.
+
 ## Blessing new expected output
 
 To make your changes become the expected output, run

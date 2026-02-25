@@ -58,7 +58,7 @@ pub trait GenericAssociatedTypes {
     type WithLifetime<'a>;
 }
 
-pub trait TraitWithDefaultMethod {
+pub trait TraitWithOneRequiredAndTwoDefaultMethods {
     fn required(&self) -> bool;
 
     fn defaulted(&self) -> u32 {

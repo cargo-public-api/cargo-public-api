@@ -1,7 +1,7 @@
 use crate::{
     structs::{Plain, Unit, WithLifetimeAndGenericParam},
     traits::{
-        GenericAssociatedTypes, Simple, TraitReferencingOwnAssociatedType, TraitWithDefaultMethod,
+        GenericAssociatedTypes, Simple, TraitReferencingOwnAssociatedType, TraitWithOneRequiredAndTwoDefaultMethods,
         TraitWithGenerics,
     },
 };
@@ -119,18 +119,18 @@ impl GenericAssociatedTypes for Unit {
 }
 
 /// Only overrides `required`, leaving both defaults.
-pub struct UsesAllDefaults;
+pub struct OverridesOnlyRequired;
 
-impl TraitWithDefaultMethod for UsesAllDefaults {
+impl TraitWithOneRequiredAndTwoDefaultMethods for OverridesOnlyRequired {
     fn required(&self) -> bool {
         true
     }
 }
 
 /// Overrides `required` and `defaulted`, but leaves `another_default`.
-pub struct OverridesSomeDefaults;
+pub struct OverridesRequiredAndOneOfTwoDefaults;
 
-impl TraitWithDefaultMethod for OverridesSomeDefaults {
+impl TraitWithOneRequiredAndTwoDefaultMethods for OverridesRequiredAndOneOfTwoDefaults {
     fn required(&self) -> bool {
         false
     }
@@ -141,9 +141,9 @@ impl TraitWithDefaultMethod for OverridesSomeDefaults {
 }
 
 /// Overrides all methods, no defaults used.
-pub struct OverridesAllDefaults;
+pub struct OverridesRequiredAndBothDefaults;
 
-impl TraitWithDefaultMethod for OverridesAllDefaults {
+impl TraitWithOneRequiredAndTwoDefaultMethods for OverridesRequiredAndBothDefaults {
     fn required(&self) -> bool {
         true
     }

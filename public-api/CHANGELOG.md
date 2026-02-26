@@ -4,8 +4,7 @@
 * Also include default trait methods in impls, even if not overridden, just like in rustdoc HTML.
 
 ## v0.50.3
-* Sort rendered attributes so rendering is determinstic and does not change with
-  rustdoc JSON changes.
+* Sort rendered attributes so rendering is determinstic and does not change with rustdoc JSON changes.
 
 ## v0.50.2
 * Bump deps (to stop using deprecated `assert_cmd::Command::cargo_bin()` in tests).

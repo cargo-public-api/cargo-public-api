@@ -240,10 +240,10 @@ impl<'c> ItemProcessor<'c> {
     ) {
         let finished_item = unprocessed_item.finish(item, overridden_name, type_);
 
-        let children = children_for_item(item).into_iter().flatten();
+        let children = self.children_for_item(item);
         let impls = impls_for_item(item).into_iter().flatten();
 
-        for &id in children {
+        for &id in &children {
             self.add_to_work_queue(finished_item.path().into(), Some(item.id), id);
         }
 
@@ -261,6 +261,59 @@ impl<'c> ItemProcessor<'c> {
         }
 
         self.output.push(finished_item);
+    }
+
+    /// Returns the children for an item. For trait impls, this also includes
+    /// default trait items not overridden by the impl, so that overriding a
+    /// default method does not cause a spurious diff in the public API output.
+    fn children_for_item(&mut self, item: &'c Item) -> Vec<Id> {
+        match &item.inner {
+            ItemEnum::Module(m) => m.items.clone(),
+            ItemEnum::Union(u) => u.fields.clone(),
+            ItemEnum::Struct(Struct {
+                kind: StructKind::Plain { fields, .. },
+                ..
+            })
+            | ItemEnum::Variant(rustdoc_types::Variant {
+                kind: VariantKind::Struct { fields, .. },
+                ..
+            }) => fields.clone(),
+            ItemEnum::Enum(e) => e.variants.clone(),
+            ItemEnum::Trait(t) => t.items.clone(),
+            ItemEnum::Impl(impl_) => {
+                let mut children: Vec<Id> = impl_.items.clone();
+
+                // For trait impls, also include default trait methods that
+                // the impl block did not override. Without this, going from
+                // not overriding a default to overriding it (or vice versa)
+                // would show up as an added/removed item in the public API
+                // diff, even though the effective public API is unchanged.
+                if let Some(trait_path) = &impl_.trait_ {
+                    let explicit_names: Vec<String> = impl_
+                        .items
+                        .iter()
+                        .filter_map(|&id| self.crate_.get_item(id))
+                        .filter_map(|item| item.name.clone())
+                        .collect();
+
+                    if let Some(trait_item) = self.crate_.get_item(trait_path.id)
+                        && let ItemEnum::Trait(trait_) = &trait_item.inner
+                    {
+                        for &trait_child_id in &trait_.items {
+                            if let Some(trait_child) = self.crate_.get_item(trait_child_id)
+                                && let Some(name) = &trait_child.name
+                                && !explicit_names.iter().any(|n| n == name)
+                            {
+                                children.push(trait_child_id);
+                            }
+                        }
+                    }
+                }
+
+                children
+            }
+            _ => vec![],
+        }
     }
 
     /// Get the rustdoc JSON item with `id`, but only if it is not already part
@@ -418,27 +471,6 @@ impl ImplKind {
             ImplKind::AutoDerived => !options.omit_auto_derived_impls,
             ImplKind::Inherent | ImplKind::Trait => true,
         }
-    }
-}
-
-/// Some items contain other items, which is relevant for analysis. Keep track
-/// of such relationships.
-const fn children_for_item(item: &Item) -> Option<&Vec<Id>> {
-    match &item.inner {
-        ItemEnum::Module(m) => Some(&m.items),
-        ItemEnum::Union(u) => Some(&u.fields),
-        ItemEnum::Struct(Struct {
-            kind: StructKind::Plain { fields, .. },
-            ..
-        })
-        | ItemEnum::Variant(rustdoc_types::Variant {
-            kind: VariantKind::Struct { fields, .. },
-            ..
-        }) => Some(fields),
-        ItemEnum::Enum(e) => Some(&e.variants),
-        ItemEnum::Trait(t) => Some(&t.items),
-        ItemEnum::Impl(i) => Some(&i.items),
-        _ => None,
     }
 }
 

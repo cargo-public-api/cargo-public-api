@@ -26,6 +26,8 @@ jobs:
       id-token: write # https://crates.io/docs/trusted-publishing
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: true # Needed for git push below
       - uses: rust-lang/crates-io-auth-action@v1
         id: auth
 
@@ -45,9 +47,11 @@ jobs:
 
       # Push the tag to git.
       - name: push tag
+        env:
+          THE_GIT_TAG: ${{ steps.version.outputs.GIT_TAG }}
         run: |
-          git tag ${{ steps.version.outputs.GIT_TAG }}
-          git push origin ${{ steps.version.outputs.GIT_TAG }}
+          git tag ${THE_GIT_TAG}
+          git push origin ${THE_GIT_TAG}
 
       # Do not create a GitHub release. That is only done for public-api and
       # cargo-public-api. A git tag is sufficient for rustup-toolchain.

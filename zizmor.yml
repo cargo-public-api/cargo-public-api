@@ -1,0 +1,13 @@
+rules:
+  unpinned-uses:
+    config:
+      policies:
+        # We trust GitHub
+        actions/checkout: ref-pin
+
+        # We trust rust-lang.
+        rust-lang/crates-io-auth-action: ref-pin
+
+        # We trust taiki-e, partly because we run it in a low-privilege job with
+        # only read access to contents.
+        taiki-e/install-action: ref-pin

@@ -26,6 +26,8 @@ jobs:
       id-token: write # https://crates.io/docs/trusted-publishing
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: true # Needed for git push below
       - uses: rust-lang/crates-io-auth-action@v1
         id: auth
 
@@ -45,9 +47,11 @@ jobs:
 
       # Push the tag to git.
       - name: push tag
+        env:
+          THE_GIT_TAG: ${{ steps.version.outputs.GIT_TAG }}
         run: |
-          git tag ${{ steps.version.outputs.GIT_TAG }}
-          git push origin ${{ steps.version.outputs.GIT_TAG }}
+          git tag ${THE_GIT_TAG}
+          git push origin ${THE_GIT_TAG}
 
   release:
     needs: publish
@@ -56,6 +60,8 @@ jobs:
       contents: write # So we can create a release.
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: true # Needed for gh release create below
       - name: calculate version
         id: version
         run: |
@@ -66,7 +72,9 @@ jobs:
       - name: create release
         env:
           GH_TOKEN: ${{ github.token }}
+          THE_VERSION: ${{ steps.version.outputs.VERSION }}
+          THE_GIT_TAG: ${{ steps.version.outputs.GIT_TAG }}
         run: |
-          notes="$(parse-changelog CHANGELOG.md ${{ steps.version.outputs.VERSION }})"
-          title="${{ steps.version.outputs.GIT_TAG }}"
-          gh release create --title "$title" --notes "$notes" ${{ steps.version.outputs.GIT_TAG }}
+          notes="$(parse-changelog CHANGELOG.md ${THE_VERSION})"
+          title="${THE_GIT_TAG}"
+          gh release create --title "$title" --notes "$notes" ${THE_GIT_TAG}

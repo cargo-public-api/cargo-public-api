@@ -37,3 +37,7 @@ fi
 if if_command_exists_or_in_ci shfmt; then
     ./scripts/shfmt.sh --diff
 fi
+
+if if_command_exists_or_in_ci zizmor; then
+    ./scripts/zizmor.sh
+fi

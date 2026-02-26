@@ -23,7 +23,10 @@ jobs:
       - lint
       - cargo-test
     steps:
-      - run: jq --exit-status 'all(.result == "success")' <<< '${{ toJson(needs) }}'
+      - env:
+          NEEDS_JSON: ${{ toJson(needs) }}
+        run: |
+          jq --exit-status 'all(.result == "success")' <<< "${NEEDS_JSON}"
 
   check-version-info:
     name: check version info
@@ -32,6 +35,8 @@ jobs:
       contents: read # For actions/checkout@v4
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - run: cargo run --bin update-version-info
       - run: |
           [ -z "$(git diff)" ] || { echo "ERROR: You forgot to 'cargo run --bin update-version-info'" ; exit 1 ; }
@@ -43,10 +48,12 @@ jobs:
       contents: read # For actions/checkout@v4
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - run: rustup install nightly --profile minimal
       - uses: taiki-e/install-action@v2
         with:
-          tool: cargo-deny, cargo-audit, shfmt@3.10.0
+          tool: cargo-deny, cargo-audit, shfmt@3.10.0, zizmor@1.22.0
           checksum: true
           fallback: none
       # Use a fixed version for lints to avoid CI failure with new versions. Bump as needed.
@@ -68,6 +75,8 @@ jobs:
       contents: read # For actions/checkout@v4
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - run: zsh --version || (sudo apt-get install -y zsh && zsh --version)
         if: runner.os != 'Windows'
       - run: rustup install nightly --profile minimal

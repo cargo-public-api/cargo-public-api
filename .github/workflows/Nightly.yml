@@ -27,10 +27,10 @@ jobs:
     if: ${{ !cancelled() && needs.ci.result == 'failure' && needs.auto-bless.outputs.changes-detected != 'yes' }}
     permissions:
       issues: write # For `gh issue create`
-    env:
-      GH_TOKEN: ${{ github.token }}
     steps:
-      - run: |
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
           gh issue list \
             --repo cargo-public-api/cargo-public-api | grep "CI failed with " || \
           gh issue create \
@@ -55,6 +55,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          persist-credentials: true # Needed for git push below
           token: ${{ secrets.ENSELICCICD_GITHUB_TOKEN }} # for git push
       - run: rustup install nightly --profile minimal
       - run: sudo apt-get install -y zsh && zsh --version

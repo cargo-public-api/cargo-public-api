@@ -153,7 +153,7 @@ cargo public-api -sss
 
 | Version          | Understands the rustdoc JSON output of  |
 | ---------------- | --------------------------------------- |
-| 0.50.x           | nightly-2025-08-02 —                    |
+| 0.50.x — 0.51.x  | nightly-2025-08-02 —                    |
 | 0.49.x           | nightly-2025-07-17 — nightly-2025-08-01 |
 | 0.48.x           | nightly-2025-06-22 — nightly-2025-07-16 |
 | 0.47.x           | nightly-2025-03-24 — nightly-2025-06-21 |

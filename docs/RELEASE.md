@@ -12,7 +12,7 @@ For `public-api` and `cargo-public-api` we bump
 * **0.0.x**
    * whenever we want to make a release but don't have to/want to bump **0.x.0**.
 
-[^1]: But if `public_api::MINIMUM_NIGHTLY_RUST_VERSION` has been bumped then `public-api` and `cargo-public-api` by necessity must bump to the same **0.x.0** version for the [compatibility matrix](https://github.com/cargo-public-api/cargo-public-api#compatibility-matrix).
+[^1]: But if `public_api::MINIMUM_NIGHTLY_RUST_VERSION` or **0.x.0** has been bumped then `public-api` and `cargo-public-api` by necessity must bump to the same **0.x.0** version for the [compatibility matrix](https://github.com/cargo-public-api/cargo-public-api#compatibility-matrix).
 [^2]: Since we need to be able to add a new row to the [compatibility matrix](https://github.com/cargo-public-api/cargo-public-api#compatibility-matrix).
 [^3]: Because otherwise [`CI checks`](https://github.com/cargo-public-api/cargo-public-api#-as-a-ci-check) would fail from **0.0.x** updates.
 [^4]: E.g. changes to the `public-api` public API or the `cargo-public-api` CLI.

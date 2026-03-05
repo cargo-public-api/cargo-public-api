@@ -645,8 +645,11 @@ fn normalize_args(mut args: Vec<String>) -> Result<(Vec<String>, u8)> {
         without_simplified.push(arg);
     }
 
-    let with_color_default = normalize_color_option(without_simplified);
-    let reordered = lift_global_options_before_diff(with_color_default);
+    let split_long_options = split_long_options_with_equals(without_simplified);
+    let with_short_help = normalize_short_help_flag(split_long_options);
+    let with_color_default = normalize_color_option(with_short_help);
+    let reordered_globals = lift_global_options_before_diff(with_color_default);
+    let reordered = move_diff_options_before_positionals(reordered_globals);
     Ok((reordered, simplified))
 }
 
@@ -682,6 +685,36 @@ fn normalize_color_option(args: Vec<String>) -> Vec<String> {
     normalized
 }
 
+fn split_long_options_with_equals(args: Vec<String>) -> Vec<String> {
+    let mut normalized = Vec::with_capacity(args.len() + 4);
+
+    for arg in args {
+        if let Some((name, value)) = arg.split_once('=')
+            && name.starts_with("--")
+            && name.len() > 2
+        {
+            normalized.push(name.to_owned());
+            normalized.push(value.to_owned());
+        } else {
+            normalized.push(arg);
+        }
+    }
+
+    normalized
+}
+
+fn normalize_short_help_flag(args: Vec<String>) -> Vec<String> {
+    args.into_iter()
+        .map(|arg| {
+            if arg == "-h" {
+                "--help".to_owned()
+            } else {
+                arg
+            }
+        })
+        .collect()
+}
+
 fn lift_global_options_before_diff(args: Vec<String>) -> Vec<String> {
     let Some(diff_index) = args.iter().position(|a| a == "diff") else {
         return args;
@@ -708,6 +741,43 @@ fn lift_global_options_before_diff(args: Vec<String>) -> Vec<String> {
     reordered.push(diff_token);
     reordered.extend(kept);
     reordered
+}
+
+fn move_diff_options_before_positionals(args: Vec<String>) -> Vec<String> {
+    let Some(diff_index) = args.iter().position(|a| a == "diff") else {
+        return args;
+    };
+
+    let mut reordered = args[..=diff_index].to_vec();
+    let mut options = Vec::new();
+    let mut positionals = Vec::new();
+    let mut index = diff_index + 1;
+
+    while index < args.len() {
+        let current = &args[index];
+        if let Some(consumed) = diff_option_arity(current, args.get(index + 1)) {
+            options.extend(args[index..index + consumed].iter().cloned());
+            index += consumed;
+        } else {
+            positionals.push(current.clone());
+            index += 1;
+        }
+    }
+
+    reordered.extend(options);
+    reordered.extend(positionals);
+    reordered
+}
+
+fn diff_option_arity(current: &str, next: Option<&String>) -> Option<usize> {
+    if current == "--deny" || current == "-h" || current == "--help" || current == "--force" {
+        if current == "--deny" {
+            return next.map(|_| 2);
+        }
+        return Some(1);
+    }
+
+    global_option_arity(current, next)
 }
 
 fn global_option_arity(current: &str, next: Option<&String>) -> Option<usize> {
@@ -771,12 +841,20 @@ fn get_args() -> Result<ArgsAndToolchain> {
         .collect::<Vec<_>>();
 
     let (normalized_args, simplified) = normalize_args(args)?;
-    let (binary, raw_args) = normalized_args
+    let (_binary, raw_args) = normalized_args
         .split_first()
         .ok_or_else(|| anyhow!("missing binary name in normalized args"))?;
     let raw_args: Vec<&str> = raw_args.iter().map(String::as_str).collect();
-    let cli_args = CliArgs::from_args(&[binary.as_str()], &raw_args)
-        .map_err(|early_exit| anyhow!(early_exit.output))?;
+    let cli_args = match CliArgs::from_args(&["cargo public-api"], &raw_args) {
+        Ok(cli_args) => cli_args,
+        Err(early_exit) => {
+            if early_exit.status.is_ok() {
+                print!("{}", early_exit.output);
+                std::process::exit(0);
+            }
+            bail!("{}", early_exit.output.trim_end());
+        }
+    };
     let mut args = Args::from_cli(cli_args, simplified)?;
     resolve_simplified(&mut args);
     Ok(resolve_toolchain(args))

@@ -17,7 +17,6 @@ nu-ansi-term = "0.50.3"
 anyhow = "1.0.75"
 cargo-manifest = "0.20.0"
 cargo-util = "0.2.21"
-clap_complete_command = "0.5.1"
 crates-index = "3.13.0"
 diff = "0.1.13"
 dirs = "5.0.0"
@@ -26,10 +25,7 @@ semver = "1.0.18"
 thiserror = "2.0.3"
 cargo_metadata = "0.23.1"
 toml = "1.0.3"
-
-[dependencies.clap]
-version = "4.5.0"
-features = ["derive", "wrap_help"]
+argh = "0.1.13"
 
 [dependencies.curl]
 version = "0.4.48"

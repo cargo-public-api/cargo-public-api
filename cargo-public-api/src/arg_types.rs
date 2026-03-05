@@ -1,7 +1,6 @@
 use std::io::IsTerminal;
 
-#[derive(Copy, Clone, Debug, Eq, PartialEq, clap::ValueEnum)]
-#[value(rename_all = "lower")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum DenyMethod {
     /// All forms of API diffs are denied: additions, changes, deletions.
     All,
@@ -30,8 +29,21 @@ impl DenyMethod {
     }
 }
 
-#[derive(Copy, Clone, Debug, Eq, PartialEq, clap::ValueEnum)]
-#[value(rename_all = "lower")]
+impl argh::FromArgValue for DenyMethod {
+    fn from_arg_value(value: &str) -> Result<Self, String> {
+        match value {
+            "all" => Ok(Self::All),
+            "added" => Ok(Self::Added),
+            "changed" => Ok(Self::Changed),
+            "removed" => Ok(Self::Removed),
+            _ => Err(format!(
+                "invalid deny method `{value}` (expected one of: all, added, changed, removed)"
+            )),
+        }
+    }
+}
+
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum Color {
     /// Colors will be used if stdout is a terminal. Colors will not be used if
     /// stdout is a regular file.
@@ -44,6 +56,19 @@ pub enum Color {
     Always,
 }
 
+impl argh::FromArgValue for Color {
+    fn from_arg_value(value: &str) -> Result<Self, String> {
+        match value {
+            "auto" => Ok(Self::Auto),
+            "never" => Ok(Self::Never),
+            "always" => Ok(Self::Always),
+            _ => Err(format!(
+                "invalid color `{value}` (expected one of: auto, never, always)"
+            )),
+        }
+    }
+}
+
 impl Color {
     pub fn active(self) -> bool {
         match self {
@@ -54,8 +79,7 @@ impl Color {
     }
 }
 
-#[derive(Copy, Clone, Debug, Eq, PartialEq, clap::ValueEnum)]
-#[value(rename_all = "kebab-case")]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 #[allow(clippy::enum_variant_names)] // We might add support for omitting other things in the future
 pub enum Omit {
     /// Omit items that belong to Blanket Implementations such as `impl<T> Any
@@ -70,6 +94,19 @@ pub enum Omit {
     /// Omit items that belong to Auto Derived Implementations such as `Clone`,
     /// `Debug`, and `Eq`.
     AutoDerivedImpls,
+}
+
+impl argh::FromArgValue for Omit {
+    fn from_arg_value(value: &str) -> Result<Self, String> {
+        match value {
+            "blanket-impls" => Ok(Self::BlanketImpls),
+            "auto-trait-impls" => Ok(Self::AutoTraitImpls),
+            "auto-derived-impls" => Ok(Self::AutoDerivedImpls),
+            _ => Err(format!(
+                "invalid omit value `{value}` (expected one of: blanket-impls, auto-trait-impls, auto-derived-impls)"
+            )),
+        }
+    }
 }
 
 #[cfg(test)]

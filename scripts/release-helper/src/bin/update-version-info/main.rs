@@ -1,17 +1,19 @@
 //! See `docs/RELEASE.md` for information on how to use this.
 
-#[derive(clap::Parser, Debug)]
-#[command(author, version, about)]
+#[derive(argh::FromArgs, Debug)]
+#[argh(description = "update release version information in workspace files.")]
 struct Args {
-    #[arg(long, default_value_t = 6)]
+    /// minimum number of compatibility matrix rows to render.
+    #[argh(option, default = "6")]
     min_compatibility_matrix_rows: usize,
 
-    #[arg(long, default_value_t = 6)]
+    /// maximum number of months back in compatibility matrix rendering.
+    #[argh(option, default = "6")]
     max_compatibility_matrix_months_back: i64,
 }
 
 fn main() {
-    let args = <Args as clap::Parser>::parse();
+    let args: Args = argh::from_env();
 
     let current_min_nightly_rust_version =
         release_helper::version_info::TABLE[0].min_nightly_rust_version;

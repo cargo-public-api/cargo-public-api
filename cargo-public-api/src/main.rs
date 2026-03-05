@@ -9,7 +9,7 @@ use git_utils::current_branch_or_commit;
 use plain::Plain;
 use public_api::diff::PublicApiDiff;
 
-use clap::{CommandFactory, Parser};
+use argh::{FromArgValue, FromArgs};
 
 mod api_source;
 mod arg_types;
@@ -19,22 +19,12 @@ mod plain;
 mod published_crate;
 mod toolchain;
 
-#[derive(Parser, Debug)]
-#[command(
-    author,
-    version,
-    about = "List and diff the public API of Rust library crates between releases and commits.",
-    long_about = "List and diff the public API of Rust library crates between releases and commits. Website: https://github.com/cargo-public-api/cargo-public-api",
-    bin_name = "cargo public-api"
-)]
-#[command(flatten_help = true)]
+#[derive(Debug)]
 pub struct Args {
     /// Path to `Cargo.toml`.
-    #[arg(global = true, long, value_name = "PATH", default_value = "Cargo.toml")]
     manifest_path: PathBuf,
 
     /// Name of package in workspace to list or diff the public API for.
-    #[arg(global = true, long, short)]
     package: Option<String>,
 
     /// Omit noisy items. Can be used more than once.
@@ -44,38 +34,88 @@ pub struct Args {
     /// | -s    | --omit blanket-impls                                     |
     /// | -ss   | --omit blanket-impls,auto-trait-impls                    |
     /// | -sss  | --omit blanket-impls,auto-trait-impls,auto-derived-impls |
-    #[clap(verbatim_doc_comment)]
-    #[arg(global = true, short, long, action = clap::ArgAction::Count)]
     simplified: u8,
 
     /// Omit specified items.
-    #[arg(global = true, long, value_enum, value_delimiter = ',')]
     omit: Option<Vec<Omit>>,
 
     /// Space or comma separated list of features to activate
-    #[arg(global = true, long, short = 'F')]
     features: Vec<String>,
 
     /// Activate all available features
-    #[arg(global = true, long)]
     all_features: bool,
 
     /// Do not activate the `default` feature
-    #[arg(global = true, long)]
     no_default_features: bool,
 
     /// Build for the target triple
-    #[arg(global = true, long)]
     target: Option<String>,
 
     /// When to color the output.
     ///
     /// By default, `--color=auto` is active. Using just `--color` without an
     /// arg is equivalent to `--color=always`.
-    #[arg(global = true, long, value_enum)]
-    color: Option<Option<Color>>,
+    color: Option<Color>,
 
     /// List the public API based on the given rustdoc JSON file.
+    rustdoc_json: Option<String>,
+
+    /// Show detailed info about processing.
+    verbose: bool,
+
+    /// Show the hidden "sorting prefix" that makes items nicely grouped
+    debug_sorting: bool,
+
+    /// Where to put rustdoc JSON build artifacts.
+    target_dir: Option<PathBuf>,
+
+    /// Forwarded to rustdoc JSON build command
+    cap_lints: Option<String>,
+
+    subcommand: Option<Subcommand>,
+}
+
+#[derive(argh::FromArgs, Debug)]
+#[argh(
+    description = "List and diff the public API of Rust library crates between releases and commits."
+)]
+struct CliArgs {
+    /// path to `Cargo.toml`.
+    #[argh(option, default = "PathBuf::from(\"Cargo.toml\")")]
+    manifest_path: PathBuf,
+
+    /// name of package in workspace to list or diff the public API for.
+    #[argh(option, short = 'p')]
+    package: Option<String>,
+
+    /// omit specified items.
+    #[argh(option)]
+    omit: Vec<String>,
+
+    /// space or comma separated list of features to activate
+    #[argh(option, short = 'F')]
+    features: Vec<String>,
+
+    /// activate all available features
+    #[argh(switch)]
+    all_features: bool,
+
+    /// do not activate the `default` feature
+    #[argh(switch)]
+    no_default_features: bool,
+
+    /// build for the target triple
+    #[argh(option)]
+    target: Option<String>,
+
+    /// when to color the output.
+    ///
+    /// By default, `--color=auto` is active. Using just `--color` without an
+    /// arg is equivalent to `--color=always`.
+    #[argh(option)]
+    color: Option<Color>,
+
+    /// list the public API based on the given rustdoc JSON file.
     ///
     /// Example:
     ///
@@ -87,35 +127,35 @@ pub struct Args {
     ///
     ///     cargo public-api --rustdoc-json ~/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/share/doc/rust/json/std.json
     ///
-    #[arg(global = true, long, value_name = "RUSTDOC_JSON_PATH", hide = true)]
+    #[argh(option, hidden_help)]
     rustdoc_json: Option<String>,
 
-    /// Show detailed info about processing.
+    /// show detailed info about processing.
     ///
     /// For debugging purposes. The output is not stable and can change across
     /// patch versions.
-    #[arg(global = true, long, hide = true)]
+    #[argh(switch, hidden_help)]
     verbose: bool,
 
-    /// Show the hidden "sorting prefix" that makes items nicely grouped
+    /// show the hidden "sorting prefix" that makes items nicely grouped
     ///
     /// Only intended for debugging this tool.
-    #[arg(global = true, long, hide = true)]
+    #[argh(switch, hidden_help)]
     debug_sorting: bool,
 
-    /// Where to put rustdoc JSON build artifacts.
+    /// where to put rustdoc JSON build artifacts.
     ///
     /// Hidden by default because it will typically not be needed by users.
     /// Mainly useful to allow tests to run in parallel.
-    #[arg(global = true, long, value_name = "PATH", hide = true)]
+    #[argh(option, hidden_help)]
     target_dir: Option<PathBuf>,
 
-    /// Forwarded to rustdoc JSON build command
-    #[arg(global = true, long, hide = true)]
+    /// forwarded to rustdoc JSON build command
+    #[argh(option, hidden_help)]
     cap_lints: Option<String>,
 
-    #[command(subcommand)]
-    subcommand: Option<Subcommand>,
+    #[argh(subcommand)]
+    subcommand: Option<CliSubcommand>,
 }
 
 /// We don't want `toolchain` in [Args] because we only support the `cargo
@@ -129,22 +169,41 @@ struct ArgsAndToolchain {
 }
 
 /// The subcommand used for diffing.
-#[derive(Parser, Debug)]
+#[derive(Debug)]
 struct DiffArgs {
     /// Exit with failure if the specified API diff is detected.
     ///
     /// Can be combined. For example, to only allow additions to the API, use
     /// `--deny=added --deny=changed`.
-    #[arg(long, value_enum)]
     deny: Option<Vec<DenyMethod>>,
 
     /// Force the diff. For example, when diffing commits, enabling this option
     /// will discard working tree changes during git checkouts of other commits.
-    #[arg(long)]
     force: bool,
 
-    #[clap(verbatim_doc_comment)]
-    /// What to diff.
+    args: Vec<String>,
+}
+
+#[derive(argh::FromArgs, Debug)]
+#[argh(
+    subcommand,
+    name = "diff",
+    description = "diff the public API against a published version of the crate, or between commits."
+)]
+struct CliDiffArgs {
+    /// exit with failure if the specified API diff is detected.
+    ///
+    /// Can be combined. For example, to only allow additions to the API, use
+    /// `--deny=added --deny=changed`.
+    #[argh(option)]
+    deny: Vec<DenyMethod>,
+
+    /// force the diff. For example, when diffing commits, enabling this option
+    /// will discard working tree changes during git checkouts of other commits.
+    #[argh(switch)]
+    force: bool,
+
+    /// what to diff.
     ///
     /// EXAMPLES
     /// ========
@@ -162,10 +221,11 @@ struct DiffArgs {
     ///     cargo public-api diff --help
     ///
     /// for more examples and more info.
+    #[argh(positional)]
     args: Vec<String>,
 }
 
-#[derive(clap::Subcommand, Debug)]
+#[derive(Debug)]
 enum Subcommand {
     /// Diff the public API against a published version of the crate, or between commits.
     ///
@@ -228,42 +288,23 @@ enum Subcommand {
     /// Using the current git repo has the benefit of making it likely for the build to succeed. If we e.g.
     /// were to git clone a temporary copy of a commit ourselves, the risk is high that additional steps are
     /// needed before a build can succeed. Such as the need to set up git submodules.
-    #[clap(verbatim_doc_comment)]
     Diff(DiffArgs),
+}
 
-    /// Generate completion scripts for many different shells.
-    ///
-    /// Example on how to generate and install the completion script for zsh:
-    ///
-    ///    $ mkdir ~/.zfunc
-    ///    $ rustup completions zsh cargo > ~/.zfunc/_cargo
-    ///    $ cargo public-api completions zsh > ~/.zfunc/_cargo-public-api
-    ///    $ fpath+=~/.zfunc
-    ///    $ autoload -U compinit && compinit
-    ///    $ cargo public-api --{{Tab}}
-    ///    --all-features         -- Activate all available features
-    ///    --cap-lints            -- Forwarded to rustdoc JSON build command
-    ///    --color                -- When to color the output
-    ///    --debug-sorting        -- Show the hidden "sorting prefix" that makes items nicely grouped
-    ///    [...]
-    #[clap(verbatim_doc_comment)]
-    Completions {
-        #[arg(value_enum)]
-        shell: clap_complete_command::Shell,
-    },
+#[derive(argh::FromArgs, Debug)]
+#[argh(subcommand)]
+enum CliSubcommand {
+    Diff(CliDiffArgs),
 }
 
 enum MainTask {
     /// Print the public API of a crate.
-    PrintList {
-        api: Box<dyn ApiSource>,
-    },
+    PrintList { api: Box<dyn ApiSource> },
     /// Diff the public API of a crate.
     PrintDiff {
         old_api: Box<dyn ApiSource>,
         new_api: Box<dyn ApiSource>,
     },
-    GenerateShellCompletionScript(clap_complete_command::Shell),
 }
 
 /// This represents an action that we want to do at some point.
@@ -293,7 +334,7 @@ fn main_() -> Result<()> {
         .with_writer(stderr) // See https://github.com/tokio-rs/tracing/issues/2492
         .init();
 
-    let argst = get_args();
+    let argst = get_args()?;
 
     // A list of actions to perform after we have listed or diffed. Typical
     // examples: restore a git branch or check that a diff is allowed
@@ -319,13 +360,6 @@ fn main_() -> Result<()> {
             new_api.as_ref(),
             &mut final_actions,
         ),
-        MainTask::GenerateShellCompletionScript(shell) => {
-            shell.generate(
-                &mut Args::command().bin_name("cargo-public-api"),
-                &mut stdout(),
-            );
-            Ok(())
-        }
     };
 
     // Handle any final actions, such as checking the diff and restoring the
@@ -340,9 +374,6 @@ fn main_() -> Result<()> {
 fn main_task(args: &Args) -> Result<MainTask> {
     match &args.subcommand {
         Some(Subcommand::Diff(diff_args)) => main_task_from_diff_args(args, diff_args),
-        Some(Subcommand::Completions { shell }) => {
-            Ok(MainTask::GenerateShellCompletionScript(*shell))
-        }
         None => Ok(main_task_from_args(args)),
     }
 }
@@ -460,7 +491,7 @@ fn print_diff(
 
     Plain::print_diff(&mut stdout(), &argst.args, &diff)?;
 
-    if let Some(Some(deny)) = argst.args.diff_args().map(|a| &a.deny) {
+    if let Some(Some(deny)) = argst.args.diff_args().map(|a| a.deny.as_ref()) {
         final_actions.push(check_diff(deny, diff));
     }
 
@@ -482,7 +513,6 @@ impl MainTask {
                 old_api.changes_commit() || new_api.changes_commit()
             }
             MainTask::PrintList { api } => api.changes_commit(),
-            MainTask::GenerateShellCompletionScript(_) => false,
         }
     }
 }
@@ -502,6 +532,28 @@ impl Action {
 }
 
 impl Args {
+    fn from_cli(cli: CliArgs, simplified: u8) -> Result<Self> {
+        let omit = parse_omit_args(&cli.omit)?;
+        let subcommand = cli.subcommand.map(Subcommand::from);
+        Ok(Self {
+            manifest_path: cli.manifest_path,
+            package: cli.package,
+            simplified,
+            omit,
+            features: cli.features,
+            all_features: cli.all_features,
+            no_default_features: cli.no_default_features,
+            target: cli.target,
+            color: cli.color,
+            rustdoc_json: cli.rustdoc_json,
+            verbose: cli.verbose,
+            debug_sorting: cli.debug_sorting,
+            target_dir: cli.target_dir,
+            cap_lints: cli.cap_lints,
+            subcommand,
+        })
+    }
+
     fn omit_blanket_impls(&self) -> bool {
         self.omits(Omit::BlanketImpls)
     }
@@ -530,23 +582,204 @@ impl Args {
     }
 }
 
-/// Get CLI args via `clap` while also handling when we are invoked as a cargo
+impl From<CliSubcommand> for Subcommand {
+    fn from(subcommand: CliSubcommand) -> Self {
+        match subcommand {
+            CliSubcommand::Diff(diff) => Subcommand::Diff(diff.into()),
+        }
+    }
+}
+
+impl From<CliDiffArgs> for DiffArgs {
+    fn from(diff: CliDiffArgs) -> Self {
+        let deny = if diff.deny.is_empty() {
+            None
+        } else {
+            Some(diff.deny)
+        };
+
+        Self {
+            deny,
+            force: diff.force,
+            args: diff.args,
+        }
+    }
+}
+
+fn parse_omit_args(values: &[String]) -> Result<Option<Vec<Omit>>> {
+    let mut parsed = Vec::new();
+    for value in values {
+        for maybe_omit in value.split(',').map(str::trim).filter(|v| !v.is_empty()) {
+            let omit = Omit::from_arg_value(maybe_omit).map_err(anyhow::Error::msg)?;
+            parsed.push(omit);
+        }
+    }
+
+    if parsed.is_empty() {
+        Ok(None)
+    } else {
+        Ok(Some(parsed))
+    }
+}
+
+fn normalize_args(mut args: Vec<String>) -> Result<(Vec<String>, u8)> {
+    if args.is_empty() {
+        bail!("expected at least argv[0]");
+    }
+
+    let mut simplified = 0u8;
+    let mut without_simplified = Vec::with_capacity(args.len());
+    without_simplified.push(args.remove(0));
+
+    for arg in args {
+        if arg == "--simplified" {
+            simplified = simplified.saturating_add(1);
+            continue;
+        }
+
+        if is_short_simplified_cluster(&arg) {
+            simplified = simplified.saturating_add((arg.len() - 1) as u8);
+            continue;
+        }
+
+        without_simplified.push(arg);
+    }
+
+    let with_color_default = normalize_color_option(without_simplified);
+    let reordered = lift_global_options_before_diff(with_color_default);
+    Ok((reordered, simplified))
+}
+
+fn is_short_simplified_cluster(arg: &str) -> bool {
+    arg.starts_with('-')
+        && !arg.starts_with("--")
+        && arg.chars().skip(1).all(|ch| ch == 's')
+        && arg.len() > 1
+}
+
+fn normalize_color_option(args: Vec<String>) -> Vec<String> {
+    let mut normalized = Vec::with_capacity(args.len() + 1);
+    let mut index = 0;
+
+    while index < args.len() {
+        let current = &args[index];
+        if current == "--color" {
+            normalized.push(current.clone());
+            let next_is_color_value = args
+                .get(index + 1)
+                .is_some_and(|v| matches!(v.as_str(), "auto" | "always" | "never"));
+            if !next_is_color_value {
+                normalized.push("always".to_owned());
+            }
+            index += 1;
+            continue;
+        }
+
+        normalized.push(current.clone());
+        index += 1;
+    }
+
+    normalized
+}
+
+fn lift_global_options_before_diff(args: Vec<String>) -> Vec<String> {
+    let Some(diff_index) = args.iter().position(|a| a == "diff") else {
+        return args;
+    };
+
+    let mut reordered = args[..diff_index].to_vec();
+    let diff_token = args[diff_index].clone();
+    let mut moved = Vec::new();
+    let mut kept = Vec::new();
+    let mut index = diff_index + 1;
+
+    while index < args.len() {
+        let current = &args[index];
+        if let Some(consumed) = global_option_arity(current, args.get(index + 1)) {
+            moved.extend(args[index..index + consumed].iter().cloned());
+            index += consumed;
+        } else {
+            kept.push(current.clone());
+            index += 1;
+        }
+    }
+
+    reordered.extend(moved);
+    reordered.push(diff_token);
+    reordered.extend(kept);
+    reordered
+}
+
+fn global_option_arity(current: &str, next: Option<&String>) -> Option<usize> {
+    const SWITCHES: &[&str] = &[
+        "--all-features",
+        "--no-default-features",
+        "--verbose",
+        "--debug-sorting",
+    ];
+
+    if SWITCHES.contains(&current) {
+        return Some(1);
+    }
+
+    if current == "-p"
+        || current == "-F"
+        || current == "--manifest-path"
+        || current == "--package"
+        || current == "--omit"
+        || current == "--features"
+        || current == "--target"
+        || current == "--color"
+        || current == "--rustdoc-json"
+        || current == "--target-dir"
+        || current == "--cap-lints"
+    {
+        return next.map(|_| 2);
+    }
+
+    if current.starts_with("--manifest-path=")
+        || current.starts_with("--package=")
+        || current.starts_with("--omit=")
+        || current.starts_with("--features=")
+        || current.starts_with("--target=")
+        || current.starts_with("--color=")
+        || current.starts_with("--rustdoc-json=")
+        || current.starts_with("--target-dir=")
+        || current.starts_with("--cap-lints=")
+        || (current.starts_with("-p") && current.len() > 2)
+        || (current.starts_with("-F") && current.len() > 2)
+    {
+        return Some(1);
+    }
+
+    None
+}
+
+/// Get CLI args while also handling when we are invoked as a cargo
 /// subcommand. When the user runs `cargo public-api -a -b -c` our args will be
 /// `cargo-public-api public-api -a -b -c`.
 ///
 /// Note that we also want to support the binary being installed with a
 /// non-standard name such as `~/.cargo/bin/cargo-public-api-v0.13.0`. So we
 /// can't assume the bin name is `cargo-public-api`.
-fn get_args() -> ArgsAndToolchain {
+fn get_args() -> Result<ArgsAndToolchain> {
     let subcommand_name = subcommand_name(std::env::args_os().next().unwrap());
-    let args_os = std::env::args_os()
+    let args = std::env::args_os()
         .enumerate()
         .filter(|(index, arg)| *index != 1 || Some(arg) != subcommand_name.as_ref())
-        .map(|(_, arg)| arg);
+        .map(|(_, arg)| arg.to_string_lossy().into_owned())
+        .collect::<Vec<_>>();
 
-    let mut args = Args::parse_from(args_os);
+    let (normalized_args, simplified) = normalize_args(args)?;
+    let (binary, raw_args) = normalized_args
+        .split_first()
+        .ok_or_else(|| anyhow!("missing binary name in normalized args"))?;
+    let raw_args: Vec<&str> = raw_args.iter().map(String::as_str).collect();
+    let cli_args = CliArgs::from_args(&[binary.as_str()], &raw_args)
+        .map_err(|early_exit| anyhow!(early_exit.output))?;
+    let mut args = Args::from_cli(cli_args, simplified)?;
     resolve_simplified(&mut args);
-    resolve_toolchain(args)
+    Ok(resolve_toolchain(args))
 }
 
 /// Strips the `cargo-` prefix from the bin name as well as any extension. For
@@ -637,12 +870,6 @@ fn main() -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn verify_cli() {
-        use clap::CommandFactory;
-        Args::command().debug_assert();
-    }
 
     #[test]
     fn test_subcommand_name() {

@@ -82,13 +82,10 @@ fn print_item(args: &Args, w: &mut dyn Write, item: &PublicItem) -> Result<()> {
     }
 }
 
-fn color_active(color: Option<Option<crate::arg_types::Color>>) -> bool {
+fn color_active(color: Option<crate::arg_types::Color>) -> bool {
     match color {
-        // An explicit color was specified: `--color=...`
-        Some(Some(color)) => color,
-
-        // Just `--color`
-        Some(None) => crate::arg_types::Color::Always,
+        // An explicit color was specified.
+        Some(color) => color,
 
         // No `--color` at all
         None => crate::arg_types::Color::Auto,

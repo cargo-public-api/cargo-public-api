@@ -1260,7 +1260,7 @@ fn rustdoc_json_builder_for_crate(
 /// A git repository that lives during the duration of a test. Having each test
 /// have its own git repository to test with makes tests runnable concurrently.
 struct TestRepo {
-    path: PathBuf,
+    tempdir: Option<tempfile::TempDir>,
 }
 
 #[derive(Default)]
@@ -1291,25 +1291,24 @@ impl TestRepo {
         create_test_git_repo::create_test_git_repo(tempdir.path(), dirs_and_tags);
 
         Self {
-            path: tempdir.into_path(),
+            tempdir: Some(tempdir),
         }
     }
 
     fn path(&self) -> &Path {
-        &self.path
+        self.tempdir.as_ref().unwrap().path()
     }
 }
 
 impl Drop for TestRepo {
     fn drop(&mut self) {
         if env::var_os("CARGO_PUBLIC_API_PRESERVE_TEST_REPO").is_some() {
+            let path = self.tempdir.take().unwrap().into_path();
             println!(
-                "DEBUG: NOT removing test repo at {:?}. If the test fails, you can `cd` into it and debug the failure",
-                self.path()
+                "DEBUG: NOT removing test repo at {path:?}. If the test fails, you can `cd` into it and debug the failure",
             );
-        } else {
-            remove_dir_all::remove_dir_all(self.path()).unwrap();
         }
+        // else: tempdir drops here, cleaning up silently without panicking on errors
     }
 }
 

@@ -158,6 +158,81 @@ impl Foo {
 }
 
 #[test]
+fn diff_empty_when_adding_underscore_prefix_to_trait_impl_param() {
+    let v1 = rustdoc_json_for_lib(
+        r#"
+pub trait Foo {
+    fn foo(&self, a: u64, b: u64) -> u64;
+}
+
+pub struct X;
+
+impl Foo for X {
+    fn foo(&self, a: u64, b: u64) -> u64 {
+        a + b
+    }
+}
+    "#,
+    );
+
+    let v2 = rustdoc_json_for_lib(
+        r#"
+pub trait Foo {
+    fn foo(&self, a: u64, b: u64) -> u64;
+}
+
+pub struct X;
+
+impl Foo for X {
+    fn foo(&self, a: u64, _b: u64) -> u64 {
+        a
+    }
+}
+    "#,
+    );
+
+    assert_no_textual_public_api_diff(v1.json_path, v2.json_path);
+}
+
+#[test]
+fn diff_present_when_adding_underscore_prefix_to_inherent_impl_param() {
+    let v1 = rustdoc_json_for_lib(
+        r#"
+pub struct X;
+
+impl X {
+    pub fn foo(&self, a: u64, b: u64) -> u64 {
+        a + b
+    }
+}
+    "#,
+    );
+
+    let v2 = rustdoc_json_for_lib(
+        r#"
+pub struct X;
+
+impl X {
+    pub fn foo(&self, a: u64, _b: u64) -> u64 {
+        a
+    }
+}
+    "#,
+    );
+
+    // For inherent impls, renaming a param with underscore prefix IS a diff
+    let old = public_api::Builder::from_rustdoc_json(v1.json_path)
+        .build()
+        .unwrap()
+        .to_string();
+    let new = public_api::Builder::from_rustdoc_json(v2.json_path)
+        .build()
+        .unwrap()
+        .to_string();
+    assert_ne!(new, old);
+}
+
+#[test]
 fn diff_empty_when_changing_inherent_impl_to_auto_derived_impl() {
     let v1 = rustdoc_json_for_lib(
         r#"

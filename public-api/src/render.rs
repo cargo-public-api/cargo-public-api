@@ -137,12 +137,20 @@ impl<'c> RenderingContext<'c> {
                 }
                 output
             }
-            ItemEnum::Function(inner) => self.render_function(
-                self.render_path(item_path),
-                &inner.sig,
-                &inner.generics,
-                &inner.header,
-            ),
+            ItemEnum::Function(inner) => {
+                let in_trait_impl = item_path.len() >= 2
+                    && matches!(
+                        &item_path[item_path.len() - 2].item.item.inner,
+                        ItemEnum::Impl(impl_) if impl_.trait_.is_some()
+                    );
+                self.render_function(
+                    self.render_path(item_path),
+                    &inner.sig,
+                    &inner.generics,
+                    &inner.header,
+                    in_trait_impl,
+                )
+            }
             ItemEnum::Trait(trait_) => self.render_trait(trait_, item_path),
             ItemEnum::TraitAlias(_) => self.render_simple(&["trait", "alias"], item_path),
             ItemEnum::Impl(impl_) => {
@@ -458,6 +466,7 @@ impl<'c> RenderingContext<'c> {
         sig: &FunctionSignature,
         generics: &Generics,
         header: &FunctionHeader,
+        strip_underscore_prefix: bool,
     ) -> Vec<Token> {
         let mut output = pub_();
         if header.is_unsafe {
@@ -492,7 +501,7 @@ impl<'c> RenderingContext<'c> {
         output.extend(self.render_generic_param_defs(&generics.params));
 
         // Regular parameters and return type
-        output.extend(self.render_fn_decl(sig, true));
+        output.extend(self.render_fn_decl(sig, true, strip_underscore_prefix));
 
         // Where predicates
         output.extend(self.render_where_predicates(&generics.where_predicates));
@@ -500,7 +509,12 @@ impl<'c> RenderingContext<'c> {
         output
     }
 
-    fn render_fn_decl(&self, sig: &FunctionSignature, include_underscores: bool) -> Vec<Token> {
+    fn render_fn_decl(
+        &self,
+        sig: &FunctionSignature,
+        include_underscores: bool,
+        strip_underscore_prefix: bool,
+    ) -> Vec<Token> {
         let mut output = vec![];
         // Main arguments
         output.extend(self.render_sequence(
@@ -511,9 +525,19 @@ impl<'c> RenderingContext<'c> {
             |(name, ty)| {
                 self.simplified_self(name, ty).unwrap_or_else(|| {
                     let mut output = vec![];
-                    let ignore_name = name.is_empty() || (name == "_" && !include_underscores);
+                    let effective_name = if strip_underscore_prefix {
+                        name.strip_prefix('_').unwrap_or(name)
+                    } else {
+                        name
+                    };
+                    let ignore_name =
+                        effective_name.is_empty() || (name == "_" && !include_underscores);
                     if !ignore_name {
-                        output.extend(vec![Token::identifier(name), Token::symbol(":"), ws!()]);
+                        output.extend(vec![
+                            Token::identifier(effective_name),
+                            Token::symbol(":"),
+                            ws!(),
+                        ]);
                     }
                     output.extend(self.render_type(ty));
                     output
@@ -610,7 +634,7 @@ impl<'c> RenderingContext<'c> {
     fn render_function_pointer(&self, ptr: &FunctionPointer) -> Vec<Token> {
         let mut output = self.render_higher_rank_trait_bounds(&ptr.generic_params);
         output.push(Token::kind("fn"));
-        output.extend(self.render_fn_decl(&ptr.sig, false));
+        output.extend(self.render_fn_decl(&ptr.sig, false, false));
         output
     }
 

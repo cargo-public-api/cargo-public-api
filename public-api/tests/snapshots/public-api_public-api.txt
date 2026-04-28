@@ -159,7 +159,7 @@ pub fn public_api::Error::source(&self) -> core::option::Option<&(dyn core::erro
 impl core::fmt::Debug for public_api::Error
 pub fn public_api::Error::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::fmt::Display for public_api::Error
-pub fn public_api::Error::fmt(&self, __formatter: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub fn public_api::Error::fmt(&self, _formatter: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::marker::Freeze for public_api::Error
 impl core::marker::Send for public_api::Error
 impl core::marker::Sync for public_api::Error

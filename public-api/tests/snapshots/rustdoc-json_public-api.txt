@@ -19,7 +19,7 @@ pub fn rustdoc_json::BuildError::source(&self) -> core::option::Option<&(dyn cor
 impl core::fmt::Debug for rustdoc_json::BuildError
 pub fn rustdoc_json::BuildError::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::fmt::Display for rustdoc_json::BuildError
-pub fn rustdoc_json::BuildError::fmt(&self, __formatter: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub fn rustdoc_json::BuildError::fmt(&self, _formatter: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::marker::Freeze for rustdoc_json::BuildError
 impl core::marker::Send for rustdoc_json::BuildError
 impl core::marker::Sync for rustdoc_json::BuildError

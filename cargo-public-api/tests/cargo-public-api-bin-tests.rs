@@ -1308,7 +1308,7 @@ impl Drop for TestRepo {
                 self.path()
             );
         } else {
-            remove_dir_all::remove_dir_all(self.path()).unwrap();
+            let _ = remove_dir_all::remove_dir_all(self.path());
         }
     }
 }

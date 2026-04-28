@@ -49,6 +49,7 @@ impl<'c> RenderingContext<'c> {
             .filter_map(|attr| match attr {
                 Attribute::ExportName(name) => Some(format!("#[export_name = \"{name}\"]")),
                 Attribute::LinkSection(section) => Some(format!("#[link_section = \"{section}\"]")),
+                Attribute::MacroExport => Some("#[macro_export]".to_string()),
                 Attribute::NoMangle => Some("#[no_mangle]".to_string()),
                 Attribute::NonExhaustive => Some("#[non_exhaustive]".to_string()),
                 Attribute::Repr(AttributeRepr {

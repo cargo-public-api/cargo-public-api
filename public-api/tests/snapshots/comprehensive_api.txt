@@ -287,7 +287,7 @@ pub mod comprehensive_api::unions
 pub union comprehensive_api::unions::Basic
 pub comprehensive_api::unions::Basic::x: usize
 pub comprehensive_api::unions::Basic::y: usize
-pub macro comprehensive_api::simple_macro!
+#[macro_export] pub macro comprehensive_api::simple_macro!
 pub struct comprehensive_api::Plain
 pub comprehensive_api::Plain::x: usize
 impl comprehensive_api::structs::Plain

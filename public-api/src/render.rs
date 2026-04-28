@@ -531,7 +531,7 @@ impl<'c> RenderingContext<'c> {
                         name
                     };
                     let ignore_name =
-                        effective_name.is_empty() || (name == "_" && !include_underscores);
+                        effective_name.is_empty() || (effective_name == "_" && !include_underscores);
                     if !ignore_name {
                         output.extend(vec![
                             Token::identifier(effective_name),

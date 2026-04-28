@@ -69,3 +69,8 @@ pub trait TraitWithOneRequiredAndTwoDefaultMethods {
         "hello"
     }
 }
+
+/// Test that `_`-prefixed params in trait impls are rendered without the prefix
+pub trait TraitWithParams {
+    fn method(&self, arg: u64) -> u64;
+}

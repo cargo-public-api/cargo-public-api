@@ -522,19 +522,19 @@ impl<'c> RenderingContext<'c> {
             vec![Token::symbol(")")],
             comma(),
             &sig.inputs,
-            |(name, ty)| {
-                self.simplified_self(name, ty).unwrap_or_else(|| {
+            |(raw_name, ty)| {
+                self.simplified_self(raw_name, ty).unwrap_or_else(|| {
                     let mut output = vec![];
-                    let effective_name = if strip_underscore_prefix {
-                        name.strip_prefix('_').unwrap_or(name)
+                    let name = if strip_underscore_prefix {
+                        raw_name.strip_prefix('_').unwrap_or(raw_name)
                     } else {
-                        name
+                        raw_name
                     };
                     let ignore_name =
-                        effective_name.is_empty() || (effective_name == "_" && !include_underscores);
+                        name.is_empty() || (name == "_" && !include_underscores);
                     if !ignore_name {
                         output.extend(vec![
-                            Token::identifier(effective_name),
+                            Token::identifier(name),
                             Token::symbol(":"),
                             ws!(),
                         ]);

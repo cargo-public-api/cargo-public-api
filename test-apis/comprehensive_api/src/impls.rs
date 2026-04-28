@@ -2,7 +2,7 @@ use crate::{
     structs::{Plain, Unit, WithLifetimeAndGenericParam},
     traits::{
         GenericAssociatedTypes, Simple, TraitReferencingOwnAssociatedType, TraitWithOneRequiredAndTwoDefaultMethods,
-        TraitWithGenerics,
+        TraitWithGenerics, TraitWithParams,
     },
 };
 
@@ -167,5 +167,15 @@ pub mod issue_429 {
         pub fn get_u32() -> u32 {
             0
         }
+    }
+}
+
+/// Test that `_`-prefixed params in trait impls are rendered without the prefix.
+/// The impl uses `_arg` but the rendered output should show `arg`.
+pub struct ImplsWithUnderscorePrefixedParams;
+
+impl TraitWithParams for ImplsWithUnderscorePrefixedParams {
+    fn method(&self, _arg: u64) -> u64 {
+        0
     }
 }

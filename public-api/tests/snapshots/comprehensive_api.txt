@@ -147,6 +147,9 @@ pub struct comprehensive_api::impls::GatTestStruct1<'a, T>(_)
 impl<'a, T> comprehensive_api::traits::Simple for comprehensive_api::impls::GatTestStruct1<'a, T>
 pub fn comprehensive_api::impls::GatTestStruct1<'a, T>::act()
 pub struct comprehensive_api::impls::GatTestStruct2<T>(_)
+pub struct comprehensive_api::impls::ImplsWithUnderscorePrefixedParams
+impl comprehensive_api::traits::TraitWithParams for comprehensive_api::impls::ImplsWithUnderscorePrefixedParams
+pub fn comprehensive_api::impls::ImplsWithUnderscorePrefixedParams::method(&self, arg: u64) -> u64
 pub struct comprehensive_api::impls::OverridesOnlyRequired
 impl comprehensive_api::traits::TraitWithOneRequiredAndTwoDefaultMethods for comprehensive_api::impls::OverridesOnlyRequired
 pub fn comprehensive_api::impls::OverridesOnlyRequired::another_default(&self) -> &str
@@ -278,6 +281,10 @@ impl comprehensive_api::traits::TraitWithOneRequiredAndTwoDefaultMethods for com
 pub fn comprehensive_api::impls::OverridesRequiredAndOneOfTwoDefaults::another_default(&self) -> &str
 pub fn comprehensive_api::impls::OverridesRequiredAndOneOfTwoDefaults::defaulted(&self) -> u32
 pub fn comprehensive_api::impls::OverridesRequiredAndOneOfTwoDefaults::required(&self) -> bool
+pub trait comprehensive_api::traits::TraitWithParams
+pub fn comprehensive_api::traits::TraitWithParams::method(&self, arg: u64) -> u64
+impl comprehensive_api::traits::TraitWithParams for comprehensive_api::impls::ImplsWithUnderscorePrefixedParams
+pub fn comprehensive_api::impls::ImplsWithUnderscorePrefixedParams::method(&self, arg: u64) -> u64
 pub unsafe trait comprehensive_api::traits::UnsafeTrait
 pub mod comprehensive_api::typedefs
 pub type comprehensive_api::typedefs::ConstArg120 = comprehensive_api::structs::OnlyConstArg<120>

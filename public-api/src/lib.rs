@@ -73,6 +73,7 @@ struct BuilderOptions {
     omit_blanket_impls: bool,
     omit_auto_trait_impls: bool,
     omit_auto_derived_impls: bool,
+    omit_param_names: bool,
 }
 
 /// Builds [`PublicApi`]s. See the [top level][`crate`] module docs for example
@@ -94,6 +95,7 @@ impl Builder {
             omit_blanket_impls: false,
             omit_auto_trait_impls: false,
             omit_auto_derived_impls: false,
+            omit_param_names: false,
         };
         Self {
             rustdoc_json: path.into(),
@@ -164,6 +166,22 @@ impl Builder {
     #[must_use]
     pub fn omit_auto_derived_impls(mut self, omit_auto_derived_impls: bool) -> Self {
         self.options.omit_auto_derived_impls = omit_auto_derived_impls;
+        self
+    }
+
+    /// If `true`, function parameter names are omitted from the output. Since
+    /// parameter names are not part of Rust's public API (callers pass
+    /// arguments positionally), including them causes spurious diffs when
+    /// parameters are merely renamed.
+    ///
+    /// `self`/`&self`/`&mut self` receiver names are always preserved
+    /// regardless of this setting.
+    ///
+    /// The default value is `false` so that the output matches the original
+    /// source signatures by default.
+    #[must_use]
+    pub fn omit_param_names(mut self, omit_param_names: bool) -> Self {
+        self.options.omit_param_names = omit_param_names;
         self
     }
 

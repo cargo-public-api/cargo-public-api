@@ -189,6 +189,7 @@ pub fn public_api::Builder::from_rustdoc_json(path: impl core::convert::Into<std
 pub fn public_api::Builder::omit_auto_derived_impls(self, omit_auto_derived_impls: bool) -> Self
 pub fn public_api::Builder::omit_auto_trait_impls(self, omit_auto_trait_impls: bool) -> Self
 pub fn public_api::Builder::omit_blanket_impls(self, omit_blanket_impls: bool) -> Self
+pub fn public_api::Builder::omit_param_names(self, omit_param_names: bool) -> Self
 pub fn public_api::Builder::sorted(self, sorted: bool) -> Self
 impl core::clone::Clone for public_api::Builder
 pub fn public_api::Builder::clone(&self) -> public_api::Builder

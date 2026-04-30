@@ -73,6 +73,7 @@ struct BuilderOptions {
     omit_blanket_impls: bool,
     omit_auto_trait_impls: bool,
     omit_auto_derived_impls: bool,
+    omit_param_names: bool,
 }
 
 /// Builds [`PublicApi`]s. See the [top level][`crate`] module docs for example
@@ -94,6 +95,7 @@ impl Builder {
             omit_blanket_impls: false,
             omit_auto_trait_impls: false,
             omit_auto_derived_impls: false,
+            omit_param_names: false,
         };
         Self {
             rustdoc_json: path.into(),
@@ -164,6 +166,23 @@ impl Builder {
     #[must_use]
     pub fn omit_auto_derived_impls(mut self, omit_auto_derived_impls: bool) -> Self {
         self.options.omit_auto_derived_impls = omit_auto_derived_impls;
+        self
+    }
+
+    /// If `false` (default), function parameter names are contained in the output.
+    ///
+    /// ```
+    /// pub fn public_api::Builder::omit_param_names(self, omit_param_names: bool) -> Self
+    /// ```
+    ///
+    /// If `true`, function parameter names are omitted from the output.
+    ///
+    /// ```
+    //  pub fn public_api::Builder::omit_param_names(self, bool) -> Self
+    //  ```
+    #[must_use]
+    pub fn omit_param_names(mut self, omit_param_names: bool) -> Self {
+        self.options.omit_param_names = omit_param_names;
         self
     }
 

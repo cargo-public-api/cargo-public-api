@@ -169,16 +169,17 @@ impl Builder {
         self
     }
 
-    /// If `true`, function parameter names are omitted from the output. Since
-    /// parameter names are not part of Rust's public API (callers pass
-    /// arguments positionally), including them causes spurious diffs when
-    /// parameters are merely renamed.
+    /// If `false` (default), function parameter names are contained in the output.
     ///
-    /// `self`/`&self`/`&mut self` receiver names are always preserved
-    /// regardless of this setting.
+    /// ```
+    /// pub fn public_api::Builder::omit_param_names(self, omit_param_names: bool) -> Self
+    /// ```
     ///
-    /// The default value is `false` so that the output matches the original
-    /// source signatures by default.
+    /// If `true`, function parameter names are omitted from the output.
+    ///
+    /// ```
+    //  pub fn public_api::Builder::omit_param_names(self, bool) -> Self
+    //  ```
     #[must_use]
     pub fn omit_param_names(mut self, omit_param_names: bool) -> Self {
         self.options.omit_param_names = omit_param_names;

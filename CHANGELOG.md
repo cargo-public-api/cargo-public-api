@@ -1,5 +1,8 @@
 # `cargo-public-api` changelog
 
+## v0.52.0
+* Stop including parameter names in function signatures. Parameter names are rarely relevant. This approach avoids issues where renaming parameters shows up as API diffs. This is especially relevant for trait impls, where fn parameter names are often `_`-prefixed.
+
 ## v0.51.0
 * Also include default trait methods in impls, even if not overridden, just like in rustdoc HTML.
 * Sort rendered attributes so rendering is determinstic and does not change with rustdoc JSON changes.

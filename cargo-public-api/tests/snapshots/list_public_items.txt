@@ -4,14 +4,14 @@ pub struct public_api::diff::ChangedPublicItem
 pub public_api::diff::ChangedPublicItem::new: public_api::PublicItem
 pub public_api::diff::ChangedPublicItem::old: public_api::PublicItem
 impl public_api::diff::ChangedPublicItem
-pub fn public_api::diff::ChangedPublicItem::grouping_cmp(&self, other: &Self) -> core::cmp::Ordering
+pub fn public_api::diff::ChangedPublicItem::grouping_cmp(&self, &Self) -> core::cmp::Ordering
 impl core::clone::Clone for public_api::diff::ChangedPublicItem
 pub fn public_api::diff::ChangedPublicItem::clone(&self) -> public_api::diff::ChangedPublicItem
 impl core::cmp::Eq for public_api::diff::ChangedPublicItem
 impl core::cmp::PartialEq for public_api::diff::ChangedPublicItem
-pub fn public_api::diff::ChangedPublicItem::eq(&self, other: &public_api::diff::ChangedPublicItem) -> bool
+pub fn public_api::diff::ChangedPublicItem::eq(&self, &public_api::diff::ChangedPublicItem) -> bool
 impl core::fmt::Debug for public_api::diff::ChangedPublicItem
-pub fn public_api::diff::ChangedPublicItem::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub fn public_api::diff::ChangedPublicItem::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::marker::StructuralPartialEq for public_api::diff::ChangedPublicItem
 impl core::marker::Freeze for public_api::diff::ChangedPublicItem
 impl core::marker::Send for public_api::diff::ChangedPublicItem
@@ -25,15 +25,15 @@ pub public_api::diff::PublicApiDiff::added: alloc::vec::Vec<public_api::PublicIt
 pub public_api::diff::PublicApiDiff::changed: alloc::vec::Vec<public_api::diff::ChangedPublicItem>
 pub public_api::diff::PublicApiDiff::removed: alloc::vec::Vec<public_api::PublicItem>
 impl public_api::diff::PublicApiDiff
-pub fn public_api::diff::PublicApiDiff::between(old: public_api::PublicApi, new: public_api::PublicApi) -> Self
+pub fn public_api::diff::PublicApiDiff::between(public_api::PublicApi, public_api::PublicApi) -> Self
 pub fn public_api::diff::PublicApiDiff::is_empty(&self) -> bool
 impl core::clone::Clone for public_api::diff::PublicApiDiff
 pub fn public_api::diff::PublicApiDiff::clone(&self) -> public_api::diff::PublicApiDiff
 impl core::cmp::Eq for public_api::diff::PublicApiDiff
 impl core::cmp::PartialEq for public_api::diff::PublicApiDiff
-pub fn public_api::diff::PublicApiDiff::eq(&self, other: &public_api::diff::PublicApiDiff) -> bool
+pub fn public_api::diff::PublicApiDiff::eq(&self, &public_api::diff::PublicApiDiff) -> bool
 impl core::fmt::Debug for public_api::diff::PublicApiDiff
-pub fn public_api::diff::PublicApiDiff::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub fn public_api::diff::PublicApiDiff::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::marker::StructuralPartialEq for public_api::diff::PublicApiDiff
 impl core::marker::Freeze for public_api::diff::PublicApiDiff
 impl core::marker::Send for public_api::diff::PublicApiDiff
@@ -64,15 +64,15 @@ impl core::clone::Clone for public_api::tokens::Token
 pub fn public_api::tokens::Token::clone(&self) -> public_api::tokens::Token
 impl core::cmp::Eq for public_api::tokens::Token
 impl core::cmp::Ord for public_api::tokens::Token
-pub fn public_api::tokens::Token::cmp(&self, other: &public_api::tokens::Token) -> core::cmp::Ordering
+pub fn public_api::tokens::Token::cmp(&self, &public_api::tokens::Token) -> core::cmp::Ordering
 impl core::cmp::PartialEq for public_api::tokens::Token
-pub fn public_api::tokens::Token::eq(&self, other: &public_api::tokens::Token) -> bool
+pub fn public_api::tokens::Token::eq(&self, &public_api::tokens::Token) -> bool
 impl core::cmp::PartialOrd for public_api::tokens::Token
-pub fn public_api::tokens::Token::partial_cmp(&self, other: &public_api::tokens::Token) -> core::option::Option<core::cmp::Ordering>
+pub fn public_api::tokens::Token::partial_cmp(&self, &public_api::tokens::Token) -> core::option::Option<core::cmp::Ordering>
 impl core::fmt::Debug for public_api::tokens::Token
-pub fn public_api::tokens::Token::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub fn public_api::tokens::Token::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::hash::Hash for public_api::tokens::Token
-pub fn public_api::tokens::Token::hash<__H: core::hash::Hasher>(&self, state: &mut __H)
+pub fn public_api::tokens::Token::hash<__H: core::hash::Hasher>(&self, &mut __H)
 impl core::marker::StructuralPartialEq for public_api::tokens::Token
 impl core::marker::Freeze for public_api::tokens::Token
 impl core::marker::Send for public_api::tokens::Token
@@ -85,15 +85,15 @@ impl core::panic::unwind_safe::UnwindSafe for public_api::tokens::Token
 pub public_api::Error::IoError(std::io::error::Error)
 pub public_api::Error::SerdeJsonError(serde_json::error::Error)
 impl core::convert::From<serde_json::error::Error> for public_api::Error
-pub fn public_api::Error::from(source: serde_json::error::Error) -> Self
+pub fn public_api::Error::from(serde_json::error::Error) -> Self
 impl core::convert::From<std::io::error::Error> for public_api::Error
-pub fn public_api::Error::from(source: std::io::error::Error) -> Self
+pub fn public_api::Error::from(std::io::error::Error) -> Self
 impl core::error::Error for public_api::Error
 pub fn public_api::Error::source(&self) -> core::option::Option<&(dyn core::error::Error + 'static)>
 impl core::fmt::Debug for public_api::Error
-pub fn public_api::Error::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub fn public_api::Error::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::fmt::Display for public_api::Error
-pub fn public_api::Error::fmt(&self, __formatter: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub fn public_api::Error::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::marker::Freeze for public_api::Error
 impl core::marker::Send for public_api::Error
 impl core::marker::Sync for public_api::Error
@@ -104,16 +104,16 @@ impl !core::panic::unwind_safe::UnwindSafe for public_api::Error
 pub struct public_api::Builder
 impl public_api::Builder
 pub fn public_api::Builder::build(self) -> public_api::Result<public_api::PublicApi>
-pub fn public_api::Builder::debug_sorting(self, debug_sorting: bool) -> Self
-pub fn public_api::Builder::from_rustdoc_json(path: impl core::convert::Into<std::path::PathBuf>) -> Self
-pub fn public_api::Builder::omit_auto_derived_impls(self, omit_auto_derived_impls: bool) -> Self
-pub fn public_api::Builder::omit_auto_trait_impls(self, omit_auto_trait_impls: bool) -> Self
-pub fn public_api::Builder::omit_blanket_impls(self, omit_blanket_impls: bool) -> Self
-pub fn public_api::Builder::sorted(self, sorted: bool) -> Self
+pub fn public_api::Builder::debug_sorting(self, bool) -> Self
+pub fn public_api::Builder::from_rustdoc_json(impl core::convert::Into<std::path::PathBuf>) -> Self
+pub fn public_api::Builder::omit_auto_derived_impls(self, bool) -> Self
+pub fn public_api::Builder::omit_auto_trait_impls(self, bool) -> Self
+pub fn public_api::Builder::omit_blanket_impls(self, bool) -> Self
+pub fn public_api::Builder::sorted(self, bool) -> Self
 impl core::clone::Clone for public_api::Builder
 pub fn public_api::Builder::clone(&self) -> public_api::Builder
 impl core::fmt::Debug for public_api::Builder
-pub fn public_api::Builder::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub fn public_api::Builder::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::marker::Freeze for public_api::Builder
 impl core::marker::Send for public_api::Builder
 impl core::marker::Sync for public_api::Builder
@@ -123,14 +123,14 @@ impl core::panic::unwind_safe::RefUnwindSafe for public_api::Builder
 impl core::panic::unwind_safe::UnwindSafe for public_api::Builder
 #[non_exhaustive] pub struct public_api::PublicApi
 impl public_api::PublicApi
-pub fn public_api::PublicApi::assert_eq_or_update(&self, snapshot_path: impl core::convert::AsRef<std::path::Path>)
+pub fn public_api::PublicApi::assert_eq_or_update(&self, impl core::convert::AsRef<std::path::Path>)
 pub fn public_api::PublicApi::into_items(self) -> impl core::iter::traits::iterator::Iterator<Item = public_api::PublicItem>
 pub fn public_api::PublicApi::items(&self) -> impl core::iter::traits::iterator::Iterator<Item = &public_api::PublicItem>
 pub fn public_api::PublicApi::missing_item_ids(&self) -> impl core::iter::traits::iterator::Iterator<Item = &u32>
 impl core::fmt::Debug for public_api::PublicApi
-pub fn public_api::PublicApi::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub fn public_api::PublicApi::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::fmt::Display for public_api::PublicApi
-pub fn public_api::PublicApi::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub fn public_api::PublicApi::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::marker::Freeze for public_api::PublicApi
 impl core::marker::Send for public_api::PublicApi
 impl core::marker::Sync for public_api::PublicApi
@@ -140,7 +140,7 @@ impl core::panic::unwind_safe::RefUnwindSafe for public_api::PublicApi
 impl core::panic::unwind_safe::UnwindSafe for public_api::PublicApi
 pub struct public_api::PublicItem
 impl public_api::PublicItem
-pub fn public_api::PublicItem::grouping_cmp(&self, other: &Self) -> core::cmp::Ordering
+pub fn public_api::PublicItem::grouping_cmp(&self, &Self) -> core::cmp::Ordering
 pub fn public_api::PublicItem::id(&self) -> rustdoc_types::Id
 pub fn public_api::PublicItem::parent_id(&self) -> core::option::Option<rustdoc_types::Id>
 pub fn public_api::PublicItem::tokens(&self) -> impl core::iter::traits::iterator::Iterator<Item = &public_api::tokens::Token>
@@ -148,13 +148,13 @@ impl core::clone::Clone for public_api::PublicItem
 pub fn public_api::PublicItem::clone(&self) -> public_api::PublicItem
 impl core::cmp::Eq for public_api::PublicItem
 impl core::cmp::PartialEq for public_api::PublicItem
-pub fn public_api::PublicItem::eq(&self, other: &Self) -> bool
+pub fn public_api::PublicItem::eq(&self, &Self) -> bool
 impl core::fmt::Debug for public_api::PublicItem
-pub fn public_api::PublicItem::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub fn public_api::PublicItem::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::fmt::Display for public_api::PublicItem
-pub fn public_api::PublicItem::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub fn public_api::PublicItem::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::hash::Hash for public_api::PublicItem
-pub fn public_api::PublicItem::hash<H: core::hash::Hasher>(&self, state: &mut H)
+pub fn public_api::PublicItem::hash<H: core::hash::Hasher>(&self, &mut H)
 impl core::marker::Freeze for public_api::PublicItem
 impl core::marker::Send for public_api::PublicItem
 impl core::marker::Sync for public_api::PublicItem

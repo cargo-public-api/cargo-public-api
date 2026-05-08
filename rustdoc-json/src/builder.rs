@@ -566,13 +566,13 @@ version = "0.1.0"
 edition = "2021"
 
 [lib]
-name = "cousa"
+name = "renamed_lib"
 crate-type = ["rlib"]
 "#,
         )
         .unwrap();
         fs::write(src_dir.join("lib.rs"), "pub fn example() {}").unwrap();
 
-        assert_eq!(library_name(&manifest_path, None).unwrap(), "cousa");
+        assert_eq!(library_name(&manifest_path, None).unwrap(), "renamed_lib");
     }
 }

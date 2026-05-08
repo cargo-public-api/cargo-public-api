@@ -246,12 +246,24 @@ fn library_name(
         .ok_or_else(|| BuildError::VirtualManifest(manifest_path.as_ref().to_owned()))?;
 
     for target in &package.targets {
-        if target.kind.contains(&TargetKind::Lib) {
+        if target.kind.iter().any(is_library_target_kind) {
             return Ok(target.name.to_owned());
         }
     }
 
     Ok(package.name.into_inner())
+}
+
+fn is_library_target_kind(target_kind: &TargetKind) -> bool {
+    matches!(
+        target_kind,
+        TargetKind::Lib
+            | TargetKind::RLib
+            | TargetKind::DyLib
+            | TargetKind::CDyLib
+            | TargetKind::StaticLib
+            | TargetKind::ProcMacro
+    )
 }
 
 /// Color configuration for the output of `cargo rustdoc`.
@@ -528,6 +540,7 @@ pub enum PackageTarget {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::fs;
 
     #[test]
     fn ensure_toolchain_not_overridden() {
@@ -537,5 +550,29 @@ mod tests {
         if option_env!("RUSTDOC_JSON_OVERRIDDEN_TOOLCHAIN_HACK").is_none() {
             assert!(OVERRIDDEN_TOOLCHAIN.is_none());
         }
+    }
+
+    #[test]
+    fn renamed_rlib_library_target_name() {
+        let tempdir = tempfile::tempdir().unwrap();
+        let manifest_path = tempdir.path().join("Cargo.toml");
+        let src_dir = tempdir.path().join("src");
+        fs::create_dir_all(&src_dir).unwrap();
+        fs::write(
+            &manifest_path,
+            r#"[package]
+name = "thing"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "cousa"
+crate-type = ["rlib"]
+"#,
+        )
+        .unwrap();
+        fs::write(src_dir.join("lib.rs"), "pub fn example() {}").unwrap();
+
+        assert_eq!(library_name(&manifest_path, None).unwrap(), "cousa");
     }
 }

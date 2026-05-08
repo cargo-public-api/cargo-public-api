@@ -1,5 +1,8 @@
 # `public-api` changelog
 
+## v0.51.1
+* Make renamed lib targets with `crate-type = ["rlib"]` work
+
 ## v0.51.0
 * Also include default trait methods in impls, even if not overridden, just like in rustdoc HTML.
 

@@ -1,5 +1,8 @@
 # rustdoc-json
 
+## v0.9.10
+* Make renamed lib targets with `crate-type = ["rlib"]` work
+
 ## v0.9.9
 * Bump deps. Most notably `cargo-manifest` from `0.19.x` to `0.20.x` and `toml` from `0.8.x` to `1.x.y`.
 

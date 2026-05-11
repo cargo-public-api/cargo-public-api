@@ -302,6 +302,37 @@ pub mod a_mod {
     assert_eq!(Some("a_mod"), parent_item.name.as_deref());
 }
 
+#[test]
+fn renamed_rlib_library_target_name() {
+    let root = tempdir().unwrap();
+
+    write_file(
+        &root,
+        "Cargo.toml",
+        r#"[package]
+name = "thing"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "renamed_lib"
+crate-type = ["rlib"]
+path = "lib.rs"
+"#,
+    );
+    write_file(&root, "lib.rs", "pub fn example() {}\n");
+
+    let build_dir = tempdir().unwrap();
+    let json_path = rustdoc_json_path_for_crate(root.path(), &build_dir);
+
+    let api = public_api::Builder::from_rustdoc_json(json_path)
+        .build()
+        .unwrap()
+        .to_string();
+
+    assert!(api.contains("pub fn renamed_lib::example()"), "{api}");
+}
+
 struct LibWithJson {
     json_path: PathBuf,
 
@@ -309,15 +340,15 @@ struct LibWithJson {
     _root: TempDir,
 }
 
+fn write_file(root: &TempDir, file: &str, content: &str) {
+    fs::write(root.path().join(file), content).unwrap();
+}
+
 fn rustdoc_json_for_lib(lib: &str) -> LibWithJson {
     let root = tempdir().unwrap();
 
-    let write = |file: &str, content: &str| {
-        let file_path = root.path().join(file);
-        fs::write(file_path, content).unwrap();
-    };
-
-    write(
+    write_file(
+        &root,
         "Cargo.toml",
         "\
         [package]\n\
@@ -329,7 +360,7 @@ fn rustdoc_json_for_lib(lib: &str) -> LibWithJson {
         ",
     );
 
-    write("lib.rs", lib);
+    write_file(&root, "lib.rs", lib);
 
     LibWithJson {
         json_path: rustdoc_json_path_for_temp_crate(&root),

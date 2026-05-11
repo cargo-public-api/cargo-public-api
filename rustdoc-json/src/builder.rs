@@ -246,12 +246,23 @@ fn library_name(
         .ok_or_else(|| BuildError::VirtualManifest(manifest_path.as_ref().to_owned()))?;
 
     for target in &package.targets {
-        if target.kind.contains(&TargetKind::Lib) {
+        if target.kind.iter().any(is_library_target_kind) {
             return Ok(target.name.to_owned());
         }
     }
 
     Ok(package.name.into_inner())
+}
+
+fn is_library_target_kind(target_kind: &TargetKind) -> bool {
+    matches!(
+        target_kind,
+        TargetKind::Lib
+            | TargetKind::RLib
+            | TargetKind::DyLib
+            | TargetKind::CDyLib
+            | TargetKind::StaticLib
+    )
 }
 
 /// Color configuration for the output of `cargo rustdoc`.

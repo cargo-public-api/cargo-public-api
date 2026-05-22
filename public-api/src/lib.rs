@@ -171,7 +171,7 @@ impl Builder {
 
     /// If `true`, function parameter names are included in the API output. They
     /// are omitted by default to avoid spurious diffs when parameter names
-    /// change, but they can be helpful to include in the output.
+    /// change, but they can sometimes be helpful to include in the output.
     #[must_use]
     pub fn include_function_parameter_names(mut self, include_function_parameter_names: bool) -> Self {
         self.options.include_function_parameter_names = include_function_parameter_names;

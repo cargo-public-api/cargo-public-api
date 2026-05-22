@@ -72,6 +72,16 @@ pub enum Omit {
     AutoDerivedImpls,
 }
 
+#[derive(Copy, Clone, Debug, Eq, PartialEq, clap::ValueEnum)]
+#[value(rename_all = "kebab-case")]
+#[allow(clippy::enum_variant_names)] // We might add support for omitting other things in the future
+pub enum Include {
+    /// Include function parameter names in the API output. They are omitted by
+    /// default to avoid spurious diffs when parameter names change, but they
+    /// can be helpful to include in the output.
+    FunctionParameterNames,
+}
+
 #[cfg(test)]
 mod tests {
     use super::DenyMethod;

@@ -73,6 +73,7 @@ struct BuilderOptions {
     omit_blanket_impls: bool,
     omit_auto_trait_impls: bool,
     omit_auto_derived_impls: bool,
+    include_function_parameter_names: bool,
 }
 
 /// Builds [`PublicApi`]s. See the [top level][`crate`] module docs for example
@@ -94,6 +95,7 @@ impl Builder {
             omit_blanket_impls: false,
             omit_auto_trait_impls: false,
             omit_auto_derived_impls: false,
+            include_function_parameter_names: false,
         };
         Self {
             rustdoc_json: path.into(),
@@ -164,6 +166,15 @@ impl Builder {
     #[must_use]
     pub fn omit_auto_derived_impls(mut self, omit_auto_derived_impls: bool) -> Self {
         self.options.omit_auto_derived_impls = omit_auto_derived_impls;
+        self
+    }
+
+    /// If `true`, function parameter names are included in the API output. They
+    /// are omitted by default to avoid spurious diffs when parameter names
+    /// change, but they can be helpful to include in the output.
+    #[must_use]
+    pub fn include_function_parameter_names(mut self, include_function_parameter_names: bool) -> Self {
+        self.options.include_function_parameter_names = include_function_parameter_names;
         self
     }
 

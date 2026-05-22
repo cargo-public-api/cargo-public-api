@@ -79,6 +79,37 @@ fn list_public_items_omit_auto_derived_impls() {
         .success();
 }
 
+// All three tests should have the same output.
+const FUNCTION_PARAMETER_NAMES_OUTPUT_PATH: &str = "include-function-parameter-names";
+
+#[test]
+fn list_public_items_include_function_parameter_names() {
+    let mut cmd = TestCmd::as_subcommand_without_args().with_test_repo();
+    cmd.arg("--include");
+    cmd.arg("function-parameter-names");
+    cmd.assert()
+        .stdout_with_insta(FUNCTION_PARAMETER_NAMES_OUTPUT_PATH)
+        .success();
+}
+
+#[test]
+fn list_public_items_include_function_parameter_names_with_v() {
+    let mut cmd = TestCmd::as_subcommand_without_args().with_test_repo();
+    cmd.arg("-v"); // Note the verbose flag
+    cmd.assert()
+        .stdout_with_insta(FUNCTION_PARAMETER_NAMES_OUTPUT_PATH)
+        .success();
+}
+
+#[test]
+fn list_public_items_include_function_parameter_names_with_verbose() {
+    let mut cmd = TestCmd::as_subcommand_without_args().with_test_repo();
+    cmd.arg("--verbose"); // Note the verbose flag
+    cmd.assert()
+        .stdout_with_insta(FUNCTION_PARAMETER_NAMES_OUTPUT_PATH)
+        .success();
+}
+
 #[test]
 fn list_public_items_omit_auto_derived_impls_with_double_s() {
     let mut cmd = TestCmd::as_subcommand_without_args().with_test_repo();
@@ -730,7 +761,7 @@ fn deny_removed_with_diff() {
     cmd.arg("--deny=removed");
     cmd.assert()
         .stderr(contains(
-            "The API diff is not allowed as per --deny: Removed items not allowed: [pub fn example_api::function(v1_param: example_api::Struct, v2_param: usize)]",
+            "The API diff is not allowed as per --deny: Removed items not allowed: [pub fn example_api::function(example_api::Struct, usize)]",
         ))
         .failure();
 }

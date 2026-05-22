@@ -133,6 +133,7 @@ fn public_api_builder_from_args(rustdoc_json: &Path, args: &Args) -> public_api:
         .omit_blanket_impls(args.omit_blanket_impls())
         .omit_auto_trait_impls(args.omit_auto_trait_impls())
         .omit_auto_derived_impls(args.omit_auto_derived_impls())
+        .include_function_parameter_names(args.include_function_parameter_names())
 }
 
 /// Creates a rustdoc JSON builder based on the args to this program.

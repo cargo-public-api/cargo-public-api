@@ -4,7 +4,7 @@ use std::path::{Path, PathBuf};
 
 use anyhow::{Result, anyhow, bail};
 use api_source::{ApiSource, Commit, CurrentDir, PublishedCrate, RustdocJson};
-use arg_types::{Color, DenyMethod, Omit};
+use arg_types::{Color, DenyMethod, Include, Omit};
 use git_utils::current_branch_or_commit;
 use plain::Plain;
 use public_api::diff::PublicApiDiff;
@@ -48,9 +48,22 @@ pub struct Args {
     #[arg(global = true, short, long, action = clap::ArgAction::Count)]
     simplified: u8,
 
+    /// Include extra details.
+    ///
+    /// | Usage | Corresponds to                                           |
+    /// |-------|----------------------------------------------------------|
+    /// | -v    | --include function-parameter-names                       |
+    #[clap(verbatim_doc_comment)]
+    #[arg(global = true, short, long, action = clap::ArgAction::Count)]
+    verbose: u8,
+
     /// Omit specified items.
     #[arg(global = true, long, value_enum, value_delimiter = ',')]
     omit: Option<Vec<Omit>>,
+
+    /// Include specified details.
+    #[arg(global = true, long, value_enum, value_delimiter = ',')]
+    include: Option<Vec<Include>>,
 
     /// Space or comma separated list of features to activate
     #[arg(global = true, long, short = 'F')]
@@ -517,6 +530,14 @@ impl Args {
         self.omit.iter().flatten().any(|o| *o == to_omit)
     }
 
+    fn include_function_parameter_names(&self) -> bool {
+        self.includes(Include::FunctionParameterNames)
+    }
+
+    fn includes(&self, to_include: Include) -> bool {
+        self.include.iter().flatten().any(|i| *i == to_include)
+    }
+
     fn git_root(&self) -> Result<PathBuf> {
         git_utils::git_root_from_manifest_path(self.manifest_path.as_path())
     }
@@ -545,6 +566,7 @@ fn get_args() -> ArgsAndToolchain {
 
     let mut args = Args::parse_from(args_os);
     resolve_simplified(&mut args);
+    resolve_verbose(&mut args);
     resolve_toolchain(args)
 }
 
@@ -598,6 +620,16 @@ fn resolve_simplified(args: &mut Args) {
 
         if args.simplified > 2 {
             omit.push(Omit::AutoDerivedImpls);
+        }
+    }
+}
+
+fn resolve_verbose(args: &mut Args) {
+    if args.verbose > 0 {
+        let include = args.include.get_or_insert_with(Vec::new);
+
+        if args.verbose > 0 {
+            include.push(Include::FunctionParameterNames);
         }
     }
 }

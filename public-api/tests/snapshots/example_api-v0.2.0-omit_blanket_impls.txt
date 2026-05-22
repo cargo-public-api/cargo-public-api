@@ -3,7 +3,7 @@ pub mod example_api
 pub example_api::Struct::v1_field: usize
 pub example_api::Struct::v2_field: usize
 impl core::fmt::Debug for example_api::Struct
-pub fn example_api::Struct::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub fn example_api::Struct::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::marker::Freeze for example_api::Struct
 impl core::marker::Send for example_api::Struct
 impl core::marker::Sync for example_api::Struct
@@ -20,4 +20,4 @@ impl core::marker::Unpin for example_api::StructV2
 impl core::marker::UnsafeUnpin for example_api::StructV2
 impl core::panic::unwind_safe::RefUnwindSafe for example_api::StructV2
 impl core::panic::unwind_safe::UnwindSafe for example_api::StructV2
-pub fn example_api::function(v1_param: example_api::Struct, v2_param: usize)
+pub fn example_api::function(example_api::Struct, usize)

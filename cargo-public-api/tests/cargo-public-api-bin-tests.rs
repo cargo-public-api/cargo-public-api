@@ -1018,11 +1018,11 @@ fn list_public_items_from_json_file() {
 }
 
 #[test]
-fn verbose() {
+fn debug_processing() {
     let mut cmd = TestCmd::new();
     cmd.arg("--manifest-path");
     cmd.arg("../test-apis/lint_error/Cargo.toml");
-    cmd.arg("--verbose");
+    cmd.arg("--debug-processing");
     cmd.assert()
         .stdout(contains("Processing \""))
         .stdout(contains("rustdoc JSON missing referenced item"))

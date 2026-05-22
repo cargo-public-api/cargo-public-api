@@ -92,10 +92,9 @@ pub struct Args {
 
     /// Show detailed info about processing.
     ///
-    /// For debugging purposes. The output is not stable and can change across
-    /// patch versions.
+    /// Only intended for debugging this tool.
     #[arg(global = true, long, hide = true)]
-    verbose: bool,
+    debug_processing: bool,
 
     /// Show the hidden "sorting prefix" that makes items nicely grouped
     ///
@@ -614,7 +613,7 @@ fn git_checkout(args: &Args, commit: &str) -> Result<()> {
     git_utils::git_checkout(
         &args.git_root()?,
         commit,
-        !args.verbose,
+        !args.debug_processing,
         args.diff_args()
             .map(|diff_args| diff_args.force)
             .unwrap_or_default(),

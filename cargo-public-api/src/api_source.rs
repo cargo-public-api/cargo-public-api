@@ -168,7 +168,7 @@ pub fn builder_from_args(argst: &ArgsAndToolchain) -> rustdoc_json::Builder {
 fn public_api_from_rustdoc_json(path: impl AsRef<Path>, args: &Args) -> Result<PublicApi> {
     let json_path = path.as_ref();
 
-    if args.verbose {
+    if args.debug_processing {
         println!("Processing {json_path:?}");
     }
 
@@ -197,7 +197,7 @@ If the issue remains, please report at
             )
         })?;
 
-    if args.verbose {
+    if args.debug_processing {
         public_api.missing_item_ids().for_each(|i| {
             println!("NOTE: rustdoc JSON missing referenced item with ID \"{i}\"");
         });

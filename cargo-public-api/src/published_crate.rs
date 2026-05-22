@@ -10,7 +10,7 @@ use std::path::PathBuf;
 pub fn build_rustdoc_json(version: Option<&str>, argst: &ArgsAndToolchain) -> Result<PathBuf> {
     let args = &argst.args;
     let package_name = package_name_from_args(args).ok_or_else(|| anyhow!("You must specify a package with either `-p package-name` or `--manifest-path path/to/Cargo.toml`"))?;
-    let crate_ = http_get_crate(&package_name, args.verbose)?;
+    let crate_ = http_get_crate(&package_name, args.debug_processing)?;
     let crate_version = get_crate_version(&crate_, version)?;
     let build_dir = build_dir(args, &crate_version);
     std::fs::create_dir_all(&build_dir)?;

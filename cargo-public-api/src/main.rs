@@ -48,6 +48,16 @@ pub struct Args {
     #[arg(global = true, short, long, action = clap::ArgAction::Count)]
     simplified: u8,
 
+    /// Include details that are normally not relevant for the public API
+    /// surface, but that can sometimes be helpful nevertheless.
+    ///
+    /// | Usage | Corresponds to                                           |
+    /// |-------|----------------------------------------------------------|
+    /// | -v    | --include function-parameter-names                       |
+    #[clap(verbatim_doc_comment)]
+    #[arg(global = true, short, long, action = clap::ArgAction::Count)]
+    verbose: u8,
+
     /// Omit specified items.
     #[arg(global = true, long, value_enum, value_delimiter = ',')]
     omit: Option<Vec<Omit>>,
@@ -545,6 +555,7 @@ fn get_args() -> ArgsAndToolchain {
 
     let mut args = Args::parse_from(args_os);
     resolve_simplified(&mut args);
+    resolve_verbose(&mut args);
     resolve_toolchain(args)
 }
 

@@ -24,6 +24,14 @@ Options:
           | -ss   | --omit blanket-impls,auto-trait-impls                    |
           | -sss  | --omit blanket-impls,auto-trait-impls,auto-derived-impls |
 
+  -v, --verbose...
+          Include details that are normally not relevant for the public API
+          surface, but that can sometimes be helpful nevertheless.
+          
+          | Usage | Corresponds to                                           |
+          |-------|----------------------------------------------------------|
+          | -v    | --include function-parameter-names                       |
+
       --omit <OMIT>
           Omit specified items
 
@@ -34,6 +42,14 @@ Options:
             Send for ...`, `impl Sync for ...`, and `impl Unpin for ...`
           - auto-derived-impls: Omit items that belong to Auto Derived Implementations such as
             `Clone`, `Debug`, and `Eq`
+
+      --include <INCLUDE>
+          Include specified details
+
+          Possible values:
+          - function-parameter-names: Include function parameter names in the API output. They are
+            omitted by default to avoid spurious diffs when parameter names change, but they can be
+            helpful to include in the output
 
   -F, --features <FEATURES>
           Space or comma separated list of features to activate

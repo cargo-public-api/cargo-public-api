@@ -14,8 +14,11 @@ Options:
                               commits
   -p, --package <PACKAGE>     Name of package in workspace to list or diff the public API for
   -s, --simplified...         Omit noisy items. Can be used more than once.
+  -v, --verbose...            Include details that are normally not relevant for the public API
+                              surface, but that can sometimes be helpful nevertheless.
       --omit <OMIT>           Omit specified items [possible values: blanket-impls,
                               auto-trait-impls, auto-derived-impls]
+      --include <INCLUDE>     Include specified details [possible values: function-parameter-names]
   -F, --features <FEATURES>   Space or comma separated list of features to activate
       --all-features          Activate all available features
       --no-default-features   Do not activate the `default` feature

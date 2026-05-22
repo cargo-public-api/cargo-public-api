@@ -80,6 +80,34 @@ fn list_public_items_omit_auto_derived_impls() {
 }
 
 #[test]
+fn list_public_items_include_function_parameter_names() {
+    let mut cmd = TestCmd::as_subcommand_without_args().with_test_repo();
+    cmd.arg("--include");
+    cmd.arg("function-parameter-names");
+    cmd.assert()
+        .stdout_with_insta("include-function-parameter-names")
+        .success();
+}
+
+#[test]
+fn list_public_items_include_function_parameter_names_with_v() {
+    let mut cmd = TestCmd::as_subcommand_without_args().with_test_repo();
+    cmd.arg("-v"); // Note the verbose flag
+    cmd.assert()
+        .stdout_with_insta("include-function-parameter-names-with-v")
+        .success();
+}
+
+#[test]
+fn list_public_items_include_function_parameter_names_with_verbose() {
+    let mut cmd = TestCmd::as_subcommand_without_args().with_test_repo();
+    cmd.arg("--verbose"); // Note the verbose flag
+    cmd.assert()
+        .stdout_with_insta("include-function-parameter-names-with-v") // Should be same as with -v
+        .success();
+}
+
+#[test]
 fn list_public_items_omit_auto_derived_impls_with_double_s() {
     let mut cmd = TestCmd::as_subcommand_without_args().with_test_repo();
     cmd.arg("-ss"); // Note the double -s

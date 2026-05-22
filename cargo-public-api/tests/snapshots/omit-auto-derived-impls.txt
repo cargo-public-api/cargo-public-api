@@ -13,7 +13,7 @@ impl<T, U> core::convert::Into<U> for example_api::Struct where U: core::convert
 pub fn example_api::Struct::into(self) -> U
 impl<T, U> core::convert::TryFrom<U> for example_api::Struct where U: core::convert::Into<T>
 pub type example_api::Struct::Error = core::convert::Infallible
-pub fn example_api::Struct::try_from(value: U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+pub fn example_api::Struct::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
 impl<T, U> core::convert::TryInto<U> for example_api::Struct where U: core::convert::TryFrom<T>
 pub type example_api::Struct::Error = <U as core::convert::TryFrom<T>>::Error
 pub fn example_api::Struct::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
@@ -24,7 +24,7 @@ pub fn example_api::Struct::borrow(&self) -> &T
 impl<T> core::borrow::BorrowMut<T> for example_api::Struct where T: ?core::marker::Sized
 pub fn example_api::Struct::borrow_mut(&mut self) -> &mut T
 impl<T> core::convert::From<T> for example_api::Struct
-pub fn example_api::Struct::from(t: T) -> T
+pub fn example_api::Struct::from(T) -> T
 pub struct example_api::StructV2
 pub example_api::StructV2::field: usize
 impl core::marker::Freeze for example_api::StructV2
@@ -38,7 +38,7 @@ impl<T, U> core::convert::Into<U> for example_api::StructV2 where U: core::conve
 pub fn example_api::StructV2::into(self) -> U
 impl<T, U> core::convert::TryFrom<U> for example_api::StructV2 where U: core::convert::Into<T>
 pub type example_api::StructV2::Error = core::convert::Infallible
-pub fn example_api::StructV2::try_from(value: U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+pub fn example_api::StructV2::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
 impl<T, U> core::convert::TryInto<U> for example_api::StructV2 where U: core::convert::TryFrom<T>
 pub type example_api::StructV2::Error = <U as core::convert::TryFrom<T>>::Error
 pub fn example_api::StructV2::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
@@ -49,4 +49,4 @@ pub fn example_api::StructV2::borrow(&self) -> &T
 impl<T> core::borrow::BorrowMut<T> for example_api::StructV2 where T: ?core::marker::Sized
 pub fn example_api::StructV2::borrow_mut(&mut self) -> &mut T
 impl<T> core::convert::From<T> for example_api::StructV2
-pub fn example_api::StructV2::from(t: T) -> T
+pub fn example_api::StructV2::from(T) -> T

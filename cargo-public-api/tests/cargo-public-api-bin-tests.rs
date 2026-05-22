@@ -187,7 +187,7 @@ fn renamed_binary_works_as_subcommand() {
     Command::from_std(cmd)
         .assert()
         .stderr(contains(""))
-        .stdout_with_insta("short-help")
+        .stdout_with_insta("help-short")
         .success();
 }
 
@@ -1064,7 +1064,7 @@ fn debug_processing() {
 fn short_help() {
     let mut cmd = TestCmd::new().with_separate_target_dir();
     cmd.arg("-h");
-    cmd.assert().stdout_with_insta("short-help").success();
+    cmd.assert().stdout_with_insta("help-short").success();
 }
 
 #[test]
@@ -1072,7 +1072,7 @@ fn short_diff_help() {
     let mut cmd = TestCmd::new().with_separate_target_dir();
     cmd.arg("diff");
     cmd.arg("-h");
-    cmd.assert().stdout_with_insta("short-diff-help").success();
+    cmd.assert().stdout_with_insta("help-short-diff").success();
 }
 
 #[test]
@@ -1081,7 +1081,7 @@ fn short_completions_help() {
     cmd.arg("completions");
     cmd.arg("-h");
     cmd.assert()
-        .stdout_with_insta("short-completions-help")
+        .stdout_with_insta("help-short-completions")
         .success();
 }
 
@@ -1089,7 +1089,7 @@ fn short_completions_help() {
 fn long_help() {
     let mut cmd = TestCmd::new();
     cmd.arg("--help");
-    cmd.assert().stdout_with_insta("long-help").success();
+    cmd.assert().stdout_with_insta("help-long").success();
 }
 
 #[test]
@@ -1098,7 +1098,7 @@ fn long_completions_help() {
     cmd.arg("completions");
     cmd.arg("--help");
     cmd.assert()
-        .stdout_with_insta("long-completions-help")
+        .stdout_with_insta("help-long-completions")
         .success();
 }
 
@@ -1107,7 +1107,7 @@ fn long_diff_help() {
     let mut cmd = TestCmd::new();
     cmd.arg("diff");
     cmd.arg("--help");
-    cmd.assert().stdout_with_insta("long-diff-help").success();
+    cmd.assert().stdout_with_insta("help-long-diff").success();
 }
 
 #[test]

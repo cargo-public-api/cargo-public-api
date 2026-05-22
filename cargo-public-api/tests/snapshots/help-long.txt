@@ -15,24 +15,8 @@ Options:
   -p, --package <PACKAGE>
           Name of package in workspace to list or diff the public API for
 
-  -s, --simplified...
-          Omit noisy items. Can be used more than once.
-          
-          | Usage | Corresponds to                                           |
-          |-------|----------------------------------------------------------|
-          | -s    | --omit blanket-impls                                     |
-          | -ss   | --omit blanket-impls,auto-trait-impls                    |
-          | -sss  | --omit blanket-impls,auto-trait-impls,auto-derived-impls |
-
-  -v, --verbose...
-          Include extra details.
-          
-          | Usage | Corresponds to                                           |
-          |-------|----------------------------------------------------------|
-          | -v    | --include function-parameter-names                       |
-
       --omit <OMIT>
-          Omit specified items
+          Omit noisy items
 
           Possible values:
           - blanket-impls:      Omit items that belong to Blanket Implementations such as `impl<T>
@@ -42,13 +26,29 @@ Options:
           - auto-derived-impls: Omit items that belong to Auto Derived Implementations such as
             `Clone`, `Debug`, and `Eq`
 
+  -s, --simplified...
+          Shorthand for omitting noisy items. Can be used more than once.
+          
+          | Usage | Corresponds to                                           |
+          |-------|----------------------------------------------------------|
+          | -s    | --omit blanket-impls                                     |
+          | -ss   | --omit blanket-impls,auto-trait-impls                    |
+          | -sss  | --omit blanket-impls,auto-trait-impls,auto-derived-impls |
+
       --include <INCLUDE>
-          Include specified details
+          Include extra details
 
           Possible values:
           - function-parameter-names: Include function parameter names in the output. They are
             omitted by default to avoid spurious API diffs when parameter names change. But they can
             sometimes be helpful to include in the output
+
+  -v, --verbose...
+          Shorthand for including extra details.
+          
+          | Usage | Corresponds to                                           |
+          |-------|----------------------------------------------------------|
+          | -v    | --include function-parameter-names                       |
 
   -F, --features <FEATURES>
           Space or comma separated list of features to activate

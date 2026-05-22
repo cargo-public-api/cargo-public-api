@@ -37,7 +37,11 @@ pub struct Args {
     #[arg(global = true, long, short)]
     package: Option<String>,
 
-    /// Omit noisy items. Can be used more than once.
+    /// Omit noisy items.
+    #[arg(global = true, long, value_enum, value_delimiter = ',')]
+    omit: Option<Vec<Omit>>,
+
+    /// Shorthand for omitting noisy items. Can be used more than once.
     ///
     /// | Usage | Corresponds to                                           |
     /// |-------|----------------------------------------------------------|
@@ -49,6 +53,10 @@ pub struct Args {
     simplified: u8,
 
     /// Include extra details.
+    #[arg(global = true, long, value_enum, value_delimiter = ',')]
+    include: Option<Vec<Include>>,
+
+    /// Shorthand for including extra details.
     ///
     /// | Usage | Corresponds to                                           |
     /// |-------|----------------------------------------------------------|
@@ -56,14 +64,6 @@ pub struct Args {
     #[clap(verbatim_doc_comment)]
     #[arg(global = true, short, long, action = clap::ArgAction::Count)]
     verbose: u8,
-
-    /// Omit specified items.
-    #[arg(global = true, long, value_enum, value_delimiter = ',')]
-    omit: Option<Vec<Omit>>,
-
-    /// Include specified details.
-    #[arg(global = true, long, value_enum, value_delimiter = ',')]
-    include: Option<Vec<Include>>,
 
     /// Space or comma separated list of features to activate
     #[arg(global = true, long, short = 'F')]

@@ -1,6 +1,12 @@
 # `cargo-public-api` changelog
 
-## v0.51.1
+## v0.52.0
+* Stop including function parameter names by default in the output. This avoids issues where
+  renaming parameters shows up as API diffs. This is especially relevant for trait impls, where fn
+  parameter names are often `_`-prefixed.
+
+  To opt-in to the old behavior of including parameter names, use the new `--include
+  function-parameter-names` CLI option (or the `-v` / `--verbose` shorthand).
 * Make renamed lib targets with `crate-type = ["rlib"]` work
 
 ## v0.51.0

@@ -35,7 +35,11 @@ UPDATE_SNAPSHOTS=yes ./scripts/cargo-test.sh
 
 ## Expected Output
 
-Output aims to be character-by-character identical to the textual parts of the regular `cargo doc` HTML output. For example, [this item](https://docs.rs/bat/0.20.0/bat/struct.PrettyPrinter.html#method.input_files) has the following textual representation in the rendered HTML:
+Output aims to mostly be character-by-character identical to the textual parts of the regular `cargo doc` HTML output, with the following exceptions:
+
+* **Names of function parameters are not included**. Renaming a parameter rarely constitutes a breaking change, and it avoid issues like [Ignore `_`-prefixes of parameter names of trait `impl`s `fn`s](https://github.com/cargo-public-api/cargo-public-api/issues/766).
+
+For example, [this item](https://docs.rs/bat/0.20.0/bat/struct.PrettyPrinter.html#method.input_files) has the following textual representation in the rendered HTML:
 
 ```
 pub fn input_files<I, P>(&mut self, paths: I) -> &mut Self
@@ -47,14 +51,14 @@ where
 and `cargo public-api` renders this item in the following way:
 
 ```
-pub fn bat::PrettyPrinter::input_files<I, P>(&mut self, paths: I) -> &mut Self where I: IntoIterator<Item = P>, P: AsRef<Path>
+pub fn bat::PrettyPrinter::input_files<I, P>(&mut self, I) -> &mut Self where I: IntoIterator<Item = P>, P: AsRef<Path>
 ```
 
-If we remove newline characters and add some whitespace padding to get the alignment right for side-by-side comparison, we can see that they are exactly the same, except an irrelevant trailing comma:
+If we remove newline characters and add some whitespace padding to get the alignment right for side-by-side comparison, we can see that they are exactly the same, except omissions of function parameter names and an irrelevant trailing comma:
 
 ```
 pub fn                     input_files<I, P>(&mut self, paths: I) -> &mut Self where I: IntoIterator<Item = P>, P: AsRef<Path>,
-pub fn bat::PrettyPrinter::input_files<I, P>(&mut self, paths: I) -> &mut Self where I: IntoIterator<Item = P>, P: AsRef<Path>
+pub fn bat::PrettyPrinter::input_files<I, P>(&mut self,        I) -> &mut Self where I: IntoIterator<Item = P>, P: AsRef<Path>
 ```
 
 # Constraints

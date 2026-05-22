@@ -527,12 +527,16 @@ impl Args {
         self.omits(Omit::AutoDerivedImpls)
     }
 
-    fn include_function_parameter_names(&self) -> bool {
-        self.include.iter().flatten().any(|i| *i == Include::FunctionParameterNames)
-    }
-
     fn omits(&self, to_omit: Omit) -> bool {
         self.omit.iter().flatten().any(|o| *o == to_omit)
+    }
+
+    fn include_function_parameter_names(&self) -> bool {
+        self.includes(Include::FunctionParameterNames)
+    }
+
+    fn includes(&self, to_include: Include) -> bool {
+        self.include.iter().flatten().any(|i| *i == to_include)
     }
 
     fn git_root(&self) -> Result<PathBuf> {

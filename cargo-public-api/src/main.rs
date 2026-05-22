@@ -4,7 +4,7 @@ use std::path::{Path, PathBuf};
 
 use anyhow::{Result, anyhow, bail};
 use api_source::{ApiSource, Commit, CurrentDir, PublishedCrate, RustdocJson};
-use arg_types::{Color, DenyMethod, Omit};
+use arg_types::{Color, DenyMethod, Include, Omit};
 use git_utils::current_branch_or_commit;
 use plain::Plain;
 use public_api::diff::PublicApiDiff;
@@ -61,6 +61,10 @@ pub struct Args {
     /// Omit specified items.
     #[arg(global = true, long, value_enum, value_delimiter = ',')]
     omit: Option<Vec<Omit>>,
+
+    /// Include specified details.
+    #[arg(global = true, long, value_enum, value_delimiter = ',')]
+    include: Option<Vec<Include>>,
 
     /// Space or comma separated list of features to activate
     #[arg(global = true, long, short = 'F')]
@@ -609,6 +613,16 @@ fn resolve_simplified(args: &mut Args) {
 
         if args.simplified > 2 {
             omit.push(Omit::AutoDerivedImpls);
+        }
+    }
+}
+
+fn resolve_verbose(args: &mut Args) {
+    if args.verbose > 0 {
+        let include = args.include.get_or_insert_with(Vec::new);
+
+        if args.verbose > 0 {
+            include.push(Include::FunctionParameterNames);
         }
     }
 }

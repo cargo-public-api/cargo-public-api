@@ -756,9 +756,10 @@ fn deny_removed_with_diff() {
     cmd.arg("diff");
     cmd.arg("v0.2.0..v0.3.0");
     cmd.arg("--deny=removed");
+    //cmd.arg("--include=function-parameter-names");
     cmd.assert()
         .stderr(contains(
-            "The API diff is not allowed as per --deny: Removed items not allowed: [pub fn example_api::function(v1_param: example_api::Struct, v2_param: usize)]",
+            "The API diff is not allowed as per --deny: Removed items not allowed: [pub fn example_api::function(example_api::Struct, usize)]",
         ))
         .failure();
 }

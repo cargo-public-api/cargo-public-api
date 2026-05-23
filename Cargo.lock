@@ -158,7 +158,7 @@ dependencies = [
 
 [[package]]
 name = "cargo-public-api"
-version = "0.51.0"
+version = "0.52.0"
 dependencies = [
  "anyhow",
  "assert_cmd",
@@ -903,7 +903,7 @@ dependencies = [
 
 [[package]]
 name = "public-api"
-version = "0.51.0"
+version = "0.52.0"
 dependencies = [
  "anyhow",
  "assert_cmd",
@@ -1012,7 +1012,7 @@ checksum = "2febf9acc5ee5e99d1ad0afcdbccc02d87aa3f857a1f01f825b80eacf8edfcd1"
 
 [[package]]
 name = "rustdoc-json"
-version = "0.9.9"
+version = "0.9.10"
 dependencies = [
  "assert_cmd",
  "cargo-manifest",

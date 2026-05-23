@@ -79,6 +79,37 @@ fn list_public_items_omit_auto_derived_impls() {
         .success();
 }
 
+// All three tests should have the same output.
+const FUNCTION_PARAMETER_NAMES_OUTPUT_PATH: &str = "include-function-parameter-names";
+
+#[test]
+fn list_public_items_include_function_parameter_names() {
+    let mut cmd = TestCmd::as_subcommand_without_args().with_test_repo();
+    cmd.arg("--include");
+    cmd.arg("function-parameter-names");
+    cmd.assert()
+        .stdout_with_insta(FUNCTION_PARAMETER_NAMES_OUTPUT_PATH)
+        .success();
+}
+
+#[test]
+fn list_public_items_include_function_parameter_names_with_v() {
+    let mut cmd = TestCmd::as_subcommand_without_args().with_test_repo();
+    cmd.arg("-v"); // Note the verbose flag
+    cmd.assert()
+        .stdout_with_insta(FUNCTION_PARAMETER_NAMES_OUTPUT_PATH)
+        .success();
+}
+
+#[test]
+fn list_public_items_include_function_parameter_names_with_verbose() {
+    let mut cmd = TestCmd::as_subcommand_without_args().with_test_repo();
+    cmd.arg("--verbose"); // Note the verbose flag
+    cmd.assert()
+        .stdout_with_insta(FUNCTION_PARAMETER_NAMES_OUTPUT_PATH)
+        .success();
+}
+
 #[test]
 fn list_public_items_omit_auto_derived_impls_with_double_s() {
     let mut cmd = TestCmd::as_subcommand_without_args().with_test_repo();
@@ -156,7 +187,7 @@ fn renamed_binary_works_as_subcommand() {
     Command::from_std(cmd)
         .assert()
         .stderr(contains(""))
-        .stdout_with_insta("short-help")
+        .stdout_with_insta("help-short")
         .success();
 }
 
@@ -730,7 +761,7 @@ fn deny_removed_with_diff() {
     cmd.arg("--deny=removed");
     cmd.assert()
         .stderr(contains(
-            "The API diff is not allowed as per --deny: Removed items not allowed: [pub fn example_api::function(v1_param: example_api::Struct, v2_param: usize)]",
+            "The API diff is not allowed as per --deny: Removed items not allowed: [pub fn example_api::function(example_api::Struct, usize)]",
         ))
         .failure();
 }
@@ -1033,7 +1064,7 @@ fn debug_processing() {
 fn short_help() {
     let mut cmd = TestCmd::new().with_separate_target_dir();
     cmd.arg("-h");
-    cmd.assert().stdout_with_insta("short-help").success();
+    cmd.assert().stdout_with_insta("help-short").success();
 }
 
 #[test]
@@ -1041,7 +1072,7 @@ fn short_diff_help() {
     let mut cmd = TestCmd::new().with_separate_target_dir();
     cmd.arg("diff");
     cmd.arg("-h");
-    cmd.assert().stdout_with_insta("short-diff-help").success();
+    cmd.assert().stdout_with_insta("help-short-diff").success();
 }
 
 #[test]
@@ -1050,7 +1081,7 @@ fn short_completions_help() {
     cmd.arg("completions");
     cmd.arg("-h");
     cmd.assert()
-        .stdout_with_insta("short-completions-help")
+        .stdout_with_insta("help-short-completions")
         .success();
 }
 
@@ -1058,7 +1089,7 @@ fn short_completions_help() {
 fn long_help() {
     let mut cmd = TestCmd::new();
     cmd.arg("--help");
-    cmd.assert().stdout_with_insta("long-help").success();
+    cmd.assert().stdout_with_insta("help-long").success();
 }
 
 #[test]
@@ -1067,7 +1098,7 @@ fn long_completions_help() {
     cmd.arg("completions");
     cmd.arg("--help");
     cmd.assert()
-        .stdout_with_insta("long-completions-help")
+        .stdout_with_insta("help-long-completions")
         .success();
 }
 
@@ -1076,7 +1107,7 @@ fn long_diff_help() {
     let mut cmd = TestCmd::new();
     cmd.arg("diff");
     cmd.arg("--help");
-    cmd.assert().stdout_with_insta("long-diff-help").success();
+    cmd.assert().stdout_with_insta("help-long-diff").success();
 }
 
 #[test]

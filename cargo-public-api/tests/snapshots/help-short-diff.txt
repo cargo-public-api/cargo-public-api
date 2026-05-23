@@ -13,9 +13,11 @@ Options:
                               option will discard working tree changes during git checkouts of other
                               commits
   -p, --package <PACKAGE>     Name of package in workspace to list or diff the public API for
-  -s, --simplified...         Omit noisy items. Can be used more than once.
-      --omit <OMIT>           Omit specified items [possible values: blanket-impls,
-                              auto-trait-impls, auto-derived-impls]
+      --omit <OMIT>           Omit noisy items [possible values: blanket-impls, auto-trait-impls,
+                              auto-derived-impls]
+  -s, --simplified...         Shorthand for omitting noisy items. Can be used more than once.
+      --include <INCLUDE>     Include extra details [possible values: function-parameter-names]
+  -v, --verbose...            Shorthand for including extra details.
   -F, --features <FEATURES>   Space or comma separated list of features to activate
       --all-features          Activate all available features
       --no-default-features   Do not activate the `default` feature

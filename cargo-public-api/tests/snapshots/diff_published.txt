@@ -1,6 +1,6 @@
 Removed items from the public API
 =================================
--pub fn example_api::function(v1_param: example_api::Struct)
+-pub fn example_api::function(example_api::Struct)
 
 Changed items in the public API
 ===============================

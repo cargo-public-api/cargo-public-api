@@ -72,6 +72,15 @@ pub enum Omit {
     AutoDerivedImpls,
 }
 
+#[derive(Copy, Clone, Debug, Eq, PartialEq, clap::ValueEnum)]
+#[value(rename_all = "kebab-case")]
+pub enum Include {
+    /// Include function parameter names in the output. They are omitted by
+    /// default to avoid spurious API diffs when parameter names change. But
+    /// they can sometimes be helpful to include in the output.
+    FunctionParameterNames,
+}
+
 #[cfg(test)]
 mod tests {
     use super::DenyMethod;

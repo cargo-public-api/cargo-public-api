@@ -17,7 +17,7 @@ jobs:
   # the latest nightly toolchain
   ci:
     permissions:
-      contents: read # For actions/checkout@v4 in CI.yml
+      contents: read # For actions/checkout in CI.yml
     uses: ./.github/workflows/CI.yml
 
   # Create an issue if Nightly CI fails unless there already is such an issue.
@@ -53,7 +53,7 @@ jobs:
     outputs:
       changes-detected: ${{ steps.check-for-changes.outputs.changes-detected }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           persist-credentials: true # Needed for git push below
           token: ${{ secrets.ENSELICCICD_GITHUB_TOKEN }} # for git push

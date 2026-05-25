@@ -32,9 +32,9 @@ jobs:
     name: check version info
     runs-on: ubuntu-latest
     permissions:
-      contents: read # For actions/checkout@v4
+      contents: read # For actions/checkout
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
       - run: cargo run --bin update-version-info
@@ -45,9 +45,9 @@ jobs:
     name: lint
     runs-on: ubuntu-latest
     permissions:
-      contents: read # For actions/checkout@v4
+      contents: read # For actions/checkout
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
       - run: rustup install nightly --profile minimal
@@ -73,9 +73,9 @@ jobs:
     name: cargo test (${{ matrix.variant.name }})
     runs-on: ${{ matrix.variant.os }}
     permissions:
-      contents: read # For actions/checkout@v4
+      contents: read # For actions/checkout
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
       - run: zsh --version || (sudo apt-get install -y zsh && zsh --version)

@@ -12,7 +12,7 @@ env:
 jobs:
   ci:
     permissions:
-      contents: read # For actions/checkout@v4 in CI.yml
+      contents: read # For actions/checkout in CI.yml
     uses: ./.github/workflows/CI.yml
 
   release:
@@ -25,7 +25,7 @@ jobs:
       contents: write # git push
       id-token: write # https://crates.io/docs/trusted-publishing
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           persist-credentials: true # Needed for git push below
       - uses: rust-lang/crates-io-auth-action@v1

@@ -1,5 +1,8 @@
 # `public-api` changelog
 
+## v0.52.1
+* Re-export `rustdoc-types` under the feature `experimental-feature-that-can-be-removed-in-a-patch-release_re-export-rustdoc-types`.
+
 ## v0.52.0
 * Stop including function parameter names by default in the output. This avoids issues where renaming parameters shows up as API diffs.  This is especially relevant for trait impls, where fn parameter names are often `_`-prefixed.
 

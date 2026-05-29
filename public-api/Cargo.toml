@@ -13,6 +13,8 @@ repository = "https://github.com/cargo-public-api/cargo-public-api/tree/main/pub
 [features]
 default = ["snapshot-testing"]
 snapshot-testing = ["dep:snapshot-testing"]
+experimental-feature-that-can-be-removed-in-a-patch-release_re-export-rustdoc-types = [
+]
 
 [dependencies]
 hashbag = { version = "0.1.13", default-features = false }

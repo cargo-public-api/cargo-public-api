@@ -34,6 +34,11 @@
 // deny in CI, only warn here
 #![warn(missing_docs)]
 
+#[cfg(
+    feature = "experimental-feature-that-can-be-removed-in-a-patch-release_re-export-rustdoc-types"
+)]
+pub use rustdoc_types;
+
 mod crate_wrapper;
 mod error;
 mod intermediate_public_item;

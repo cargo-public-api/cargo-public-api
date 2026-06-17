@@ -43,7 +43,7 @@ snapshot-testing = "0.1.8"
 tempfile = "3.19.1"
 
 [dev-dependencies.itertools]
-version = "0.14.0"
+version = "0.15.0"
 default-features = false
 
 [dev-dependencies.rustdoc-json]

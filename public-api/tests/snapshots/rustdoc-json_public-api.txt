@@ -6,14 +6,14 @@ pub rustdoc_json::BuildError::CargoManifestError(cargo_manifest::error::Error)
 pub rustdoc_json::BuildError::CargoMetadataError(cargo_metadata::errors::Error)
 pub rustdoc_json::BuildError::CommandExecutionError(alloc::string::String)
 pub rustdoc_json::BuildError::General(alloc::string::String)
-pub rustdoc_json::BuildError::IoError(std::io::error::Error)
+pub rustdoc_json::BuildError::IoError(core::io::error::Error)
 pub rustdoc_json::BuildError::VirtualManifest(std::path::PathBuf)
 impl core::convert::From<cargo_manifest::error::Error> for rustdoc_json::BuildError
 pub fn rustdoc_json::BuildError::from(cargo_manifest::error::Error) -> Self
 impl core::convert::From<cargo_metadata::errors::Error> for rustdoc_json::BuildError
 pub fn rustdoc_json::BuildError::from(cargo_metadata::errors::Error) -> Self
-impl core::convert::From<std::io::error::Error> for rustdoc_json::BuildError
-pub fn rustdoc_json::BuildError::from(std::io::error::Error) -> Self
+impl core::convert::From<core::io::error::Error> for rustdoc_json::BuildError
+pub fn rustdoc_json::BuildError::from(core::io::error::Error) -> Self
 impl core::error::Error for rustdoc_json::BuildError
 pub fn rustdoc_json::BuildError::source(&self) -> core::option::Option<&(dyn core::error::Error + 'static)>
 impl core::fmt::Debug for rustdoc_json::BuildError

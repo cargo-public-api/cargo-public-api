@@ -1,10 +1,10 @@
 pub mod rustup_toolchain
 #[non_exhaustive] pub enum rustup_toolchain::Error
-pub rustup_toolchain::Error::IoError(std::io::error::Error)
+pub rustup_toolchain::Error::IoError(core::io::error::Error)
 pub rustup_toolchain::Error::RustupToolchainInstallError
 pub rustup_toolchain::Error::StdSyncPoisonError
-impl core::convert::From<std::io::error::Error> for rustup_toolchain::Error
-pub fn rustup_toolchain::Error::from(std::io::error::Error) -> Self
+impl core::convert::From<core::io::error::Error> for rustup_toolchain::Error
+pub fn rustup_toolchain::Error::from(core::io::error::Error) -> Self
 impl core::error::Error for rustup_toolchain::Error
 pub fn rustup_toolchain::Error::source(&self) -> core::option::Option<&(dyn core::error::Error + 'static)>
 impl core::fmt::Debug for rustup_toolchain::Error

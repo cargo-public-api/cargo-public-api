@@ -82,12 +82,12 @@ impl core::marker::UnsafeUnpin for public_api::tokens::Token
 impl core::panic::unwind_safe::RefUnwindSafe for public_api::tokens::Token
 impl core::panic::unwind_safe::UnwindSafe for public_api::tokens::Token
 #[non_exhaustive] pub enum public_api::Error
-pub public_api::Error::IoError(std::io::error::Error)
+pub public_api::Error::IoError(core::io::error::Error)
 pub public_api::Error::SerdeJsonError(serde_json::error::Error)
+impl core::convert::From<core::io::error::Error> for public_api::Error
+pub fn public_api::Error::from(core::io::error::Error) -> Self
 impl core::convert::From<serde_json::error::Error> for public_api::Error
 pub fn public_api::Error::from(serde_json::error::Error) -> Self
-impl core::convert::From<std::io::error::Error> for public_api::Error
-pub fn public_api::Error::from(std::io::error::Error) -> Self
 impl core::error::Error for public_api::Error
 pub fn public_api::Error::source(&self) -> core::option::Option<&(dyn core::error::Error + 'static)>
 impl core::fmt::Debug for public_api::Error

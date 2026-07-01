@@ -33,7 +33,7 @@ version = "0.1.8"
 optional = true
 
 [dependencies.rustdoc-types]
-version = "0.59.0"
+version = "0.60.0"
 
 [dev-dependencies]
 anyhow = "1.0.75"

@@ -26,11 +26,11 @@ cargo clippy \
 
 source ./scripts/utils.sh
 
-if if_command_exists_or_in_ci cargo-audit; then
+if if_command_exists_or_in_ci_but_not_nightly cargo-audit; then
     cargo audit --deny warnings
 fi
 
-if if_command_exists_or_in_ci cargo-deny; then
+if if_command_exists_or_in_ci_but_not_nightly cargo-deny; then
     cargo deny check
 fi
 

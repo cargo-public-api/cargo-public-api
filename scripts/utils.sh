@@ -12,3 +12,17 @@ if_command_exists_or_in_ci() {
         return 1
     fi
 }
+
+# Tools like 'cargo audit' tend to give too many false positives for us. Don't
+# run them in Nightly CI to avoid annoying flakiness. Still run them for PRs and
+# releases however.
+if_command_exists_or_in_ci_but_not_nightly() {
+    command="$1"
+
+    if [ "${NIGHTLY_CI:-}" = "true" ]; then
+        echo "INFO: Not running \`$command\` because NIGHTLY_CI=true"
+        return 1
+    fi
+
+    if_command_exists_or_in_ci "$command"
+}

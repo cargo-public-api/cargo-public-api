@@ -4,6 +4,12 @@ permissions:
 
 on:
   workflow_call: # From .github/workflows/Release-*.yml, .github/workflows/Nightly.yml
+    inputs:
+      nightly-ci:
+        description: true if called from .github/workflows/Nightly.yml
+        type: boolean
+        default: false
+        required: false
   workflow_dispatch:
   pull_request:
   merge_group:
@@ -60,6 +66,8 @@ jobs:
       - run: lint_toolchain=1.95 ; rustup install $lint_toolchain --profile default && rustup default $lint_toolchain
       - run: cargo version --verbose # Make it easier to debug version-specific issues
       - run: ./scripts/lint.sh
+        env:
+          NIGHTLY_CI: ${{ inputs.nightly-ci }}
 
   cargo-test:
     strategy:

@@ -93,12 +93,12 @@ pub fn comprehensive_api::exports::v1::foo2()
 pub mod comprehensive_api::functions
 pub async fn comprehensive_api::functions::async_fn()
 pub async fn comprehensive_api::functions::async_fn_ret_bool() -> bool
-pub fn comprehensive_api::functions::box_dyn_arg_two_traits(alloc::boxed::Box<(dyn std::io::Write + core::marker::Send)>)
+pub fn comprehensive_api::functions::box_dyn_arg_two_traits(alloc::boxed::Box<(dyn core::io::write::Write + core::marker::Send)>)
 pub const fn comprehensive_api::functions::const_fn()
-pub fn comprehensive_api::functions::dyn_arg_one_trait(&dyn std::io::Write)
-pub fn comprehensive_api::functions::dyn_arg_one_trait_one_lifetime(&(dyn std::io::Write + 'static))
-pub fn comprehensive_api::functions::dyn_arg_two_traits(&(dyn std::io::Write + core::marker::Send))
-pub fn comprehensive_api::functions::dyn_arg_two_traits_one_lifetime(&(dyn std::io::Write + core::marker::Send + 'static))
+pub fn comprehensive_api::functions::dyn_arg_one_trait(&dyn core::io::write::Write)
+pub fn comprehensive_api::functions::dyn_arg_one_trait_one_lifetime(&(dyn core::io::write::Write + 'static))
+pub fn comprehensive_api::functions::dyn_arg_two_traits(&(dyn core::io::write::Write + core::marker::Send))
+pub fn comprehensive_api::functions::dyn_arg_two_traits_one_lifetime(&(dyn core::io::write::Write + core::marker::Send + 'static))
 pub fn comprehensive_api::functions::fn_arg(impl core::ops::function::Fn(bool, comprehensive_api::structs::Plain) -> bool, impl core::ops::function::FnMut())
 pub fn comprehensive_api::functions::generic_arg<T>(T) -> T
 pub fn comprehensive_api::functions::generic_bound<T: core::marker::Sized>(T) -> T

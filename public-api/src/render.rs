@@ -433,7 +433,7 @@ impl<'c> RenderingContext<'c> {
         }
 
         let mut sorted_traits = dyn_trait.traits.clone();
-        sorted_traits.sort_by_key(|t| {
+        sorted_traits.sort_by_cached_key(|t| {
             self.render_poly_trait(t)
                 .iter()
                 .map(|token| token.text().to_owned())

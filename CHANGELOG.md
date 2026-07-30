@@ -1,6 +1,6 @@
 # `cargo-public-api` changelog
 
-## Unreleased
+## v0.53.0
 * Sort traits in `dyn` bounds so that rendering is stable and does not change with rustdoc JSON changes.
 
 ## v0.52.0

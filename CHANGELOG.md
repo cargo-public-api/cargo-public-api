@@ -1,7 +1,7 @@
 # `cargo-public-api` changelog
 
 ## Unreleased
-* Sort traits in `dyn Trait1 + Trait2` bounds so that rendering is stable and does not produce false positives when the order changes across rustdoc JSON runs. Fixes [#907](https://github.com/cargo-public-api/cargo-public-api/issues/907).
+* Sort traits in `dyn` bounds so that rendering is stable and does not change with rustdoc JSON changes.
 
 ## v0.52.0
 * Stop including function parameter names by default in the output. This avoids issues where

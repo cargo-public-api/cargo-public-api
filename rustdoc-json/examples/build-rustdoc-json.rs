@@ -8,7 +8,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .toolchain("nightly")
         .manifest_path(std::env::args().nth(1).unwrap())
         .build()?;
-    println!("Built and wrote rustdoc JSON to {:?}", &json_path);
+    println!("Built and wrote rustdoc JSON to {:?}", json_path);
 
     // Show it
     show_json(&json_path)?;

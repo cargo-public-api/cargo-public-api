@@ -30,7 +30,7 @@ pub fn git_checkout(git_root: &Path, commit: &str, quiet: bool, force: bool) -> 
 
 /// Goes up the chain of parents and looks for a `.git` dir.
 pub fn git_root_from_manifest_path(manifest_path: &Path) -> Result<PathBuf> {
-    let err_fn = || anyhow!("No `.git` dir when starting from `{:?}`.", &manifest_path);
+    let err_fn = || anyhow!("No `.git` dir when starting from `{:?}`.", manifest_path);
     let start = std::fs::canonicalize(manifest_path).with_context(err_fn)?;
     let mut candidate_opt = start.parent();
     while let Some(candidate) = candidate_opt {

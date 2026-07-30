@@ -432,26 +432,13 @@ impl<'c> RenderingContext<'c> {
             output.push(Token::symbol("("));
         }
 
-        let mut rendered_traits: Vec<Vec<Token>> = dyn_trait
-            .traits
-            .iter()
-            .map(|t| self.render_poly_trait(t))
-            .collect();
-        rendered_traits.sort_by(|a, b| {
-            let a_text: String = a.iter().map(|t| t.text()).collect();
-            let b_text: String = b.iter().map(|t| t.text()).collect();
-            a_text.cmp(&b_text)
-        });
-
-        if !rendered_traits.is_empty() {
-            output.extend([Token::keyword("dyn"), ws!()]);
-            for (i, tokens) in rendered_traits.into_iter().enumerate() {
-                if i > 0 {
-                    output.extend(plus());
-                }
-                output.extend(tokens);
-            }
-        }
+        output.extend(self.render_sequence_if_not_empty(
+            vec![Token::keyword("dyn"), ws!()],
+            vec![],
+            plus(),
+            &dyn_trait.traits,
+            |p| self.render_poly_trait(p),
+        ));
 
         if let Some(lt) = &dyn_trait.lifetime {
             output.extend(plus());

@@ -762,7 +762,7 @@ impl<'c> RenderingContext<'c> {
                 self.render_parenthesized(inputs, output)
             }
             GenericArgs::ReturnTypeNotation => todo!(
-                "can this be triggred in stable rust? if so please report to https://github.com/cargo-public-api/cargo-public-api/issues and include a minimal reproducer"
+                "can this be triggered in stable rust? if so please report to https://github.com/cargo-public-api/cargo-public-api/issues and include a minimal reproducer"
             ),
         }
     }

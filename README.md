@@ -109,7 +109,7 @@ Before you run the test the first time you need create a snapshot of the current
 UPDATE_SNAPSHOTS=yes cargo test
 ```
 
-This creates a `tests/public-api.txt` file in your project that you `git add` together with your other project files. Then a regular
+This creates a `./tests/snapshots/public-api.txt` file in your project that you `git add` together with your other project files. Then a regular
 
 ```sh
 cargo test

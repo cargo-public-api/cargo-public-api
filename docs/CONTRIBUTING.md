@@ -37,7 +37,7 @@ UPDATE_SNAPSHOTS=yes ./scripts/cargo-test.sh
 
 Output aims to mostly be character-by-character identical to the textual parts of the regular `cargo doc` HTML output, with the following exceptions:
 
-* **Names of function parameters are not included by default**. Renaming a parameter rarely constitutes a breaking change, and it avoid issues like [Ignore `_`-prefixes of parameter names of trait `impl`s `fn`s](https://github.com/cargo-public-api/cargo-public-api/issues/766).
+* **Names of function parameters are not included by default**. Renaming a parameter rarely constitutes a breaking change, and it avoids issues like [Ignore `_`-prefixes of parameter names of trait `impl`s `fn`s](https://github.com/cargo-public-api/cargo-public-api/issues/766).
 
 For example, [this item](https://docs.rs/bat/0.20.0/bat/struct.PrettyPrinter.html#method.input_files) has the following textual representation in the rendered HTML:
 

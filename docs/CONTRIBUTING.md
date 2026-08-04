@@ -126,6 +126,8 @@ Once all of the above commands completes successfully, the upgrade is usually co
 
 All features and bugfixes needs automated tests. The only way to make sure no regressions creep in in software that is constantly changed, is to test for it. But manually testing quickly becomes unmanageable. Therefore, automated tests are needed.
 
+Avoid unit tests. They make refactorings more labour-intensive. What matters is our various public APIs, so extend the existing public API test suites instead.
+
 # Maintainer guidelines
 
 Please see [MAINTAINER.md](./MAINTAINER.md).

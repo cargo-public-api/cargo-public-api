@@ -1,5 +1,8 @@
 # `public-api` changelog
 
+## v0.53.0
+* Sort trait object bounds (`dyn Foo + Send + Sync`) so that rendering is stable and we avoid spurious public API diffs.
+
 ## v0.52.1
 * Re-export `rustdoc-types` under the feature `experimental-feature-that-can-be-removed-in-a-patch-release_re-export-rustdoc-types`.
 

@@ -1,5 +1,8 @@
 # `cargo-public-api` changelog
 
+## v0.53.0
+* Sort trait object bounds (`dyn Foo + Send + Sync`) so that rendering is stable and we avoid spurious public API diffs.
+
 ## v0.52.0
 * Stop including function parameter names by default in the output. This avoids issues where
   renaming parameters shows up as API diffs. This is especially relevant for trait impls, where fn

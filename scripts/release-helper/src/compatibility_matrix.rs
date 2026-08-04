@@ -11,7 +11,7 @@ pub fn render(
     max_months_back: Option<i64>,
 ) -> String {
     /// Same as ['CargoPublicApiVersionInfo'] but easier to manipulate
-    /// programatically.
+    /// programmatically.
     struct InternalCargoPublicApiVersionInfo {
         cargo_public_api_minor_version: u32,
         min_nightly_rust_version: Date,

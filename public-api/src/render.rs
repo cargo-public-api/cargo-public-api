@@ -427,6 +427,11 @@ impl<'c> RenderingContext<'c> {
     fn render_dyn_trait(&self, dyn_trait: &rustdoc_types::DynTrait) -> Vec<Token> {
         let mut output = vec![];
 
+        let mut sorted_traits: Vec<_> = dyn_trait.traits.iter().collect();
+        // Sorting on `path` is maybe not ideal, since it isn't always absolute,
+        // but it will have to do for now.
+        sorted_traits.sort_by_key(|poly_trait| &poly_trait.trait_.path);
+
         let more_than_one = dyn_trait.traits.len() > 1 || dyn_trait.lifetime.is_some();
         if more_than_one {
             output.push(Token::symbol("("));
@@ -436,8 +441,8 @@ impl<'c> RenderingContext<'c> {
             vec![Token::keyword("dyn"), ws!()],
             vec![],
             plus(),
-            &dyn_trait.traits,
-            |p| self.render_poly_trait(p),
+            &sorted_traits,
+            |poly_trait| self.render_poly_trait(poly_trait),
         ));
 
         if let Some(lt) = &dyn_trait.lifetime {

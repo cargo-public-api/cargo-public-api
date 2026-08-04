@@ -113,6 +113,9 @@ pub fn dyn_arg_two_traits(d: &(dyn std::io::Write + Send)) {}
 
 pub fn dyn_arg_two_traits_one_lifetime(d: &(dyn std::io::Write + Send + 'static)) {}
 
+/// Keep trait order unsorted here to test that they are rendered sorted.
+pub fn dyn_arg_three_traits_unsorted(d: &(dyn std::io::Write + Sync + Send)) {}
+
 pub fn box_dyn_arg_two_traits(d: Box<dyn std::io::Write + Send>) {}
 
 pub unsafe fn unsafe_fn() {}

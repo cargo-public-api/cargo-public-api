@@ -1,5 +1,8 @@
 # `public-api` changelog
 
+## v0.53.0
+* Sort traits in `dyn` bounds so that rendering is stable and does not change with rustdoc JSON changes.
+
 ## v0.52.1
 * Re-export `rustdoc-types` under the feature `experimental-feature-that-can-be-removed-in-a-patch-release_re-export-rustdoc-types`.
 

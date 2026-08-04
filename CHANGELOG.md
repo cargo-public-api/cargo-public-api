@@ -1,5 +1,8 @@
 # `cargo-public-api` changelog
 
+## v0.53.0
+* Sort traits in `dyn` bounds so that rendering is stable and does not change with rustdoc JSON changes.
+
 ## v0.52.0
 * Stop including function parameter names by default in the output. This avoids issues where
   renaming parameters shows up as API diffs. This is especially relevant for trait impls, where fn

@@ -432,11 +432,19 @@ impl<'c> RenderingContext<'c> {
             output.push(Token::symbol("("));
         }
 
+        let mut sorted_traits = dyn_trait.traits.clone();
+        sorted_traits.sort_by_cached_key(|t| {
+            self.render_poly_trait(t)
+                .iter()
+                .map(|token| token.text().to_owned())
+                .collect::<String>()
+        });
+
         output.extend(self.render_sequence_if_not_empty(
             vec![Token::keyword("dyn"), ws!()],
             vec![],
             plus(),
-            &dyn_trait.traits,
+            &sorted_traits,
             |p| self.render_poly_trait(p),
         ));
 

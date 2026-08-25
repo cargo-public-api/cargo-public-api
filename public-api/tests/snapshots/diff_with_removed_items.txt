@@ -13,7 +13,7 @@ PublicApiDiff {
         impl<T, U> core::convert::Into<U> for example_api::StructV2 where U: core::convert::From<T>,
         pub fn example_api::StructV2::into(self) -> U,
         impl<T, U> core::convert::TryFrom<U> for example_api::StructV2 where U: core::convert::Into<T>,
-        pub type example_api::StructV2::Error = core::convert::Infallible,
+        pub type example_api::StructV2::Error = never,
         pub fn example_api::StructV2::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>,
         impl<T, U> core::convert::TryInto<U> for example_api::StructV2 where U: core::convert::TryFrom<T>,
         pub type example_api::StructV2::Error = <U as core::convert::TryFrom<T>>::Error,

@@ -21,7 +21,7 @@ impl !core::panic::unwind_safe::UnwindSafe for rustup_toolchain::Error
 impl<T, U> core::convert::Into<U> for rustup_toolchain::Error where U: core::convert::From<T>
 pub fn rustup_toolchain::Error::into(self) -> U
 impl<T, U> core::convert::TryFrom<U> for rustup_toolchain::Error where U: core::convert::Into<T>
-pub type rustup_toolchain::Error::Error = core::convert::Infallible
+pub type rustup_toolchain::Error::Error = never
 pub fn rustup_toolchain::Error::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
 impl<T, U> core::convert::TryInto<U> for rustup_toolchain::Error where U: core::convert::TryFrom<T>
 pub type rustup_toolchain::Error::Error = <U as core::convert::TryFrom<T>>::Error

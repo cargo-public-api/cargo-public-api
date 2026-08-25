@@ -23,7 +23,7 @@ impl core::panic::unwind_safe::UnwindSafe for public_api::diff::ChangedPublicIte
 impl<T, U> core::convert::Into<U> for public_api::diff::ChangedPublicItem where U: core::convert::From<T>
 pub fn public_api::diff::ChangedPublicItem::into(self) -> U
 impl<T, U> core::convert::TryFrom<U> for public_api::diff::ChangedPublicItem where U: core::convert::Into<T>
-pub type public_api::diff::ChangedPublicItem::Error = core::convert::Infallible
+pub type public_api::diff::ChangedPublicItem::Error = never
 pub fn public_api::diff::ChangedPublicItem::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
 impl<T, U> core::convert::TryInto<U> for public_api::diff::ChangedPublicItem where U: core::convert::TryFrom<T>
 pub type public_api::diff::ChangedPublicItem::Error = <U as core::convert::TryFrom<T>>::Error
@@ -67,7 +67,7 @@ impl core::panic::unwind_safe::UnwindSafe for public_api::diff::PublicApiDiff
 impl<T, U> core::convert::Into<U> for public_api::diff::PublicApiDiff where U: core::convert::From<T>
 pub fn public_api::diff::PublicApiDiff::into(self) -> U
 impl<T, U> core::convert::TryFrom<U> for public_api::diff::PublicApiDiff where U: core::convert::Into<T>
-pub type public_api::diff::PublicApiDiff::Error = core::convert::Infallible
+pub type public_api::diff::PublicApiDiff::Error = never
 pub fn public_api::diff::PublicApiDiff::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
 impl<T, U> core::convert::TryInto<U> for public_api::diff::PublicApiDiff where U: core::convert::TryFrom<T>
 pub type public_api::diff::PublicApiDiff::Error = <U as core::convert::TryFrom<T>>::Error
@@ -128,7 +128,7 @@ impl core::panic::unwind_safe::UnwindSafe for public_api::tokens::Token
 impl<T, U> core::convert::Into<U> for public_api::tokens::Token where U: core::convert::From<T>
 pub fn public_api::tokens::Token::into(self) -> U
 impl<T, U> core::convert::TryFrom<U> for public_api::tokens::Token where U: core::convert::Into<T>
-pub type public_api::tokens::Token::Error = core::convert::Infallible
+pub type public_api::tokens::Token::Error = never
 pub fn public_api::tokens::Token::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
 impl<T, U> core::convert::TryInto<U> for public_api::tokens::Token where U: core::convert::TryFrom<T>
 pub type public_api::tokens::Token::Error = <U as core::convert::TryFrom<T>>::Error
@@ -170,7 +170,7 @@ impl !core::panic::unwind_safe::UnwindSafe for public_api::Error
 impl<T, U> core::convert::Into<U> for public_api::Error where U: core::convert::From<T>
 pub fn public_api::Error::into(self) -> U
 impl<T, U> core::convert::TryFrom<U> for public_api::Error where U: core::convert::Into<T>
-pub type public_api::Error::Error = core::convert::Infallible
+pub type public_api::Error::Error = never
 pub fn public_api::Error::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
 impl<T, U> core::convert::TryInto<U> for public_api::Error where U: core::convert::TryFrom<T>
 pub type public_api::Error::Error = <U as core::convert::TryFrom<T>>::Error
@@ -209,7 +209,7 @@ impl core::panic::unwind_safe::UnwindSafe for public_api::Builder
 impl<T, U> core::convert::Into<U> for public_api::Builder where U: core::convert::From<T>
 pub fn public_api::Builder::into(self) -> U
 impl<T, U> core::convert::TryFrom<U> for public_api::Builder where U: core::convert::Into<T>
-pub type public_api::Builder::Error = core::convert::Infallible
+pub type public_api::Builder::Error = never
 pub fn public_api::Builder::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
 impl<T, U> core::convert::TryInto<U> for public_api::Builder where U: core::convert::TryFrom<T>
 pub type public_api::Builder::Error = <U as core::convert::TryFrom<T>>::Error
@@ -248,7 +248,7 @@ impl core::panic::unwind_safe::UnwindSafe for public_api::PublicApi
 impl<T, U> core::convert::Into<U> for public_api::PublicApi where U: core::convert::From<T>
 pub fn public_api::PublicApi::into(self) -> U
 impl<T, U> core::convert::TryFrom<U> for public_api::PublicApi where U: core::convert::Into<T>
-pub type public_api::PublicApi::Error = core::convert::Infallible
+pub type public_api::PublicApi::Error = never
 pub fn public_api::PublicApi::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
 impl<T, U> core::convert::TryInto<U> for public_api::PublicApi where U: core::convert::TryFrom<T>
 pub type public_api::PublicApi::Error = <U as core::convert::TryFrom<T>>::Error
@@ -290,7 +290,7 @@ impl core::panic::unwind_safe::UnwindSafe for public_api::PublicItem
 impl<T, U> core::convert::Into<U> for public_api::PublicItem where U: core::convert::From<T>
 pub fn public_api::PublicItem::into(self) -> U
 impl<T, U> core::convert::TryFrom<U> for public_api::PublicItem where U: core::convert::Into<T>
-pub type public_api::PublicItem::Error = core::convert::Infallible
+pub type public_api::PublicItem::Error = never
 pub fn public_api::PublicItem::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
 impl<T, U> core::convert::TryInto<U> for public_api::PublicItem where U: core::convert::TryFrom<T>
 pub type public_api::PublicItem::Error = <U as core::convert::TryFrom<T>>::Error

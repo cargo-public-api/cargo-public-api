@@ -1,5 +1,8 @@
 # `cargo-public-api` changelog
 
+## v0.53.0
+* Sort trait object bounds (`dyn Foo + Send + Sync`) so that rendering is stable and we avoid spurious public API diffs.
+
 ## v0.52.0
 * Stop including function parameter names by default in the output. This avoids issues where
   renaming parameters shows up as API diffs. This is especially relevant for trait impls, where fn
@@ -11,7 +14,7 @@
 
 ## v0.51.0
 * Also include default trait methods in impls, even if not overridden, just like in rustdoc HTML.
-* Sort rendered attributes so rendering is determinstic and does not change with rustdoc JSON changes.
+* Sort rendered attributes so rendering is deterministic and does not change with rustdoc JSON changes.
 
 ## v0.50.2
 * Bump deps (to stop using deprecated `assert_cmd::Command::cargo_bin()` in tests).

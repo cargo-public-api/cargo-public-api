@@ -1,5 +1,8 @@
 # `public-api` changelog
 
+## v0.53.0
+* Sort trait object bounds (`dyn Foo + Send + Sync`) so that rendering is stable and we avoid spurious public API diffs.
+
 ## v0.52.1
 * Re-export `rustdoc-types` under the feature `experimental-feature-that-can-be-removed-in-a-patch-release_re-export-rustdoc-types`.
 
@@ -13,7 +16,7 @@
 * Also include default trait methods in impls, even if not overridden, just like in rustdoc HTML.
 
 ## v0.50.3
-* Sort rendered attributes so rendering is determinstic and does not change with rustdoc JSON changes.
+* Sort rendered attributes so rendering is deterministic and does not change with rustdoc JSON changes.
 
 ## v0.50.2
 * Bump deps (to stop using deprecated `assert_cmd::Command::cargo_bin()` in tests).

@@ -312,3 +312,35 @@ fn deserialize_without_recursion_limit(rustdoc_json_str: &str) -> Result<rustdoc
     deserializer.disable_recursion_limit();
     Ok(serde::de::Deserialize::deserialize(&mut deserializer)?)
 }
+
+#[cfg(test)]
+mod tests {
+    use std::path::Path;
+
+    use super::MINIMUM_NIGHTLY_RUST_VERSION;
+
+    /// The toolchain named by [`MINIMUM_NIGHTLY_RUST_VERSION`] must produce
+    /// rustdoc JSON that this version of the library can parse.
+    #[test]
+    fn minimum_nightly_rust_version_produces_parsable_rustdoc_json() {
+        rustup_toolchain::install(MINIMUM_NIGHTLY_RUST_VERSION).unwrap();
+
+        let build_dir = tempfile::tempdir().unwrap();
+
+        let rustdoc_json = rustdoc_json::Builder::default()
+            .manifest_path(Path::new("../test-apis/comprehensive_api/Cargo.toml"))
+            .toolchain(MINIMUM_NIGHTLY_RUST_VERSION)
+            .target_dir(build_dir.path())
+            .quiet(true)
+            .build()
+            .unwrap();
+
+        if let Err(e) = crate::Builder::from_rustdoc_json(&rustdoc_json).build() {
+            panic!(
+                "rustdoc JSON built with `MINIMUM_NIGHTLY_RUST_VERSION` \
+                 (`{MINIMUM_NIGHTLY_RUST_VERSION}`) cannot be parsed by this version of \
+                 `public-api`: {e}"
+            );
+        }
+    }
+}

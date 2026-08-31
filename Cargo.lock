@@ -913,6 +913,7 @@ dependencies = [
  "pretty_assertions",
  "rustdoc-json",
  "rustdoc-types",
+ "rustup-toolchain",
  "serde",
  "serde_json",
  "snapshot-testing",

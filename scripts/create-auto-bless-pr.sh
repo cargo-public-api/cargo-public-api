@@ -8,10 +8,9 @@ branch_name="auto-bless/$nightly_version"
 git checkout \
     -b "$branch_name"
 
-# Update MINIMUM_NIGHTLY_RUST_VERSION_FOR_TESTS and then commit all changes.
+# Commit all changes.
 git config user.name "Martin Nordholts CI/CD"
 git config user.email "104096785+EnselicCICD@users.noreply.github.com"
-echo $nightly_version >cargo-public-api/MINIMUM_NIGHTLY_RUST_VERSION_FOR_TESTS
 git add .
 git commit --message "Bless \`$nightly_version\` output
 

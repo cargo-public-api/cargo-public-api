@@ -780,10 +780,7 @@ fn diff_public_items_with_manifest_path() {
     let test_repo = TestRepo::new();
     let mut cmd = TestCmd::new();
     cmd.arg("--manifest-path");
-    cmd.arg(format!(
-        "{}/Cargo.toml",
-        &test_repo.path().to_string_lossy()
-    ));
+    cmd.arg(format!("{}/Cargo.toml", test_repo.path().to_string_lossy()));
     cmd.arg("diff");
     cmd.arg("v0.2.0..v0.3.0");
     cmd.assert()

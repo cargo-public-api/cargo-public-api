@@ -400,7 +400,7 @@ fn minimal_toolchain_works() {
     ]);
 
     cmd.assert()
-        .stdout_with_insta("comprehensive_api")
+        .stdout_with_insta("comprehensive_api_minimum_nightly_rust_version")
         .success();
 }
 

@@ -10,7 +10,7 @@ Install the `cargo public-api` subcommand with a recent regular **stable** Rust 
 cargo +stable install cargo-public-api
 ```
 
-Ensure **nightly-2025-08-02** or later is installed (does not need to be the active toolchain) so `cargo public-api` can build rustdoc JSON for you:
+Ensure **nightly-2025-11-22** or later is installed (does not need to be the active toolchain) so `cargo public-api` can build rustdoc JSON for you:
 
 ```sh
 rustup install nightly --profile minimal
@@ -153,12 +153,12 @@ cargo public-api -sss
 
 | Version          | Understands the rustdoc JSON output of  |
 | ---------------- | --------------------------------------- |
-| 0.50.x — 0.52.x  | nightly-2025-08-02 —                    |
+| 0.52.x           | nightly-2025-11-22 —                    |
+| 0.50.x — 0.51.x  | nightly-2025-08-02 — nightly-2025-11-21 |
 | 0.49.x           | nightly-2025-07-17 — nightly-2025-08-01 |
 | 0.48.x           | nightly-2025-06-22 — nightly-2025-07-16 |
 | 0.47.x           | nightly-2025-03-24 — nightly-2025-06-21 |
 | 0.46.x           | nightly-2025-03-16 — nightly-2025-03-23 |
-| 0.45.x           | nightly-2025-03-14 — nightly-2025-03-15 |
 | earlier versions | see [here](https://github.com/cargo-public-api/cargo-public-api/blob/main/scripts/release-helper/src/version_info.rs) |
 
 # Contributing

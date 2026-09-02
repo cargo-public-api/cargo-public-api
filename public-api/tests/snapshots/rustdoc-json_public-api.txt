@@ -31,7 +31,7 @@ impl<T, U> core::convert::Into<U> for rustdoc_json::BuildError where U: core::co
 pub fn rustdoc_json::BuildError::into(self) -> U
 impl<T, U> core::convert::TryFrom<U> for rustdoc_json::BuildError where U: core::convert::Into<T>
 pub type rustdoc_json::BuildError::Error = never
-pub fn rustdoc_json::BuildError::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+pub fn rustdoc_json::BuildError::try_from(U) -> core::result::Result<T, never>
 impl<T, U> core::convert::TryInto<U> for rustdoc_json::BuildError where U: core::convert::TryFrom<T>
 pub type rustdoc_json::BuildError::Error = <U as core::convert::TryFrom<T>>::Error
 pub fn rustdoc_json::BuildError::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
@@ -67,7 +67,7 @@ impl<T, U> core::convert::Into<U> for rustdoc_json::Color where U: core::convert
 pub fn rustdoc_json::Color::into(self) -> U
 impl<T, U> core::convert::TryFrom<U> for rustdoc_json::Color where U: core::convert::Into<T>
 pub type rustdoc_json::Color::Error = never
-pub fn rustdoc_json::Color::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+pub fn rustdoc_json::Color::try_from(U) -> core::result::Result<T, never>
 impl<T, U> core::convert::TryInto<U> for rustdoc_json::Color where U: core::convert::TryFrom<T>
 pub type rustdoc_json::Color::Error = <U as core::convert::TryFrom<T>>::Error
 pub fn rustdoc_json::Color::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
@@ -110,7 +110,7 @@ impl<T, U> core::convert::Into<U> for rustdoc_json::PackageTarget where U: core:
 pub fn rustdoc_json::PackageTarget::into(self) -> U
 impl<T, U> core::convert::TryFrom<U> for rustdoc_json::PackageTarget where U: core::convert::Into<T>
 pub type rustdoc_json::PackageTarget::Error = never
-pub fn rustdoc_json::PackageTarget::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+pub fn rustdoc_json::PackageTarget::try_from(U) -> core::result::Result<T, never>
 impl<T, U> core::convert::TryInto<U> for rustdoc_json::PackageTarget where U: core::convert::TryFrom<T>
 pub type rustdoc_json::PackageTarget::Error = <U as core::convert::TryFrom<T>>::Error
 pub fn rustdoc_json::PackageTarget::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
@@ -168,7 +168,7 @@ impl<T, U> core::convert::Into<U> for rustdoc_json::Builder where U: core::conve
 pub fn rustdoc_json::Builder::into(self) -> U
 impl<T, U> core::convert::TryFrom<U> for rustdoc_json::Builder where U: core::convert::Into<T>
 pub type rustdoc_json::Builder::Error = never
-pub fn rustdoc_json::Builder::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+pub fn rustdoc_json::Builder::try_from(U) -> core::result::Result<T, never>
 impl<T, U> core::convert::TryInto<U> for rustdoc_json::Builder where U: core::convert::TryFrom<T>
 pub type rustdoc_json::Builder::Error = <U as core::convert::TryFrom<T>>::Error
 pub fn rustdoc_json::Builder::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>

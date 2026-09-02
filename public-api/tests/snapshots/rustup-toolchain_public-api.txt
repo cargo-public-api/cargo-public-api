@@ -22,7 +22,7 @@ impl<T, U> core::convert::Into<U> for rustup_toolchain::Error where U: core::con
 pub fn rustup_toolchain::Error::into(self) -> U
 impl<T, U> core::convert::TryFrom<U> for rustup_toolchain::Error where U: core::convert::Into<T>
 pub type rustup_toolchain::Error::Error = never
-pub fn rustup_toolchain::Error::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+pub fn rustup_toolchain::Error::try_from(U) -> core::result::Result<T, never>
 impl<T, U> core::convert::TryInto<U> for rustup_toolchain::Error where U: core::convert::TryFrom<T>
 pub type rustup_toolchain::Error::Error = <U as core::convert::TryFrom<T>>::Error
 pub fn rustup_toolchain::Error::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>

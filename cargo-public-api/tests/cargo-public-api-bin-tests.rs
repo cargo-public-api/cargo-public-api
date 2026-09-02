@@ -406,6 +406,8 @@ fn minimal_toolchain_works() {
 
 #[test]
 fn warn_when_using_beta() {
+    rustup_toolchain::install("nightly").unwrap();
+
     let mut cmd = TestCmd::with_proxy_toolchain("beta").with_separate_target_dir();
 
     // Test against comprehensive_api, because we want any rustdoc JSON format

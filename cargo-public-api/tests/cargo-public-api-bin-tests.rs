@@ -406,9 +406,6 @@ fn minimal_toolchain_works() {
 
 #[test]
 fn warn_when_using_beta() {
-    rustup_toolchain::install("beta").unwrap();
-    rustup_toolchain::install("nightly").unwrap();
-
     let mut cmd = TestCmd::new().with_separate_target_dir();
     cmd.cmd().env("RUSTUP_TOOLCHAIN", "beta");
 

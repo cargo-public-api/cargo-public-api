@@ -1,6 +1,6 @@
 [package]
 description = "For testing rustdoc-json"
-name = "test_crate"
+name = "test-crate"
 version = "0.1.0"
 edition = "2021"
 

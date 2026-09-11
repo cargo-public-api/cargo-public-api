@@ -4,7 +4,6 @@ name = "rustdoc-json"
 version = "0.9.10"
 description = "Utilities for working with rustdoc JSON."
 documentation = "https://docs.rs/rustdoc-json"
-readme = "README.md"
 keywords = ["rustdoc-json", "api", "doc"]
 license = "MIT"
 repository = "https://github.com/cargo-public-api/cargo-public-api/tree/main/rustdoc-json"

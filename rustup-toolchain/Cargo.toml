@@ -4,7 +4,6 @@ name = "rustup-toolchain"
 version = "0.1.10"
 description = "Utilities for working with rustup toolchains, primarily from cargo test:s."
 documentation = "https://docs.rs/rustup-toolchain"
-readme = "README.md"
 keywords = ["toolchain", "rustup"]
 license = "MIT"
 repository = "https://github.com/cargo-public-api/cargo-public-api/tree/main/rustup-toolchain"

@@ -33,7 +33,7 @@ fn resolver_3() {
 
 #[test]
 fn package_target_bin() {
-    test_alternative_package_target(PackageTarget::Bin("test_crate".into()));
+    test_alternative_package_target(PackageTarget::Bin("test-crate".into()));
 }
 
 #[test]

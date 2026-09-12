@@ -1,5 +1,8 @@
 # `public-api` changelog
 
+## v0.52.2
+* Bump `MINIMUM_NIGHTLY_RUST_VERSION` from incorrect `nightly-2025-08-02` to correct `nightly-2025-11-22`.
+
 ## v0.52.1
 * Re-export `rustdoc-types` under the feature `experimental-feature-that-can-be-removed-in-a-patch-release_re-export-rustdoc-types`.
 

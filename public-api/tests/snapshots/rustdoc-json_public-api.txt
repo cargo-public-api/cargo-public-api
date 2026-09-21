@@ -52,7 +52,7 @@ pub rustdoc_json::Color::Always
 pub rustdoc_json::Color::Auto
 pub rustdoc_json::Color::Never
 impl core::clone::Clone for rustdoc_json::Color
-pub fn rustdoc_json::Color::clone(&self) -> rustdoc_json::Color
+pub fn rustdoc_json::Color::clone(&self) -> Self
 impl core::fmt::Debug for rustdoc_json::Color
 pub fn rustdoc_json::Color::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::marker::Copy for rustdoc_json::Color
@@ -94,9 +94,9 @@ pub rustdoc_json::PackageTarget::Example(alloc::string::String)
 pub rustdoc_json::PackageTarget::Lib
 pub rustdoc_json::PackageTarget::Test(alloc::string::String)
 impl core::clone::Clone for rustdoc_json::PackageTarget
-pub fn rustdoc_json::PackageTarget::clone(&self) -> rustdoc_json::PackageTarget
+pub fn rustdoc_json::PackageTarget::clone(&self) -> Self
 impl core::default::Default for rustdoc_json::PackageTarget
-pub fn rustdoc_json::PackageTarget::default() -> rustdoc_json::PackageTarget
+pub fn rustdoc_json::PackageTarget::default() -> Self
 impl core::fmt::Debug for rustdoc_json::PackageTarget
 pub fn rustdoc_json::PackageTarget::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::marker::Freeze for rustdoc_json::PackageTarget
@@ -152,7 +152,7 @@ pub fn rustdoc_json::Builder::target(self, alloc::string::String) -> Self
 pub fn rustdoc_json::Builder::target_dir(self, impl core::convert::AsRef<std::path::Path>) -> Self
 pub fn rustdoc_json::Builder::toolchain(self, impl core::convert::Into<alloc::string::String>) -> Self
 impl core::clone::Clone for rustdoc_json::Builder
-pub fn rustdoc_json::Builder::clone(&self) -> rustdoc_json::Builder
+pub fn rustdoc_json::Builder::clone(&self) -> Self
 impl core::default::Default for rustdoc_json::Builder
 pub fn rustdoc_json::Builder::default() -> Self
 impl core::fmt::Debug for rustdoc_json::Builder

@@ -168,7 +168,7 @@ pub enum Foo {
 }
 
 impl Default for Foo {
-    fn default() -> Foo {
+    fn default() -> Self {
         Foo::A
     }
 }

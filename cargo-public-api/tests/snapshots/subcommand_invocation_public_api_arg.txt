@@ -6,10 +6,10 @@ pub public_api::diff::ChangedPublicItem::old: public_api::PublicItem
 impl public_api::diff::ChangedPublicItem
 pub fn public_api::diff::ChangedPublicItem::grouping_cmp(&self, &Self) -> core::cmp::Ordering
 impl core::clone::Clone for public_api::diff::ChangedPublicItem
-pub fn public_api::diff::ChangedPublicItem::clone(&self) -> public_api::diff::ChangedPublicItem
+pub fn public_api::diff::ChangedPublicItem::clone(&self) -> Self
 impl core::cmp::Eq for public_api::diff::ChangedPublicItem
 impl core::cmp::PartialEq for public_api::diff::ChangedPublicItem
-pub fn public_api::diff::ChangedPublicItem::eq(&self, &public_api::diff::ChangedPublicItem) -> bool
+pub fn public_api::diff::ChangedPublicItem::eq(&self, &Self) -> bool
 impl core::fmt::Debug for public_api::diff::ChangedPublicItem
 pub fn public_api::diff::ChangedPublicItem::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::marker::StructuralPartialEq for public_api::diff::ChangedPublicItem
@@ -21,10 +21,10 @@ impl public_api::diff::PublicApiDiff
 pub fn public_api::diff::PublicApiDiff::between(public_api::PublicApi, public_api::PublicApi) -> Self
 pub fn public_api::diff::PublicApiDiff::is_empty(&self) -> bool
 impl core::clone::Clone for public_api::diff::PublicApiDiff
-pub fn public_api::diff::PublicApiDiff::clone(&self) -> public_api::diff::PublicApiDiff
+pub fn public_api::diff::PublicApiDiff::clone(&self) -> Self
 impl core::cmp::Eq for public_api::diff::PublicApiDiff
 impl core::cmp::PartialEq for public_api::diff::PublicApiDiff
-pub fn public_api::diff::PublicApiDiff::eq(&self, &public_api::diff::PublicApiDiff) -> bool
+pub fn public_api::diff::PublicApiDiff::eq(&self, &Self) -> bool
 impl core::fmt::Debug for public_api::diff::PublicApiDiff
 pub fn public_api::diff::PublicApiDiff::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::marker::StructuralPartialEq for public_api::diff::PublicApiDiff
@@ -47,14 +47,14 @@ impl public_api::tokens::Token
 pub fn public_api::tokens::Token::len(&self) -> usize
 pub fn public_api::tokens::Token::text(&self) -> &str
 impl core::clone::Clone for public_api::tokens::Token
-pub fn public_api::tokens::Token::clone(&self) -> public_api::tokens::Token
+pub fn public_api::tokens::Token::clone(&self) -> Self
 impl core::cmp::Eq for public_api::tokens::Token
 impl core::cmp::Ord for public_api::tokens::Token
-pub fn public_api::tokens::Token::cmp(&self, &public_api::tokens::Token) -> core::cmp::Ordering
+pub fn public_api::tokens::Token::cmp(&self, &Self) -> core::cmp::Ordering
 impl core::cmp::PartialEq for public_api::tokens::Token
-pub fn public_api::tokens::Token::eq(&self, &public_api::tokens::Token) -> bool
+pub fn public_api::tokens::Token::eq(&self, &Self) -> bool
 impl core::cmp::PartialOrd for public_api::tokens::Token
-pub fn public_api::tokens::Token::partial_cmp(&self, &public_api::tokens::Token) -> core::option::Option<core::cmp::Ordering>
+pub fn public_api::tokens::Token::partial_cmp(&self, &Self) -> core::option::Option<core::cmp::Ordering>
 impl core::fmt::Debug for public_api::tokens::Token
 pub fn public_api::tokens::Token::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::hash::Hash for public_api::tokens::Token
@@ -84,7 +84,7 @@ pub fn public_api::Builder::omit_auto_trait_impls(self, bool) -> Self
 pub fn public_api::Builder::omit_blanket_impls(self, bool) -> Self
 pub fn public_api::Builder::sorted(self, bool) -> Self
 impl core::clone::Clone for public_api::Builder
-pub fn public_api::Builder::clone(&self) -> public_api::Builder
+pub fn public_api::Builder::clone(&self) -> Self
 impl core::fmt::Debug for public_api::Builder
 pub fn public_api::Builder::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 #[non_exhaustive] pub struct public_api::PublicApi
@@ -104,7 +104,7 @@ pub fn public_api::PublicItem::id(&self) -> rustdoc_types::Id
 pub fn public_api::PublicItem::parent_id(&self) -> core::option::Option<rustdoc_types::Id>
 pub fn public_api::PublicItem::tokens(&self) -> impl core::iter::traits::iterator::Iterator<Item = &public_api::tokens::Token>
 impl core::clone::Clone for public_api::PublicItem
-pub fn public_api::PublicItem::clone(&self) -> public_api::PublicItem
+pub fn public_api::PublicItem::clone(&self) -> Self
 impl core::cmp::Eq for public_api::PublicItem
 impl core::cmp::PartialEq for public_api::PublicItem
 pub fn public_api::PublicItem::eq(&self, &Self) -> bool

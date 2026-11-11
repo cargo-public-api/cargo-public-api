@@ -16,6 +16,7 @@ PublicApiDiff {
         pub example_api::StructV2::field: usize,
         impl core::marker::Forget for example_api::StructV2,
         impl core::marker::Freeze for example_api::StructV2,
+        impl core::marker::Move for example_api::StructV2,
         impl core::marker::Send for example_api::StructV2,
         impl core::marker::Sync for example_api::StructV2,
         impl core::marker::Unpin for example_api::StructV2,

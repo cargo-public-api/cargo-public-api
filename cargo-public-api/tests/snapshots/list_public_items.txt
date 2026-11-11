@@ -15,6 +15,7 @@ pub fn public_api::diff::ChangedPublicItem::fmt(&self, &mut core::fmt::Formatter
 impl core::marker::StructuralPartialEq for public_api::diff::ChangedPublicItem
 impl core::marker::Forget for public_api::diff::ChangedPublicItem
 impl core::marker::Freeze for public_api::diff::ChangedPublicItem
+impl core::marker::Move for public_api::diff::ChangedPublicItem
 impl core::marker::Send for public_api::diff::ChangedPublicItem
 impl core::marker::Sync for public_api::diff::ChangedPublicItem
 impl core::marker::Unpin for public_api::diff::ChangedPublicItem
@@ -38,6 +39,7 @@ pub fn public_api::diff::PublicApiDiff::fmt(&self, &mut core::fmt::Formatter<'_>
 impl core::marker::StructuralPartialEq for public_api::diff::PublicApiDiff
 impl core::marker::Forget for public_api::diff::PublicApiDiff
 impl core::marker::Freeze for public_api::diff::PublicApiDiff
+impl core::marker::Move for public_api::diff::PublicApiDiff
 impl core::marker::Send for public_api::diff::PublicApiDiff
 impl core::marker::Sync for public_api::diff::PublicApiDiff
 impl core::marker::Unpin for public_api::diff::PublicApiDiff
@@ -78,6 +80,7 @@ pub fn public_api::tokens::Token::hash<__H: core::hash::Hasher>(&self, &mut __H)
 impl core::marker::StructuralPartialEq for public_api::tokens::Token
 impl core::marker::Forget for public_api::tokens::Token
 impl core::marker::Freeze for public_api::tokens::Token
+impl core::marker::Move for public_api::tokens::Token
 impl core::marker::Send for public_api::tokens::Token
 impl core::marker::Sync for public_api::tokens::Token
 impl core::marker::Unpin for public_api::tokens::Token
@@ -99,6 +102,7 @@ impl core::fmt::Display for public_api::Error
 pub fn public_api::Error::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::marker::Forget for public_api::Error
 impl core::marker::Freeze for public_api::Error
+impl core::marker::Move for public_api::Error
 impl core::marker::Send for public_api::Error
 impl core::marker::Sync for public_api::Error
 impl core::marker::Unpin for public_api::Error
@@ -121,6 +125,7 @@ impl core::fmt::Debug for public_api::Builder
 pub fn public_api::Builder::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::marker::Forget for public_api::Builder
 impl core::marker::Freeze for public_api::Builder
+impl core::marker::Move for public_api::Builder
 impl core::marker::Send for public_api::Builder
 impl core::marker::Sync for public_api::Builder
 impl core::marker::Unpin for public_api::Builder
@@ -139,6 +144,7 @@ impl core::fmt::Display for public_api::PublicApi
 pub fn public_api::PublicApi::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::marker::Forget for public_api::PublicApi
 impl core::marker::Freeze for public_api::PublicApi
+impl core::marker::Move for public_api::PublicApi
 impl core::marker::Send for public_api::PublicApi
 impl core::marker::Sync for public_api::PublicApi
 impl core::marker::Unpin for public_api::PublicApi
@@ -164,6 +170,7 @@ impl core::hash::Hash for public_api::PublicItem
 pub fn public_api::PublicItem::hash<H: core::hash::Hasher>(&self, &mut H)
 impl core::marker::Forget for public_api::PublicItem
 impl core::marker::Freeze for public_api::PublicItem
+impl core::marker::Move for public_api::PublicItem
 impl core::marker::Send for public_api::PublicItem
 impl core::marker::Sync for public_api::PublicItem
 impl core::marker::Unpin for public_api::PublicItem

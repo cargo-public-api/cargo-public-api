@@ -159,6 +159,7 @@ impl<'c> RenderingContext<'c> {
                 generics,
                 bounds,
                 type_,
+                ..
             } => {
                 let mut output = self.render_simple(&["type"], item_path);
                 output.extend(self.render_generics(generics));

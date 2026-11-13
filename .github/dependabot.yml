@@ -9,16 +9,7 @@ updates:
       interval: "daily"
     labels:
       - "dependencies"
-    ignore:
-      - dependency-name: "anyhow"
-        update-types: ["version-update:semver-patch"]
-      - dependency-name: "clap"
-        update-types: ["version-update:semver-patch"]
-      - dependency-name: "semver"
-        update-types: ["version-update:semver-patch"]
-      - dependency-name: "serde"
-        update-types: ["version-update:semver-patch"]
-      - dependency-name: "serde_json"
-        update-types: ["version-update:semver-patch"]
-      - dependency-name: "thiserror"
-        update-types: ["version-update:semver-patch"]
+    groups:
+      all-dependencies:
+        patterns:
+          - "*"

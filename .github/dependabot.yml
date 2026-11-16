@@ -8,7 +8,7 @@ updates:
     allow:
       - dependency-type: "all"
     schedule:
-      interval: "daily"
+      interval: "quarterly"
     labels:
       - "dependencies"
     groups:

@@ -3,7 +3,7 @@ use crate::BuilderOptions as Options;
 use crate::intermediate_public_item::IntermediatePublicItem;
 use crate::nameable_item::NameableItem;
 use crate::path_component::PathComponent;
-use crate::tokens::Token;
+use crate::tokens::{Token, tokens_to_string};
 use std::{borrow::Cow, cmp::Ordering, collections::HashMap};
 
 use rustdoc_types::{
@@ -433,12 +433,26 @@ impl<'c> RenderingContext<'c> {
             output.push(Token::symbol("("));
         }
 
+        // rustc orders auto traits by a hash that changes between toolchains. Render the principal
+        // trait first and sort the rest so the public API output is deterministic.
+        let mut traits: Vec<_> = dyn_trait
+            .traits
+            .iter()
+            .map(|poly_trait| {
+                (
+                    self.is_auto_trait(&poly_trait.trait_),
+                    self.render_poly_trait(poly_trait),
+                )
+            })
+            .collect();
+        traits.sort_by_cached_key(|(is_auto, tokens)| (*is_auto, tokens_to_string(tokens)));
+
         output.extend(self.render_sequence_if_not_empty(
             vec![Token::keyword("dyn"), ws!()],
             vec![],
             plus(),
-            &dyn_trait.traits,
-            |p| self.render_poly_trait(p),
+            &traits,
+            |(_, tokens)| tokens.clone(),
         ));
 
         if let Some(lt) = &dyn_trait.lifetime {
@@ -451,6 +465,29 @@ impl<'c> RenderingContext<'c> {
         }
 
         output
+    }
+
+    fn is_auto_trait(&self, path: &Path) -> bool {
+        // Only nightly can define new auto traits, and local ones are in the index.
+        const CORE_AUTO_TRAITS: &[&[&str]] = &[
+            &["core", "marker", "Send"],
+            &["core", "marker", "Sync"],
+            &["core", "marker", "Unpin"],
+            &["core", "panic", "unwind_safe", "UnwindSafe"],
+            &["core", "panic", "unwind_safe", "RefUnwindSafe"],
+        ];
+
+        match self.crate_.index.get(&path.id) {
+            Some(Item {
+                inner: ItemEnum::Trait(trait_),
+                ..
+            }) => trait_.is_auto,
+            _ => self.crate_.paths.get(&path.id).is_some_and(|summary| {
+                CORE_AUTO_TRAITS
+                    .iter()
+                    .any(|auto_trait| summary.path == *auto_trait)
+            }),
+        }
     }
 
     fn render_function(

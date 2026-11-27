@@ -115,6 +115,19 @@ pub fn dyn_arg_two_traits_one_lifetime(d: &(dyn std::io::Write + Send + 'static)
 
 pub fn box_dyn_arg_two_traits(d: Box<dyn std::io::Write + Send>) {}
 
+/// Bounds are out of order to test that they are rendered sorted.
+pub fn dyn_arg_unsorted_traits(
+    d: &(
+         dyn std::panic::UnwindSafe
+             + Sync
+             + std::panic::RefUnwindSafe
+             + std::io::Write
+             + Unpin
+             + Send
+     ),
+) {
+}
+
 pub unsafe fn unsafe_fn() {}
 
 pub async fn async_fn() {}

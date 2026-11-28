@@ -12,12 +12,12 @@ pub fn rustup_toolchain::Error::fmt(&self, &mut core::fmt::Formatter<'_>) -> cor
 impl core::fmt::Display for rustup_toolchain::Error
 pub fn rustup_toolchain::Error::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::marker::Forget for rustup_toolchain::Error
-impl core::marker::Freeze for rustup_toolchain::Error
+impl core::marker::Freeze for rustup_toolchain::Error where https://github.com/rust-lang/rust/issues/123646 is unstable and not supported: core::marker::Freeze, core::marker::PhantomData<core::io::error::ErrorData<core::io::error::CustomOwner>>: core::marker::Freeze
 impl core::marker::Move for rustup_toolchain::Error
-impl core::marker::Send for rustup_toolchain::Error
-impl core::marker::Sync for rustup_toolchain::Error
-impl core::marker::Unpin for rustup_toolchain::Error
-impl core::marker::UnsafeUnpin for rustup_toolchain::Error
+impl core::marker::Send for rustup_toolchain::Error where core::io::error::repr::Repr: core::marker::Send
+impl core::marker::Sync for rustup_toolchain::Error where core::io::error::repr::Repr: core::marker::Sync
+impl core::marker::Unpin for rustup_toolchain::Error where https://github.com/rust-lang/rust/issues/123646 is unstable and not supported: core::marker::Unpin, &'static core::io::error::SimpleMessage: core::marker::Unpin, https://github.com/rust-lang/rust/issues/123646 is unstable and not supported: core::marker::Unpin
+impl core::marker::UnsafeUnpin for rustup_toolchain::Error where https://github.com/rust-lang/rust/issues/123646 is unstable and not supported: core::marker::UnsafeUnpin, core::marker::PhantomData<core::io::error::ErrorData<core::io::error::CustomOwner>>: core::marker::UnsafeUnpin
 impl !core::panic::unwind_safe::RefUnwindSafe for rustup_toolchain::Error
 impl !core::panic::unwind_safe::UnwindSafe for rustup_toolchain::Error
 impl<T, U> core::convert::Into<U> for rustup_toolchain::Error where U: core::convert::From<T>

@@ -21,12 +21,12 @@ pub fn rustdoc_json::BuildError::fmt(&self, &mut core::fmt::Formatter<'_>) -> co
 impl core::fmt::Display for rustdoc_json::BuildError
 pub fn rustdoc_json::BuildError::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::marker::Forget for rustdoc_json::BuildError
-impl core::marker::Freeze for rustdoc_json::BuildError
+impl core::marker::Freeze for rustdoc_json::BuildError where https://github.com/rust-lang/rust/issues/123646 is unstable and not supported: core::marker::Freeze, core::marker::PhantomData<u8>: core::marker::Freeze, core::marker::PhantomData<alloc::string::String>: core::marker::Freeze, https://github.com/rust-lang/rust/issues/123646 is unstable and not supported: core::marker::Freeze, core::marker::PhantomData<core::io::error::ErrorData<core::io::error::CustomOwner>>: core::marker::Freeze, https://github.com/rust-lang/rust/issues/123646 is unstable and not supported: core::marker::Freeze, core::marker::PhantomData<serde_json::error::ErrorImpl>: core::marker::Freeze
 impl core::marker::Move for rustdoc_json::BuildError
-impl core::marker::Send for rustdoc_json::BuildError
-impl core::marker::Sync for rustdoc_json::BuildError
-impl core::marker::Unpin for rustdoc_json::BuildError
-impl core::marker::UnsafeUnpin for rustdoc_json::BuildError
+impl core::marker::Send for rustdoc_json::BuildError where alloc::raw_vec::RawVecInner: core::marker::Send, core::io::error::repr::Repr: core::marker::Send, alloc::boxed::BoxRaw<serde_json::error::ErrorImpl>: core::marker::Send
+impl core::marker::Sync for rustdoc_json::BuildError where alloc::raw_vec::RawVecInner: core::marker::Sync, core::io::error::repr::Repr: core::marker::Sync, alloc::boxed::BoxRaw<serde_json::error::ErrorImpl>: core::marker::Sync
+impl core::marker::Unpin for rustdoc_json::BuildError where https://github.com/rust-lang/rust/issues/123646 is unstable and not supported: core::marker::Unpin, https://github.com/rust-lang/rust/issues/123646 is unstable and not supported: core::marker::Unpin, &'static core::io::error::SimpleMessage: core::marker::Unpin, https://github.com/rust-lang/rust/issues/123646 is unstable and not supported: core::marker::Unpin, alloc::boxed::Box<serde_json::error::ErrorImpl>: core::marker::Unpin
+impl core::marker::UnsafeUnpin for rustdoc_json::BuildError where https://github.com/rust-lang/rust/issues/123646 is unstable and not supported: core::marker::UnsafeUnpin, core::marker::PhantomData<u8>: core::marker::UnsafeUnpin, core::marker::PhantomData<alloc::string::String>: core::marker::UnsafeUnpin, https://github.com/rust-lang/rust/issues/123646 is unstable and not supported: core::marker::UnsafeUnpin, core::marker::PhantomData<core::io::error::ErrorData<core::io::error::CustomOwner>>: core::marker::UnsafeUnpin, https://github.com/rust-lang/rust/issues/123646 is unstable and not supported: core::marker::UnsafeUnpin, core::marker::PhantomData<serde_json::error::ErrorImpl>: core::marker::UnsafeUnpin
 impl !core::panic::unwind_safe::RefUnwindSafe for rustdoc_json::BuildError
 impl !core::panic::unwind_safe::UnwindSafe for rustdoc_json::BuildError
 impl<T, U> core::convert::Into<U> for rustdoc_json::BuildError where U: core::convert::From<T>
@@ -104,14 +104,14 @@ pub fn rustdoc_json::PackageTarget::default() -> Self
 impl core::fmt::Debug for rustdoc_json::PackageTarget
 pub fn rustdoc_json::PackageTarget::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::marker::Forget for rustdoc_json::PackageTarget
-impl core::marker::Freeze for rustdoc_json::PackageTarget
+impl core::marker::Freeze for rustdoc_json::PackageTarget where https://github.com/rust-lang/rust/issues/123646 is unstable and not supported: core::marker::Freeze, core::marker::PhantomData<u8>: core::marker::Freeze
 impl core::marker::Move for rustdoc_json::PackageTarget
-impl core::marker::Send for rustdoc_json::PackageTarget
-impl core::marker::Sync for rustdoc_json::PackageTarget
-impl core::marker::Unpin for rustdoc_json::PackageTarget
-impl core::marker::UnsafeUnpin for rustdoc_json::PackageTarget
+impl core::marker::Send for rustdoc_json::PackageTarget where alloc::raw_vec::RawVecInner: core::marker::Send
+impl core::marker::Sync for rustdoc_json::PackageTarget where alloc::raw_vec::RawVecInner: core::marker::Sync
+impl core::marker::Unpin for rustdoc_json::PackageTarget where https://github.com/rust-lang/rust/issues/123646 is unstable and not supported: core::marker::Unpin
+impl core::marker::UnsafeUnpin for rustdoc_json::PackageTarget where https://github.com/rust-lang/rust/issues/123646 is unstable and not supported: core::marker::UnsafeUnpin, core::marker::PhantomData<u8>: core::marker::UnsafeUnpin
 impl core::panic::unwind_safe::RefUnwindSafe for rustdoc_json::PackageTarget
-impl core::panic::unwind_safe::UnwindSafe for rustdoc_json::PackageTarget
+impl core::panic::unwind_safe::UnwindSafe for rustdoc_json::PackageTarget where alloc::raw_vec::RawVecInner: core::panic::unwind_safe::UnwindSafe
 impl<T, U> core::convert::Into<U> for rustdoc_json::PackageTarget where U: core::convert::From<T>
 pub fn rustdoc_json::PackageTarget::into(self) -> U
 impl<T, U> core::convert::TryFrom<U> for rustdoc_json::PackageTarget where U: core::convert::Into<T>
@@ -164,14 +164,14 @@ pub fn rustdoc_json::Builder::default() -> Self
 impl core::fmt::Debug for rustdoc_json::Builder
 pub fn rustdoc_json::Builder::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::marker::Forget for rustdoc_json::Builder
-impl core::marker::Freeze for rustdoc_json::Builder
+impl core::marker::Freeze for rustdoc_json::Builder where https://github.com/rust-lang/rust/issues/123646 is unstable and not supported: core::marker::Freeze, core::marker::PhantomData<u8>: core::marker::Freeze, core::marker::PhantomData<alloc::string::String>: core::marker::Freeze, core::marker::PhantomData<(std::ffi::os_str::OsString, std::ffi::os_str::OsString)>: core::marker::Freeze
 impl core::marker::Move for rustdoc_json::Builder
-impl core::marker::Send for rustdoc_json::Builder
-impl core::marker::Sync for rustdoc_json::Builder
-impl core::marker::Unpin for rustdoc_json::Builder
-impl core::marker::UnsafeUnpin for rustdoc_json::Builder
+impl core::marker::Send for rustdoc_json::Builder where alloc::raw_vec::RawVecInner: core::marker::Send, hashbrown::raw::RawTable<(std::ffi::os_str::OsString, std::ffi::os_str::OsString)>: core::marker::Send
+impl core::marker::Sync for rustdoc_json::Builder where alloc::raw_vec::RawVecInner: core::marker::Sync, hashbrown::raw::RawTable<(std::ffi::os_str::OsString, std::ffi::os_str::OsString)>: core::marker::Sync
+impl core::marker::Unpin for rustdoc_json::Builder where https://github.com/rust-lang/rust/issues/123646 is unstable and not supported: core::marker::Unpin
+impl core::marker::UnsafeUnpin for rustdoc_json::Builder where https://github.com/rust-lang/rust/issues/123646 is unstable and not supported: core::marker::UnsafeUnpin, core::marker::PhantomData<u8>: core::marker::UnsafeUnpin, core::marker::PhantomData<alloc::string::String>: core::marker::UnsafeUnpin, core::marker::PhantomData<(std::ffi::os_str::OsString, std::ffi::os_str::OsString)>: core::marker::UnsafeUnpin
 impl core::panic::unwind_safe::RefUnwindSafe for rustdoc_json::Builder
-impl core::panic::unwind_safe::UnwindSafe for rustdoc_json::Builder
+impl core::panic::unwind_safe::UnwindSafe for rustdoc_json::Builder where alloc::raw_vec::RawVecInner: core::panic::unwind_safe::UnwindSafe, std::collections::hash::map::HashMap<std::ffi::os_str::OsString, std::ffi::os_str::OsString>: core::panic::unwind_safe::UnwindSafe
 impl<T, U> core::convert::Into<U> for rustdoc_json::Builder where U: core::convert::From<T>
 pub fn rustdoc_json::Builder::into(self) -> U
 impl<T, U> core::convert::TryFrom<U> for rustdoc_json::Builder where U: core::convert::Into<T>
